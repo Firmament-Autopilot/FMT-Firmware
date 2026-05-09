@@ -38,18 +38,18 @@ extern "C" {
 
 #define peri_0_mmio_0_ENABLED 1U
 #define peri_1_mmio_0_ENABLED 1U
-#define CYBSP_UART5_CLK_DIV_ENABLED 1U
+#define CYBSP_UART1_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
-#define CYBSP_UART5_CLK_DIV_HW CY_SYSCLK_DIV_8_BIT
+#define CYBSP_UART1_CLK_DIV_HW CY_SYSCLK_DIV_8_BIT
 #endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
 
-#define CYBSP_UART5_CLK_DIV_NUM 0U
-#define CYBSP_UART5_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+#define CYBSP_UART1_CLK_DIV_NUM 0U
+#define CYBSP_UART1_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
 
-#if !defined (CYBSP_UART5_CLK_DIV_GRP_NUM)
-#define CYBSP_UART5_CLK_DIV_GRP_NUM CYBSP_UART5_CLK_DIV_GRP_NUM
-#endif /* !defined (CYBSP_UART5_CLK_DIV_GRP_NUM) */
+#if !defined (CYBSP_UART1_CLK_DIV_GRP_NUM)
+#define CYBSP_UART1_CLK_DIV_GRP_NUM CYBSP_UART1_CLK_DIV_GRP_NUM
+#endif /* !defined (CYBSP_UART1_CLK_DIV_GRP_NUM) */
 
 #define CYBSP_SPI_CONTROLLER_CLK_DIV_ENABLED 1U
 
@@ -77,18 +77,18 @@ extern "C" {
 #define CYBSP_USB_OS_TIMER_CLK_DIV_GRP_NUM CYBSP_USB_OS_TIMER_CLK_DIV_GRP_NUM
 #endif /* !defined (CYBSP_USB_OS_TIMER_CLK_DIV_GRP_NUM) */
 
-#define CYBSP_PWM_DT_CLK_DIV_ENABLED 1U
+#define CYBSP_UART2_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
-#define CYBSP_PWM_DT_CLK_DIV_HW CY_SYSCLK_DIV_8_BIT
+#define CYBSP_UART2_CLK_DIV_HW CY_SYSCLK_DIV_8_BIT
 #endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
 
-#define CYBSP_PWM_DT_CLK_DIV_NUM 3U
-#define CYBSP_PWM_DT_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+#define CYBSP_UART2_CLK_DIV_NUM 3U
+#define CYBSP_UART2_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
 
-#if !defined (CYBSP_PWM_DT_CLK_DIV_GRP_NUM)
-#define CYBSP_PWM_DT_CLK_DIV_GRP_NUM CYBSP_PWM_DT_CLK_DIV_GRP_NUM
-#endif /* !defined (CYBSP_PWM_DT_CLK_DIV_GRP_NUM) */
+#if !defined (CYBSP_UART2_CLK_DIV_GRP_NUM)
+#define CYBSP_UART2_CLK_DIV_GRP_NUM CYBSP_UART2_CLK_DIV_GRP_NUM
+#endif /* !defined (CYBSP_UART2_CLK_DIV_GRP_NUM) */
 
 #define peri_0_group_1_div_8_4_ENABLED 1U
 
@@ -116,57 +116,57 @@ extern "C" {
 #define CYBSP_I2C_CONTROLLER_CLK_DIV_GRP_NUM CYBSP_I2C_CONTROLLER_CLK_DIV_GRP_NUM
 #endif /* !defined (CYBSP_I2C_CONTROLLER_CLK_DIV_GRP_NUM) */
 
-#define CYBSP_DEBUG_UART_CLK_DIV_ENABLED 1U
+#define CYBSP_UART4_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
-#define CYBSP_DEBUG_UART_CLK_DIV_HW CY_SYSCLK_DIV_16_BIT
+#define CYBSP_UART4_CLK_DIV_HW CY_SYSCLK_DIV_16_BIT
 #endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
 
-#define CYBSP_DEBUG_UART_CLK_DIV_NUM 1U
-#define CYBSP_DEBUG_UART_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+#define CYBSP_UART4_CLK_DIV_NUM 1U
+#define CYBSP_UART4_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
 
-#if !defined (CYBSP_DEBUG_UART_CLK_DIV_GRP_NUM)
-#define CYBSP_DEBUG_UART_CLK_DIV_GRP_NUM CYBSP_DEBUG_UART_CLK_DIV_GRP_NUM
-#endif /* !defined (CYBSP_DEBUG_UART_CLK_DIV_GRP_NUM) */
+#if !defined (CYBSP_UART4_CLK_DIV_GRP_NUM)
+#define CYBSP_UART4_CLK_DIV_GRP_NUM CYBSP_UART4_CLK_DIV_GRP_NUM
+#endif /* !defined (CYBSP_UART4_CLK_DIV_GRP_NUM) */
 
-#define CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_ENABLED 1U
+#define CYBSP_UART9_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
-#define CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_HW CY_SYSCLK_DIV_16_BIT
+#define CYBSP_UART9_CLK_DIV_HW CY_SYSCLK_DIV_16_BIT
 #endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
 
-#define CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_NUM 2U
-#define CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+#define CYBSP_UART9_CLK_DIV_NUM 2U
+#define CYBSP_UART9_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
 
-#if !defined (CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_GRP_NUM)
-#define CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_GRP_NUM CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_GRP_NUM
-#endif /* !defined (CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV_GRP_NUM) */
+#if !defined (CYBSP_UART9_CLK_DIV_GRP_NUM)
+#define CYBSP_UART9_CLK_DIV_GRP_NUM CYBSP_UART9_CLK_DIV_GRP_NUM
+#endif /* !defined (CYBSP_UART9_CLK_DIV_GRP_NUM) */
 
-#define CYBSP_PWM_LED_CTRL_CLK_DIV_ENABLED 1U
+#define CYBSP_UART10_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
-#define CYBSP_PWM_LED_CTRL_CLK_DIV_HW CY_SYSCLK_DIV_16_BIT
+#define CYBSP_UART10_CLK_DIV_HW CY_SYSCLK_DIV_16_BIT
 #endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
 
-#define CYBSP_PWM_LED_CTRL_CLK_DIV_NUM 3U
-#define CYBSP_PWM_LED_CTRL_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+#define CYBSP_UART10_CLK_DIV_NUM 3U
+#define CYBSP_UART10_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
 
-#if !defined (CYBSP_PWM_LED_CTRL_CLK_DIV_GRP_NUM)
-#define CYBSP_PWM_LED_CTRL_CLK_DIV_GRP_NUM CYBSP_PWM_LED_CTRL_CLK_DIV_GRP_NUM
-#endif /* !defined (CYBSP_PWM_LED_CTRL_CLK_DIV_GRP_NUM) */
+#if !defined (CYBSP_UART10_CLK_DIV_GRP_NUM)
+#define CYBSP_UART10_CLK_DIV_GRP_NUM CYBSP_UART10_CLK_DIV_GRP_NUM
+#endif /* !defined (CYBSP_UART10_CLK_DIV_GRP_NUM) */
 
-#define CYBSP_BT_UART_CLK_DIV_ENABLED 1U
+#define CYBSP_UART11_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
-#define CYBSP_BT_UART_CLK_DIV_HW CY_SYSCLK_DIV_16_5_BIT
+#define CYBSP_UART11_CLK_DIV_HW CY_SYSCLK_DIV_16_5_BIT
 #endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
 
-#define CYBSP_BT_UART_CLK_DIV_NUM 0U
-#define CYBSP_BT_UART_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+#define CYBSP_UART11_CLK_DIV_NUM 0U
+#define CYBSP_UART11_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
 
-#if !defined (CYBSP_BT_UART_CLK_DIV_GRP_NUM)
-#define CYBSP_BT_UART_CLK_DIV_GRP_NUM CYBSP_BT_UART_CLK_DIV_GRP_NUM
-#endif /* !defined (CYBSP_BT_UART_CLK_DIV_GRP_NUM) */
+#if !defined (CYBSP_UART11_CLK_DIV_GRP_NUM)
+#define CYBSP_UART11_CLK_DIV_GRP_NUM CYBSP_UART11_CLK_DIV_GRP_NUM
+#endif /* !defined (CYBSP_UART11_CLK_DIV_GRP_NUM) */
 
 #define CYBSP_PWM_CLK_DIV_ENABLED 1U
 
@@ -193,6 +193,58 @@ extern "C" {
 #if !defined (CYBSP_SMART_IO_CLK_DIV_GRP_NUM)
 #define CYBSP_SMART_IO_CLK_DIV_GRP_NUM CYBSP_SMART_IO_CLK_DIV_GRP_NUM
 #endif /* !defined (CYBSP_SMART_IO_CLK_DIV_GRP_NUM) */
+
+#define peri_0_group_2_div_8_0_ENABLED 1U
+
+#if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
+#define peri_0_group_2_div_8_0_HW CY_SYSCLK_DIV_8_BIT
+#endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
+
+#define peri_0_group_2_div_8_0_NUM 0U
+#define PERI_0_GROUP_2_DIV_8_0_GRP_NUM ((2U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+
+#if !defined (peri_0_group_2_div_8_0_GRP_NUM)
+#define peri_0_group_2_div_8_0_GRP_NUM PERI_0_GROUP_2_DIV_8_0_GRP_NUM
+#endif /* !defined (peri_0_group_2_div_8_0_GRP_NUM) */
+
+#define peri_0_group_2_div_8_1_ENABLED 1U
+
+#if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
+#define peri_0_group_2_div_8_1_HW CY_SYSCLK_DIV_8_BIT
+#endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
+
+#define peri_0_group_2_div_8_1_NUM 1U
+#define PERI_0_GROUP_2_DIV_8_1_GRP_NUM ((2U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+
+#if !defined (peri_0_group_2_div_8_1_GRP_NUM)
+#define peri_0_group_2_div_8_1_GRP_NUM PERI_0_GROUP_2_DIV_8_1_GRP_NUM
+#endif /* !defined (peri_0_group_2_div_8_1_GRP_NUM) */
+
+#define peri_0_group_2_div_8_2_ENABLED 1U
+
+#if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
+#define peri_0_group_2_div_8_2_HW CY_SYSCLK_DIV_8_BIT
+#endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
+
+#define peri_0_group_2_div_8_2_NUM 2U
+#define PERI_0_GROUP_2_DIV_8_2_GRP_NUM ((2U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+
+#if !defined (peri_0_group_2_div_8_2_GRP_NUM)
+#define peri_0_group_2_div_8_2_GRP_NUM PERI_0_GROUP_2_DIV_8_2_GRP_NUM
+#endif /* !defined (peri_0_group_2_div_8_2_GRP_NUM) */
+
+#define peri_0_group_2_div_8_3_ENABLED 1U
+
+#if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
+#define peri_0_group_2_div_8_3_HW CY_SYSCLK_DIV_8_BIT
+#endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
+
+#define peri_0_group_2_div_8_3_NUM 3U
+#define PERI_0_GROUP_2_DIV_8_3_GRP_NUM ((2U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+
+#if !defined (peri_0_group_2_div_8_3_GRP_NUM)
+#define peri_0_group_2_div_8_3_GRP_NUM PERI_0_GROUP_2_DIV_8_3_GRP_NUM
+#endif /* !defined (peri_0_group_2_div_8_3_GRP_NUM) */
 
 #define peri_0_group_3_div_8_0_ENABLED 1U
 
