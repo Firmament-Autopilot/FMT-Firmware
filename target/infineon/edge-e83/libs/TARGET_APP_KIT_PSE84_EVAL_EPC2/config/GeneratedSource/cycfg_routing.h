@@ -5,7 +5,7 @@
  * Establishes all necessary connections between hardware elements.
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.37.0.10260
+ * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -109,8 +109,8 @@ extern "C" {
 #define CYBSP_UART10_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN3
 #define CYBSP_UART11_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT11
 #define CYBSP_UART11_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN4
-#define RC_TIMER_capture0_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_3_TCPWM0_ALL_CNT_TR_IN27
-#define TCPWM0_GRP1_CNT20_CAPTURE0_VALUE 0x1E
+#define RC_TIMER_capture0_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_3_TCPWM0_ONE_CNT_TR_IN2
+#define TCPWM0_GRP0_CNT2_CAPTURE0_VALUE 0x2
 
 void init_cycfg_routing(void);
 

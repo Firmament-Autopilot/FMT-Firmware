@@ -5,7 +5,7 @@
  * Analog configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.37.0.10260
+ * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -239,9 +239,10 @@ extern "C" {
 #define CYBSP_USB_OS_TIMER_COUNTER_ENABLED 1U
 #define CYBSP_USB_OS_TIMER_COUNTER_HW TCPWM0
 #define CYBSP_USB_OS_TIMER_COUNTER_NUM 1UL
-#define tcpwm_0_group_0_cnt_2_ENABLED 1U
-#define tcpwm_0_group_0_cnt_2_HW TCPWM0
-#define tcpwm_0_group_0_cnt_2_NUM 2UL
+#define RC_TIMER_ENABLED 1U
+#define RC_TIMER_HW TCPWM0
+#define RC_TIMER_NUM 2UL
+#define RC_TIMER_IRQ tcpwm_0_interrupts_2_IRQn
 #define tcpwm_0_group_0_cnt_3_ENABLED 1U
 #define tcpwm_0_group_0_cnt_3_HW TCPWM0
 #define tcpwm_0_group_0_cnt_3_NUM 3UL
@@ -291,10 +292,6 @@ extern "C" {
 #define tcpwm_0_group_1_cnt_19_ENABLED 1U
 #define tcpwm_0_group_1_cnt_19_HW TCPWM0
 #define tcpwm_0_group_1_cnt_19_NUM 275UL
-#define RC_TIMER_ENABLED 1U
-#define RC_TIMER_HW TCPWM0
-#define RC_TIMER_NUM 276UL
-#define RC_TIMER_IRQ tcpwm_0_interrupts_276_IRQn
 #define tcpwm_0_group_1_cnt_22_ENABLED 1U
 #define tcpwm_0_group_1_cnt_22_HW TCPWM0
 #define tcpwm_0_group_1_cnt_22_NUM 278UL
@@ -526,16 +523,16 @@ extern const mtb_hal_clock_t CYBSP_USB_OS_TIMER_COUNTER_hal_clock;
 extern const mtb_hal_pwm_configurator_t CYBSP_USB_OS_TIMER_COUNTER_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
-extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_2_config;
+extern const cy_stc_tcpwm_counter_config_t RC_TIMER_config;
 
 #if defined (COMPONENT_MTB_HAL)
-extern const mtb_hal_peri_div_t tcpwm_0_group_0_cnt_2_clock_ref;
-extern const mtb_hal_clock_t tcpwm_0_group_0_cnt_2_hal_clock;
+extern const mtb_hal_peri_div_t RC_TIMER_clock_ref;
+extern const mtb_hal_clock_t RC_TIMER_hal_clock;
 #endif /* defined (COMPONENT_MTB_HAL) */
 
-#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
-extern const mtb_hal_pwm_configurator_t tcpwm_0_group_0_cnt_2_hal_config;
-#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER)
+extern const mtb_hal_timer_configurator_t RC_TIMER_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER) */
 
 extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_3_config;
 
@@ -712,17 +709,6 @@ extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_19_hal_clock;
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
 extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_19_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
-
-extern const cy_stc_tcpwm_counter_config_t RC_TIMER_config;
-
-#if defined (COMPONENT_MTB_HAL)
-extern const mtb_hal_peri_div_t RC_TIMER_clock_ref;
-extern const mtb_hal_clock_t RC_TIMER_hal_clock;
-#endif /* defined (COMPONENT_MTB_HAL) */
-
-#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER)
-extern const mtb_hal_timer_configurator_t RC_TIMER_hal_config;
-#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER) */
 
 extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_22_config;
 

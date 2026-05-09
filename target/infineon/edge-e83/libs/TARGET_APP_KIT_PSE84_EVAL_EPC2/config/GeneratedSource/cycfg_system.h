@@ -5,7 +5,7 @@
  * System configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.37.0.10260
+ * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -101,15 +101,15 @@ extern "C" {
 #define m55appcpuss_0_cm55_0_mpu_ns_0_ENABLED 1U
 #define mxrramc_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
 #define mxrramc_0_mpc_0_REGION_COUNT 4U
-#define mxsramc_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
+#define mxsramc_0_mpc_0_RESPONSE CY_MPC_RZWI
 #define mxsramc_0_mpc_0_REGION_COUNT 3U
-#define mxsramc_1_mpc_0_RESPONSE CY_MPC_BUS_ERR
+#define mxsramc_1_mpc_0_RESPONSE CY_MPC_RZWI
 #define mxsramc_1_mpc_0_REGION_COUNT 2U
-#define smif_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
+#define smif_0_mpc_0_RESPONSE CY_MPC_RZWI
 #define smif_0_mpc_0_REGION_COUNT 6U
 #define smif_1_mpc_0_RESPONSE CY_MPC_RZWI
 #define smif_1_mpc_0_REGION_COUNT 0U
-#define socmem_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
+#define socmem_0_mpc_0_RESPONSE CY_MPC_RZWI
 #define socmem_0_mpc_0_REGION_COUNT 2U
 
 #if defined (CY_PDL_TZ_ENABLED)

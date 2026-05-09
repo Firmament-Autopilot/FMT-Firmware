@@ -17,7 +17,7 @@
 
 #include "interface.h"
 #include "module/task_manager/task_manager.h"
-
+#include "drv_rc.h"
 
 static fmt_err_t task_init(void)
 {
@@ -29,25 +29,23 @@ static void task_entry(void* parameter)
 {
     printf("main task started.\n");
 
-    /* main loop */
+    RT_CHECK(drv_rc_init());
+
+    drv_rc_thread_start();
+
     while (1) {
         interface_listen();
 
         if (sync_finish()) {
             // led_type = LED_BLUE;
             // led_on(LED_RED);
-
-            // if (rc_config.protocol == 1) {
-            //     send_sbus_value();
-            // } else if (rc_config.protocol == 2) {
-            //     send_ppm_value();
-            // }
+            drv_rc_send_ppm();
         } else {
             // led_type = LED_RED;
             // led_on(LED_BLUE);
 
             /* try send sync cmd to fmu */
-            PERIOD_EXECUTE(fmu_sync, 200, send_io_cmd(IO_CODE_SYNC, NULL, 0););
+            PERIOD_EXECUTE(fmu_sync, 2000, send_io_cmd(IO_CODE_SYNC, NULL, 0););
         }
         sys_msleep(1);
     }

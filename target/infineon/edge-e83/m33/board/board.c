@@ -104,7 +104,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_pwm_init());
 
     /* init RC */
-    RT_CHECK(drv_rc_init());
+
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -119,11 +119,12 @@ void bsp_initialize(void)
     RT_CHECK(drv_adc_init());
 
     RT_CHECK(drv_ipc_dev_init());
-
+    
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
+
 }
 
 void bsp_post_initialize(void)
