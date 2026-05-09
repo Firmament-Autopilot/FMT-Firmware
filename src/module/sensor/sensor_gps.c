@@ -95,6 +95,11 @@ fmt_err_t gnss_init(void)
 {
     gnss_device_info* dev_list = gnss_get_dev_list();
 
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    /* simulation mode, no gnss required */
+    return FMT_EOK;
+#endif
+
     if (gnss_get_dev_num() == 0) {
         /* no gnss device configured */
         return FMT_EOK;
