@@ -157,12 +157,11 @@ int cmd_dshot(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
+    uint8_t index = 0;
     for (uint16_t i = 0; i < 16; i++) {
         if (c.chan_mask & (1 << i)) {
-            c.value[i] = cmd_val;
+            c.value[index++] = cmd_val;
             c.size++;
-        } else {
-            c.value[i] = 0;
         }
     }
 
