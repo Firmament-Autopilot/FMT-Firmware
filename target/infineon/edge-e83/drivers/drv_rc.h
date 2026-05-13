@@ -22,8 +22,30 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 rt_err_t drv_rc_init(void);
+rt_err_t drv_rc_thread_start(void);
+rt_err_t drv_rc_deinit(void);
+rt_err_t rc_init(void);
+void drv_rc_start_capture(void);
+uint8_t drv_rc_send_ppm(void);
+
+#define RC_CAPTURE_BUF_SIZE 32
+#define PPM_CHANNEL_COUNT 9
+
+typedef struct {
+    uint32_t capture;
+    uint32_t gap;
+    uint8_t  type;
+} rc_capture_t;
+
+typedef struct {
+    uint16_t channels[PPM_CHANNEL_COUNT];
+    uint8_t  valid;
+    uint32_t frame_period;
+    uint16_t history[3][PPM_CHANNEL_COUNT];
+    uint8_t  history_idx;
+    uint8_t  history_filled;
+} ppm_data_t;
 
 #ifdef __cplusplus
 }

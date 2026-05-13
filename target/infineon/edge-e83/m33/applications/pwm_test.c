@@ -2,7 +2,6 @@
 #include <rtdevice.h>
 #include <rtthread.h>
 #include <stdlib.h>
-
 #ifdef RT_USING_FINSH
     #include <finsh.h>
 #endif
@@ -271,6 +270,7 @@ static void pwm_set(int argc, char** argv)
         rt_kprintf("PWM_CH%u set to %u us\n", pwm_ch, pulse_us);
     }
 }
+
 
 #ifdef RT_USING_FINSH
 MSH_CMD_EXPORT(pwm_test, Start PWM test on available channels and write a debug pattern);

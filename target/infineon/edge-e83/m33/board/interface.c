@@ -18,6 +18,7 @@
 #include "hal/actuator/actuator.h"
 #include <stddef.h>
 #include <string.h>
+#include "drv_rc.h"
 
 #define PWM_MIN_FREQ_HZ      (50U)
 #define PWM_MAX_FREQ_HZ      (400U)
@@ -329,15 +330,18 @@ fmt_err_t handle_rx_packet(struct IOPacket* pkt)
             ret = FMT_EINVAL;
             break;
         }
-
         IO_RCConfig new_config = *((IO_RCConfig*)pkt->data);
-
-        /* edge-e83 m33 has no local sbus/ppm decoder, keep protocol state only */
         if (new_config.protocol && new_config.protocol != rc_config.protocol) {
-            if (new_config.protocol != 1U && new_config.protocol != 2U) {
+            if (new_config.protocol == 1) {
+                drv_rc_deinit();
+                // sbus_init();
+            } else if (new_config.protocol == 2) {
+                // sbus_deinit();
+                rc_init();
+                drv_rc_thread_start();
+            } else {
                 debug("invalid rc protocol:%d\n", new_config.protocol);
-                ret = FMT_EINVAL;
-                break;
+                return FMT_EINVAL;
             }
         }
 

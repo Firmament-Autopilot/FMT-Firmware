@@ -40,6 +40,15 @@ target = "Edge-E83"\n
     [[actuator.devices]]\n
     protocol = "pwm"\n
     name = "main_out"\n
-    freq = 400
+    freq = 400\n
+[pilot-cmd]\n
+    stick-channel = [4,3,1,2]\n
+[pilot-cmd.device]\n
+    type = "rc"\n
+    name = "rc"\n
+    protocol = "ppm"\n
+    channel-num = 8\n
+    sample-time = 0.05\n
+    range = [300,5000]
 );
 // clang-format on

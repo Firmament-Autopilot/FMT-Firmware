@@ -5,7 +5,7 @@
  * System configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.37.0.10260
+ * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -238,23 +238,23 @@ const cy_stc_mpc_resp_cfg_t cy_response_mpcs[] =
 {
     {
         .base = (MPC_Type*)SOCMEM_SRAM_MPC0,
-        .response = CY_MPC_BUS_ERR,
+        .response = CY_MPC_RZWI,
     },
     {
         .base = (MPC_Type*)RAMC0_MPC0,
-        .response = CY_MPC_BUS_ERR,
+        .response = CY_MPC_RZWI,
     },
     {
         .base = (MPC_Type*)RAMC1_MPC0,
-        .response = CY_MPC_BUS_ERR,
+        .response = CY_MPC_RZWI,
     },
     {
         .base = (MPC_Type*)SMIF0_CACHE_BLOCK_CACHEBLK_AHB_MPC0,
-        .response = CY_MPC_BUS_ERR,
+        .response = CY_MPC_RZWI,
     },
     {
         .base = (MPC_Type*)SMIF0_CORE_AXI_MPC0,
-        .response = CY_MPC_BUS_ERR,
+        .response = CY_MPC_RZWI,
     },
 };
 const size_t cy_response_mpcs_count = sizeof(cy_response_mpcs) / sizeof(cy_stc_mpc_resp_cfg_t);
