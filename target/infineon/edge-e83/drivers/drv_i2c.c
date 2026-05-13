@@ -26,7 +26,10 @@
 extern const cy_stc_scb_i2c_config_t CYBSP_I2C_CONTROLLER_config;
 extern const mtb_hal_i2c_configurator_t CYBSP_I2C_CONTROLLER_hal_config;
 #endif
-
+#ifdef BSP_USING_HW_I2C5
+extern const cy_stc_scb_i2c_config_t CYBSP_I2C5_CONTROLLER_config;
+extern const mtb_hal_i2c_configurator_t CYBSP_I2C5_CONTROLLER_hal_config;
+#endif
 #ifdef BSP_USING_HW_I2C8
 extern const cy_stc_scb_i2c_config_t scb_8_config;
 extern const mtb_hal_i2c_configurator_t scb_8_hal_config;
@@ -71,6 +74,14 @@ static struct ifx_i2c i2c_objs[] = {
         .base             = SCB4,
         .scb_config       = NULL,       /* TODO: add I2C4 peripheral config */
         .hal_configurator = NULL,
+    },
+#endif
+#ifdef BSP_USING_HW_I2C5
+    {
+        .name             = "i2c5",
+        .base             = SCB5,
+        .scb_config       = &CYBSP_I2C5_CONTROLLER_config,
+        .hal_configurator = &CYBSP_I2C5_CONTROLLER_hal_config,
     },
 #endif
 #ifdef BSP_USING_HW_I2C6
@@ -207,6 +218,9 @@ static void ifx_i2c_hw_init(struct ifx_i2c* obj)
 #ifdef BSP_USING_HW_I2C0
  static struct rt_i2c_device i2c0_dev1 = { .slave_addr = 0x77, .flags = 0 };
 #endif
+#ifdef BSP_USING_HW_I2C5
+ static struct rt_i2c_device i2c5_dev1 = { .slave_addr = 0x77, .flags = 0 };
+#endif
 #ifdef BSP_USING_HW_I2C8
 static struct rt_i2c_device i2c8_dev1 = { .slave_addr = 0x77, .flags = 0 };
 #endif
@@ -226,6 +240,10 @@ rt_err_t drv_i2c_init(void)
 #ifdef BSP_USING_HW_I2C0
     /* attach i2c devices */
     RT_TRY(rt_i2c_bus_attach_device(&i2c0_dev1, "i2c0_dev1", "i2c0", RT_NULL));
+#endif
+#ifdef BSP_USING_HW_I2C5
+    /* attach i2c devices */
+    RT_TRY(rt_i2c_bus_attach_device(&i2c5_dev1, "i2c5_dev1", "i2c5", RT_NULL));
 #endif
 #ifdef BSP_USING_HW_I2C8
     RT_TRY(rt_i2c_bus_attach_device(&i2c8_dev1, "i2c8_dev1", "i2c8", RT_NULL));

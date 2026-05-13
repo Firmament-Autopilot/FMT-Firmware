@@ -5528,13 +5528,13 @@
                 <Personality template="i2c" version="4.0" instance="VzDToSDijBc">
                     <Block location="scb[5]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_I2C5"/>
+                            <Alias value="CYBSP_I2C5_CONTROLLER"/>
                         </Aliases>
                     </Block>
                     <Parameters>
                         <Param id="AcceptAddress" value="false"/>
                         <Param id="AcceptGeneralCall" value="false"/>
-                        <Param id="DataRate" value="100"/>
+                        <Param id="DataRate" value="400"/>
                         <Param id="EnableRxFifo" value="true"/>
                         <Param id="EnableTxFifo" value="true"/>
                         <Param id="EnableWakeup" value="false"/>
@@ -5542,7 +5542,7 @@
                         <Param id="ManualDigitalFilter" value="true"/>
                         <Param id="ManualHighPhaseDutyCycle" value="9"/>
                         <Param id="ManualLowPhaseDutyCycle" value="16"/>
-                        <Param id="ModeUser" value="CY_SCB_I2C_SLAVE"/>
+                        <Param id="ModeUser" value="CY_SCB_I2C_MASTER"/>
                         <Param id="SlaveAddress" value="8"/>
                         <Param id="SlaveAddressMask" value="254"/>
                         <Param id="inFlash" value="true"/>
