@@ -17,6 +17,7 @@ HAL = [
     'actuator/*.c',
     'rc/*.c',
     'adc/*.c',
+    'can/*.c',
 ]
 
 HAL_CPPPATH = []

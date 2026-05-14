@@ -40,6 +40,7 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
+#include "drv_fdcan.h"
 #include "led.h"
 
 #include "default_config.h"
@@ -114,6 +115,16 @@ static void EnablePower(void)
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
     /* HIPOWER_EN active high */
     LL_GPIO_SetOutputPin(GPIOD, LL_GPIO_PIN_11);
+
+    /* init gpio */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_3;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+    /* Disable can silent */
+    LL_GPIO_ResetOutputPin(GPIOH, LL_GPIO_PIN_2 | LL_GPIO_PIN_3);
 }
 
 /**
@@ -265,6 +276,9 @@ void bsp_early_initialize(void)
 
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
+
+    /* can driver init */
+    RT_CHECK(drv_fdcan_init());
 
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
