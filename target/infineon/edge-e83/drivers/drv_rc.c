@@ -35,7 +35,7 @@
 #define RC_CONFIG_DEFAULT                      \
     {                                          \
         RC_PROTOCOL_AUTO, /* auto */           \
-            6,            /* 6 channel */      \
+            8,            /* 8 channel */      \
             0.05f,        /* sample time */    \
             1000,         /* minimal 1000us */ \
             2000,         /* maximal 2000us */ \
@@ -80,6 +80,7 @@ static rc_capture_t rc_capture_buf[RC_CAPTURE_BUF_SIZE];
 static volatile uint32_t rc_capture_index = 0;
 static volatile uint8_t rc_capture_ready = 0;
 static volatile uint8_t rc_capture_started = 0;
+static volatile uint32_t rc_last_large_gap_index = 0;
 
 static uint8_t _ppm_recv = 0;
 static uint8_t _ppm_sending = 0;
@@ -123,12 +124,15 @@ void RC_TIMER_IRQHandler(void)
                     rc_capture_buf[rc_capture_index].capture = capture;
                     rc_capture_buf[rc_capture_index].gap = gap;
                     rc_capture_buf[rc_capture_index].type = 0;
+                    rc_last_large_gap_index = rc_capture_index;
                     rc_capture_index++;
 
                     if (rc_capture_index >= 8) {
                         rc_capture_ready = 1;
                         rc_capture_started = 0;
                     }
+                } else if (rc_capture_index > 0) {
+                    rc_capture_buf[rc_last_large_gap_index].gap += gap;
                 }
             }
         }
