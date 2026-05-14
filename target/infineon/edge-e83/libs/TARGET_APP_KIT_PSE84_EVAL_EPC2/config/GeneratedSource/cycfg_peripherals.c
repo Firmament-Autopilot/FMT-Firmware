@@ -751,41 +751,41 @@ const mtb_hal_uart_configurator_t CYBSP_DEBUG_UART_hal_config =
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
 
-const cy_stc_scb_i2c_config_t CYBSP_I2C5_config =
+const cy_stc_scb_i2c_config_t CYBSP_I2C5_CONTROLLER_config =
 {
-    .i2cMode = CY_SCB_I2C_SLAVE,
+    .i2cMode = CY_SCB_I2C_MASTER,
     .useRxFifo = true,
     .useTxFifo = true,
-    .slaveAddress = 8,
-    .slaveAddressMask = 254,
+    .slaveAddress = 0U,
+    .slaveAddressMask = 0U,
     .acceptAddrInFifo = false,
     .ackGeneralAddr = false,
     .enableWakeFromSleep = false,
     .enableDigitalFilter = false,
-    .lowPhaseDutyCycle = 0,
-    .highPhaseDutyCycle = 0,
+    .lowPhaseDutyCycle = 16,
+    .highPhaseDutyCycle = 9,
 };
 
 #if defined (COMPONENT_MTB_HAL)
-const mtb_hal_peri_div_t CYBSP_I2C5_clock_ref =
+const mtb_hal_peri_div_t CYBSP_I2C5_CONTROLLER_clock_ref =
 {
     .clk_dst = (en_clk_dst_t)CYBSP_I2C_CONTROLLER_CLK_DIV_GRP_NUM,
     .div_type = CYBSP_I2C_CONTROLLER_CLK_DIV_HW,
     .div_num = CYBSP_I2C_CONTROLLER_CLK_DIV_NUM,
 };
-const mtb_hal_clock_t CYBSP_I2C5_hal_clock =
+const mtb_hal_clock_t CYBSP_I2C5_CONTROLLER_hal_clock =
 {
-    .clock_ref = &CYBSP_I2C5_clock_ref,
+    .clock_ref = &CYBSP_I2C5_CONTROLLER_clock_ref,
     .interface = &mtb_hal_clock_peri_interface,
 };
 #endif /* defined (COMPONENT_MTB_HAL) */
 
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_I2C)
-const mtb_hal_i2c_configurator_t CYBSP_I2C5_hal_config =
+const mtb_hal_i2c_configurator_t CYBSP_I2C5_CONTROLLER_hal_config =
 {
-    .base = CYBSP_I2C5_HW,
-    .config = &CYBSP_I2C5_config,
-    .clock = &CYBSP_I2C5_hal_clock,
+    .base = CYBSP_I2C5_CONTROLLER_HW,
+    .config = &CYBSP_I2C5_CONTROLLER_config,
+    .clock = &CYBSP_I2C5_CONTROLLER_hal_clock,
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_I2C) */
 
