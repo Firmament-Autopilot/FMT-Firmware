@@ -200,7 +200,7 @@ static void ifx_i2c_hw_init(struct ifx_i2c* obj)
     mtb_hal_i2c_cfg_t cfg = {
         .is_target               = MTB_HAL_I2C_MODE_CONTROLLER,
         .address                 = 0,
-        .frequency_hz            = 100000,
+        .frequency_hz            = 400000,
         .address_mask            = MTB_HAL_I2C_DEFAULT_ADDR_MASK,
         .enable_address_callback = false,
     };
@@ -219,7 +219,7 @@ static void ifx_i2c_hw_init(struct ifx_i2c* obj)
  static struct rt_i2c_device i2c0_dev1 = { .slave_addr = 0x77, .flags = 0 };
 #endif
 #ifdef BSP_USING_HW_I2C5
- static struct rt_i2c_device i2c5_dev1 = { .slave_addr = 0x77, .flags = 0 };
+ static struct rt_i2c_device i2c5_dev1 = { .slave_addr = 0x0E, .flags = 0 };    // IST8310
 #endif
 #ifdef BSP_USING_HW_I2C8
 static struct rt_i2c_device i2c8_dev1 = { .slave_addr = 0x77, .flags = 0 };

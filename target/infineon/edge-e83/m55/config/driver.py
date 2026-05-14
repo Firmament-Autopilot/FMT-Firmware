@@ -8,6 +8,7 @@ DRIVERS = [
     'imu/icm42688p.c',
     'mag/bmm150.c',
     'mag/qmc5883l.c',
+    'mag/ist8310.c',
     'airspeed/ms4525.c',
     'mtd/gd25qxx.c',
     'range_finder/tofsense.c',
