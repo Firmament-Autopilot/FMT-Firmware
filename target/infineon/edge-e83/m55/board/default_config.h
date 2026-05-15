@@ -49,6 +49,6 @@ target = "Edge-E83"\n
     protocol = "ppm"\n
     channel-num = 8\n
     sample-time = 0.05\n
-    range = [300,5000]
+    range = [1000,2000]
 );
 // clang-format on
