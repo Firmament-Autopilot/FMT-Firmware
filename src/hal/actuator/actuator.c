@@ -52,6 +52,7 @@ static rt_err_t hal_actuator_control(struct rt_device* dev, int cmd, void* args)
             struct actuator_init_value* init_val = (struct actuator_init_value*)args;
             uint8_t index = 0;
 
+            init_val->chan_mask &= act->chan_mask;
             for (uint8_t i = 0; i < ACT_CHAN_NUM; i++) {
                 if (init_val->chan_mask & (1 << i)) {
                     init_val->value[index] = constrain_uint16(init_val->value[index], act->range[0], act->range[1]);
