@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1198
+ * Model version                  : 1.1202
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:01:23 2025
+ * C/C++ source code generated on : Sun May 17 10:29:29 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -43,7 +43,7 @@ const ConstP_Plant_T Plant_ConstP = {
   /* Expression: gain
    * Referenced by: '<S128>/Gain4'
    */
-  { 20.0, 20.0, 15.0 },
+  { 1.0, 1.0, 2.0 },
 
   /* Computed Parameter: X_Frame_CM_Value
    * Referenced by: '<S17>/X_Frame_CM'
@@ -130,7 +130,7 @@ const ConstP_Plant_T Plant_ConstP = {
   /* Computed Parameter: RandomSource_VarianceRTP_b
    * Referenced by: '<S146>/Random Source'
    */
-  { 0.005F, 0.005F, 0.005F },
+  { 0.002F, 0.002F, 0.002F },
 
   /* Expression: wmm_declination
    * Referenced by: '<S152>/Declination_Lookup_Table'

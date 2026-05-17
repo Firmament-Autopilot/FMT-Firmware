@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1198
+ * Model version                  : 1.1202
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:01:23 2025
+ * C/C++ source code generated on : Sun May 17 10:29:29 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -3298,12 +3298,12 @@ void Plant_step(void)
    *  Sum: '<S139>/Sum of Elements'
    *  Sum: '<S139>/Sum of Elements1'
    */
-  rtb_Multiply5_i[0] = (real32_T)(rtb_SumofElements / 4.0 * 0.5 +
+  rtb_Multiply5_i[0] = (real32_T)(rtb_SumofElements / 4.0 * 0.2 +
     Plant_Y.Plant_States.rot_x_B);
-  rtb_Multiply5_i[1] = (real32_T)(rtb_Product1 / 4.0 * 0.5 +
+  rtb_Multiply5_i[1] = (real32_T)(rtb_Product1 / 4.0 * 0.2 +
     Plant_Y.Plant_States.rot_y_B);
   rtb_Switch_idx_0 = (real32_T)((rtb_SumofElements + rtb_Product1) * 0.5 / 4.0 *
-    0.5 + Plant_Y.Plant_States.rot_z_B);
+    0.2 + Plant_Y.Plant_States.rot_z_B);
 
   /* End of Outputs for SubSystem: '<S137>/Vibration_Model' */
 
