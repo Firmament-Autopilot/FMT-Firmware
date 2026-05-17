@@ -75,11 +75,11 @@ static void bsp_show_information(void)
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
-    sprintf(buffer, "FMT FW %s", FMT_VERSION);
+    snprintf(buffer, sizeof(buffer), "FMT FW %s", FMT_VERSION);
     banner_item("Firmware", buffer, '.', BANNER_ITEM_LEN);
-    sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    snprintf(buffer, sizeof(buffer), "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
     banner_item("Kernel", buffer, '.', BANNER_ITEM_LEN);
-    sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
+    snprintf(buffer, sizeof(buffer), "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
     banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
     banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
     banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
@@ -93,7 +93,7 @@ static void bsp_show_information(void)
     console_println("Task Initialize:");
     fmt_task_desc_t task_tab = get_task_table();
     for (uint32_t i = 0; i < get_task_num(); i++) {
-        sprintf(buffer, "  %s", task_tab[i].name);
+        snprintf(buffer, sizeof(buffer), "  %s", task_tab[i].name);
         /* task status must be okay to reach here */
         banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
@@ -279,8 +279,6 @@ void bsp_initialize(void)
 
     /* init finsh */
     finsh_system_init();
-    /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_input());
 }
 
 void bsp_post_initialize(void)
