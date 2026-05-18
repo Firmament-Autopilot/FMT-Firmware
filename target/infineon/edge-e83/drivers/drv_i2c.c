@@ -220,6 +220,7 @@ static void ifx_i2c_hw_init(struct ifx_i2c* obj)
 #endif
 #ifdef BSP_USING_HW_I2C5
  static struct rt_i2c_device i2c5_dev1 = { .slave_addr = 0x0E, .flags = 0 };    // IST8310
+ static struct rt_i2c_device i2c5_dev2 = { .slave_addr = 0x0D, .flags = 0 };    // QMC5883L
 #endif
 #ifdef BSP_USING_HW_I2C8
 static struct rt_i2c_device i2c8_dev1 = { .slave_addr = 0x77, .flags = 0 };
@@ -244,6 +245,7 @@ rt_err_t drv_i2c_init(void)
 #ifdef BSP_USING_HW_I2C5
     /* attach i2c devices */
     RT_TRY(rt_i2c_bus_attach_device(&i2c5_dev1, "i2c5_dev1", "i2c5", RT_NULL));
+    RT_TRY(rt_i2c_bus_attach_device(&i2c5_dev2, "i2c5_dev2", "i2c5", RT_NULL));
 #endif
 #ifdef BSP_USING_HW_I2C8
     RT_TRY(rt_i2c_bus_attach_device(&i2c8_dev1, "i2c8_dev1", "i2c8", RT_NULL));

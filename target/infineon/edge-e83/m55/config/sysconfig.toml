@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "PSoC-E83"
+target = "Edge-E83"
 
 # Console Configuration
 [console]
@@ -20,28 +20,14 @@ target = "PSoC-E83"
 [mavproxy]
     [[mavproxy.devices]]
     chan = 0
-    type = "serial"
-    name = "serial1"
-    baudrate = 57600
-
-    [[mavproxy.devices]]
-    chan = 0
     type = "usb"
-    name = "usbd0"
+    name = "usbd_cdc"
     auto-switch = true
-
-    [[mavproxy.devices]]
-    chan = 1
-    type = "serial"
-    name = "serial2"
-    baudrate = 115200
 
 # Pilot CMD Configuration
 [pilot-cmd]
     # channel mapping for [yaw, throttle, roll, pitch]
     stick-channel = [4,3,1,2]
-    # channel mapping for aux channel 1,2,3,4
-    # aux-channel = [7,8]
 
     [pilot-cmd.device]
     type = "rc"
@@ -78,11 +64,6 @@ target = "PSoC-E83"
     protocol = "pwm"
     name = "main_out"
     freq = 400                  # pwm frequency in Hz
-
-    [[actuator.devices]]
-    protocol = "pwm"
-    name = "aux_out"
-    freq = 50                  # pwm frequency in Hz
 
     [[actuator.mappings]]
     from = "control_out"
