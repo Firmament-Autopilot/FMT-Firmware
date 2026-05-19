@@ -304,7 +304,7 @@ static rt_uint32_t spixfer(struct rt_spi_device* device, struct rt_spi_message* 
             result = mtb_hal_spi_transfer(&spi->spi_obj, message->send_buf, message->length, message->recv_buf, message->length, 0x00);
         }
         if (result == CY_RSLT_SUCCESS) {
-            wait_ret = rt_completion_wait(&spi->cpt, RT_WAITING_FOREVER);
+            wait_ret = rt_completion_wait(&spi->cpt, TICKS_FROM_MS(1));
         }
     }
 
