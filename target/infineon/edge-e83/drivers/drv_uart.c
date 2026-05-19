@@ -15,27 +15,29 @@
  *****************************************************************************/
 
 #include "drv_uart.h"
-#include <stdint.h>
 #include <rtthread.h>
+#include <stdint.h>
 
-#include "cymem_CM55_0.h"
+
 #include "cy_scb_uart.h"
 #include "cycfg_dmas.h"
+#include "cymem_CM55_0.h"
 #include "uart_config.h"
 
+
 #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
-#define UART_DCACHE_CLEAN(addr, size) \
-SCB_CleanDCache_by_Addr((void*)(addr), (int32_t)(size))
-#define UART_DCACHE_INVALIDATE(addr, size) \
-SCB_InvalidateDCache_by_Addr((void*)(addr), (int32_t)(size))
+    #define UART_DCACHE_CLEAN(addr, size) \
+        SCB_CleanDCache_by_Addr((void*)(addr), (int32_t)(size))
+    #define UART_DCACHE_INVALIDATE(addr, size) \
+        SCB_InvalidateDCache_by_Addr((void*)(addr), (int32_t)(size))
 #else
-#define UART_DCACHE_CLEAN(addr, size)      ((void)0)
-#define UART_DCACHE_INVALIDATE(addr, size) ((void)0)
+    #define UART_DCACHE_CLEAN(addr, size)      ((void)0)
+    #define UART_DCACHE_INVALIDATE(addr, size) ((void)0)
 #endif
 
 #if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX) || defined(BSP_USING_UART9_DMA_TX) || defined(BSP_USING_UART10_DMA_TX) || defined(BSP_USING_UART11_DMA_TX)
-#define UART_DMA_TX_SUPPORTED
-#define UART_DMA_XCOUNT_MAX 256u
+    #define UART_DMA_TX_SUPPORTED
+    #define UART_DMA_XCOUNT_MAX 256u
 #endif
 
 #ifdef UART_DMA_TX_SUPPORTED
@@ -46,102 +48,102 @@ static uint8_t uart_dma_tx_bounce_buf[UART_DMA_XCOUNT_MAX];
 
 static rt_sem_t uart_dma_bounce_sem = RT_NULL;
 
-#ifdef BSP_USING_UART1_DMA_TX
+    #ifdef BSP_USING_UART1_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart1_tx_desc;
-#endif
+    #endif
 
-#ifdef BSP_USING_UART2_DMA_TX
+    #ifdef BSP_USING_UART2_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart2_tx_desc;
-#endif
+    #endif
 
-#ifdef BSP_USING_UART4_DMA_TX
+    #ifdef BSP_USING_UART4_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart4_tx_desc;
-#endif
+    #endif
 
-#ifdef BSP_USING_UART5_DMA_TX
+    #ifdef BSP_USING_UART5_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart5_tx_desc;
-#endif
+    #endif
 
-#ifdef BSP_USING_UART9_DMA_TX
+    #ifdef BSP_USING_UART9_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart9_tx_desc;
-#endif
+    #endif
 
-#ifdef BSP_USING_UART10_DMA_TX
+    #ifdef BSP_USING_UART10_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart10_tx_desc;
-#endif
+    #endif
 
-#ifdef BSP_USING_UART11_DMA_TX
+    #ifdef BSP_USING_UART11_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart11_tx_desc;
-#endif
+    #endif
 
 #endif /* BSP_USING_UARTx_DMA_TX */
 
 #ifdef UART_DMA_TX_SUPPORTED
 static void uart_dma_bind_resource(struct ifx_uart_config* config)
 {
-#ifdef BSP_USING_UART1_DMA_TX
+    #ifdef BSP_USING_UART1_DMA_TX
     if (config->usart_x == SCB1) {
         config->dma_enabled = 1u;
         config->tx_dma_descriptor = &uart1_tx_desc;
         return;
     }
-#endif
-#ifdef BSP_USING_UART2_DMA_TX
+    #endif
+    #ifdef BSP_USING_UART2_DMA_TX
     if (config->usart_x == SCB2) {
         config->dma_enabled = 1u;
         config->tx_dma_descriptor = &uart2_tx_desc;
         return;
     }
-#endif
-#ifdef BSP_USING_UART4_DMA_TX
+    #endif
+    #ifdef BSP_USING_UART4_DMA_TX
     if (config->usart_x == SCB4) {
         config->dma_enabled = 1u;
         config->tx_dma_descriptor = &uart4_tx_desc;
         return;
     }
-#endif
-#ifdef BSP_USING_UART5_DMA_TX
+    #endif
+    #ifdef BSP_USING_UART5_DMA_TX
     if (config->usart_x == SCB5) {
         config->dma_enabled = 1u;
         config->tx_dma_descriptor = &uart5_tx_desc;
         return;
     }
-#endif
-#ifdef BSP_USING_UART9_DMA_TX
+    #endif
+    #ifdef BSP_USING_UART9_DMA_TX
     if (config->usart_x == SCB9) {
         config->dma_enabled = 1u;
         config->tx_dma_descriptor = &uart9_tx_desc;
         return;
     }
-#endif
-#ifdef BSP_USING_UART10_DMA_TX
+    #endif
+    #ifdef BSP_USING_UART10_DMA_TX
     if (config->usart_x == SCB10) {
         config->dma_enabled = 1u;
         config->tx_dma_descriptor = &uart10_tx_desc;
         return;
     }
-#endif
-#ifdef BSP_USING_UART11_DMA_TX
+    #endif
+    #ifdef BSP_USING_UART11_DMA_TX
     if (config->usart_x == SCB11) {
         config->dma_enabled = 1u;
         config->tx_dma_descriptor = &uart11_tx_desc;
         return;
     }
-#endif
+    #endif
 }
 
 static void uart_dma_prepare(struct ifx_uart_config* config)
@@ -164,7 +166,7 @@ static void uart_dma_prepare(struct ifx_uart_config* config)
 
 static void uart_dma_clean_src_cache(const void* src, rt_size_t len)
 {
-#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
     if (src == RT_NULL || len == 0u) {
         return;
     }
@@ -173,10 +175,10 @@ static void uart_dma_clean_src_cache(const void* src, rt_size_t len)
     uintptr_t end = ((uintptr_t)src + len + __SCB_DCACHE_LINE_SIZE - 1u) & ~((uintptr_t)__SCB_DCACHE_LINE_SIZE - 1u);
 
     SCB_CleanDCache_by_Addr((void*)start, (int32_t)(end - start));
-#else
+    #else
     (void)src;
     (void)len;
-#endif
+    #endif
 }
 
 static rt_bool_t uart_dma_src_accessible(const void* src, rt_size_t len)
@@ -458,25 +460,46 @@ void uart11_isr_callback(void)
 #endif
 
 #ifdef BSP_USING_UART1_DMA_TX
-void uart1_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART1_INDEX]); }
+void uart1_dma_tx_isr_callback(void)
+{
+    uart_dma_tx_isr(&uart_obj[UART1_INDEX]);
+}
 #endif
 #ifdef BSP_USING_UART2_DMA_TX
-void uart2_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART2_INDEX]); }
+void uart2_dma_tx_isr_callback(void)
+{
+    uart_dma_tx_isr(&uart_obj[UART2_INDEX]);
+}
 #endif
 #ifdef BSP_USING_UART4_DMA_TX
-void uart4_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART4_INDEX]); }
+void uart4_dma_tx_isr_callback(void)
+{
+    uart_dma_tx_isr(&uart_obj[UART4_INDEX]);
+}
 #endif
 #ifdef BSP_USING_UART5_DMA_TX
-void uart5_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART5_INDEX]); }
+void uart5_dma_tx_isr_callback(void)
+{
+    uart_dma_tx_isr(&uart_obj[UART5_INDEX]);
+}
 #endif
 #ifdef BSP_USING_UART9_DMA_TX
-void uart9_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART9_INDEX]); }
+void uart9_dma_tx_isr_callback(void)
+{
+    uart_dma_tx_isr(&uart_obj[UART9_INDEX]);
+}
 #endif
 #ifdef BSP_USING_UART10_DMA_TX
-void uart10_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART10_INDEX]); }
+void uart10_dma_tx_isr_callback(void)
+{
+    uart_dma_tx_isr(&uart_obj[UART10_INDEX]);
+}
 #endif
 #ifdef BSP_USING_UART11_DMA_TX
-void uart11_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART11_INDEX]); }
+void uart11_dma_tx_isr_callback(void)
+{
+    uart_dma_tx_isr(&uart_obj[UART11_INDEX]);
+}
 #endif
 
 static rt_err_t ifx_control(struct serial_device* serial, int cmd, void* arg);
@@ -591,11 +614,13 @@ static int ifx_getc(struct serial_device* serial)
     struct ifx_uart* uart = (struct ifx_uart*)serial->parent.user_data;
     RT_ASSERT(uart != RT_NULL);
 
-    uint8_t read_data;
-    if (RT_EOK == mtb_hal_uart_get(uart->config->uart_obj, &read_data, 10)) {
-        return (int)(read_data & 0xff);
+    uint32_t read_data = Cy_SCB_UART_Get(uart->config->usart_x);
+
+    if (read_data == CY_SCB_UART_RX_NO_DATA) {
+        return -1;
     }
-    return -1;
+
+    return (int)(read_data & 0xff);
 }
 
 static rt_size_t ifx_dma_transmit(struct serial_device* serial,
