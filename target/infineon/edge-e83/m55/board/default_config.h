@@ -31,7 +31,7 @@ target = "Edge-E83"\n
 	name = "mav_console"\n
 	auto-switch = true\n
 [mavproxy]\n
-[[mavproxy.devices]]\n
+    [[mavproxy.devices]]\n
 	chan = 0\n
 	type = "usb"\n
 	name = "usbd_cdc"\n
@@ -41,9 +41,13 @@ target = "Edge-E83"\n
     protocol = "pwm"\n
     name = "main_out"\n
     freq = 400\n
+    [[actuator.mappings]]\n
+    from = "control_out"\n
+    to = "main_out"\n
+    chan-map = [[1,2,3,4],[1,2,3,4]]\n
 [pilot-cmd]\n
     stick-channel = [4,3,1,2]\n
-[pilot-cmd.device]\n
+    [pilot-cmd.device]\n
     type = "rc"\n
     name = "rc"\n
     protocol = "ppm"\n
