@@ -399,6 +399,25 @@ static void mag_filter_init(uint8_t id)
     /* do nothing */
 }
 
+fmt_err_t sensor_update_calibration(void)
+{
+    for (uint8_t id = 0; id < MAX_IMU_DEV_NUM; id++) {
+        if (imu_dev[id] != NULL) {
+            imu_rotation_init(id);
+            imu_offset_init(id);
+        }
+    }
+
+    for (uint8_t id = 0; id < MAX_MAG_DEV_NUM; id++) {
+        if (mag_dev[id] != NULL) {
+            mag_rotation_init(id);
+            mag_offset_init(id);
+        }
+    }
+
+    return FMT_EOK;
+}
+
 /**
  * @brief Advertise sensor imu topic
  *

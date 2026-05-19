@@ -17,6 +17,7 @@
 #include <INS.h>
 #include <firmament.h>
 
+#include "FMS.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/syscmd/optparse.h"
 #include "module/syscmd/syscmd.h"
@@ -25,10 +26,22 @@
 MCN_DECLARE(rc_channels);
 MCN_DECLARE(sensor_airspeed);
 MCN_DECLARE(ins_output);
+MCN_DECLARE(fms_output);
 
 #define IN_RANGE(_x, _low, _up) ((_x) >= (_low) && (_x) <= (_up))
 
 static McnNode_t rc_channels_nod;
+
+static fmt_err_t check_calibration_allowed(void)
+{
+    FMS_Out_Bus fms_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    return fms_out.status == VehicleStatus_Disarm ? FMT_EOK : FMT_EBUSY;
+}
 
 static fmt_err_t get_stick_trim_value(float* thro_trim, float* yaw_trim, float* pitch_trim, float* roll_trim)
 {
@@ -373,6 +386,13 @@ int cmd_calib(int argc, char** argv)
 
     arg = optparse_arg(&options);
     if (arg) {
+        fmt_err_t check_res = check_calibration_allowed();
+
+        if (check_res != FMT_EOK) {
+            printf("%s\n", check_res == FMT_EBUSY ? "Calibration denied: disarm first" : "Calibration denied: vehicle status unavailable");
+            return EXIT_FAILURE;
+        }
+
         if (STRING_COMPARE(arg, "rc")) {
             res = rc_calib(options);
         } else if (STRING_COMPARE(arg, "airspeed")) {
