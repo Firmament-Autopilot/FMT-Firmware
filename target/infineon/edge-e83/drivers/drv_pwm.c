@@ -39,10 +39,10 @@
 
 #if defined(COMPONENT_CM55) || defined(CORE_NAME_CM55_0)
 #define PWM_USE_MAIN_OUT       (0U)
-#define PWM_USE_AUX_OUT        (0U)
+#define PWM_USE_AUX_OUT        (1U)
 #elif defined(COMPONENT_CM33) || defined(CORE_NAME_CM33_0)
 #define PWM_USE_MAIN_OUT       (1U)
-#define PWM_USE_AUX_OUT        (1U)
+#define PWM_USE_AUX_OUT        (0U)
 #else
 #define PWM_USE_MAIN_OUT       (1U)
 #define PWM_USE_AUX_OUT        (1U)

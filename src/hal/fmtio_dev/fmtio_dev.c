@@ -95,7 +95,9 @@ static rt_size_t fmtio_dev_write(rt_device_t dev, rt_off_t pos, const void* buff
     /* write data to device */
     wb = rt_device_write(io_dev_t, 0, buffer, size);
     /* wait write complete */
-    rt_completion_wait(&tx_cplt, timeout);
+    if(wb>0){
+        (void)rt_completion_wait(&tx_cplt, timeout);
+    }
     /* release tx lock */
     rt_sem_release(tx_lock);
 
