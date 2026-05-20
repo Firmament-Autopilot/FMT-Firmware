@@ -444,9 +444,6 @@ fmt_err_t fmtio_init(const char* dev_name)
     init_io_pkt(&io_tx_pkt);
     init_io_pkt(&io_rx_pkt);
 
-    /* register motor hal device */
-    RT_CHECK(hal_actuator_register(&act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
-
     /* register rc hal device */
     RT_CHECK(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, NULL));
 
