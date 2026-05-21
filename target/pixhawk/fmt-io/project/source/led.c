@@ -57,7 +57,7 @@ void led_init(void)
 
 	/* Configure PD0 and PD2 in output pushpull mode */
 	GPIO_InitStructure.GPIO_Pin = LED_RED_PIN | LED_BLUE_PIN;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(LED_PORT, &GPIO_InitStructure);
 
