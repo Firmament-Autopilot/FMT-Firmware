@@ -16,7 +16,7 @@ static uint8_t _blue_solid; /* 1 = blue solid on */
 static uint8_t _red_mode;   /* 0=off,1=solid,2=slow blink,3=fast blink */
 static uint8_t _red_pin_status = 1;
 static uint8_t _blue_pin_status = 1;
-//static uint8_t _hw_fault;   /* hardware fault flag */
+// static uint8_t _hw_fault;   /* hardware fault flag */
 static uint32_t _led_ticks;
 
 static void run_led(void* parameter)
