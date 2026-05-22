@@ -39,12 +39,8 @@ target = "Edge-E83"\n
 [actuator]\n
     [[actuator.devices]]\n
     protocol = "pwm"\n
-    name = "main_out"\n
+    name = "aux_out"\n
     freq = 400\n
-    [[actuator.mappings]]\n
-    from = "control_out"\n
-    to = "main_out"\n
-    chan-map = [[1,2,3,4],[1,2,3,4]]\n
 [pilot-cmd]\n
     stick-channel = [4,3,1,2]\n
     [pilot-cmd.device]\n

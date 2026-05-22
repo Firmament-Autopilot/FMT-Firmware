@@ -94,8 +94,10 @@ static rt_size_t fmtio_dev_write(rt_device_t dev, rt_off_t pos, const void* buff
     }
     /* write data to device */
     wb = rt_device_write(io_dev_t, 0, buffer, size);
-    /* wait write complete */
-    rt_completion_wait(&tx_cplt, timeout);
+    if (wb > 0) {
+        /* wait write complete */
+        rt_completion_wait(&tx_cplt, timeout);
+    }
     /* release tx lock */
     rt_sem_release(tx_lock);
 
@@ -133,12 +135,12 @@ rt_err_t fmtio_dev_control(rt_device_t dev, int cmd, void* args)
 
 /**
  * @brief Register fmtio device
- * 
+ *
  * @param io_dev The io device which is used by fmtio
  * @param name The name of fmtio device
  * @param flag Open flag, should be equal to io device flag
  * @param data User data
- * @return rt_err_t 
+ * @return rt_err_t
  */
 rt_err_t hal_fmtio_dev_register(rt_device_t io_dev, const char* name, rt_uint32_t flag, void* data)
 {

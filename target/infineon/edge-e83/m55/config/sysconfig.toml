@@ -20,6 +20,12 @@ target = "Edge-E83"
 [mavproxy]
     [[mavproxy.devices]]
     chan = 0
+    type = "serial"
+    name = "serial1"
+    baudrate = 57600
+
+    [[mavproxy.devices]]
+    chan = 0
     type = "usb"
     name = "usbd_cdc"
     auto-switch = true
@@ -62,10 +68,10 @@ target = "Edge-E83"
 [actuator]
     [[actuator.devices]]
     protocol = "pwm"
-    name = "main_out"
+    name = "aux_out"
     freq = 400                  # pwm frequency in Hz
 
     [[actuator.mappings]]
     from = "control_out"
-    to = "main_out"
+    to = "aux_out"
     chan-map = [[1,2,3,4],[1,2,3,4]]

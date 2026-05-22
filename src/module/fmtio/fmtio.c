@@ -19,7 +19,7 @@
 #include "hal/rc/rc.h"
 #include "hal/serial/serial.h"
 
-#define EVENT_FMTIO_RX (1) // 1 << 0
+#define EVENT_FMTIO_RX          (1) // 1 << 0
 
 #define FMTIO_MOTOR_CHANNEL_NUM 8
 #define FMTIO_RC_CHANNEL_NUM    16
@@ -338,7 +338,7 @@ fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len)
 
     if (set_io_pkt(io_tx_pkt_ptr, code, data, len) == FMT_EOK) {
         rt_size_t w_size = PKT_SIZE(io_tx_pkt_ptr);
-        if (rt_device_write(fmtio_dev, RT_WAITING_FOREVER, io_tx_pkt_ptr, w_size) == w_size) {
+        if (rt_device_write(fmtio_dev, TICKS_FROM_MS(10), io_tx_pkt_ptr, w_size) == w_size) {
             ret = FMT_EOK;
         }
     }
