@@ -121,8 +121,8 @@ static void update_fms_status(void)
             case VehicleStatus_Arm:
                 LOG_I("[Status] Arm");
 
-                /* start mlog from arm */
-                if (PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 1 && mlog_get_status() == MLOG_STATUS_IDLE) {
+                /* start mlog from arm (mode 1) or restart when mode 2 after disarm */
+                if ((PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 1 || PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 2) && mlog_get_status() == MLOG_STATUS_IDLE) {
                     logger_start_mlog(NULL);
                 }
                 break;
