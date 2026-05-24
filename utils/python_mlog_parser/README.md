@@ -28,24 +28,15 @@ cd python
 python parse_mlog.py
 ```
 
-脚本会自动在以下位置查找 `mlog1.bin` 文件：
-1. 项目根目录
-2. 当前工作目录
+运行脚本时会弹出一个文件选择对话框，你可以一次选择一个或多个 `.bin` 日志文件。脚本会逐个解析所选日志，并为每个日志在其所在目录下创建独立的输出文件夹，命名为 `<日志文件名>_out`（例如 `mlog1_out`），CSV 文件和解析报告 TXT 都会写入对应的输出文件夹。
 
-### 手动指定文件
-
-将 `mlog1.bin` 文件放在 `当前` 目录下，然后运行：
-
-```bash
-cd python
-python parse_mlog.py
-```
+如果运行环境不支持 GUI（例如无显示环境），脚本会尝试在工程目录或当前工作目录自动查找 `mlog*.bin` 文件并处理它们。
 
 ## 输出说明
 
 ### 控制台输出
 
-脚本运行时会显示以下信息：
+脚本运行时会在控制台打印解析摘要（头部信息、参数组、消息统计等），例如：
 
 ```
 解析头部成功: version=2, timestamp=1234567890, num_bus=5
@@ -57,29 +48,30 @@ python parse_mlog.py
     SYS_HITL: UINT8 = 0
     SYS_SIH: UINT8 = 0
     ...
-  参数组: INS, 参数数量: 15
-    INS_USE_GPS: UINT8 = 1
-    INS_GPS_LEV: FLOAT = 0.000000
-    ...
 总消息种类: 5
 msg_id=0 'INS_Out': 帧数=1250
 msg_id=1 'FMS_Out': 帧数=1250
 ...
-解析完成。CSV 输出目录: /path/to/python/out
+解析完成。CSV 输出目录: /path/to/mlog1_out
+解析报告已保存: /path/to/mlog1_out/mlog1_report.txt
 ```
 
 ### CSV 文件输出
 
-脚本会在 `out` 目录下为每个消息类型生成一个 CSV 文件：
+对于每个被解析的日志（无论是单选还是多选），脚本会在对应的输出目录 `<日志名>_out` 中为每个消息类型生成一个 CSV 文件：
 
 - `mlog_msg_0_INS_Out.csv` - INS 输出消息
 - `mlog_msg_1_FMS_Out.csv` - FMS 输出消息
 - `mlog_msg_2_Control_Out.csv` - 控制输出消息
 - ...
 
+此外，脚本会在同一输出目录里生成一个解析报告 TXT（`<日志名>_report.txt`），包含头部信息、参数组清单、消息统计与字段布局。
+
 每个 CSV 文件包含：
 - 消息的所有字段列
 - `delta_ts` 列：与上一帧的时间间隔（毫秒）
+
+注意：输出目录命名为 `<日志文件名>_out`，例如处理 `mlog1.bin` 会得到 `mlog1_out`，这样便于同时保存多个日志的输出而不互相覆盖。
 
 ## 文件结构
 
