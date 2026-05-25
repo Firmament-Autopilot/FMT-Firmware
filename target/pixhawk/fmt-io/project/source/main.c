@@ -14,7 +14,9 @@
  * limitations under the License.
  *****************************************************************************/
 
+#include "board_config.h"
 #include "debug.h"
+#include "heat.h"
 #include "interface.h"
 #include "led.h"
 #include "lidar_lite.h"
@@ -25,14 +27,14 @@
 #include "time.h"
 #include "usart.h"
 #include <stdio.h>
-#include "board_config.h"
-#include "heat.h"
+
 int main(void)
 {
     uint8_t ch;
     uint32_t time_led, time_sync;
     uint32_t now;
     LED_Type led_type;
+    int prev_led = -1;
 
     usart_init();
 
@@ -56,15 +58,22 @@ int main(void)
     heat_init();
 #endif
 
-    led_on(LED_BLUE);
-    led_on(LED_RED);
+    /* ensure leds are off at start; logic will control them */
+    led_off(LED_BLUE);
+    led_off(LED_RED);
 
     while (1) {
         interface_listen();
 
         if (sync_finish()) {
+            /* Normal: blue blinking, red off */
             led_type = LED_BLUE;
-            led_on(LED_RED);
+            /* only update outputs when state changes */
+            if (prev_led != led_type) {
+                led_off(LED_RED);
+                led_on(LED_BLUE);
+                prev_led = led_type;
+            }
 
             if (rc_config.protocol == 1) {
                 send_sbus_value();
@@ -72,13 +81,20 @@ int main(void)
                 send_ppm_value();
             }
         } else {
+            /* Fault: red steady, blue off */
             led_type = LED_RED;
-            led_on(LED_BLUE);
+            /* only update outputs when state changes */
+            if (prev_led != led_type) {
+                led_on(LED_RED);
+                led_off(LED_BLUE);
+                prev_led = led_type;
+            }
 
             /* try send sync cmd to fmu */
             PERIOD_EXECUTE(fmu_sync, 200, send_io_cmd(IO_CODE_SYNC, NULL, 0);)
         }
 
-        PERIOD_EXECUTE(led_toggle, 1000, led_toggle(led_type);)
+        /* Only toggle blue when in normal state */
+        PERIOD_EXECUTE(led_toggle, 1000, if (led_type == LED_BLUE) led_toggle(LED_BLUE);)
     }
 }
