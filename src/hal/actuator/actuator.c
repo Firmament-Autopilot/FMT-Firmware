@@ -47,6 +47,23 @@ static rt_err_t hal_actuator_control(struct rt_device* dev, int cmd, void* args)
         act->suspend = RT_FALSE;
         break;
 
+    case ACT_CMD_SET_INIT_VAL: {
+        if (act->ops->act_control) {
+            struct actuator_init_value* init_val = (struct actuator_init_value*)args;
+            uint8_t index = 0;
+
+            init_val->chan_mask &= act->chan_mask;
+            for (uint8_t i = 0; i < ACT_CHAN_NUM; i++) {
+                if (init_val->chan_mask & (1 << i)) {
+                    init_val->value[index] = constrain_uint16(init_val->value[index], act->range[0], act->range[1]);
+                    index++;
+                }
+            }
+
+            return act->ops->act_control(act, cmd, args);
+        }
+    } break;
+
     default:
         if (act->ops->act_control) {
             return act->ops->act_control(act, cmd, args);
@@ -92,7 +109,7 @@ static rt_size_t hal_actuator_write(rt_device_t dev, rt_off_t pos, const void* b
 {
     actuator_dev_t act = (actuator_dev_t)dev;
     rt_size_t wb = 0;
-    uint16_t chan_val[16];
+    uint16_t chan_val[ACT_CHAN_NUM];
     uint8_t index = 0;
     uint16_t* val_ptr = (uint16_t*)buffer;
 
@@ -106,7 +123,7 @@ static rt_size_t hal_actuator_write(rt_device_t dev, rt_off_t pos, const void* b
     /* apply channel mask */
     pos = pos & act->chan_mask;
     /* saturate channel value */
-    for (uint8_t i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < ACT_CHAN_NUM; i++) {
         if (pos & (1 << i)) {
             chan_val[index] = constrain_uint16(val_ptr[index], act->range[0], act->range[1]);
             index++;
