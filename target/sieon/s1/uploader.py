@@ -849,7 +849,7 @@ def main():
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
                         print("wait for connect fmt-fmu...")
-                        time.sleep(2)
+                        time.sleep(1)
                         break
                         # return
 
@@ -881,7 +881,7 @@ def main():
                 if len(serial_list) == 0:
                     print("Error: no serial connection found")
                     print("wait for connect fmt-fmu...")
-                    time.sleep(2)
+                    time.sleep(1)
                     continue
 
                 if len(serial_list) > 1:
@@ -932,7 +932,7 @@ def main():
                     time.sleep(0.05)
                     if test_once:
                         print("Not found fmt_fmu,please connect fmt_fmu!")
-                        time.sleep(2)
+                        time.sleep(1)
                     # and loop to the next port
                     continue
 
