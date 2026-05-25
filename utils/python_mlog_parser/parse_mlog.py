@@ -130,6 +130,38 @@ def find_mlog_bin(search_root: Path, target_name: str = "mlog1.bin") -> Optional
     return None
 
 
+def find_mlog_bins(search_root: Path) -> List[Path]:
+    bins: List[Path] = []
+    for root, _dirs, files in os.walk(search_root):
+        for file_name in files:
+            if file_name.lower().startswith("mlog") and file_name.lower().endswith(".bin"):
+                bins.append(Path(root) / file_name)
+    return sorted(bins)
+
+
+def prompt_for_mlog_bins(initial_dir: Path) -> Tuple[List[Path], bool]:
+    try:
+        from tkinter import Tk, filedialog
+    except Exception:
+        return [], False
+
+    root = Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+    try:
+        selected = filedialog.askopenfilenames(
+            title="选择 mlog 日志文件",
+            initialdir=str(initial_dir),
+            filetypes=[("Binary log files", "*.bin"), ("All files", "*.*")],
+        )
+    finally:
+        root.destroy()
+
+    if not selected:
+        return [], True
+    return [Path(path) for path in selected], True
+
+
 def read_exact(data: bytes, offset: int, size: int) -> Tuple[bytes, int]:
     end = offset + size
     if end > len(data):
@@ -358,7 +390,7 @@ def ensure_csv_writer(out_dir: Path, bus: BusDef, writers: Dict[int, Tuple[csv.w
     return w, f
 
 
-def parse_frames(data: bytes, start_offset: int, bus_map: Dict[int, BusDef], out_dir: Path) -> None:
+def parse_frames(data: bytes, start_offset: int, bus_map: Dict[int, BusDef], out_dir: Path, report_lines: List[str]) -> None:
     writers: Dict[int, Tuple[csv.writer, object]] = {}
     prev_ts_map: Dict[int, int] = {}
     frame_count: Dict[int, int] = {}
@@ -435,16 +467,98 @@ def parse_frames(data: bytes, start_offset: int, bus_map: Dict[int, BusDef], out
 
     # Summary report
     total_msgs = len(bus_map)
-    print(f"总消息种类: {total_msgs}")
+    line = f"总消息种类: {total_msgs}"
+    report_lines.append(line)
+    print(line)
     for bid in sorted(bus_map.keys()):
-        print(f"msg_id={bid} '{bus_map[bid].name}': 帧数={frame_count.get(bid, 0)}")
+        line = f"msg_id={bid} '{bus_map[bid].name}': 帧数={frame_count.get(bid, 0)}"
+        report_lines.append(line)
+        print(line)
     # Detailed element layout per message
-    print("元素布局详情：")
+    line = "元素布局详情："
+    report_lines.append(line)
+    print(line)
     for bid in sorted(bus_map.keys()):
         b = bus_map[bid]
-        print(f"msg_id={bid} '{b.name}':")
+        line = f"msg_id={bid} '{b.name}':"
+        report_lines.append(line)
+        print(line)
         for name, tname, total_bytes in b.element_descriptions():
-            print(f"  - {name}: {tname}, bytes={total_bytes}")
+            detail = f"  - {name}: {tname}, bytes={total_bytes}"
+            report_lines.append(detail)
+            print(detail)
+
+
+def build_report_lines(
+    version: int,
+    ts: int,
+    max_name_len: int,
+    max_desc_len: int,
+    max_model_info_len: int,
+    num_bus: int,
+    param_groups: List[ParamGroupDef],
+    description: str,
+    model_info: str,
+    bus_map: Dict[int, BusDef],
+) -> List[str]:
+    lines: List[str] = []
+    lines.append(f"解析头部成功: version={version}, timestamp={ts}, num_bus={num_bus}")
+    lines.append(f"名称长度={max_name_len}, 描述长度={max_desc_len}, 模型信息长度={max_model_info_len}")
+
+    if description:
+        lines.append(f"描述信息: {description}")
+    if model_info:
+        lines.append(f"模型信息: {model_info}")
+
+    lines.append(f"参数组数量: {len(param_groups)}")
+    for pg in param_groups:
+        lines.append(f"  参数组: {pg.name}, 参数数量: {len(pg.params)}")
+        for p in pg.params:
+            lines.append(f"    {p.name}: {p.type_name()} = {p.value_str()}")
+
+    for bid, b in bus_map.items():
+        lines.append(f"  msg_id={bid}, bus='{b.name}', 元素数={len(b.elems)}, payload大小={b.payload_size()} 字节")
+
+    return lines
+
+
+def process_single_log(bin_path: Path, project_root: Path) -> int:
+    data = bin_path.read_bytes()
+
+    try:
+        version, ts, max_name_len, max_desc_len, max_model_info_len, num_bus, bus_map, param_groups, description, model_info, off = parse_header(data)
+    except EOFError:
+        print(f"文件过短，无法解析头部: {bin_path}")
+        return 2
+    except Exception as e:
+        print(f"解析头部失败: {bin_path} -> {e}")
+        return 3
+
+    header_lines = build_report_lines(
+        version,
+        ts,
+        max_name_len,
+        max_desc_len,
+        max_model_info_len,
+        num_bus,
+        param_groups,
+        description,
+        model_info,
+        bus_map,
+    )
+    for line in header_lines:
+        print(line)
+
+    out_dir = bin_path.parent / f"{bin_path.stem}_out"
+    report_lines = list(header_lines)
+    parse_frames(data, off, bus_map, out_dir, report_lines)
+
+    report_path = out_dir / f"{bin_path.stem}_report.txt"
+    report_path.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
+    print(f"解析完成: {bin_path}")
+    print(f"CSV 输出目录: {out_dir}")
+    print(f"解析报告已保存: {report_path}")
+    return 0
 
 
 def main() -> int:
@@ -452,46 +566,26 @@ def main() -> int:
     project_root = find_project_root(script_dir)
     read_mlog_header_macros(project_root)
 
-    # Search for mlog1.bin starting from project root, then fallback to current working directory
-    bin_path = find_mlog_bin(project_root, "mlog1.bin")
-    if bin_path is None:
-        bin_path = find_mlog_bin(Path.cwd(), "mlog1.bin")
-    if bin_path is None:
-        print("未找到 mlog1.bin 文件，请将其放在工程目录或当前目录下。")
+    # Prefer a dialog so the user can choose one or more logs explicitly.
+    bin_paths, dialog_available = prompt_for_mlog_bins(project_root)
+    if not bin_paths and not dialog_available:
+        # Fallback to automatic search for non-GUI environments.
+        bin_paths = find_mlog_bins(project_root)
+    if not bin_paths and not dialog_available:
+        bin_paths = find_mlog_bins(Path.cwd())
+    if not bin_paths:
+        if dialog_available:
+            print("已取消选择日志文件。")
+        else:
+            print("未找到 mlog 日志文件，请先选择一个或多个 .bin 文件，或将 mlog*.bin 放在工程目录/当前目录下。")
         return 1
 
-    data = Path(bin_path).read_bytes()
-
-    try:
-        version, ts, max_name_len, max_desc_len, max_model_info_len, num_bus, bus_map, param_groups, description, model_info, off = parse_header(data)
-    except EOFError:
-        print("文件过短，无法解析头部。")
-        return 2
-    except Exception as e:
-        print(f"解析头部失败: {e}")
-        return 3
-
-    print(f"解析头部成功: version={version}, timestamp={ts}, num_bus={num_bus}")
-    print(f"名称长度={max_name_len}, 描述长度={max_desc_len}, 模型信息长度={max_model_info_len}")
-    
-    if description:
-        print(f"描述信息: {description}")
-    if model_info:
-        print(f"模型信息: {model_info}")
-    
-    print(f"参数组数量: {len(param_groups)}")
-    for pg in param_groups:
-        print(f"  参数组: {pg.name}, 参数数量: {len(pg.params)}")
-        for p in pg.params:
-            print(f"    {p.name}: {p.type_name()} = {p.value_str()}")
-    
-    for bid, b in bus_map.items():
-        print(f"  msg_id={bid}, bus='{b.name}', 元素数={len(b.elems)}, payload大小={b.payload_size()} 字节")
-
-    out_dir = script_dir / "out"
-    parse_frames(data, off, bus_map, out_dir)
-    print(f"解析完成。CSV 输出目录: {out_dir}")
-    return 0
+    exit_code = 0
+    for bin_path in bin_paths:
+        result = process_single_log(bin_path, project_root)
+        if result != 0 and exit_code == 0:
+            exit_code = result
+    return exit_code
 
 
 if __name__ == "__main__":
