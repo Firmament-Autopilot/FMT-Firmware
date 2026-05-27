@@ -59,80 +59,17 @@ struct edge_ipc_device {
     cy_stc_ipc_pipe_ep_t pipe_ep_array[CY_IPC_MAX_ENDPOINTS];
     cy_ipc_pipe_callback_ptr_t cb_array[CY_IPC_CYPIPE_CLIENT_CNT];
 
-    edge_rc_frame_t rx_queue[EDGE_IPC_RX_QUEUE_SIZE];
-    volatile rt_uint16_t rx_head;
-    volatile rt_uint16_t rx_tail;
+    rt_uint8_t rx_buffer[EDGE_IPC_RX_QUEUE_SIZE * sizeof(edge_rc_frame_t)];
+    struct rt_ringbuffer rx_rb;
 
     volatile rt_uint32_t tx_pool_idx;
-    volatile rt_uint32_t stats_tx_ok;
-    volatile rt_uint32_t stats_tx_err;
-    volatile rt_uint32_t stats_rx_ok;
-    volatile rt_uint32_t stats_rx_err;
-    volatile rt_uint32_t stats_rx_drop;
-    volatile rt_uint32_t stats_sema_fail;
 
     rt_bool_t initialized;
 };
 
 static struct edge_ipc_device g_edge_ipc_dev;
-static struct rt_completion tx_cplt;
-CY_SECTION_SHAREDMEM static edge_rc_frame_t g_edge_ipc_tx_pool[EDGE_IPC_FRAME_POOL_SIZE];
 
-static rt_bool_t edge_ipc_lock_sema(void)
-{
-    uint32_t retry = 0;
-
-    while (retry++ < EDGE_IPC_SEMA_RETRY_MAX) {
-        if (Cy_IPC_Sema_Set(IPC_DEMO_SEMA_NUM, false) == CY_IPC_SEMA_SUCCESS) {
-            return RT_TRUE;
-        }
-    }
-
-    return RT_FALSE;
-}
-
-static void edge_ipc_unlock_sema(void)
-{
-    (void)Cy_IPC_Sema_Clear(IPC_DEMO_SEMA_NUM, false);
-}
-
-static rt_bool_t edge_ipc_rx_queue_push(struct edge_ipc_device* dev, const edge_rc_frame_t* frame)
-{
-    rt_base_t level;
-    rt_uint16_t next;
-
-    level = rt_hw_interrupt_disable();
-    next = (rt_uint16_t)((dev->rx_head + 1U) % EDGE_IPC_RX_QUEUE_SIZE);
-
-    if (next == dev->rx_tail) {
-        rt_hw_interrupt_enable(level);
-        return RT_FALSE;
-    }
-
-    dev->rx_queue[dev->rx_head] = *frame;
-    dev->rx_head = next;
-    rt_hw_interrupt_enable(level);
-
-    return RT_TRUE;
-}
-
-static rt_bool_t edge_ipc_rx_queue_pop(struct edge_ipc_device* dev, edge_rc_frame_t* frame)
-{
-    rt_base_t level;
-
-    level = rt_hw_interrupt_disable();
-
-    if (dev->rx_tail == dev->rx_head) {
-        rt_hw_interrupt_enable(level);
-        return RT_FALSE;
-    }
-
-    *frame = dev->rx_queue[dev->rx_tail];
-    dev->rx_tail = (rt_uint16_t)((dev->rx_tail + 1U) % EDGE_IPC_RX_QUEUE_SIZE);
-
-    rt_hw_interrupt_enable(level);
-    return RT_TRUE;
-}
+CY_SECTION_SHAREDMEM static edge_rc_frame_t g_edge_ipc_tx_pool[2][EDGE_IPC_FRAME_POOL_SIZE];
 
 static void edge_ipc_pipe_isr(void)
 {
@@ -146,8 +83,6 @@ static void edge_ipc_release_callback(void)
     if (dev->parent.tx_complete) {
         dev->parent.tx_complete(&dev->parent, RT_NULL);
     }
-
-    rt_completion_done(&tx_cplt);
 }
 
 static void edge_ipc_rx_callback(uint32_t* msg_data)
@@ -155,24 +90,17 @@ static void edge_ipc_rx_callback(uint32_t* msg_data)
     struct edge_ipc_device* dev = &g_edge_ipc_dev;
     edge_rc_frame_t* rx = (edge_rc_frame_t*)msg_data;
 
-    if (rx == RT_NULL) {
-        dev->stats_rx_err++;
+    if (rx == RT_NULL)
         return;
-    }
 
     if (rx->client_id != EDGE_IPC_LOCAL_CLIENT_ID
         || rx->magic != RC_MAGIC_WORD
-        || edge_rc_checksum(rx) != rx->checksum) {
-        dev->stats_rx_err++;
+        || edge_rc_checksum(rx) != rx->checksum)
         return;
-    }
 
-    if (!edge_ipc_rx_queue_push(dev, rx)) {
-        dev->stats_rx_drop++;
+
+    if (rt_ringbuffer_put(&dev->rx_rb, (rt_uint8_t*)rx, sizeof(edge_rc_frame_t)) != sizeof(edge_rc_frame_t)) 
         return;
-    }
-
-    dev->stats_rx_ok++;
 
     if (dev->parent.rx_indicate) {
         dev->parent.rx_indicate(&dev->parent, 1);
@@ -223,9 +151,8 @@ static rt_err_t edge_ipc_dev_init(rt_device_t rt_dev)
 {
     struct edge_ipc_device* dev = (struct edge_ipc_device*)rt_dev;
 
-    if (dev->initialized) {
+    if (dev->initialized)
         return RT_EOK;
-    }
 
     return edge_ipc_hw_init(dev);
 }
@@ -256,7 +183,7 @@ static rt_size_t edge_ipc_dev_read(rt_device_t rt_dev, rt_off_t pos, void* buffe
     }
 
     while (read_cnt < size) {
-        if (!edge_ipc_rx_queue_pop(dev, &frame[read_cnt])) {
+        if (rt_ringbuffer_get(&dev->rx_rb, (rt_uint8_t*)&frame[read_cnt], sizeof(edge_rc_frame_t)) != sizeof(edge_rc_frame_t)) {
             break;
         }
         read_cnt++;
@@ -278,34 +205,70 @@ static rt_size_t edge_ipc_dev_write(rt_device_t rt_dev, rt_off_t pos, const void
 
     while (write_cnt < size) {
         edge_rc_frame_t* tx;
+        rt_uint32_t pool_idx;
         rt_uint32_t slot = dev->tx_pool_idx++ % EDGE_IPC_FRAME_POOL_SIZE;
 
-        tx = &g_edge_ipc_tx_pool[slot];
+#if defined(COMPONENT_CM33) || ((__CORTEX_M) == 33U)
+        pool_idx = 0;
+#elif defined(COMPONENT_CM55) || ((__CORTEX_M) == 55U)
+        pool_idx = 1;
+#else
+    #error "Unsupported core for tx pool selection"
+#endif
+
+        tx = &g_edge_ipc_tx_pool[pool_idx][slot];
         *tx = frame[write_cnt];
         tx->client_id = EDGE_IPC_LOCAL_CLIENT_ID == CM33_IPC_PIPE_CLIENT_ID ? CM55_IPC_PIPE_CLIENT_ID : CM33_IPC_PIPE_CLIENT_ID;
         tx->intr_mask = (rt_uint16_t)EDGE_IPC_TX_INTR_MASK;
-        tx->magic = RC_MAGIC_WORD;
-        tx->checksum = edge_rc_checksum(tx);
 
-        if (!edge_ipc_lock_sema()) {
-            dev->stats_sema_fail++;
-            break;
+        if (write_cnt > 0) {
+            rt_thread_mdelay(1);
         }
+        tx->magic = RC_MAGIC_WORD;
 
+#if defined(COMPONENT_CM33) || ((__CORTEX_M) == 33U)
+        tx->role = RC_ROLE_M33;
+#elif defined(COMPONENT_CM55) || ((__CORTEX_M) == 55U)
+        tx->role = RC_ROLE_M55_ECHO;
+#else
+    #error "Unsupported core for ipc_fill_packet"
+#endif
+        tx->checksum = edge_rc_checksum(tx);
         status = Cy_IPC_Pipe_SendMessage(EDGE_IPC_PEER_EP_ADDR,
                                          EDGE_IPC_LOCAL_EP_ADDR,
                                          (void*)tx,
-                                         edge_ipc_release_callback);
-        edge_ipc_unlock_sema();
+                                         0UL);
 
-        if (status != CY_IPC_PIPE_SUCCESS) {
-            dev->stats_tx_err++;
-            break;
+        if (status == CY_IPC_PIPE_ERROR_SEND_BUSY) {
+            uint32_t retry = 0;
+            const uint32_t max_retry = 1000;
+
+            while (retry < max_retry) {
+                retry++;
+                uint32_t delay_ms = (retry > 10) ? 10 : retry;
+                rt_thread_delay(delay_ms);
+
+                status = Cy_IPC_Pipe_SendMessage(EDGE_IPC_PEER_EP_ADDR,
+                                                EDGE_IPC_LOCAL_EP_ADDR,
+                                                (void*)tx,
+                                                0UL);
+
+                if (status == CY_IPC_PIPE_SUCCESS) {
+                    // rt_kprintf("[IPC] Send retry success after %lu tries\n", retry + 1);
+                    break;
+                }
+
+                if (status != CY_IPC_PIPE_ERROR_SEND_BUSY) {
+                    rt_kprintf("[IPC] Send retry failed with non-BUSY error: %lu\n", status);
+                    break;
+                }
+            }
         }
 
-        rt_completion_wait(&tx_cplt, pos);
-
-        dev->stats_tx_ok++;
+        if (status != CY_IPC_PIPE_SUCCESS) {
+            break;
+        }
+        edge_ipc_release_callback();
         write_cnt++;
     }
 
@@ -316,21 +279,12 @@ static rt_err_t edge_ipc_dev_control(rt_device_t rt_dev, int cmd, void* args)
 {
     struct edge_ipc_device* dev = (struct edge_ipc_device*)rt_dev;
 
-    if (cmd == EDGE_IPC_CTRL_GET_STATS) {
-        edge_ipc_device_stats_t* stats = (edge_ipc_device_stats_t*)args;
-
-        if (stats == RT_NULL) {
-            return -RT_EINVAL;
+    if (cmd == EDGE_IPC_CTRL_GET_RINGBUFFER) {
+        if (args != RT_NULL) {
+            *(struct rt_ringbuffer**)args = &dev->rx_rb;
+            return RT_EOK;
         }
-
-        stats->tx_ok = dev->stats_tx_ok;
-        stats->tx_err = dev->stats_tx_err;
-        stats->rx_ok = dev->stats_rx_ok;
-        stats->rx_err = dev->stats_rx_err;
-        stats->rx_drop = dev->stats_rx_drop;
-        stats->sema_fail = dev->stats_sema_fail;
-
-        return RT_EOK;
+        return -RT_EINVAL;
     }
 
     return -RT_ENOSYS;
@@ -358,6 +312,8 @@ int edge_ipc_device_register(void)
 
     rt_memset(dev, 0, sizeof(*dev));
 
+    rt_ringbuffer_init(&dev->rx_rb, dev->rx_buffer, sizeof(dev->rx_buffer));
+
 #ifdef RT_USING_DEVICE_OPS
     dev->parent.ops = &edge_ipc_dev_ops;
 #else
@@ -369,7 +325,6 @@ int edge_ipc_device_register(void)
     dev->parent.control = edge_ipc_dev_control;
 #endif
 
-    rt_completion_init(&tx_cplt);
 
     return rt_device_register(&dev->parent,
                               EDGE_IPC_DEVICE_NAME,
