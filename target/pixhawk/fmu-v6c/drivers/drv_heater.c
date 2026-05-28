@@ -22,59 +22,62 @@ static float temp_integral = 0.0f;
 static rt_device_t pin_dev = NULL;
 static rt_device_t heater_imu_spi_dev = NULL;
 
-static void heater_off_run(void* param)
+static void heater_set_output(rt_uint8_t status)
 {
     if (pin_dev) {
-        struct device_pin_status pin_sta = { HEATER_PIN, PIN_LOW };
+        struct device_pin_status pin_sta = { HEATER_PIN, status };
         pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta));
     }
+}
+
+static void heater_off_run(void* param)
+{
+    heater_set_output(PIN_LOW);
 }
 
 static void heater_run(void* param)
 {
     float temp = 0.0f;
     uint32_t time_on_ms = 0;
-    
-    if (icm42688p_read_temp_deg_C(heater_imu_spi_dev, &temp) == RT_EOK) {
-        // Target temp condition
-        float temperature_delta = SENS_IMU_TEMP - temp;
-        
-        // P term
-        float P = temperature_delta * SENS_IMU_TEMP_P;
-        
-        // I term
-        temp_integral += temperature_delta * SENS_IMU_TEMP_I;
-        if (temp_integral > 0.25f) temp_integral = 0.25f;
-        if (temp_integral < -0.25f) temp_integral = -0.25f;
-        
-        // Feedforward term + PID
-        float duty = P + temp_integral + SENS_IMU_TEMP_FF;
-        if (duty > 1.0f) duty = 1.0f;
-        if (duty < 0.0f) duty = 0.0f;
 
-        // Calculate time on in milliseconds
-        time_on_ms = (uint32_t)(duty * (float)HEATER_PERIOD_MS);
-        if (time_on_ms > HEATER_PERIOD_MS) {
-            time_on_ms = HEATER_PERIOD_MS;
-        }
+    if (icm42688p_read_temp_deg_C(heater_imu_spi_dev, &temp) != RT_EOK) {
+        temp_integral = 0.0f;
+        heater_set_output(PIN_LOW);
+        return;
+    }
+
+    // Target temp condition
+    float temperature_delta = SENS_IMU_TEMP - temp;
+
+    // P term
+    float P = temperature_delta * SENS_IMU_TEMP_P;
+
+    // I term
+    temp_integral += temperature_delta * SENS_IMU_TEMP_I;
+    if (temp_integral > 0.25f) temp_integral = 0.25f;
+    if (temp_integral < -0.25f) temp_integral = -0.25f;
+
+    // Feedforward term + PID
+    float duty = P + temp_integral + SENS_IMU_TEMP_FF;
+    if (duty > 1.0f) duty = 1.0f;
+    if (duty < 0.0f) duty = 0.0f;
+
+    // Calculate time on in milliseconds
+    time_on_ms = (uint32_t)(duty * (float)HEATER_PERIOD_MS);
+    if (time_on_ms > HEATER_PERIOD_MS) {
+        time_on_ms = HEATER_PERIOD_MS;
     }
 
     // Drive the heater pin
     if (time_on_ms > 0) {
-        if (pin_dev) {
-            struct device_pin_status pin_sta = { HEATER_PIN, PIN_HIGH };
-            pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta));
-        }
+        heater_set_output(PIN_HIGH);
         if (time_on_ms < HEATER_PERIOD_MS) {
             // Schedule off time
             heater_off_work.schedule_time = SCHEDULE_DELAY(time_on_ms);
             workqueue_schedule_work(hp_wq, &heater_off_work);
         }
     } else {
-        if (pin_dev) {
-            struct device_pin_status pin_sta = { HEATER_PIN, PIN_LOW };
-            pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta));
-        }
+        heater_set_output(PIN_LOW);
     }
 }
 
@@ -104,8 +107,7 @@ rt_err_t drv_heater_init(const char* imu_spi_dev_name)
         return RT_ERROR;
     }
 
-    struct device_pin_status pin_sta = { HEATER_PIN, PIN_LOW };
-    pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta));
+    heater_set_output(PIN_LOW);
 
     hp_wq = workqueue_find("wq:hp_work");
     if (hp_wq == NULL) {
