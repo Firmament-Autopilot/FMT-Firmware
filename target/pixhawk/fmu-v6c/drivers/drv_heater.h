@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-rt_err_t drv_heater_init(void);
+rt_err_t drv_heater_init(const char* imu_spi_dev_name);
 
 #ifdef __cplusplus
 }

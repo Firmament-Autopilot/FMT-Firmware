@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 rt_err_t drv_icm42688_init(const char* spi_dev_name, const char* gyro_dev_name, const char* accel_dev_name, uint32_t dev_id);
-rt_err_t icm42688p_read_temp_deg_C(float* temp);
+rt_err_t icm42688p_read_temp_deg_C(rt_device_t imu_spi_dev, float* temp);
 
 #ifdef __cplusplus
 }

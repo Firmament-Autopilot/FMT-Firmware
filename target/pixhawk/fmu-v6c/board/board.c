@@ -478,10 +478,12 @@ void bsp_initialize(void)
             printf("airspeed sensor init failed!\n");
         }
     }
-#endif
 
     /* heater driver init */
-    RT_CHECK(drv_heater_init());
+    if (drv_heater_init("spi1_dev3") != RT_EOK) {
+        console_println("Warning: heater init failed");
+    }
+#endif
 
     /* init finsh */
     finsh_system_init();

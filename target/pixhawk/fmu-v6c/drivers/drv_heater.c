@@ -20,6 +20,7 @@ static struct WorkItem heater_off_work;
 static WorkQueue_t hp_wq = NULL;
 static float temp_integral = 0.0f;
 static rt_device_t pin_dev = NULL;
+static rt_device_t heater_imu_spi_dev = NULL;
 
 static void heater_off_run(void* param)
 {
@@ -34,7 +35,7 @@ static void heater_run(void* param)
     float temp = 0.0f;
     uint32_t time_on_ms = 0;
     
-    if (icm42688p_read_temp_deg_C(&temp) == RT_EOK) {
+    if (icm42688p_read_temp_deg_C(heater_imu_spi_dev, &temp) == RT_EOK) {
         // Target temp condition
         float temperature_delta = SENS_IMU_TEMP - temp;
         
@@ -77,8 +78,17 @@ static void heater_run(void* param)
     }
 }
 
-rt_err_t drv_heater_init(void)
+rt_err_t drv_heater_init(const char* imu_spi_dev_name)
 {
+    if (imu_spi_dev_name == RT_NULL) {
+        return RT_ERROR;
+    }
+
+    heater_imu_spi_dev = rt_device_find(imu_spi_dev_name);
+    if (heater_imu_spi_dev == RT_NULL) {
+        return RT_ERROR;
+    }
+
     // Find the pin device and open it
     pin_dev = rt_device_find("pin");
     if (pin_dev == NULL) {
