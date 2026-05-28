@@ -46,7 +46,7 @@ target = "Edge-E83"\n
     [pilot-cmd.device]\n
     type = "rc"\n
     name = "rc"\n
-    protocol = "ppm"\n
+    protocol = "sbus"\n
     channel-num = 8\n
     sample-time = 0.05\n
     range = [1000,2000]

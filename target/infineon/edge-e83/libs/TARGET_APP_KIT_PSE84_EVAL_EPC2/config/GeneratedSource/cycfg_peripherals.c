@@ -5,8 +5,8 @@
  * Analog configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.5.0.1072
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -974,12 +974,12 @@ const cy_stc_scb_uart_config_t CYBSP_UART11_config =
     .oversample = 10,
     .enableMsbFirst = false,
     .dataWidth = 8UL,
-    .parity = CY_SCB_UART_PARITY_NONE,
-    .stopBits = CY_SCB_UART_STOP_BITS_1,
-    .enableInputFilter = false,
+    .parity = CY_SCB_UART_PARITY_EVEN,
+    .stopBits = CY_SCB_UART_STOP_BITS_2,
+    .enableInputFilter = true,
     .breakWidth = 11UL,
-    .dropOnFrameError = false,
-    .dropOnParityError = false,
+    .dropOnFrameError = true,
+    .dropOnParityError = true,
     .breaklevel = false,
     .receiverAddress = 0x0UL,
     .receiverAddressMask = 0x0UL,
@@ -997,9 +997,9 @@ const cy_stc_scb_uart_config_t CYBSP_UART11_config =
 #if defined (COMPONENT_MTB_HAL)
 const mtb_hal_peri_div_t CYBSP_UART11_clock_ref =
 {
-    .clk_dst = (en_clk_dst_t)CYBSP_UART11_CLK_DIV_GRP_NUM,
-    .div_type = CYBSP_UART11_CLK_DIV_HW,
-    .div_num = CYBSP_UART11_CLK_DIV_NUM,
+    .clk_dst = (en_clk_dst_t)CYBSP_SMART_IO_CLK_DIV_GRP_NUM,
+    .div_type = CYBSP_SMART_IO_CLK_DIV_HW,
+    .div_num = CYBSP_SMART_IO_CLK_DIV_NUM,
 };
 const mtb_hal_clock_t CYBSP_UART11_hal_clock =
 {
@@ -3241,7 +3241,7 @@ void init_cycfg_peripherals(void)
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB10_PERI_NR, CY_MMIO_SCB10_GROUP_NR, CY_MMIO_SCB10_SLAVE_NR, CY_MMIO_SCB10_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB10_CLOCK_SCB_EN, CY_SYSCLK_DIV_16_BIT, 3U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB11_PERI_NR, CY_MMIO_SCB11_GROUP_NR, CY_MMIO_SCB11_SLAVE_NR, CY_MMIO_SCB11_CLK_HF_NR);
-    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB11_CLOCK_SCB_EN, CY_SYSCLK_DIV_16_5_BIT, 0U);
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB11_CLOCK_SCB_EN, CY_SYSCLK_DIV_24_5_BIT, 0U);
 #if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SDHC1_PERI_NR, CY_MMIO_SDHC1_GROUP_NR, CY_MMIO_SDHC1_SLAVE_NR, CY_MMIO_SDHC1_CLK_HF_NR);
 #endif /* defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE) */

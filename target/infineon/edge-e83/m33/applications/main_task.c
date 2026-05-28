@@ -29,9 +29,11 @@ static void task_entry(void* parameter)
 {
     printf("main task started.\n");
 
-    RT_CHECK(drv_rc_init());
+    // RT_CHECK(drv_rc_init());
 
-    drv_rc_thread_start();
+    sbus_lowlevel_init();
+
+    // drv_rc_thread_start();
 
     while (1) {
         interface_listen();
@@ -39,7 +41,8 @@ static void task_entry(void* parameter)
         if (sync_finish()) {
             // led_type = LED_BLUE;
             // led_on(LED_RED);
-            drv_rc_send_ppm();
+            // drv_rc_send_ppm();
+            send_sbus_value();
         } else {
             // led_type = LED_RED;
             // led_on(LED_BLUE);
