@@ -48,6 +48,7 @@
 #include "drv_adc.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
+#include "drv_heater.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_sdio.h"
@@ -478,6 +479,9 @@ void bsp_initialize(void)
         }
     }
 #endif
+
+    /* heater driver init */
+    RT_CHECK(drv_heater_init());
 
     /* init finsh */
     finsh_system_init();

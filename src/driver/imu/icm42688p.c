@@ -447,6 +447,31 @@ static rt_err_t gyro_control(gyro_dev_t gyro, int cmd, void* arg)
     return RT_EOK;
 }
 
+static rt_err_t temp_read_raw(int16_t* temp)
+{
+    uint8_t raw[2];
+
+    RT_TRY(spi_read_multi_reg8(spi_dev, REG_TEMP_DATA1, raw, 2));
+
+    *temp = int16_t_from_bytes(&raw[0]);
+
+    return RT_EOK;
+}
+
+rt_err_t icm42688p_read_temp_deg_C(float* temp)
+{
+    int16_t temp_raw;
+    rt_err_t res;
+
+    res = temp_read_raw(&temp_raw);
+
+    if (temp != RT_NULL) {
+        *temp = (temp_raw / 132.48f) + 25.0f;
+    }
+
+    return res;
+}
+
 static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t size)
 {
     if (data == NULL) {
