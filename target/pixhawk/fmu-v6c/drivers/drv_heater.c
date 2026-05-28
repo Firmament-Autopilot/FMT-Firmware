@@ -3,17 +3,21 @@
 #include "hal/pin/pin.h"
 #include "stm32h7xx.h"
 #include "driver/imu/icm42688p.h"
+#include "module/ipc/uMCN.h"
 #include "module/workqueue/workqueue_manager.h"
 
 #define __STM32_PORT(port)  GPIO##port##_BASE
 #define GET_PIN(PORTx, PIN) (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
 #define HEATER_PIN          GET_PIN(B, 9)
 
-#define SENS_IMU_TEMP       55.0f
-#define SENS_IMU_TEMP_FF    0.05f
-#define SENS_IMU_TEMP_P     1.0f
-#define SENS_IMU_TEMP_I     0.025f
+#define SENS_IMU_TEMP       50.0f
+#define SENS_IMU_TEMP_FF    0.03f
+#define SENS_IMU_TEMP_P     0.8f
+#define SENS_IMU_TEMP_I     0.015f
 #define HEATER_PERIOD_MS    10
+#define HEATER_STATUS_PERIOD_MS 1000
+
+MCN_DEFINE(heater_status, sizeof(heater_status_t));
 
 static struct WorkItem heater_work;
 static struct WorkItem heater_off_work;
@@ -21,6 +25,53 @@ static WorkQueue_t hp_wq = NULL;
 static float temp_integral = 0.0f;
 static rt_device_t pin_dev = NULL;
 static rt_device_t heater_imu_spi_dev = NULL;
+static uint32_t status_last_publish_ms = 0;
+
+static int echo_heater_status(void* param)
+{
+    fmt_err_t err;
+    heater_status_t status;
+
+    err = mcn_copy_from_hub((McnHub*)param, &status);
+    if (err != FMT_EOK) {
+        return -1;
+    }
+
+    console_printf("timestamp:%u temp:%.2f target:%.2f duty:%.3f power:%.1f%% on:%ums valid:%u heater_on:%u\n",
+                   status.timestamp_ms,
+                   status.temperature_deg_C,
+                   status.target_temperature_deg_C,
+                   status.duty,
+                   status.power_ratio * 100.0f,
+                   status.heater_on_ms,
+                   status.temperature_valid,
+                   status.heater_on);
+
+    return 0;
+}
+
+static void heater_publish_status(float temp, float duty, uint32_t time_on_ms, uint8_t temp_valid)
+{
+    uint32_t now_ms = systime_now_ms();
+
+    if (now_ms - status_last_publish_ms < HEATER_STATUS_PERIOD_MS) {
+        return;
+    }
+
+    heater_status_t status = {
+        .timestamp_ms = now_ms,
+        .temperature_deg_C = temp,
+        .target_temperature_deg_C = SENS_IMU_TEMP,
+        .duty = duty,
+        .power_ratio = duty,
+        .heater_on_ms = time_on_ms,
+        .temperature_valid = temp_valid,
+        .heater_on = time_on_ms > 0 ? 1 : 0,
+    };
+
+    status_last_publish_ms = now_ms;
+    mcn_publish(MCN_HUB(heater_status), &status);
+}
 
 static void heater_set_output(rt_uint8_t status)
 {
@@ -43,6 +94,7 @@ static void heater_run(void* param)
     if (icm42688p_read_temp_deg_C(heater_imu_spi_dev, &temp) != RT_EOK) {
         temp_integral = 0.0f;
         heater_set_output(PIN_LOW);
+        heater_publish_status(0.0f, 0.0f, 0, 0);
         return;
     }
 
@@ -67,6 +119,8 @@ static void heater_run(void* param)
     if (time_on_ms > HEATER_PERIOD_MS) {
         time_on_ms = HEATER_PERIOD_MS;
     }
+
+    heater_publish_status(temp, duty, time_on_ms, 1);
 
     // Drive the heater pin
     if (time_on_ms > 0) {
@@ -108,6 +162,7 @@ rt_err_t drv_heater_init(const char* imu_spi_dev_name)
     }
 
     heater_set_output(PIN_LOW);
+    FMT_TRY(mcn_advertise(MCN_HUB(heater_status), echo_heater_status));
 
     hp_wq = workqueue_find("wq:hp_work");
     if (hp_wq == NULL) {
