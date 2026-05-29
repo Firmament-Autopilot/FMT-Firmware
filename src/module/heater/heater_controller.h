@@ -13,7 +13,7 @@ extern "C" {
 #define HEATER_MAX_TARGET_TEMP_DEG_C     80.0f
 #define HEATER_DEFAULT_FF                0.03f
 #define HEATER_DEFAULT_KP                0.8f
-#define HEATER_DEFAULT_KI                0.025f
+#define HEATER_DEFAULT_KI                0.02f
 #define HEATER_DEFAULT_INTEGRAL_LIMIT    0.25f
 #define HEATER_DEFAULT_CONTROL_PERIOD_MS 10U
 #define HEATER_MIN_CONTROL_PERIOD_MS     5U

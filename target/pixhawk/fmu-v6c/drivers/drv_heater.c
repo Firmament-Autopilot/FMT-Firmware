@@ -14,7 +14,7 @@
 #define V6C_HEATER_TARGET_TEMP_DEG_C 50.0f
 #define V6C_HEATER_FF                0.03f
 #define V6C_HEATER_KP                0.8f
-#define V6C_HEATER_KI                0.025f
+#define V6C_HEATER_KI                0.02f
 #define V6C_HEATER_INTEGRAL_LIMIT    0.25f
 #define V6C_HEATER_CONTROL_PERIOD_MS 10U
 #define V6C_HEATER_STATUS_PERIOD_MS  1000U
