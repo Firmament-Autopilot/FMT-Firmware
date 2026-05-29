@@ -138,5 +138,6 @@
 #define BSP_USING_ADC0
 #define BSP_USING_IPC
 #define BSP_USING_RC
-
+#define BSP_USING_UART11
+#define BSP_USING_UART11_DMA_TX
 #endif /* __RTTHREAD_CFG_H__ */

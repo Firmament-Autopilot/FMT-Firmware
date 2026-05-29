@@ -5,8 +5,8 @@
  * Clock configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.5.0.1072
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -547,12 +547,14 @@ __STATIC_INLINE void Cy_SysClk_Dpll_Hp0_Init(void)
 }
 void init_cycfg_clocks(void)
 {
-    #if (CY_CFG_PWR_VBACKUP_USING_VDDD)
-        if (0u == Cy_SysLib_GetResetReason() /* POR, XRES, or BOD */)
-        {
-            Cy_SysLib_ResetBackupDomain();
-        }
-    #endif /* CY_CFG_PWR_VBACKUP_USING_VDDD */
+    #if defined(CY_CFG_PWR_ENABLED) && defined(CORE_NAME_CM33_0)
+        #if (defined(CY_CFG_PWR_VBACKUP_USING_VDDD) && (CY_CFG_PWR_VBACKUP_USING_VDDD))
+            if (0u == Cy_SysLib_GetResetReason() /* POR, XRES, or BOD */)
+            {
+                Cy_SysLib_ResetBackupDomain();
+            }
+        #endif /* (defined(CY_CFG_PWR_VBACKUP_USING_VDDD) && (CY_CFG_PWR_VBACKUP_USING_VDDD)) */
+    #endif /* CY_CFG_PWR_ENABLED && defined(CORE_NAME_CM33_0) */
     
     /* Set up a temporary fail-safe bypass for the IHO/IMO to the active core */
     Cy_SysClk_IhoInit();
@@ -561,7 +563,7 @@ void init_cycfg_clocks(void)
     Cy_SysClk_ClkHfSetDivider(CY_CFG_SYSCLK_ACTIVE_CORE_HF, CY_SYSCLK_CLKHF_NO_DIVIDE);
     /* Reset and configure platform clocks */
     Cy_WDT_Unlock(); /* Unlock WDT to be able to modify LFCLK registers */
-    for (uint32_t pll = (CY_SRSS_NUM_PLL - 1); pll > 0UL; --pll) /* PLL 1 is the first PLL. 0 is invalid. */
+    for (uint32_t pll = 0; pll < (CY_SRSS_NUM_PLL); ++pll) /* PLL 0 is the first PLL. */
     {
         (void)Cy_SysClk_PllDisable(pll);
     }

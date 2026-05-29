@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-
+#include "hal/serial/serial.h"
 #include "hal/rc/ppm.h"
 #include "hal/rc/rc.h"
 #include "hal/rc/sbus.h"
@@ -26,7 +26,7 @@
 #include "cycfg_peripherals.h"
 #include "drv_rc.h"
 
-#ifndef min // mod by prife
+#ifndef min
     #define min(x, y) (x < y ? x : y)
 #endif
 
@@ -41,8 +41,88 @@
             2000,         /* maximal 2000us */ \
     }
 
+#define RC_INPUT_CHANNELS 16
+
+#define SBUS_DEVICE_NAME    "serial11"
+#define SBUS_THREAD_STACK   2048
+#define SBUS_THREAD_PRIORITY  5
+#define SBUS_THREAD_TIMESLICE 10
+static struct rt_semaphore sbus_rx_sem;
 static ppm_decoder_t ppm_decoder;
 static sbus_decoder_t sbus_decoder;
+
+/* SBUS发送缓冲区 */
+static uint16_t _rc_values[RC_INPUT_CHANNELS];
+
+static rt_err_t sbus_rx_ind(rt_device_t dev, rt_size_t size)
+{
+    rt_sem_release(&sbus_rx_sem);
+    return RT_EOK;
+}
+
+static void sbus_rx_thread_entry(void* parameter)
+{
+    rt_device_t serial;
+    struct serial_configure config = SERIAL_DEFAULT_CONFIG;
+    rt_size_t read_length;
+    rt_uint8_t rx_buf[64];
+    serial = rt_device_find(SBUS_DEVICE_NAME);
+    if (serial == RT_NULL) {
+        rt_kprintf("[UART11] 未找到设备: %s\n", SBUS_DEVICE_NAME);
+        return;
+    }
+    rt_sem_init(&sbus_rx_sem, "sbus_rx", 0, RT_IPC_FLAG_FIFO);
+    if (rt_device_open(serial, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
+        rt_kprintf("[UART11] 打开设备失败\n");
+        return;
+    }
+    config.baud_rate = 100000;
+    config.data_bits = 8;
+    config.parity = 2;
+    config.stop_bits = 2;
+    config.bufsz = 256;
+    rt_device_control(serial, RT_DEVICE_CTRL_CONFIG, &config);
+    rt_device_set_rx_indicate(serial, sbus_rx_ind);
+
+    while (1) {
+        if (rt_sem_take(&sbus_rx_sem, RT_TICK_PER_SECOND / 100) == RT_EOK) {
+            while (1) {
+                read_length = rt_device_read(serial, 0, rx_buf, sizeof(rx_buf));
+                if (read_length == 0) {
+                    break;
+                }
+                sbus_input(&sbus_decoder, rx_buf, read_length);
+                if (!sbus_islock(&sbus_decoder)) {
+                    sbus_update(&sbus_decoder);
+                }
+            }
+        }
+    }
+}
+
+rt_err_t sbus_lowlevel_init(void)
+{
+    rt_thread_t tid;
+    rt_err_t ret;
+    ret = sbus_decoder_init(&sbus_decoder);
+    if (ret != RT_EOK) {
+        rt_kprintf("[SBUS] SBUS解码器初始化失败\n");
+        return ret;
+    }
+    tid = rt_thread_create("sbus_rx",
+                          sbus_rx_thread_entry,
+                          RT_NULL,
+                          SBUS_THREAD_STACK,
+                          SBUS_THREAD_PRIORITY,
+                          SBUS_THREAD_TIMESLICE);
+    if (tid == RT_NULL) {
+        rt_kprintf("[SBUS] 创建接收线程失败\n");
+        return -RT_ERROR;
+    }
+    rt_thread_startup(tid);
+
+    return RT_EOK;
+}
 
 static uint32_t rc_get_timer_freq_hz(void)
 {
@@ -365,6 +445,51 @@ uint8_t drv_rc_send_ppm(void)
         return 1;
     }
     return 0;
+}
+uint8_t send_sbus_value(void)
+{
+    int ret = 0;
+    uint16_t rc_count = 0;
+    bool sbus_failsafe = false;
+    bool sbus_frame_drop = false;
+
+    if (sbus_data_ready(&sbus_decoder)) {
+        sbus_lock(&sbus_decoder);
+
+        rc_count = sbus_decoder.rc_count;
+        if (rc_count > RC_INPUT_CHANNELS) {
+            rc_count = RC_INPUT_CHANNELS;
+        }
+
+        for (uint16_t i = 0; i < rc_count; i++) {
+            _rc_values[i] = sbus_decoder.sbus_val[i];
+        }
+
+        sbus_failsafe = sbus_decoder.sbus_failsafe;
+        sbus_frame_drop = sbus_decoder.sbus_frame_drop;
+
+        if (sbus_failsafe) {
+            rt_kprintf("[SBUS_TX] FAILSAFE=1\n");
+        }
+        if (sbus_frame_drop) {
+            rt_kprintf("[SBUS_TX] FRAME_DROP=1\n");
+        }
+
+        sbus_data_clear(&sbus_decoder);
+
+        sbus_unlock(&sbus_decoder);
+
+        if (!sbus_failsafe && !sbus_frame_drop && rc_signal_ready()) {
+            send_io_cmd(IO_CODE_RC_DATA, _rc_values, rc_count * 2);
+            ret = 0;
+        } else {
+            ret = 1;
+        }
+    } else {
+        ret = 1;
+    }
+
+    return ret;
 }
 
 void drv_rc_print_raw_gaps(void)

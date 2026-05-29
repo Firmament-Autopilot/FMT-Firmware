@@ -5,8 +5,8 @@
  * System configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.5.0.1072
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -36,16 +36,19 @@
 #include "cy_syspm_pdcm.h"
 #include "cy_device.h"
 #include "cy_mpc.h"
-#include "cy_ppc.h"
 #include "cy_cmsis_utils.h"
+
+#if defined(COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF) && !defined(CY_SRF_DISABLE)
+#include "mtb_srf.h"
+#endif /* defined(COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF) && !defined(CY_SRF_DISABLE) */
 
 #if defined(CY_PDL_TZ_ENABLED)
 #include "cy_cmsis_utils.h"
 #endif /* defined(CY_PDL_TZ_ENABLED) */
 
-#if defined (COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF)
-#include "mtb_srf.h"
-#endif /* defined (COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF) */
+#if (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED)
+#include "cy_ppc.h"
+#endif /* (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) */
 
 #if defined(__cplusplus)
 extern "C" {
@@ -94,22 +97,30 @@ extern "C" {
 #define M33NSC_UNIFIED_MPC_DOMAIN_IDX 3U
 #define M33_M55_UNIFIED_MPC_DOMAIN_IDX 4U
 #define Cy_MPC_Init init_cycfg_mpc
+
+#if (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED)
 #define PPC_PC_MASK_ALL_ACCESS 0xFFU
 #define Cy_PPC0_Init init_cycfg_ppc0
 #define Cy_PPC1_Init init_cycfg_ppc1
+#endif /* (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) */
+
+#if !defined(PPC0) && (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED)
+#define PPC0 PPC
+#endif /* !defined(PPC0) && (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) */
+
 #define m33syscpuss_0_cm33_0_sau_0_ENABLED 1U
 #define m55appcpuss_0_cm55_0_mpu_ns_0_ENABLED 1U
 #define mxrramc_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
 #define mxrramc_0_mpc_0_REGION_COUNT 4U
-#define mxsramc_0_mpc_0_RESPONSE CY_MPC_RZWI
+#define mxsramc_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
 #define mxsramc_0_mpc_0_REGION_COUNT 3U
-#define mxsramc_1_mpc_0_RESPONSE CY_MPC_RZWI
+#define mxsramc_1_mpc_0_RESPONSE CY_MPC_BUS_ERR
 #define mxsramc_1_mpc_0_REGION_COUNT 2U
-#define smif_0_mpc_0_RESPONSE CY_MPC_RZWI
+#define smif_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
 #define smif_0_mpc_0_REGION_COUNT 6U
-#define smif_1_mpc_0_RESPONSE CY_MPC_RZWI
+#define smif_1_mpc_0_RESPONSE CY_MPC_BUS_ERR
 #define smif_1_mpc_0_REGION_COUNT 0U
-#define socmem_0_mpc_0_RESPONSE CY_MPC_RZWI
+#define socmem_0_mpc_0_RESPONSE CY_MPC_BUS_ERR
 #define socmem_0_mpc_0_REGION_COUNT 2U
 
 #if defined (CY_PDL_TZ_ENABLED)
@@ -118,27 +129,52 @@ extern const cy_stc_mpc_rot_cfg_t M33_mpc_cfg[];
 extern const cy_stc_mpc_rot_cfg_t M55_mpc_cfg[];
 extern const cy_stc_mpc_rot_cfg_t M33NSC_mpc_cfg[];
 extern const cy_stc_mpc_rot_cfg_t M33_M55_mpc_cfg[];
+#endif /* defined (CY_PDL_TZ_ENABLED) */
+
+#if defined(CY_DEVICE_FEATURE_SOME_MPC_ROT_LOCKED) && defined(CY_PDL_TZ_ENABLED)
+extern const cy_stc_mpc_cfg_t M33S_mpc_locked_rot_cfg;
+extern const cy_stc_mpc_cfg_t M33_mpc_locked_rot_cfg;
+extern const cy_stc_mpc_cfg_t M55_mpc_locked_rot_cfg;
+extern const cy_stc_mpc_cfg_t M33NSC_mpc_locked_rot_cfg;
+extern const cy_stc_mpc_cfg_t M33_M55_mpc_locked_rot_cfg;
+#endif /* defined(CY_DEVICE_FEATURE_SOME_MPC_ROT_LOCKED) && defined(CY_PDL_TZ_ENABLED) */
+
+#if defined(CY_PDL_TZ_ENABLED)
 extern const cy_stc_mpc_regions_t M33S_mpc_regions[];
 extern const cy_stc_mpc_regions_t M33_mpc_regions[];
 extern const cy_stc_mpc_regions_t M55_mpc_regions[];
 extern const cy_stc_mpc_regions_t M33NSC_mpc_regions[];
 extern const cy_stc_mpc_regions_t M33_M55_mpc_regions[];
+#endif /* defined(CY_PDL_TZ_ENABLED) */
+
+#if defined(CY_DEVICE_FEATURE_SOME_MPC_ROT_LOCKED) && defined(CY_PDL_TZ_ENABLED)
+extern const cy_stc_mpc_regions_t M33S_mpc_locked_rot_regions[];
+extern const cy_stc_mpc_regions_t M33_mpc_locked_rot_regions[];
+extern const cy_stc_mpc_regions_t M55_mpc_locked_rot_regions[];
+extern const cy_stc_mpc_regions_t M33NSC_mpc_locked_rot_regions[];
+extern const cy_stc_mpc_regions_t M33_M55_mpc_locked_rot_regions[];
+#endif /* defined(CY_DEVICE_FEATURE_SOME_MPC_ROT_LOCKED) && defined(CY_PDL_TZ_ENABLED) */
+
+#if defined (CY_PDL_TZ_ENABLED)
 extern const cy_stc_mpc_resp_cfg_t cy_response_mpcs[];
 extern const size_t cy_response_mpcs_count;
+#endif /* defined (CY_PDL_TZ_ENABLED) */
+
+#if defined(CY_PDL_TZ_ENABLED)
 extern const cy_stc_mpc_unified_t unified_mpc_domains[];
+#endif /* defined(CY_PDL_TZ_ENABLED) */
+
+#if defined (CY_PDL_TZ_ENABLED)
 extern const size_t unified_mpc_domains_count;
 #endif /* defined (CY_PDL_TZ_ENABLED) */
 
-#if defined (COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF)
-extern const mtb_srf_memory_protection_s_t mtb_srf_memory_protection_s[];
-extern const uint8_t mtb_srf_protection_range_s_count;
-#endif /* defined (COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF) */
-
+#if (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED)
 extern const cy_stc_ppc_attribute_t cycfg_unused_ppc_cfg;
 extern const cy_en_prot_region_t cycfg_unused_ppc_0_regions[];
 extern const cy_en_prot_region_t cycfg_unused_ppc_1_regions[];
 extern const size_t cycfg_unused_ppc_0_regions_count;
 extern const size_t cycfg_unused_ppc_1_regions_count;
+#endif /* (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) */
 
 #if defined(CY_PDL_TZ_ENABLED)
 extern const cy_stc_sau_config_t SAU_config[4];
@@ -146,23 +182,27 @@ extern const cy_stc_sau_config_t SAU_config[4];
 
 extern const cy_stc_mpu_config_t cycfg_mpu_cm55_ns_0_config[3];
 
-#if defined(COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF)
+#if defined(COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF) && !defined(CY_SRF_DISABLE)
 extern const mtb_srf_protection_range_s_t mxrramc_0_mpc_0_srf_protection_range_s[mxrramc_0_mpc_0_REGION_COUNT];
 extern const mtb_srf_protection_range_s_t mxsramc_0_mpc_0_srf_protection_range_s[mxsramc_0_mpc_0_REGION_COUNT];
 extern const mtb_srf_protection_range_s_t mxsramc_1_mpc_0_srf_protection_range_s[mxsramc_1_mpc_0_REGION_COUNT];
 extern const mtb_srf_protection_range_s_t smif_0_mpc_0_srf_protection_range_s[smif_0_mpc_0_REGION_COUNT];
 extern const mtb_srf_protection_range_s_t socmem_0_mpc_0_srf_protection_range_s[socmem_0_mpc_0_REGION_COUNT];
-#endif /* defined(COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF) */
+#endif /* defined(COMPONENT_SECURE_DEVICE) && defined(COMPONENT_MW_MTB_SRF) && !defined(CY_SRF_DISABLE) */
 
 void init_cycfg_ns_power(void);
 void init_cycfg_power(void);
 
 #if defined(CY_PDL_TZ_ENABLED)
+bool Cy_Mpc_IsRotConfigurable(const MPC_Type* base);
 cy_rslt_t init_cycfg_mpc(void);
 #endif /* defined(CY_PDL_TZ_ENABLED) */
 
+#if (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED)
 cy_rslt_t init_cycfg_ppc0(void);
 cy_rslt_t init_cycfg_ppc1(void);
+#endif /* (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) */
+
 void init_cycfg_system(void);
 
 #if defined(__cplusplus)

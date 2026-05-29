@@ -5,8 +5,8 @@
  * Peripheral clock divider configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.5.0.1072
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -67,7 +67,7 @@ void init_cycfg_peripheral_clocks(void)
     Cy_SysClk_PeriPclkSetFracDivider((en_clk_dst_t)CYBSP_PWM_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_16_5_BIT, 1U, 249U, 0U);
     Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)CYBSP_PWM_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_16_5_BIT, 1U);
     Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)CYBSP_SMART_IO_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_24_5_BIT, 0U);
-    Cy_SysClk_PeriPclkSetFracDivider((en_clk_dst_t)CYBSP_SMART_IO_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_24_5_BIT, 0U, 505049U, 0U);
+    Cy_SysClk_PeriPclkSetFracDivider((en_clk_dst_t)CYBSP_SMART_IO_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_24_5_BIT, 0U, 99U, 0U);
     Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)CYBSP_SMART_IO_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_24_5_BIT, 0U);
     Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)PERI_0_GROUP_2_DIV_8_0_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)PERI_0_GROUP_2_DIV_8_0_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U, 0U);
