@@ -24,7 +24,8 @@ extern "C" {
 #endif
 
 #define EDGE_IPC_DEVICE_NAME    "ipc0"
-#define EDGE_IPC_CTRL_GET_STATS (0x1000)
+#define EDGE_IPC_CTRL_GET_STATS    (0x1000)
+#define EDGE_IPC_CTRL_GET_RINGBUFFER (0x1002)  /* 获取 ringbuffer 指针 */
 
 typedef struct
 {

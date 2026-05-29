@@ -41,15 +41,10 @@ static rt_err_t ipc_dev_tx_complete(rt_device_t dev, void* buffer)
 
 static void ipc_fill_packet(edge_rc_frame_t* frame, const void* data, rt_size_t size)
 {
-    frame->client_id = CM33_IPC_PIPE_CLIENT_ID;
-    frame->intr_mask = (rt_uint16_t)CY_IPC_CYPIPE_INTR_MASK_EP1;
-    frame->role = RC_ROLE_M55_ECHO;
-    frame->magic = RC_MAGIC_WORD;
     frame->seq = size; /* use seq as size */
 
     rt_memcpy((void*)tx.channel, data, size);
 
-    frame->checksum = edge_rc_checksum(frame);
 }
 
 static rt_size_t ipc_dev_write(struct rt_device* dev, rt_off_t pos, const void* buffer, rt_size_t size)
