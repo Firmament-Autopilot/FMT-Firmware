@@ -22,6 +22,7 @@ MODULES = [
     'fmtio/*.c',
     'task_manager/*.c',
     'pmu/*.c',
+    'heater/*.c',
 ]
 
 MODULES += [

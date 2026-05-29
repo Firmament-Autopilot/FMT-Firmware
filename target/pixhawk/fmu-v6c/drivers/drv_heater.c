@@ -1,83 +1,38 @@
 #include "drv_heater.h"
-#include <rtdevice.h>
-#include "hal/pin/pin.h"
-#include "stm32h7xx.h"
 #include "driver/imu/icm42688p.h"
-#include "module/ipc/uMCN.h"
+#include "hal/pin/pin.h"
+#include "module/heater/heater_controller.h"
 #include "module/workqueue/workqueue_manager.h"
+#include "stm32h7xx.h"
+#include <rtdevice.h>
 
-#define __STM32_PORT(port)  GPIO##port##_BASE
-#define GET_PIN(PORTx, PIN) (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
-#define HEATER_PIN          GET_PIN(B, 9)
+#define __STM32_PORT(port) GPIO##port##_BASE
+#define GET_PIN(PORTx, PIN) \
+    (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
+#define HEATER_PIN                   GET_PIN(B, 9)
 
-#define SENS_IMU_TEMP       50.0f
-#define SENS_IMU_TEMP_FF    0.03f
-#define SENS_IMU_TEMP_P     0.8f
-#define SENS_IMU_TEMP_I     0.015f
-#define HEATER_PERIOD_MS    10
-#define HEATER_STATUS_PERIOD_MS 1000
+#define V6C_HEATER_TARGET_TEMP_DEG_C 50.0f
+#define V6C_HEATER_FF                0.03f
+#define V6C_HEATER_KP                0.8f
+#define V6C_HEATER_KI                0.015f
+#define V6C_HEATER_INTEGRAL_LIMIT    0.25f
+#define V6C_HEATER_CONTROL_PERIOD_MS 10U
+#define V6C_HEATER_STATUS_PERIOD_MS  1000U
 
-MCN_DEFINE(heater_status, sizeof(heater_status_t));
+typedef struct {
+    rt_device_t imu_spi_dev;
+    rt_device_t pin_dev;
+    WorkQueue_t hp_wq;
+    struct WorkItem heater_off_work;
+} v6c_heater_ctx_t;
 
-static struct WorkItem heater_work;
-static struct WorkItem heater_off_work;
-static WorkQueue_t hp_wq = NULL;
-static float temp_integral = 0.0f;
-static rt_device_t pin_dev = NULL;
-static rt_device_t heater_imu_spi_dev = NULL;
-static uint32_t status_last_publish_ms = 0;
-
-static int echo_heater_status(void* param)
-{
-    fmt_err_t err;
-    heater_status_t status;
-
-    err = mcn_copy_from_hub((McnHub*)param, &status);
-    if (err != FMT_EOK) {
-        return -1;
-    }
-
-    console_printf("timestamp:%u temp:%.2f target:%.2f duty:%.3f power:%.1f%% on:%ums valid:%u heater_on:%u\n",
-                   status.timestamp_ms,
-                   status.temperature_deg_C,
-                   status.target_temperature_deg_C,
-                   status.duty,
-                   status.power_ratio * 100.0f,
-                   status.heater_on_ms,
-                   status.temperature_valid,
-                   status.heater_on);
-
-    return 0;
-}
-
-static void heater_publish_status(float temp, float duty, uint32_t time_on_ms, uint8_t temp_valid)
-{
-    uint32_t now_ms = systime_now_ms();
-
-    if (now_ms - status_last_publish_ms < HEATER_STATUS_PERIOD_MS) {
-        return;
-    }
-
-    heater_status_t status = {
-        .timestamp_ms = now_ms,
-        .temperature_deg_C = temp,
-        .target_temperature_deg_C = SENS_IMU_TEMP,
-        .duty = duty,
-        .power_ratio = duty,
-        .heater_on_ms = time_on_ms,
-        .temperature_valid = temp_valid,
-        .heater_on = time_on_ms > 0 ? 1 : 0,
-    };
-
-    status_last_publish_ms = now_ms;
-    mcn_publish(MCN_HUB(heater_status), &status);
-}
+static v6c_heater_ctx_t heater_ctx = { 0 };
 
 static void heater_set_output(rt_uint8_t status)
 {
-    if (pin_dev) {
+    if (heater_ctx.pin_dev) {
         struct device_pin_status pin_sta = { HEATER_PIN, status };
-        pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta));
+        heater_ctx.pin_dev->write(heater_ctx.pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta));
     }
 }
 
@@ -86,102 +41,118 @@ static void heater_off_run(void* param)
     heater_set_output(PIN_LOW);
 }
 
-static void heater_run(void* param)
+static fmt_err_t v6c_heater_read_temperature(float* temp_deg_C, void* user_data)
 {
-    float temp = 0.0f;
-    uint32_t time_on_ms = 0;
+    v6c_heater_ctx_t* ctx = (v6c_heater_ctx_t*)user_data;
 
-    if (icm42688p_read_temp_deg_C(heater_imu_spi_dev, &temp) != RT_EOK) {
-        temp_integral = 0.0f;
+    if (ctx == RT_NULL || temp_deg_C == RT_NULL) {
+        return FMT_EINVAL;
+    }
+
+    return icm42688p_read_temp_deg_C(ctx->imu_spi_dev, temp_deg_C) == RT_EOK ? FMT_EOK : FMT_ERROR;
+}
+
+static fmt_err_t v6c_heater_set_power(float power_ratio, uint32_t control_period_ms, void* user_data)
+{
+    v6c_heater_ctx_t* ctx = (v6c_heater_ctx_t*)user_data;
+    uint32_t time_on_ms;
+
+    if (ctx == RT_NULL || ctx->pin_dev == RT_NULL) {
+        return FMT_EINVAL;
+    }
+
+    if (ctx->hp_wq != RT_NULL) {
+        workqueue_cancel_work(ctx->hp_wq, &ctx->heater_off_work);
+    }
+
+    if (power_ratio <= 0.0f) {
         heater_set_output(PIN_LOW);
-        heater_publish_status(0.0f, 0.0f, 0, 0);
-        return;
+        return FMT_EOK;
     }
 
-    // Target temp condition
-    float temperature_delta = SENS_IMU_TEMP - temp;
-
-    // P term
-    float P = temperature_delta * SENS_IMU_TEMP_P;
-
-    // I term
-    temp_integral += temperature_delta * SENS_IMU_TEMP_I;
-    if (temp_integral > 0.25f) temp_integral = 0.25f;
-    if (temp_integral < -0.25f) temp_integral = -0.25f;
-
-    // Feedforward term + PID
-    float duty = P + temp_integral + SENS_IMU_TEMP_FF;
-    if (duty > 1.0f) duty = 1.0f;
-    if (duty < 0.0f) duty = 0.0f;
-
-    // Calculate time on in milliseconds
-    time_on_ms = (uint32_t)(duty * (float)HEATER_PERIOD_MS);
-    if (time_on_ms > HEATER_PERIOD_MS) {
-        time_on_ms = HEATER_PERIOD_MS;
+    if (power_ratio > 1.0f) {
+        power_ratio = 1.0f;
     }
 
-    heater_publish_status(temp, duty, time_on_ms, 1);
+    time_on_ms = (uint32_t)(power_ratio * (float)control_period_ms);
+    if (time_on_ms > control_period_ms) {
+        time_on_ms = control_period_ms;
+    }
 
-    // Drive the heater pin
-    if (time_on_ms > 0) {
-        heater_set_output(PIN_HIGH);
-        if (time_on_ms < HEATER_PERIOD_MS) {
-            // Schedule off time
-            heater_off_work.schedule_time = SCHEDULE_DELAY(time_on_ms);
-            workqueue_schedule_work(hp_wq, &heater_off_work);
-        }
-    } else {
+    if (time_on_ms == 0) {
         heater_set_output(PIN_LOW);
+        return FMT_EOK;
     }
+
+    heater_set_output(PIN_HIGH);
+    if (ctx->hp_wq == RT_NULL) {
+        heater_set_output(PIN_LOW);
+        return FMT_ERROR;
+    }
+
+    ctx->heater_off_work.schedule_time = SCHEDULE_DELAY(time_on_ms);
+    if (workqueue_schedule_work(ctx->hp_wq, &ctx->heater_off_work) != FMT_EOK) {
+        heater_set_output(PIN_LOW);
+        return FMT_ERROR;
+    }
+
+    return FMT_EOK;
 }
 
 rt_err_t drv_heater_init(const char* imu_spi_dev_name)
 {
+    heater_controller_config_t config = {
+        .name = "heater",
+        .workqueue_name = "wq:hp_work",
+        .params = {
+            .target_temp_deg_C = V6C_HEATER_TARGET_TEMP_DEG_C,
+            .ff = V6C_HEATER_FF,
+            .kp = V6C_HEATER_KP,
+            .ki = V6C_HEATER_KI,
+            .integral_limit = V6C_HEATER_INTEGRAL_LIMIT,
+            .control_period_ms = V6C_HEATER_CONTROL_PERIOD_MS,
+            .status_period_ms = V6C_HEATER_STATUS_PERIOD_MS,
+        },
+        .read_temperature = v6c_heater_read_temperature,
+        .set_power = v6c_heater_set_power,
+        .user_data = &heater_ctx,
+    };
+
     if (imu_spi_dev_name == RT_NULL) {
         return RT_ERROR;
     }
 
-    heater_imu_spi_dev = rt_device_find(imu_spi_dev_name);
-    if (heater_imu_spi_dev == RT_NULL) {
+    heater_ctx.imu_spi_dev = rt_device_find(imu_spi_dev_name);
+    if (heater_ctx.imu_spi_dev == RT_NULL) {
         return RT_ERROR;
     }
 
-    // Find the pin device and open it
-    pin_dev = rt_device_find("pin");
-    if (pin_dev == NULL) {
+    heater_ctx.pin_dev = rt_device_find("pin");
+    if (heater_ctx.pin_dev == RT_NULL) {
         return RT_ERROR;
     }
-    if (rt_device_open(pin_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+    if (rt_device_open(heater_ctx.pin_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
         return RT_ERROR;
     }
 
-    // Configure PB9 as push-pull output
     struct device_pin_mode pin_mode = { HEATER_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_PP };
-    if (pin_dev->control(pin_dev, 0, &pin_mode) != RT_EOK) {
+    if (heater_ctx.pin_dev->control(heater_ctx.pin_dev, 0, &pin_mode) != RT_EOK) {
         return RT_ERROR;
     }
+
+    heater_ctx.hp_wq = workqueue_find("wq:hp_work");
+    if (heater_ctx.hp_wq == RT_NULL) {
+        heater_set_output(PIN_LOW);
+        return RT_ERROR;
+    }
+
+    heater_ctx.heater_off_work.name = "heater_off";
+    heater_ctx.heater_off_work.period = 0;
+    heater_ctx.heater_off_work.schedule_time = 0;
+    heater_ctx.heater_off_work.run = heater_off_run;
+    heater_ctx.heater_off_work.parameter = RT_NULL;
 
     heater_set_output(PIN_LOW);
-    FMT_TRY(mcn_advertise(MCN_HUB(heater_status), echo_heater_status));
 
-    hp_wq = workqueue_find("wq:hp_work");
-    if (hp_wq == NULL) {
-        return RT_ERROR;
-    }
-
-    heater_off_work.name = "heater_off";
-    heater_off_work.period = 0;
-    heater_off_work.schedule_time = 0;
-    heater_off_work.run = heater_off_run;
-
-    heater_work.name = "heater_on";
-    heater_work.period = HEATER_PERIOD_MS;
-    heater_work.schedule_time = SCHEDULE_DELAY(HEATER_PERIOD_MS);
-    heater_work.run = heater_run;
-
-    if (workqueue_schedule_work(hp_wq, &heater_work) != FMT_EOK) {
-        return RT_ERROR;
-    }
-
-    return RT_EOK;
+    return heater_controller_init(&config) == FMT_EOK ? RT_EOK : RT_ERROR;
 }

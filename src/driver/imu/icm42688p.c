@@ -113,18 +113,18 @@
 #define M_PI_F                   3.1415926f
 #define M_ONE_G                  9.80665f
 
-#define GYRO_CONFIG                                   \
-    {                                                 \
-        1000,                   /* 1K sample rate */  \
-            500,                /* 500Hz bandwidth */ \
-            GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
+#define GYRO_CONFIG                               \
+    {                                             \
+        1000,               /* 1K sample rate */  \
+        500,                /* 500Hz bandwidth */ \
+        GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
     }
 
-#define ACCEL_CONFIG                               \
-    {                                              \
-        1000,                /* 1K sample rate */  \
-            500,             /* 500Hz bandwidth */ \
-            ACCEL_RANGE_16G, /* +-16g */           \
+#define ACCEL_CONFIG                           \
+    {                                          \
+        1000,            /* 1K sample rate */  \
+        500,             /* 500Hz bandwidth */ \
+        ACCEL_RANGE_16G, /* +-16g */           \
     }
 
 typedef struct {
