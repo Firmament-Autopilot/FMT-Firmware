@@ -174,8 +174,8 @@ class uploader(object):
     INFO_BOARD_REV = b'\x03'  # board revision
     INFO_FLASH_SIZE = b'\x04'  # max firmware size in bytes
 
-    PROG_MULTI_MAX = 252  # protocol max is 255, must be multiple of 4
-    READ_MULTI_MAX = 252  # protocol max is 255
+    PROG_MULTI_MAX = 224  # protocol max is 255, must be multiple of 4
+    READ_MULTI_MAX = 224  # protocol max is 255
 
     NSH_INIT = bytearray(b'\x0d\x0d\x0d')
     NSH_REBOOT_BL = b"reboot -b\n"
@@ -266,7 +266,7 @@ class uploader(object):
             self.port.flush()
         c = bytes(self.__recv())
         if c != self.INSYNC:
-            raise RuntimeError("unexpected %s instead of INSYNC" % c)
+            raise RuntimeError("unexpected %x instead of INSYNC" % c)
         c = self.__recv()
         if c == self.INVALID:
             raise RuntimeError("bootloader reports INVALID OPERATION")
@@ -285,7 +285,7 @@ class uploader(object):
                 raise RuntimeError("Ack Window %i not %i " % (len(data), count))
             for i in range(0, len(data), 2):
                 if chr(data[i]) != self.INSYNC:
-                    raise RuntimeError("unexpected %s instead of INSYNC" % data[i])
+                    raise RuntimeError("unexpected %x instead of INSYNC" % data[i])
                 if chr(data[i + 1]) == self.INVALID:
                     raise RuntimeError("bootloader reports INVALID OPERATION")
                 if chr(data[i + 1]) == self.FAILED:
@@ -342,7 +342,8 @@ class uploader(object):
             self.__getSync(False)
         except:
             # if it fails we are on a real Serial Port
-            self.ackWindowedMode = True
+            # self.ackWindowedMode = True
+            self.ackWindowedMode = False
 
         self.port.baudrate = self.baudrate_bootloader
 
@@ -471,8 +472,8 @@ class uploader(object):
         self.port.flush()
 
         # v3+ can report failure if the first word flash fails
-        if self.bl_rev >= 3:
-            self.__getSync()
+        # if self.bl_rev >= 3:
+        #     self.__getSync()
 
     # split a sequence into a list of size-constrained pieces
     def __split_len(self, seq, length):
@@ -843,21 +844,21 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*ArduPilot*'])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*'])
 
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
                         print("wait for connect fmt-fmu...")
-                        time.sleep(1)
+                        time.sleep(2)
                         break
                         # return
 
                     if len(serial_list) > 1:
                         print('Auto-detected serial ports are:')
                         for port in serial_list:
-                            # print(" {:}".format(port))
+                            print(" {:}".format(port))
                             pass
-                    # print('Using port {:}'.format(serial_list[0]))
+                    print('Using port {:}'.format(serial_list[0]))
                     args.port = serial_list[0].device
                     break
                 except RuntimeError as ex:
@@ -873,21 +874,21 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             else:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*ArduPilot*'])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*'])
                 else:
                     serial_list = auto_detect_serial(preferred_list=["/dev/ttyUSB*", "/dev/ttyACM*"])
 
                 if len(serial_list) == 0:
                     print("Error: no serial connection found")
                     print("wait for connect fmt-fmu...")
-                    time.sleep(1)
+                    time.sleep(2)
                     continue
 
-                # if len(serial_list) > 1:
-                #     print('Auto-detected serial ports are:')
-                #     for port in serial_list:
-                #         print(" {:}".format(port))
-                # print('Using port {:}'.format(serial_list[0]))
+                if len(serial_list) > 1:
+                    print('Auto-detected serial ports are:')
+                    for port in serial_list:
+                        print(" {:}".format(port))
+                print('Using port {:}'.format(serial_list[0]))
                 args.port = serial_list[0].device
 
 
@@ -931,7 +932,7 @@ def main():
                     time.sleep(0.05)
                     if test_once:
                         print("Not found fmt_fmu,please connect fmt_fmu!")
-                        time.sleep(1)
+                        time.sleep(2)
                     # and loop to the next port
                     continue
 
