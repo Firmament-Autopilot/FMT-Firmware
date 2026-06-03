@@ -32,8 +32,6 @@
 #include "cycfg_notices.h"
 #include "cy_gpio.h"
 #include "cycfg_routing.h"
-#include "cy_smartio.h"
-#include "cy_sysclk.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -785,18 +783,18 @@ extern "C" {
 #endif
 #define IMU_PWEN_HSIOM ioss_0_port_11_pin_5_HSIOM
 #define IMU_PWEN_IRQ ioss_interrupts_gpio_11_IRQn
-#define PWM_CH2_ENABLED 1U
-#define PWM_CH2_PORT GPIO_PRT11
-#define PWM_CH2_PORT_NUM 11U
-#define PWM_CH2_PIN 6U
-#define PWM_CH2_NUM 6U
-#define PWM_CH2_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH2_INIT_DRIVESTATE 0
+#define PWM_CH10_ENABLED 1U
+#define PWM_CH10_PORT GPIO_PRT11
+#define PWM_CH10_PORT_NUM 11U
+#define PWM_CH10_PIN 6U
+#define PWM_CH10_NUM 6U
+#define PWM_CH10_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH10_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_11_pin_6_HSIOM
     #define ioss_0_port_11_pin_6_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH2_HSIOM ioss_0_port_11_pin_6_HSIOM
-#define PWM_CH2_IRQ ioss_interrupts_gpio_11_IRQn
+#define PWM_CH10_HSIOM ioss_0_port_11_pin_6_HSIOM
+#define PWM_CH10_IRQ ioss_interrupts_gpio_11_IRQn
 #define CYBSP_ARD_D4_ENABLED 1U
 #define CYBSP_ETH_REF_CLK_ENABLED CYBSP_ARD_D4_ENABLED
 #define CYBSP_ARD_D4_PORT GPIO_PRT11
@@ -818,20 +816,18 @@ extern "C" {
 #define CYBSP_ETH_REF_CLK_HSIOM CYBSP_ARD_D4_HSIOM
 #define CYBSP_ARD_D4_IRQ ioss_interrupts_gpio_11_IRQn
 #define CYBSP_ETH_REF_CLK_IRQ CYBSP_ARD_D4_IRQ
-#define CYBSP_SMART_IO_11_ENABLED 1U
-#define CYBSP_SMART_IO_11_HW SMARTIO_PRT11
-#define PWM_CH3_ENABLED 1U
-#define PWM_CH3_PORT GPIO_PRT12
-#define PWM_CH3_PORT_NUM 12U
-#define PWM_CH3_PIN 0U
-#define PWM_CH3_NUM 0U
-#define PWM_CH3_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH3_INIT_DRIVESTATE 0
+#define PWM_CH11_ENABLED 1U
+#define PWM_CH11_PORT GPIO_PRT12
+#define PWM_CH11_PORT_NUM 12U
+#define PWM_CH11_PIN 0U
+#define PWM_CH11_NUM 0U
+#define PWM_CH11_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH11_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_12_pin_0_HSIOM
     #define ioss_0_port_12_pin_0_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH3_HSIOM ioss_0_port_12_pin_0_HSIOM
-#define PWM_CH3_IRQ ioss_interrupts_gpio_12_IRQn
+#define PWM_CH11_HSIOM ioss_0_port_12_pin_0_HSIOM
+#define PWM_CH11_IRQ ioss_interrupts_gpio_12_IRQn
 #define USB_POWER_EN_ENABLED 1U
 #define USB_POWER_EN_PORT GPIO_PRT12
 #define USB_POWER_EN_PORT_NUM 12U
@@ -844,30 +840,30 @@ extern "C" {
 #endif
 #define USB_POWER_EN_HSIOM ioss_0_port_12_pin_1_HSIOM
 #define USB_POWER_EN_IRQ ioss_interrupts_gpio_12_IRQn
-#define PWM_CH4_ENABLED 1U
-#define PWM_CH4_PORT GPIO_PRT12
-#define PWM_CH4_PORT_NUM 12U
-#define PWM_CH4_PIN 2U
-#define PWM_CH4_NUM 2U
-#define PWM_CH4_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH4_INIT_DRIVESTATE 0
+#define PWM_CH12_ENABLED 1U
+#define PWM_CH12_PORT GPIO_PRT12
+#define PWM_CH12_PORT_NUM 12U
+#define PWM_CH12_PIN 2U
+#define PWM_CH12_NUM 2U
+#define PWM_CH12_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH12_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_12_pin_2_HSIOM
     #define ioss_0_port_12_pin_2_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH4_HSIOM ioss_0_port_12_pin_2_HSIOM
-#define PWM_CH4_IRQ ioss_interrupts_gpio_12_IRQn
-#define PWM_CH5_ENABLED 1U
-#define PWM_CH5_PORT GPIO_PRT12
-#define PWM_CH5_PORT_NUM 12U
-#define PWM_CH5_PIN 4U
-#define PWM_CH5_NUM 4U
-#define PWM_CH5_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH5_INIT_DRIVESTATE 0
+#define PWM_CH12_HSIOM ioss_0_port_12_pin_2_HSIOM
+#define PWM_CH12_IRQ ioss_interrupts_gpio_12_IRQn
+#define PWM_CH13_ENABLED 1U
+#define PWM_CH13_PORT GPIO_PRT12
+#define PWM_CH13_PORT_NUM 12U
+#define PWM_CH13_PIN 4U
+#define PWM_CH13_NUM 4U
+#define PWM_CH13_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH13_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_12_pin_4_HSIOM
     #define ioss_0_port_12_pin_4_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH5_HSIOM ioss_0_port_12_pin_4_HSIOM
-#define PWM_CH5_IRQ ioss_interrupts_gpio_12_IRQn
+#define PWM_CH13_HSIOM ioss_0_port_12_pin_4_HSIOM
+#define PWM_CH13_IRQ ioss_interrupts_gpio_12_IRQn
 #define CYBSP_ETH_MDC_ENABLED 1U
 #define CYBSP_ETH_MDC_PORT GPIO_PRT13
 #define CYBSP_ETH_MDC_PORT_NUM 13U
@@ -880,18 +876,18 @@ extern "C" {
 #endif
 #define CYBSP_ETH_MDC_HSIOM ioss_0_port_13_pin_1_HSIOM
 #define CYBSP_ETH_MDC_IRQ ioss_interrupts_gpio_13_IRQn
-#define PWM_CH6_ENABLED 1U
-#define PWM_CH6_PORT GPIO_PRT13
-#define PWM_CH6_PORT_NUM 13U
-#define PWM_CH6_PIN 3U
-#define PWM_CH6_NUM 3U
-#define PWM_CH6_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH6_INIT_DRIVESTATE 0
+#define PWM_CH14_ENABLED 1U
+#define PWM_CH14_PORT GPIO_PRT13
+#define PWM_CH14_PORT_NUM 13U
+#define PWM_CH14_PIN 3U
+#define PWM_CH14_NUM 3U
+#define PWM_CH14_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH14_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_13_pin_3_HSIOM
     #define ioss_0_port_13_pin_3_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH6_HSIOM ioss_0_port_13_pin_3_HSIOM
-#define PWM_CH6_IRQ ioss_interrupts_gpio_13_IRQn
+#define PWM_CH14_HSIOM ioss_0_port_13_pin_3_HSIOM
+#define PWM_CH14_IRQ ioss_interrupts_gpio_13_IRQn
 #define CYBSP_ARD_D2_ENABLED 1U
 #define CYBSP_DAC_1_ENABLED CYBSP_ARD_D2_ENABLED
 #define CYBSP_ETH_MDIO_ENABLED CYBSP_ARD_D2_ENABLED
@@ -934,18 +930,18 @@ extern "C" {
 #endif
 #define CYBSP_CTB_IN_2_HSIOM ioss_0_port_13_pin_7_HSIOM
 #define CYBSP_CTB_IN_2_IRQ ioss_interrupts_gpio_13_IRQn
-#define PWM_CH1_ENABLED 1U
-#define PWM_CH1_PORT GPIO_PRT14
-#define PWM_CH1_PORT_NUM 14U
-#define PWM_CH1_PIN 1U
-#define PWM_CH1_NUM 1U
-#define PWM_CH1_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH1_INIT_DRIVESTATE 0
+#define PWM_CH9_ENABLED 1U
+#define PWM_CH9_PORT GPIO_PRT14
+#define PWM_CH9_PORT_NUM 14U
+#define PWM_CH9_PIN 1U
+#define PWM_CH9_NUM 1U
+#define PWM_CH9_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH9_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_14_pin_1_HSIOM
     #define ioss_0_port_14_pin_1_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH1_HSIOM ioss_0_port_14_pin_1_HSIOM
-#define PWM_CH1_IRQ ioss_interrupts_gpio_14_IRQn
+#define PWM_CH9_HSIOM ioss_0_port_14_pin_1_HSIOM
+#define PWM_CH9_IRQ ioss_interrupts_gpio_14_IRQn
 #define ETH_PWEN_ENABLED 1U
 #define ETH_PWEN_PORT GPIO_PRT14
 #define ETH_PWEN_PORT_NUM 14U
@@ -982,18 +978,18 @@ extern "C" {
 #endif
 #define CYBSP_I2C8_SCL_HSIOM ioss_0_port_14_pin_4_HSIOM
 #define CYBSP_I2C8_SCL_IRQ ioss_interrupts_gpio_14_IRQn
-#define PWM_CH7_ENABLED 1U
-#define PWM_CH7_PORT GPIO_PRT14
-#define PWM_CH7_PORT_NUM 14U
-#define PWM_CH7_PIN 6U
-#define PWM_CH7_NUM 6U
-#define PWM_CH7_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH7_INIT_DRIVESTATE 0
+#define PWM_CH15_ENABLED 1U
+#define PWM_CH15_PORT GPIO_PRT14
+#define PWM_CH15_PORT_NUM 14U
+#define PWM_CH15_PIN 6U
+#define PWM_CH15_NUM 6U
+#define PWM_CH15_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH15_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_14_pin_6_HSIOM
     #define ioss_0_port_14_pin_6_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH7_HSIOM ioss_0_port_14_pin_6_HSIOM
-#define PWM_CH7_IRQ ioss_interrupts_gpio_14_IRQn
+#define PWM_CH15_HSIOM ioss_0_port_14_pin_6_HSIOM
+#define PWM_CH15_IRQ ioss_interrupts_gpio_14_IRQn
 #define CYBSP_UART9_RX_ENABLED 1U
 #define CYBSP_UART9_RX_PORT GPIO_PRT15
 #define CYBSP_UART9_RX_PORT_NUM 15U
@@ -1018,18 +1014,18 @@ extern "C" {
 #endif
 #define CYBSP_UART9_TX_HSIOM ioss_0_port_15_pin_1_HSIOM
 #define CYBSP_UART9_TX_IRQ ioss_interrupts_gpio_15_IRQn
-#define PWM_CH8_ENABLED 1U
-#define PWM_CH8_PORT GPIO_PRT15
-#define PWM_CH8_PORT_NUM 15U
-#define PWM_CH8_PIN 2U
-#define PWM_CH8_NUM 2U
-#define PWM_CH8_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH8_INIT_DRIVESTATE 0
+#define PWM_CH16_ENABLED 1U
+#define PWM_CH16_PORT GPIO_PRT15
+#define PWM_CH16_PORT_NUM 15U
+#define PWM_CH16_PIN 2U
+#define PWM_CH16_NUM 2U
+#define PWM_CH16_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH16_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_15_pin_2_HSIOM
     #define ioss_0_port_15_pin_2_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH8_HSIOM ioss_0_port_15_pin_2_HSIOM
-#define PWM_CH8_IRQ ioss_interrupts_gpio_15_IRQn
+#define PWM_CH16_HSIOM ioss_0_port_15_pin_2_HSIOM
+#define PWM_CH16_IRQ ioss_interrupts_gpio_15_IRQn
 #define CYBSP_ARD_ADC_2_ENABLED 1U
 #define CYBSP_ARD_ADC_2_PORT GPIO_PRT15
 #define CYBSP_ARD_ADC_2_PORT_NUM 15U
@@ -1102,78 +1098,78 @@ extern "C" {
 #endif
 #define CYBSP_UART10_TX_HSIOM ioss_0_port_16_pin_1_HSIOM
 #define CYBSP_UART10_TX_IRQ ioss_interrupts_gpio_16_IRQn
-#define PWM_CH9_ENABLED 1U
-#define PWM_CH9_PORT GPIO_PRT16
-#define PWM_CH9_PORT_NUM 16U
-#define PWM_CH9_PIN 2U
-#define PWM_CH9_NUM 2U
-#define PWM_CH9_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH9_INIT_DRIVESTATE 0
+#define PWM_CH1_ENABLED 1U
+#define PWM_CH1_PORT GPIO_PRT16
+#define PWM_CH1_PORT_NUM 16U
+#define PWM_CH1_PIN 2U
+#define PWM_CH1_NUM 2U
+#define PWM_CH1_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH1_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_16_pin_2_HSIOM
     #define ioss_0_port_16_pin_2_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH9_HSIOM ioss_0_port_16_pin_2_HSIOM
-#define PWM_CH9_IRQ ioss_interrupts_gpio_16_IRQn
-#define PWM_CH10_ENABLED 1U
-#define PWM_CH10_PORT GPIO_PRT16
-#define PWM_CH10_PORT_NUM 16U
-#define PWM_CH10_PIN 3U
-#define PWM_CH10_NUM 3U
-#define PWM_CH10_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH10_INIT_DRIVESTATE 0
+#define PWM_CH1_HSIOM ioss_0_port_16_pin_2_HSIOM
+#define PWM_CH1_IRQ ioss_interrupts_gpio_16_IRQn
+#define PWM_CH2_ENABLED 1U
+#define PWM_CH2_PORT GPIO_PRT16
+#define PWM_CH2_PORT_NUM 16U
+#define PWM_CH2_PIN 3U
+#define PWM_CH2_NUM 3U
+#define PWM_CH2_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH2_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_16_pin_3_HSIOM
     #define ioss_0_port_16_pin_3_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH10_HSIOM ioss_0_port_16_pin_3_HSIOM
-#define PWM_CH10_IRQ ioss_interrupts_gpio_16_IRQn
-#define PWM_CH11_ENABLED 1U
-#define PWM_CH11_PORT GPIO_PRT16
-#define PWM_CH11_PORT_NUM 16U
-#define PWM_CH11_PIN 4U
-#define PWM_CH11_NUM 4U
-#define PWM_CH11_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH11_INIT_DRIVESTATE 0
+#define PWM_CH2_HSIOM ioss_0_port_16_pin_3_HSIOM
+#define PWM_CH2_IRQ ioss_interrupts_gpio_16_IRQn
+#define PWM_CH3_ENABLED 1U
+#define PWM_CH3_PORT GPIO_PRT16
+#define PWM_CH3_PORT_NUM 16U
+#define PWM_CH3_PIN 4U
+#define PWM_CH3_NUM 4U
+#define PWM_CH3_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH3_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_16_pin_4_HSIOM
     #define ioss_0_port_16_pin_4_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH11_HSIOM ioss_0_port_16_pin_4_HSIOM
-#define PWM_CH11_IRQ ioss_interrupts_gpio_16_IRQn
-#define PWM_CH12_ENABLED 1U
-#define PWM_CH12_PORT GPIO_PRT16
-#define PWM_CH12_PORT_NUM 16U
-#define PWM_CH12_PIN 5U
-#define PWM_CH12_NUM 5U
-#define PWM_CH12_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH12_INIT_DRIVESTATE 0
+#define PWM_CH3_HSIOM ioss_0_port_16_pin_4_HSIOM
+#define PWM_CH3_IRQ ioss_interrupts_gpio_16_IRQn
+#define PWM_CH4_ENABLED 1U
+#define PWM_CH4_PORT GPIO_PRT16
+#define PWM_CH4_PORT_NUM 16U
+#define PWM_CH4_PIN 5U
+#define PWM_CH4_NUM 5U
+#define PWM_CH4_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH4_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_16_pin_5_HSIOM
     #define ioss_0_port_16_pin_5_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH12_HSIOM ioss_0_port_16_pin_5_HSIOM
-#define PWM_CH12_IRQ ioss_interrupts_gpio_16_IRQn
-#define PWM_CH13_ENABLED 1U
-#define PWM_CH13_PORT GPIO_PRT16
-#define PWM_CH13_PORT_NUM 16U
-#define PWM_CH13_PIN 6U
-#define PWM_CH13_NUM 6U
-#define PWM_CH13_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH13_INIT_DRIVESTATE 0
+#define PWM_CH4_HSIOM ioss_0_port_16_pin_5_HSIOM
+#define PWM_CH4_IRQ ioss_interrupts_gpio_16_IRQn
+#define PWM_CH5_ENABLED 1U
+#define PWM_CH5_PORT GPIO_PRT16
+#define PWM_CH5_PORT_NUM 16U
+#define PWM_CH5_PIN 6U
+#define PWM_CH5_NUM 6U
+#define PWM_CH5_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH5_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_16_pin_6_HSIOM
     #define ioss_0_port_16_pin_6_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH13_HSIOM ioss_0_port_16_pin_6_HSIOM
-#define PWM_CH13_IRQ ioss_interrupts_gpio_16_IRQn
-#define PWM_CH14_ENABLED 1U
-#define PWM_CH14_PORT GPIO_PRT16
-#define PWM_CH14_PORT_NUM 16U
-#define PWM_CH14_PIN 7U
-#define PWM_CH14_NUM 7U
-#define PWM_CH14_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH14_INIT_DRIVESTATE 0
+#define PWM_CH5_HSIOM ioss_0_port_16_pin_6_HSIOM
+#define PWM_CH5_IRQ ioss_interrupts_gpio_16_IRQn
+#define PWM_CH6_ENABLED 1U
+#define PWM_CH6_PORT GPIO_PRT16
+#define PWM_CH6_PORT_NUM 16U
+#define PWM_CH6_PIN 7U
+#define PWM_CH6_NUM 7U
+#define PWM_CH6_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH6_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_16_pin_7_HSIOM
     #define ioss_0_port_16_pin_7_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH14_HSIOM ioss_0_port_16_pin_7_HSIOM
-#define PWM_CH14_IRQ ioss_interrupts_gpio_16_IRQn
+#define PWM_CH6_HSIOM ioss_0_port_16_pin_7_HSIOM
+#define PWM_CH6_IRQ ioss_interrupts_gpio_16_IRQn
 #define CYBSP_I2C5_SCL_ENABLED 1U
 #define CYBSP_I2C5_SCL_PORT GPIO_PRT17
 #define CYBSP_I2C5_SCL_PORT_NUM 17U
@@ -1222,30 +1218,30 @@ extern "C" {
 #endif
 #define CYBSP_UART11_TX_HSIOM ioss_0_port_17_pin_3_HSIOM
 #define CYBSP_UART11_TX_IRQ ioss_interrupts_gpio_17_IRQn
-#define PWM_CH15_ENABLED 1U
-#define PWM_CH15_PORT GPIO_PRT17
-#define PWM_CH15_PORT_NUM 17U
-#define PWM_CH15_PIN 4U
-#define PWM_CH15_NUM 4U
-#define PWM_CH15_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH15_INIT_DRIVESTATE 0
+#define PWM_CH7_ENABLED 1U
+#define PWM_CH7_PORT GPIO_PRT17
+#define PWM_CH7_PORT_NUM 17U
+#define PWM_CH7_PIN 4U
+#define PWM_CH7_NUM 4U
+#define PWM_CH7_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH7_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_17_pin_4_HSIOM
     #define ioss_0_port_17_pin_4_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH15_HSIOM ioss_0_port_17_pin_4_HSIOM
-#define PWM_CH15_IRQ ioss_interrupts_gpio_17_IRQn
-#define PWM_CH16_ENABLED 1U
-#define PWM_CH16_PORT GPIO_PRT17
-#define PWM_CH16_PORT_NUM 17U
-#define PWM_CH16_PIN 5U
-#define PWM_CH16_NUM 5U
-#define PWM_CH16_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define PWM_CH16_INIT_DRIVESTATE 0
+#define PWM_CH7_HSIOM ioss_0_port_17_pin_4_HSIOM
+#define PWM_CH7_IRQ ioss_interrupts_gpio_17_IRQn
+#define PWM_CH8_ENABLED 1U
+#define PWM_CH8_PORT GPIO_PRT17
+#define PWM_CH8_PORT_NUM 17U
+#define PWM_CH8_PIN 5U
+#define PWM_CH8_NUM 5U
+#define PWM_CH8_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define PWM_CH8_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_17_pin_5_HSIOM
     #define ioss_0_port_17_pin_5_HSIOM HSIOM_SEL_GPIO
 #endif
-#define PWM_CH16_HSIOM ioss_0_port_17_pin_5_HSIOM
-#define PWM_CH16_IRQ ioss_interrupts_gpio_17_IRQn
+#define PWM_CH8_HSIOM ioss_0_port_17_pin_5_HSIOM
+#define PWM_CH8_IRQ ioss_interrupts_gpio_17_IRQn
 #define CYBSP_SDHC_DETECT_ENABLED 1U
 #define CYBSP_SDHC_DETECT_PORT GPIO_PRT17
 #define CYBSP_SDHC_DETECT_PORT_NUM 17U
@@ -1507,50 +1503,49 @@ extern const cy_stc_gpio_pin_config_t CYBSP_WIFI_HOST_WAKE_config;
 #define CYBSP_ETH_TX_CTL_config CYBSP_WIFI_HOST_WAKE_config
 
 extern const cy_stc_gpio_pin_config_t IMU_PWEN_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH2_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH10_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_D4_config;
 
 #define CYBSP_ETH_REF_CLK_config CYBSP_ARD_D4_config
 
-extern const cy_stc_smartio_config_t CYBSP_SMART_IO_11_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH3_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH11_config;
 extern const cy_stc_gpio_pin_config_t USB_POWER_EN_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH4_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH5_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH12_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH13_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ETH_MDC_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH6_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH14_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_D2_config;
 
 #define CYBSP_DAC_1_config CYBSP_ARD_D2_config
 #define CYBSP_ETH_MDIO_config CYBSP_ARD_D2_config
 
 extern const cy_stc_gpio_pin_config_t CYBSP_CTB_IN_2_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH1_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH9_config;
 extern const cy_stc_gpio_pin_config_t ETH_PWEN_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C8_SDA_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C8_SCL_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH7_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH15_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART9_RX_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART9_TX_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH8_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH16_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_2_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_3_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_4_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_5_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART10_RX_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART10_TX_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH9_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH10_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH11_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH12_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH13_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH14_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH1_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH2_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH3_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH4_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH5_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH6_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C5_SCL_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C5_SDA_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART11_RX_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART11_TX_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH15_config;
-extern const cy_stc_gpio_pin_config_t PWM_CH16_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH7_config;
+extern const cy_stc_gpio_pin_config_t PWM_CH8_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SDHC_DETECT_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WCO_OUT_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WCO_IN_config;

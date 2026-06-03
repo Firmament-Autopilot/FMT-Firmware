@@ -75,7 +75,18 @@ static cy_stc_sysint_t UART5_TX_DMA_SCB_IRQ_cfg = {
     .intrPriority = (6u),
 };
 #endif
-
+#if defined(BSP_USING_UART6) || defined(BSP_USING_UART6_DMA_TX)
+static cy_stc_sysint_t UART6_SCB_IRQ_cfg = {
+    .intrSrc = (IRQn_Type)scb_6_interrupt_IRQn,
+    .intrPriority = (7u),
+};
+#endif
+#ifdef BSP_USING_UART6_DMA_TX
+static cy_stc_sysint_t UART6_TX_DMA_SCB_IRQ_cfg = {
+    .intrSrc = (IRQn_Type)CYBSP_UART6_TX_DMA_IRQ,
+    .intrPriority = (6u),
+};
+#endif
 #if defined(BSP_USING_UART9)
 static cy_stc_sysint_t UART9_SCB_IRQ_cfg = {
     .intrSrc = (IRQn_Type)scb_9_interrupt_IRQn,
@@ -267,6 +278,42 @@ void uart5_dma_tx_isr_callback(void);
     #endif
 
 #endif /* BSP_USING_UART5 */
+
+#if defined(BSP_USING_UART6)
+
+    #ifdef BSP_USING_UART6_DMA_TX
+        #define UART6_DMA_TX_CONFIG                                              \
+            .tx_dma_descriptor_config = &CYBSP_UART6_TX_DMA_Descriptor_0_config, \
+            .tx_dma_channel_config = &CYBSP_UART6_TX_DMA_channelConfig,          \
+            .tx_dma_int_cfg = &UART6_TX_DMA_SCB_IRQ_cfg,                         \
+            .tx_dma_isr = uart6_dma_tx_isr_callback,                             \
+            .tx_dma_irq = CYBSP_UART6_TX_DMA_IRQ,                                \
+            .tx_dma_channel = CYBSP_UART6_TX_DMA_CHANNEL,                        \
+            .tx_dma_hw = CYBSP_UART6_TX_DMA_HW,
+    #else
+        #define UART6_DMA_TX_CONFIG
+    #endif
+
+    #ifndef UART6_CONFIG
+        #define UART6_CONFIG                                      \
+            {                                                     \
+                .name = "serial6",                                \
+                .usart_x = SCB6,                                  \
+                .intrSrc = scb_6_interrupt_IRQn,                  \
+                .uart_config = &CYBSP_UART6_config,               \
+                .hal_uart_configurator = &CYBSP_UART6_hal_config, \
+                .userIsr = uart6_isr_callback,                    \
+                .UART_SCB_IRQ_cfg = &UART6_SCB_IRQ_cfg,           \
+                UART6_DMA_TX_CONFIG                               \
+            }
+    #endif
+
+void uart6_isr_callback(void);
+    #ifdef BSP_USING_UART6_DMA_TX
+void uart6_dma_tx_isr_callback(void);
+    #endif
+
+#endif /* BSP_USING_UART6 */
 
 /* ----------------------------------------------------------------
  * UART9

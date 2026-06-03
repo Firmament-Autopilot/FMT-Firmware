@@ -97,6 +97,11 @@
                         <Alias value="CYBSP_SERIAL_INT_1"/>
                     </Aliases>
                 </Block>
+                <Block location="ioss[0].port[11].smartio[0]">
+                    <Aliases>
+                        <Alias value="CYBSP_SMART_IO_11"/>
+                    </Aliases>
+                </Block>
                 <Block location="ioss[0].port[12].pin[3]">
                     <Aliases>
                         <Alias value="CYBSP_I2S_TX_FSYNC"/>
@@ -3132,7 +3137,7 @@
                 <Personality template="pin" version="3.0" instance="X3kuN50rOfM">
                     <Block location="ioss[0].port[11].pin[6]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH2"/>
+                            <Alias value="PWM_CH10"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3164,103 +3169,10 @@
                         <Param id="slewRate" value="CY_GPIO_SLEW_FAST"/>
                     </Parameters>
                 </Personality>
-                <Personality template="smartio" version="4.0" instance="Lc6AWK3nyR8">
-                    <Block location="ioss[0].port[11].smartio[0]" locked="true">
-                        <Aliases>
-                            <Alias value="CYBSP_SMART_IO_11"/>
-                        </Aliases>
-                    </Block>
-                    <Parameters>
-                        <Param id="chipMode0" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="chipMode1" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="chipMode2" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="chipMode3" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="chipMode4" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="chipMode5" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="chipMode6" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="chipMode7" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="clkSrc" value="CY_SMARTIO_CLK_ASYNC"/>
-                        <Param id="duData0" value="CY_SMARTIO_DUDATA_ZERO"/>
-                        <Param id="duData1" value="CY_SMARTIO_DUDATA_ZERO"/>
-                        <Param id="duDataReg" value="0"/>
-                        <Param id="duEn" value="false"/>
-                        <Param id="duOpcode" value="CY_SMARTIO_DUOPC_INCR"/>
-                        <Param id="duSize" value="CY_SMARTIO_DUSIZE_8"/>
-                        <Param id="duTr0" value="CY_SMARTIO_DUTR_ZERO"/>
-                        <Param id="duTr1" value="CY_SMARTIO_DUTR_ZERO"/>
-                        <Param id="duTr2" value="CY_SMARTIO_DUTR_ZERO"/>
-                        <Param id="hldOvr" value="false"/>
-                        <Param id="inFlash" value="true"/>
-                        <Param id="ioMode0" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="ioMode1" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="ioMode2" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="ioMode3" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="ioMode4" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="ioMode5" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="ioMode6" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="ioMode7" value="CY_SMARTIO_BYPASS"/>
-                        <Param id="lut0Map" value="0"/>
-                        <Param id="lut0Notes" value=""/>
-                        <Param id="lut0Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut0Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut0Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut0Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut1Map" value="0"/>
-                        <Param id="lut1Notes" value=""/>
-                        <Param id="lut1Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut1Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut1Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut1Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut2Map" value="0"/>
-                        <Param id="lut2Notes" value=""/>
-                        <Param id="lut2Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut2Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut2Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut2Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut3Map" value="0"/>
-                        <Param id="lut3Notes" value=""/>
-                        <Param id="lut3Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut3Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut3Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut3Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut4Map" value="0"/>
-                        <Param id="lut4Notes" value=""/>
-                        <Param id="lut4Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut4Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut4Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut4Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut5Map" value="0"/>
-                        <Param id="lut5Notes" value=""/>
-                        <Param id="lut5Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut5Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut5Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut5Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut6Map" value="0"/>
-                        <Param id="lut6Notes" value=""/>
-                        <Param id="lut6Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut6Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut6Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut6Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut7Map" value="0"/>
-                        <Param id="lut7Notes" value=""/>
-                        <Param id="lut7Opcode" value="CY_SMARTIO_LUTOPC_COMB"/>
-                        <Param id="lut7Tr0" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut7Tr1" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lut7Tr2" value="CY_SMARTIO_LUTTR_INVALID"/>
-                        <Param id="lutEn0" value="false"/>
-                        <Param id="lutEn1" value="false"/>
-                        <Param id="lutEn2" value="false"/>
-                        <Param id="lutEn3" value="false"/>
-                        <Param id="lutEn4" value="false"/>
-                        <Param id="lutEn5" value="false"/>
-                        <Param id="lutEn6" value="false"/>
-                        <Param id="lutEn7" value="false"/>
-                    </Parameters>
-                </Personality>
                 <Personality template="pin" version="3.0" instance="NJf6yxLz8iQ">
                     <Block location="ioss[0].port[12].pin[0]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH3"/>
+                            <Alias value="PWM_CH11"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3294,7 +3206,7 @@
                 <Personality template="pin" version="3.0" instance="5hOrljEVBTk">
                     <Block location="ioss[0].port[12].pin[2]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH4"/>
+                            <Alias value="PWM_CH12"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3311,7 +3223,7 @@
                 <Personality template="pin" version="3.0" instance="i765UhiiB30">
                     <Block location="ioss[0].port[12].pin[4]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH5"/>
+                            <Alias value="PWM_CH13"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3345,7 +3257,7 @@
                 <Personality template="pin" version="3.0" instance="9A7Ceudh0nA">
                     <Block location="ioss[0].port[13].pin[3]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH6"/>
+                            <Alias value="PWM_CH14"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3398,7 +3310,7 @@
                 <Personality template="pin" version="3.0" instance="w5T8ScXGuAU">
                     <Block location="ioss[0].port[14].pin[1]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH1"/>
+                            <Alias value="PWM_CH9"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3466,7 +3378,7 @@
                 <Personality template="pin" version="3.0" instance="JewBDDM4GDM">
                     <Block location="ioss[0].port[14].pin[6]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH7"/>
+                            <Alias value="PWM_CH15"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3517,7 +3429,7 @@
                 <Personality template="pin" version="3.0" instance="4xBjv7H9iR8">
                     <Block location="ioss[0].port[15].pin[2]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH8"/>
+                            <Alias value="PWM_CH16"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3636,7 +3548,7 @@
                 <Personality template="pin" version="3.0" instance="PxUvbxjo7KE">
                     <Block location="ioss[0].port[16].pin[2]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH9"/>
+                            <Alias value="PWM_CH1"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3653,7 +3565,7 @@
                 <Personality template="pin" version="3.0" instance="PF4RXA_L4Zo">
                     <Block location="ioss[0].port[16].pin[3]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH10"/>
+                            <Alias value="PWM_CH2"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3670,7 +3582,7 @@
                 <Personality template="pin" version="3.0" instance="MPRBxQns20U">
                     <Block location="ioss[0].port[16].pin[4]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH11"/>
+                            <Alias value="PWM_CH3"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3687,7 +3599,7 @@
                 <Personality template="pin" version="3.0" instance="EFWuidgYc2E">
                     <Block location="ioss[0].port[16].pin[5]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH12"/>
+                            <Alias value="PWM_CH4"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3704,7 +3616,7 @@
                 <Personality template="pin" version="3.0" instance="DJg85Hxynmc">
                     <Block location="ioss[0].port[16].pin[6]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH13"/>
+                            <Alias value="PWM_CH5"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3721,7 +3633,7 @@
                 <Personality template="pin" version="3.0" instance="pKiuTsnWR_Y">
                     <Block location="ioss[0].port[16].pin[7]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH14"/>
+                            <Alias value="PWM_CH6"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3806,7 +3718,7 @@
                 <Personality template="pin" version="3.0" instance="V3tcQCKqsf8">
                     <Block location="ioss[0].port[17].pin[4]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH15"/>
+                            <Alias value="PWM_CH7"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -3823,7 +3735,7 @@
                 <Personality template="pin" version="3.0" instance="2YcaNQX19ZI">
                     <Block location="ioss[0].port[17].pin[5]" locked="true">
                         <Aliases>
-                            <Alias value="PWM_CH16"/>
+                            <Alias value="PWM_CH8"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -5155,6 +5067,60 @@
                         <Param id="ModeUser" value="CY_SCB_I2C_MASTER"/>
                         <Param id="SlaveAddress" value="8"/>
                         <Param id="SlaveAddressMask" value="254"/>
+                        <Param id="inFlash" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="uart" version="3.0" instance="dR-lpAzfDfY">
+                    <Block location="scb[6]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_UART6"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="ApiMode" value="HIGH_LEVEL"/>
+                        <Param id="BaudRate" value="115200"/>
+                        <Param id="BitsOrder" value="CY_SCB_UART_LSB_FIRST"/>
+                        <Param id="BreakLevel" value="0"/>
+                        <Param id="BreakSignalBits" value="11"/>
+                        <Param id="ComMode" value="CY_SCB_UART_STANDARD"/>
+                        <Param id="CtsPolarity" value="CY_SCB_UART_ACTIVE_LOW"/>
+                        <Param id="DataWidth" value="8"/>
+                        <Param id="DropOnFrameErr" value="false"/>
+                        <Param id="DropOnParityErr" value="false"/>
+                        <Param id="EnableHalfDuplex" value="false"/>
+                        <Param id="EnableInputFilter" value="false"/>
+                        <Param id="EnableTxEn" value="false"/>
+                        <Param id="FlowControl" value="false"/>
+                        <Param id="IntrRxBreakDetected" value="false"/>
+                        <Param id="IntrRxFrameErr" value="false"/>
+                        <Param id="IntrRxFull" value="false"/>
+                        <Param id="IntrRxNotEmpty" value="false"/>
+                        <Param id="IntrRxOverflow" value="false"/>
+                        <Param id="IntrRxParityErr" value="false"/>
+                        <Param id="IntrRxTrigger" value="false"/>
+                        <Param id="IntrRxUnderflow" value="false"/>
+                        <Param id="IntrTxEmpty" value="false"/>
+                        <Param id="IntrTxNotFull" value="false"/>
+                        <Param id="IntrTxOverflow" value="false"/>
+                        <Param id="IntrTxTrigger" value="false"/>
+                        <Param id="IntrTxUartDone" value="false"/>
+                        <Param id="IntrTxUartLostArb" value="false"/>
+                        <Param id="IntrTxUartNack" value="false"/>
+                        <Param id="IntrTxUnderflow" value="false"/>
+                        <Param id="IrdaLowPower" value="false"/>
+                        <Param id="IrdaPolarity" value="NON_INVERTING"/>
+                        <Param id="MpRxAcceptAddress" value="false"/>
+                        <Param id="MpRxAddress" value="0"/>
+                        <Param id="MpRxAddressMask" value="255"/>
+                        <Param id="MultiProc" value="false"/>
+                        <Param id="Oversample" value="10"/>
+                        <Param id="ParityType" value="CY_SCB_UART_PARITY_NONE"/>
+                        <Param id="RtsPolarity" value="CY_SCB_UART_ACTIVE_LOW"/>
+                        <Param id="RtsTriggerLevel" value="63"/>
+                        <Param id="RxTriggerLevel" value="63"/>
+                        <Param id="SmCardRetryOnNack" value="false"/>
+                        <Param id="StopBits" value="CY_SCB_UART_STOP_BITS_1"/>
+                        <Param id="TxTriggerLevel" value="63"/>
                         <Param id="inFlash" value="true"/>
                     </Parameters>
                 </Personality>
@@ -7457,6 +7423,10 @@
                     <Port name="scb[4].uart_tx[0]"/>
                 </Net>
                 <Net>
+                    <Port name="ioss[0].port[11].pin[0].digital_inout[0]"/>
+                    <Port name="scb[6].uart_rx[0]"/>
+                </Net>
+                <Net>
                     <Port name="ioss[0].port[11].pin[1].digital_in[0]"/>
                     <Port name="tcpwm[0].group[0].cnt[2].capture0[0]"/>
                 </Net>
@@ -7651,6 +7621,10 @@
                 <Net>
                     <Port name="peri[0].group[1].div_24_5[0].clk[0]"/>
                     <Port name="scb[11].clock_scb_en[0]"/>
+                </Net>
+                <Net>
+                    <Port name="peri[0].group[1].div_8[0].clk[0]"/>
+                    <Port name="scb[6].clock_scb_en[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[1].div_8[2].clk[0]"/>
