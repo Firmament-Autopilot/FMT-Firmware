@@ -102,8 +102,8 @@ fmt_err_t pmu_poll_battery_status(void)
     }
 
     /* Use shared mlog time reference to align with vehicle task timestamps */
-    battery.timestamp = timestamps - systime_get_mlog_ref();
-    bat_status.timestamp = timestamps - systime_get_mlog_ref();
+    battery.timestamp = timestamps - systime_get_origin();
+    bat_status.timestamp = timestamps - systime_get_origin();
     bat_status.reserved1 = 0;
     bat_status.reserved2 = 0;
 

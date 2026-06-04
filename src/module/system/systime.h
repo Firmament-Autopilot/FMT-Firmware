@@ -104,7 +104,7 @@ void systime_msleep(uint32_t time_ms);
 uint8_t check_timetag(TimeTag* timetag);
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now);
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period);
-uint32_t systime_get_mlog_ref(void);
+uint32_t systime_get_origin(void);
 
 #ifdef __cplusplus
 }

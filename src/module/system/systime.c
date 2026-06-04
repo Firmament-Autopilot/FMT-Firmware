@@ -216,7 +216,7 @@ fmt_err_t systime_init(void)
  *
  * @return uint32_t The reference time in ms
  */
-uint32_t systime_get_mlog_ref(void)
+uint32_t systime_get_origin(void)
 {
     if (mlog_time_ref == 0) {
         mlog_time_ref = systime_now_ms();

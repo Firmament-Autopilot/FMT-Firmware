@@ -58,7 +58,7 @@ void task_vehicle_entry(void* parameter)
             if (recv_set & EVENT_VEHICLE_UPDATE) {
                 time_now = systime_now_ms();
                 /* the model simulation start from 0, so we calculate the timestamp relative to start time */
-                timestamp = time_now - systime_get_mlog_ref();
+                timestamp = time_now - systime_get_origin();
 
 #if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
                 sensor_collect();
