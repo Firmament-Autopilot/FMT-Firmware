@@ -56,6 +56,7 @@ extern "C" {
 #define ioss_0_port_10_pin_5_HSIOM P10_5_ETH_RX_CTL
 #define ioss_0_port_10_pin_6_HSIOM P10_6_ETH_RXD0
 #define ioss_0_port_10_pin_7_HSIOM P10_7_ETH_RXD1
+#define ioss_0_port_11_pin_0_HSIOM P11_0_SCB6_UART_RX
 #define ioss_0_port_11_pin_1_HSIOM P11_1_PERI1_TR_IO_INPUT1
 #define ioss_0_port_11_pin_2_HSIOM P11_2_ETH_TXD0
 #define ioss_0_port_11_pin_3_HSIOM P11_3_ETH_TXD1

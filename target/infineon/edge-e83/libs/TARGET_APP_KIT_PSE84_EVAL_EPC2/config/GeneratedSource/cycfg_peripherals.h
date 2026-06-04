@@ -147,6 +147,9 @@ extern "C" {
 #define CYBSP_I2C5_CONTROLLER_ENABLED 1U
 #define CYBSP_I2C5_CONTROLLER_HW SCB5
 #define CYBSP_I2C5_CONTROLLER_IRQ scb_5_interrupt_IRQn
+#define CYBSP_UART6_ENABLED 1U
+#define CYBSP_UART6_HW SCB6
+#define CYBSP_UART6_IRQ scb_6_interrupt_IRQn
 #define CYBSP_SPI8_ENABLED 1U
 #define CYBSP_SPI8_HW SCB8
 #define CYBSP_SPI8_IRQ scb_8_interrupt_IRQn
@@ -382,6 +385,17 @@ extern const mtb_hal_clock_t CYBSP_I2C5_CONTROLLER_hal_clock;
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_I2C)
 extern const mtb_hal_i2c_configurator_t CYBSP_I2C5_CONTROLLER_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_I2C) */
+
+extern const cy_stc_scb_uart_config_t CYBSP_UART6_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t CYBSP_UART6_clock_ref;
+extern const mtb_hal_clock_t CYBSP_UART6_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+extern const mtb_hal_uart_configurator_t CYBSP_UART6_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
 
 extern const cy_stc_scb_spi_config_t CYBSP_SPI8_config;
 

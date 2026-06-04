@@ -35,7 +35,7 @@
     #define UART_DCACHE_INVALIDATE(addr, size) ((void)0)
 #endif
 
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX) || defined(BSP_USING_UART9_DMA_TX) || defined(BSP_USING_UART10_DMA_TX) || defined(BSP_USING_UART11_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX) || defined(BSP_USING_UART6_DMA_TX) || defined(BSP_USING_UART9_DMA_TX) || defined(BSP_USING_UART10_DMA_TX) || defined(BSP_USING_UART11_DMA_TX)
     #define UART_DMA_TX_SUPPORTED
     #define UART_DMA_XCOUNT_MAX 256u
 #endif
@@ -72,6 +72,11 @@ CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart5_tx_desc;
     #endif
 
+#ifdef BSP_USING_UART6_DMA_TX
+CY_SECTION(".cy_sharedmem")
+CY_ALIGN(32)
+static cy_stc_dma_descriptor_t uart6_tx_desc;
+#endif
     #ifdef BSP_USING_UART9_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
@@ -212,6 +217,9 @@ enum {
 #ifdef BSP_USING_UART5
     UART5_INDEX,
 #endif
+#ifdef BSP_USING_UART6
+    UART6_INDEX,
+#endif
 #ifdef BSP_USING_UART9
     UART9_INDEX,
 #endif
@@ -235,6 +243,9 @@ static struct ifx_uart_config uart_config[] = {
 #endif
 #ifdef BSP_USING_UART5
     UART5_CONFIG,
+#endif
+#ifdef BSP_USING_UART6
+    UART6_CONFIG,
 #endif
 #ifdef BSP_USING_UART9
     UART9_CONFIG,
@@ -431,7 +442,14 @@ void uart5_isr_callback(void)
     rt_interrupt_leave();
 }
 #endif
-
+#ifdef BSP_USING_UART6
+void uart6_isr_callback(void)
+{
+    rt_interrupt_enter();
+    uart_isr(&uart_obj[UART6_INDEX].serial);
+    rt_interrupt_leave();
+}
+#endif
 #ifdef BSP_USING_UART9
 void uart9_isr_callback(void)
 {
@@ -482,6 +500,9 @@ void uart5_dma_tx_isr_callback(void)
 {
     uart_dma_tx_isr(&uart_obj[UART5_INDEX]);
 }
+#endif
+#ifdef BSP_USING_UART6_DMA_TX
+void uart6_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART6_INDEX]); }
 #endif
 #ifdef BSP_USING_UART9_DMA_TX
 void uart9_dma_tx_isr_callback(void)
