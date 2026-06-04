@@ -25,7 +25,7 @@ MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 /* Model information */
 fmt_model_info_t ins_model_info;
 
-void ins_interface_step(void)
+void ins_interface_step(uint32_t timestamp)
 {
     /* Add your code here */
 }
