@@ -23,12 +23,13 @@
 #include "board.h"
 #include "default_config.h"
 #include "driver/barometer/dps368.h"
+#include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mag/ist8310.h"
 #include "driver/mag/qmc5883l.h"
-#include "driver/gps/gps_ubx.h"
 #include "drv_adc.h"
+#include "drv_can.h"
 #include "drv_eth.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -39,7 +40,7 @@
 #include "drv_systick.h"
 #include "drv_uart.h"
 #include "drv_usbd_cdc.h"
-#include "drv_can.h"
+#include "led.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -63,7 +64,6 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
-
 
 // #define DBG_TAG "board"
 // #define DBG_LVL DBG_INFO
@@ -393,8 +393,8 @@ void bsp_post_initialize(void)
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
-    // /* init led control */
-    // FMT_CHECK(led_control_init());
+    /* init led control */
+    FMT_CHECK(led_control_init());
 
     /* initialize power management unit */
     // FMT_CHECK(pmu_init());
