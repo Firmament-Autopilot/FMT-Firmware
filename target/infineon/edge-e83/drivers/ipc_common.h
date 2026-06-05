@@ -49,7 +49,7 @@
 #define RC_ROLE_M55_ECHO             (0x55U)
 
 /* Stress-test tuning knobs */
-#define EDGE_IPC_FRAME_POOL_SIZE     (32U)
+#define EDGE_IPC_FRAME_POOL_SIZE     (40U)
 #define EDGE_IPC_ECHO_QUEUE_SIZE     (64U)
 #define EDGE_IPC_STRESS_HZ           (1000U)
 #define EDGE_IPC_STRESS_BURST        (4U)

@@ -68,14 +68,14 @@ static void edge_ipc_demo_entry(void* parameter)
 
 int ipc_test_run(void)
 {
-    g_ipc_dev = edge_ipc_device_find();
+    g_ipc_dev = edge_ipc_device_find(EDGE_IPC0_DEVICE_NAME);
     if (g_ipc_dev == RT_NULL) {
         if (edge_ipc_device_register() != RT_EOK) {
             rt_kprintf("[M55][IPC] device register failed\r\n");
             return -RT_ERROR;
         }
 
-        g_ipc_dev = edge_ipc_device_find();
+        g_ipc_dev = edge_ipc_device_find(EDGE_IPC0_DEVICE_NAME);
         if (g_ipc_dev == RT_NULL) {
             rt_kprintf("[M55][IPC] device not found\r\n");
             return -RT_ERROR;

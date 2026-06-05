@@ -378,7 +378,7 @@ fmt_err_t handle_rx_packet(struct IOPacket* pkt)
 void interface_listen(void)
 {
     uint8_t c;
-    if ((ipc_dev != RT_NULL) && (rt_device_read(ipc_dev, RT_WAITING_NO, &c, 1) == 1)) {
+    while ((ipc_dev != RT_NULL) && (rt_device_read(ipc_dev, RT_WAITING_NO, &c, 1) == 1)) {
         if (io_parse_char(&rx_pkt, c) == FMT_EOK) {
             handle_rx_packet(&rx_pkt);
         }

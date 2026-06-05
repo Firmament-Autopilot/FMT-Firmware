@@ -7,8 +7,19 @@
 #include "module/system/systime.h"
 #include "module/utils/ringbuffer.h"
 
+#if defined(COMPONENT_CM33) || ((__CORTEX_M) == 33U)
+    #define IPC_TX_DEVICE_NAME  EDGE_IPC0_DEVICE_NAME
+    #define IPC_RX_DEVICE_NAME  EDGE_IPC1_DEVICE_NAME
+#elif defined(COMPONENT_CM55) || ((__CORTEX_M) == 55U)
+    #define IPC_TX_DEVICE_NAME  EDGE_IPC1_DEVICE_NAME
+    #define IPC_RX_DEVICE_NAME  EDGE_IPC0_DEVICE_NAME
+#else
+    #error "Unsupported core for drv_ipc_dev"
+#endif
+
 static struct rt_device ipc_device;
-static rt_device_t g_ipc_dev = RT_NULL;
+static rt_device_t g_ipc_rx_dev = RT_NULL;
+static rt_device_t g_ipc_tx_dev = RT_NULL;
 static edge_rc_frame_t rx;
 static edge_rc_frame_t tx;
 static ringbuffer* rx_rb;
@@ -17,8 +28,10 @@ static const uint32_t ipc_channel_size = sizeof(tx.channel);
 
 static rt_err_t ipc_dev_rx_indicate(rt_device_t dev, rt_size_t size)
 {
-    while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1) {
-        ringbuffer_put(rx_rb, (uint8_t*)rx.channel, rx.seq);
+    while (rt_device_read(g_ipc_rx_dev, 0, &rx, 1) == 1) {
+        if (rx.seq > 0 && rx.seq <= sizeof(rx.channel)) {
+            ringbuffer_put(rx_rb, (uint8_t*)rx.channel, rx.seq);
+        }
     }
 
     rt_completion_done(&rx_ind);
@@ -42,9 +55,7 @@ static rt_err_t ipc_dev_tx_complete(rt_device_t dev, void* buffer)
 static void ipc_fill_packet(edge_rc_frame_t* frame, const void* data, rt_size_t size)
 {
     frame->seq = size; /* use seq as size */
-
     rt_memcpy((void*)tx.channel, data, size);
-
 }
 
 static rt_size_t ipc_dev_write(struct rt_device* dev, rt_off_t pos, const void* buffer, rt_size_t size)
@@ -53,14 +64,12 @@ static rt_size_t ipc_dev_write(struct rt_device* dev, rt_off_t pos, const void* 
 
     for (i = 0; i < size / ipc_channel_size; i++) {
         ipc_fill_packet(&tx, (void*)((uint32_t)buffer + i * ipc_channel_size), ipc_channel_size);
-        if (rt_device_write(g_ipc_dev, pos, &tx, 1) != 1)
-            return 0;
+        rt_device_write(g_ipc_tx_dev, pos, &tx, 1);
     }
 
     if (size % ipc_channel_size) {
         ipc_fill_packet(&tx, (void*)((uint32_t)buffer + i * ipc_channel_size), size % ipc_channel_size);
-        if (rt_device_write(g_ipc_dev, pos, &tx, 1) != 1)
-            return 0;
+        rt_device_write(g_ipc_tx_dev, pos, &tx, 1);
     }
 
     return size;
@@ -111,39 +120,56 @@ static rt_size_t ipc_dev_read(struct rt_device* dev, rt_off_t pos, void* buffer,
     return rx_cnt;
 }
 
+static rt_device_t ipc_find_or_register(const char* name)
+{
+    rt_device_t dev = edge_ipc_device_find(name);
+    if (dev == RT_NULL) {
+        if (edge_ipc_device_register() != RT_EOK) {
+            rt_kprintf("[IPC] device register failed\r\n");
+            return RT_NULL;
+        }
+        dev = edge_ipc_device_find(name);
+    }
+    return dev;
+}
+
 static rt_err_t ipc_dev_init(struct rt_device* dev)
 {
-    g_ipc_dev = edge_ipc_device_find();
-    if (g_ipc_dev == RT_NULL) {
-        if (edge_ipc_device_register() != RT_EOK) {
-            rt_kprintf("[M55][IPC] device register failed\r\n");
-            return -RT_ERROR;
-        }
-
-        g_ipc_dev = edge_ipc_device_find();
-        if (g_ipc_dev == RT_NULL) {
-            rt_kprintf("[M55][IPC] device not found\r\n");
-            return -RT_ERROR;
-        }
+    g_ipc_rx_dev = ipc_find_or_register(IPC_RX_DEVICE_NAME);
+    if (g_ipc_rx_dev == RT_NULL) {
+        rt_kprintf("[IPC] RX device '%s' not found\r\n", IPC_RX_DEVICE_NAME);
+        return -RT_ERROR;
     }
 
-    rx_rb = ringbuffer_create(sizeof(tx.channel) * 20);
+    g_ipc_tx_dev = ipc_find_or_register(IPC_TX_DEVICE_NAME);
+    if (g_ipc_tx_dev == RT_NULL) {
+        rt_kprintf("[IPC] TX device '%s' not found\r\n", IPC_TX_DEVICE_NAME);
+        return -RT_ERROR;
+    }
+
+    rx_rb = ringbuffer_create(sizeof(tx.channel) * 60);
     if (rx_rb == RT_NULL) {
         return -RT_ENOMEM;
     }
 
     rt_completion_init(&rx_ind);
 
-    g_ipc_dev->rx_indicate = ipc_dev_rx_indicate;
-    g_ipc_dev->tx_complete = ipc_dev_tx_complete;
+    g_ipc_rx_dev->rx_indicate = ipc_dev_rx_indicate;
+    g_ipc_tx_dev->tx_complete = ipc_dev_tx_complete;
 
     return RT_EOK;
 }
 
 static rt_err_t ipc_dev_open(struct rt_device* dev, rt_uint16_t oflag)
 {
-    if (rt_device_open(g_ipc_dev, oflag) != RT_EOK) {
-        rt_kprintf("[M55][IPC] open device failed\r\n");
+    if (rt_device_open(g_ipc_rx_dev, oflag) != RT_EOK) {
+        rt_kprintf("[IPC] open RX device failed\r\n");
+        return -RT_ERROR;
+    }
+
+    if (rt_device_open(g_ipc_tx_dev, oflag) != RT_EOK) {
+        rt_kprintf("[IPC] open TX device failed\r\n");
+        rt_device_close(g_ipc_rx_dev);
         return -RT_ERROR;
     }
 
@@ -152,11 +178,8 @@ static rt_err_t ipc_dev_open(struct rt_device* dev, rt_uint16_t oflag)
 
 static rt_err_t ipc_dev_close(struct rt_device* dev)
 {
-    if (rt_device_close(g_ipc_dev) != RT_EOK) {
-        rt_kprintf("[M55][IPC] close device failed\r\n");
-        return -RT_ERROR;
-    }
-
+    rt_device_close(g_ipc_rx_dev);
+    rt_device_close(g_ipc_tx_dev);
     return RT_EOK;
 }
 
