@@ -333,12 +333,14 @@ fmt_err_t handle_rx_packet(struct IOPacket* pkt)
         IO_RCConfig new_config = *((IO_RCConfig*)pkt->data);
         if (new_config.protocol && new_config.protocol != rc_config.protocol) {
             if (new_config.protocol == 1) {
-                drv_rc_deinit();
-                // sbus_init();
+                // drv_rc_deinit();
+                // sbus_lowlevel_init();
             } else if (new_config.protocol == 2) {
                 // sbus_deinit();
-                rc_init();
-                drv_rc_thread_start();
+                // rc_init();
+                // drv_rc_thread_start();
+                // drv_rc_init();
+                // drv_rc_thread_start();
             } else {
                 debug("invalid rc protocol:%d\n", new_config.protocol);
                 return FMT_EINVAL;

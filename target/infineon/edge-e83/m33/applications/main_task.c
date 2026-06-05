@@ -42,7 +42,12 @@ static void task_entry(void* parameter)
             // led_type = LED_BLUE;
             // led_on(LED_RED);
             // drv_rc_send_ppm();
-            send_sbus_value();
+
+            if (rc_config.protocol == 1) {
+                send_sbus_value();
+            } else if (rc_config.protocol == 2) {
+                drv_rc_send_ppm();
+            }
         } else {
             // led_type = LED_RED;
             // led_on(LED_BLUE);
