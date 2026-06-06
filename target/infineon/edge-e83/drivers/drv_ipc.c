@@ -24,34 +24,79 @@
 
 #define EDGE_IPC_RX_QUEUE_SIZE (128U)
 
+#define CY_IPC0_CHAN_CYPIPE_EP1       (5UL)
+#define CY_IPC0_INTR_CYPIPE_EP1       (3UL)
+#define CY_IPC0_CHAN_CYPIPE_EP2       (14UL)
+#define CY_IPC0_INTR_CYPIPE_EP2       (6UL)
+#define CY_IPC0_CYPIPE_INTR_MASK      (CY_IPC_CH_MASK(CY_IPC0_CHAN_CYPIPE_EP1) | \
+                                        CY_IPC_CH_MASK(CY_IPC0_CHAN_CYPIPE_EP2))
+
 #if defined(COMPONENT_CM33) || ((__CORTEX_M) == 33U)
-    #define EDGE_IPC_LOCAL_EP_ADDR   CM33_IPC_PIPE_EP_ADDR
-    #define EDGE_IPC_PEER_EP_ADDR    CM55_IPC_PIPE_EP_ADDR
-    #define EDGE_IPC_LOCAL_CLIENT_ID CM33_IPC_PIPE_CLIENT_ID
-    #define EDGE_IPC_TX_INTR_MASK    CY_IPC_CYPIPE_INTR_MASK_EP1
-    #define EDGE_IPC_LOCAL_CHAN      CY_IPC_CHAN_CYPIPE_EP1
-    #define EDGE_IPC_LOCAL_INTR      CY_IPC_INTR_CYPIPE_EP1
-    #define EDGE_IPC_LOCAL_PRIOR     CY_IPC_INTR_CYPIPE_PRIOR_EP1
-    #define EDGE_IPC_LOCAL_MUX       CY_IPC_INTR_CYPIPE_MUX_EP1
-    #define EDGE_IPC_PEER_CHAN       CY_IPC_CHAN_CYPIPE_EP2
-    #define EDGE_IPC_PEER_INTR       CY_IPC_INTR_CYPIPE_EP2
-    #define EDGE_IPC_PEER_PRIOR      CY_IPC_INTR_CYPIPE_PRIOR_EP2
-    #define EDGE_IPC_PEER_MUX        CY_IPC_INTR_CYPIPE_MUX_EP2
+    #define EDGE_IPC0_LOCAL_EP_ADDR   (1UL)
+    #define EDGE_IPC0_PEER_EP_ADDR    (2UL)
+    #define EDGE_IPC0_LOCAL_CLIENT_ID CM33_IPC_PIPE_CLIENT_ID
+    #define EDGE_IPC0_TX_INTR_MASK    CY_IPC_INTR_MASK(CY_IPC0_INTR_CYPIPE_EP1)
+    #define EDGE_IPC0_LOCAL_CHAN      CY_IPC0_CHAN_CYPIPE_EP1
+    #define EDGE_IPC0_LOCAL_INTR      CY_IPC0_INTR_CYPIPE_EP1
+    #define EDGE_IPC0_LOCAL_PRIOR     (1UL)
+    #define EDGE_IPC0_LOCAL_MUX       (CY_IPC0_INTR_MUX(CY_IPC0_INTR_CYPIPE_EP1))
+    #define EDGE_IPC0_PEER_CHAN       CY_IPC0_CHAN_CYPIPE_EP2
+    #define EDGE_IPC0_PEER_INTR       CY_IPC0_INTR_CYPIPE_EP2
+    #define EDGE_IPC0_PEER_PRIOR      (1UL)
+    #define EDGE_IPC0_PEER_MUX        (CY_IPC0_INTR_MUX(CY_IPC0_INTR_CYPIPE_EP2))
 #elif defined(COMPONENT_CM55) || ((__CORTEX_M) == 55U)
-    #define EDGE_IPC_LOCAL_EP_ADDR   CM55_IPC_PIPE_EP_ADDR
-    #define EDGE_IPC_PEER_EP_ADDR    CM33_IPC_PIPE_EP_ADDR
-    #define EDGE_IPC_LOCAL_CLIENT_ID CM55_IPC_PIPE_CLIENT_ID
-    #define EDGE_IPC_TX_INTR_MASK    CY_IPC_CYPIPE_INTR_MASK_EP2
-    #define EDGE_IPC_LOCAL_CHAN      CY_IPC_CHAN_CYPIPE_EP2
-    #define EDGE_IPC_LOCAL_INTR      CY_IPC_INTR_CYPIPE_EP2
-    #define EDGE_IPC_LOCAL_PRIOR     CY_IPC_INTR_CYPIPE_PRIOR_EP2
-    #define EDGE_IPC_LOCAL_MUX       CY_IPC_INTR_CYPIPE_MUX_EP2
-    #define EDGE_IPC_PEER_CHAN       CY_IPC_CHAN_CYPIPE_EP1
-    #define EDGE_IPC_PEER_INTR       CY_IPC_INTR_CYPIPE_EP1
-    #define EDGE_IPC_PEER_PRIOR      CY_IPC_INTR_CYPIPE_PRIOR_EP1
-    #define EDGE_IPC_PEER_MUX        CY_IPC_INTR_CYPIPE_MUX_EP1
+    #define EDGE_IPC0_LOCAL_EP_ADDR   (2UL)
+    #define EDGE_IPC0_PEER_EP_ADDR    (1UL)
+    #define EDGE_IPC0_LOCAL_CLIENT_ID CM55_IPC_PIPE_CLIENT_ID
+    #define EDGE_IPC0_TX_INTR_MASK    CY_IPC_INTR_MASK(CY_IPC0_INTR_CYPIPE_EP2)
+    #define EDGE_IPC0_LOCAL_CHAN      CY_IPC0_CHAN_CYPIPE_EP2
+    #define EDGE_IPC0_LOCAL_INTR      CY_IPC0_INTR_CYPIPE_EP2
+    #define EDGE_IPC0_LOCAL_PRIOR     (1UL)
+    #define EDGE_IPC0_LOCAL_MUX       (CY_IPC0_INTR_MUX(CY_IPC0_INTR_CYPIPE_EP2))
+    #define EDGE_IPC0_PEER_CHAN       CY_IPC0_CHAN_CYPIPE_EP1
+    #define EDGE_IPC0_PEER_INTR       CY_IPC0_INTR_CYPIPE_EP1
+    #define EDGE_IPC0_PEER_PRIOR      (1UL)
+    #define EDGE_IPC0_PEER_MUX        (CY_IPC0_INTR_MUX(CY_IPC0_INTR_CYPIPE_EP1))
 #else
-    #error "Unsupported core for edge_ipc_device"
+    #error "Unsupported core for edge_ipc0"
+#endif
+
+
+#define CY_IPC1_CHAN_CYPIPE_EP3       (6UL)
+#define CY_IPC1_INTR_CYPIPE_EP3       (4UL)
+#define CY_IPC1_CHAN_CYPIPE_EP4       (15UL)
+#define CY_IPC1_INTR_CYPIPE_EP4       (7UL)
+#define CY_IPC1_CYPIPE_INTR_MASK      (CY_IPC_CH_MASK(CY_IPC1_CHAN_CYPIPE_EP3) | \
+                                        CY_IPC_CH_MASK(CY_IPC1_CHAN_CYPIPE_EP4))
+
+#if defined(COMPONENT_CM33) || ((__CORTEX_M) == 33U)
+    #define EDGE_IPC1_LOCAL_EP_ADDR   (3UL)
+    #define EDGE_IPC1_PEER_EP_ADDR    (4UL)
+    #define EDGE_IPC1_LOCAL_CLIENT_ID CM33_IPC_PIPE_CLIENT_ID
+    #define EDGE_IPC1_TX_INTR_MASK    CY_IPC_INTR_MASK(CY_IPC1_INTR_CYPIPE_EP3)
+    #define EDGE_IPC1_LOCAL_CHAN      CY_IPC1_CHAN_CYPIPE_EP3
+    #define EDGE_IPC1_LOCAL_INTR      CY_IPC1_INTR_CYPIPE_EP3
+    #define EDGE_IPC1_LOCAL_PRIOR     (1UL)
+    #define EDGE_IPC1_LOCAL_MUX       (CY_IPC0_INTR_MUX(CY_IPC1_INTR_CYPIPE_EP3))
+    #define EDGE_IPC1_PEER_CHAN       CY_IPC1_CHAN_CYPIPE_EP4
+    #define EDGE_IPC1_PEER_INTR       CY_IPC1_INTR_CYPIPE_EP4
+    #define EDGE_IPC1_PEER_PRIOR      (1UL)
+    #define EDGE_IPC1_PEER_MUX        (CY_IPC0_INTR_MUX(CY_IPC1_INTR_CYPIPE_EP4))
+#elif defined(COMPONENT_CM55) || ((__CORTEX_M) == 55U)
+    #define EDGE_IPC1_LOCAL_EP_ADDR   (4UL)
+    #define EDGE_IPC1_PEER_EP_ADDR    (3UL)
+    #define EDGE_IPC1_LOCAL_CLIENT_ID CM55_IPC_PIPE_CLIENT_ID
+    #define EDGE_IPC1_TX_INTR_MASK    CY_IPC_INTR_MASK(CY_IPC1_INTR_CYPIPE_EP4)
+    #define EDGE_IPC1_LOCAL_CHAN      CY_IPC1_CHAN_CYPIPE_EP4
+    #define EDGE_IPC1_LOCAL_INTR      CY_IPC1_INTR_CYPIPE_EP4
+    #define EDGE_IPC1_LOCAL_PRIOR     (1UL)
+    #define EDGE_IPC1_LOCAL_MUX       (CY_IPC0_INTR_MUX(CY_IPC1_INTR_CYPIPE_EP4))
+    #define EDGE_IPC1_PEER_CHAN       CY_IPC1_CHAN_CYPIPE_EP3
+    #define EDGE_IPC1_PEER_INTR       CY_IPC1_INTR_CYPIPE_EP3
+    #define EDGE_IPC1_PEER_PRIOR      (1UL)
+    #define EDGE_IPC1_PEER_MUX        (CY_IPC0_INTR_MUX(CY_IPC1_INTR_CYPIPE_EP3))
+#else
+    #error "Unsupported core for edge_ipc1"
 #endif
 
 struct edge_ipc_device {
@@ -59,47 +104,46 @@ struct edge_ipc_device {
     cy_stc_ipc_pipe_ep_t pipe_ep_array[CY_IPC_MAX_ENDPOINTS];
     cy_ipc_pipe_callback_ptr_t cb_array[CY_IPC_CYPIPE_CLIENT_CNT];
 
+    /* PIPE 配置信息 */
+    uint32_t local_ep_addr;
+    uint32_t peer_ep_addr;
+    uint32_t tx_intr_mask;
+    uint8_t  pipe_index;
+
+    /* 接收缓冲 */
     rt_uint8_t rx_buffer[EDGE_IPC_RX_QUEUE_SIZE * sizeof(edge_rc_frame_t)];
     struct rt_ringbuffer rx_rb;
 
+    /* 发送池索引 */
     volatile rt_uint32_t tx_pool_idx;
 
     rt_bool_t initialized;
 };
 
-static struct edge_ipc_device g_edge_ipc_dev;
+/* 两个 IPC 设备实例 */
+static struct edge_ipc_device g_edge_ipc_dev[2];
 
 CY_SECTION_SHAREDMEM static edge_rc_frame_t g_edge_ipc_tx_pool[2][EDGE_IPC_FRAME_POOL_SIZE];
 
-static void edge_ipc_pipe_isr(void)
+static void edge_ipc0_pipe_isr(void)
 {
-    Cy_IPC_Pipe_ExecuteCallback(EDGE_IPC_LOCAL_EP_ADDR);
+    Cy_IPC_Pipe_ExecuteCallback(EDGE_IPC0_LOCAL_EP_ADDR);
 }
 
-static void edge_ipc_release_callback(void)
+static void edge_ipc0_rx_callback(uint32_t* msg_data)
 {
-    struct edge_ipc_device* dev = &g_edge_ipc_dev;
-
-    if (dev->parent.tx_complete) {
-        dev->parent.tx_complete(&dev->parent, RT_NULL);
-    }
-}
-
-static void edge_ipc_rx_callback(uint32_t* msg_data)
-{
-    struct edge_ipc_device* dev = &g_edge_ipc_dev;
+    struct edge_ipc_device* dev = &g_edge_ipc_dev[0];
     edge_rc_frame_t* rx = (edge_rc_frame_t*)msg_data;
 
     if (rx == RT_NULL)
         return;
 
-    if (rx->client_id != EDGE_IPC_LOCAL_CLIENT_ID
+    if (rx->client_id != EDGE_IPC0_LOCAL_CLIENT_ID
         || rx->magic != RC_MAGIC_WORD
         || edge_rc_checksum(rx) != rx->checksum)
         return;
 
-
-    if (rt_ringbuffer_put(&dev->rx_rb, (rt_uint8_t*)rx, sizeof(edge_rc_frame_t)) != sizeof(edge_rc_frame_t)) 
+    if (rt_ringbuffer_put(&dev->rx_rb, (rt_uint8_t*)rx, sizeof(edge_rc_frame_t)) != sizeof(edge_rc_frame_t))
         return;
 
     if (dev->parent.rx_indicate) {
@@ -107,40 +151,131 @@ static void edge_ipc_rx_callback(uint32_t* msg_data)
     }
 }
 
-static rt_err_t edge_ipc_hw_init(struct edge_ipc_device* dev)
+static void edge_ipc1_pipe_isr(void)
+{
+    Cy_IPC_Pipe_ExecuteCallback(EDGE_IPC1_LOCAL_EP_ADDR);
+}
+
+static void edge_ipc1_rx_callback(uint32_t* msg_data)
+{
+    struct edge_ipc_device* dev = &g_edge_ipc_dev[1];
+    edge_rc_frame_t* rx = (edge_rc_frame_t*)msg_data;
+
+    if (rx == RT_NULL)
+        return;
+
+    if (rx->client_id != EDGE_IPC1_LOCAL_CLIENT_ID
+        || rx->magic != RC_MAGIC_WORD
+        || edge_rc_checksum(rx) != rx->checksum)
+        return;
+
+    if (rt_ringbuffer_put(&dev->rx_rb, (rt_uint8_t*)rx, sizeof(edge_rc_frame_t)) != sizeof(edge_rc_frame_t))
+        return;
+
+    if (dev->parent.rx_indicate) {
+        dev->parent.rx_indicate(&dev->parent, 1);
+    }
+}
+
+static cy_stc_ipc_pipe_config_t ipc0_config = {
+    { .ipcNotifierNumber = EDGE_IPC0_LOCAL_INTR,
+      .ipcNotifierPriority = EDGE_IPC0_LOCAL_PRIOR,
+      .ipcNotifierMuxNumber = EDGE_IPC0_LOCAL_MUX,
+      .epAddress = EDGE_IPC0_LOCAL_EP_ADDR,
+      { .epChannel = EDGE_IPC0_LOCAL_CHAN,
+        .epIntr = EDGE_IPC0_LOCAL_INTR,
+        .epIntrmask = CY_IPC0_CYPIPE_INTR_MASK } },
+    { .ipcNotifierNumber = EDGE_IPC0_PEER_INTR,
+      .ipcNotifierPriority = EDGE_IPC0_PEER_PRIOR,
+      .ipcNotifierMuxNumber = EDGE_IPC0_PEER_MUX,
+      .epAddress = EDGE_IPC0_PEER_EP_ADDR,
+      { .epChannel = EDGE_IPC0_PEER_CHAN,
+        .epIntr = EDGE_IPC0_PEER_INTR,
+        .epIntrmask = CY_IPC0_CYPIPE_INTR_MASK } },
+    .endpointClientsCount = CY_IPC_CYPIPE_CLIENT_CNT,
+    .endpointsCallbacksArray = RT_NULL,
+    .userPipeIsrHandler = &edge_ipc0_pipe_isr
+};
+
+static cy_stc_ipc_pipe_config_t ipc1_config = {
+    { .ipcNotifierNumber = EDGE_IPC1_LOCAL_INTR,
+      .ipcNotifierPriority = EDGE_IPC1_LOCAL_PRIOR,
+      .ipcNotifierMuxNumber = EDGE_IPC1_LOCAL_MUX,
+      .epAddress = EDGE_IPC1_LOCAL_EP_ADDR,
+      { .epChannel = EDGE_IPC1_LOCAL_CHAN,
+        .epIntr = EDGE_IPC1_LOCAL_INTR,
+        .epIntrmask = CY_IPC1_CYPIPE_INTR_MASK } },
+    { .ipcNotifierNumber = EDGE_IPC1_PEER_INTR,
+      .ipcNotifierPriority = EDGE_IPC1_PEER_PRIOR,
+      .ipcNotifierMuxNumber = EDGE_IPC1_PEER_MUX,
+      .epAddress = EDGE_IPC1_PEER_EP_ADDR,
+      { .epChannel = EDGE_IPC1_PEER_CHAN,
+        .epIntr = EDGE_IPC1_PEER_INTR,
+        .epIntrmask = CY_IPC1_CYPIPE_INTR_MASK } },
+    .endpointClientsCount = CY_IPC_CYPIPE_CLIENT_CNT,
+    .endpointsCallbacksArray = RT_NULL,
+    .userPipeIsrHandler = &edge_ipc1_pipe_isr
+};
+
+/*******************************************************************************
+ * 硬件初始化
+ ******************************************************************************/
+static rt_err_t edge_ipc_hw_init(struct edge_ipc_device* dev,
+                                  uint8_t pipe_idx,
+                                  cy_stc_ipc_pipe_config_t* config)
 {
     cy_en_ipc_pipe_status_t status;
-    cy_stc_ipc_pipe_config_t ipc_config = {
-        { .ipcNotifierNumber = EDGE_IPC_LOCAL_INTR,
-          .ipcNotifierPriority = EDGE_IPC_LOCAL_PRIOR,
-          .ipcNotifierMuxNumber = EDGE_IPC_LOCAL_MUX,
-          .epAddress = EDGE_IPC_LOCAL_EP_ADDR,
-          { .epChannel = EDGE_IPC_LOCAL_CHAN,
-            .epIntr = EDGE_IPC_LOCAL_INTR,
-            .epIntrmask = CY_IPC_CYPIPE_INTR_MASK } },
-        { .ipcNotifierNumber = EDGE_IPC_PEER_INTR,
-          .ipcNotifierPriority = EDGE_IPC_PEER_PRIOR,
-          .ipcNotifierMuxNumber = EDGE_IPC_PEER_MUX,
-          .epAddress = EDGE_IPC_PEER_EP_ADDR,
-          { .epChannel = EDGE_IPC_PEER_CHAN,
-            .epIntr = EDGE_IPC_PEER_INTR,
-            .epIntrmask = CY_IPC_CYPIPE_INTR_MASK } },
-        .endpointClientsCount = CY_IPC_CYPIPE_CLIENT_CNT,
-        .endpointsCallbacksArray = RT_NULL,
-        .userPipeIsrHandler = &edge_ipc_pipe_isr
-    };
 
-    ipc_config.endpointsCallbacksArray = dev->cb_array;
-
-    Cy_IPC_Pipe_Config(dev->pipe_ep_array);
-    Cy_IPC_Pipe_Init(&ipc_config);
-
-    status = Cy_IPC_Pipe_RegisterCallback(EDGE_IPC_LOCAL_EP_ADDR,
-                                          &edge_ipc_rx_callback,
-                                          (uint32_t)EDGE_IPC_LOCAL_CLIENT_ID);
-
-    if (status != CY_IPC_PIPE_SUCCESS) {
+    if (config == RT_NULL || pipe_idx >= 2) {
         return -RT_ERROR;
+    }
+
+    dev->local_ep_addr = config->ep0ConfigData.epAddress;
+    dev->peer_ep_addr = config->ep1ConfigData.epAddress;
+    dev->pipe_index = pipe_idx;
+    dev->tx_pool_idx = 0;
+
+    switch (pipe_idx) {
+        case 0:
+            dev->tx_intr_mask = EDGE_IPC0_TX_INTR_MASK;
+            break;
+        case 1:
+            dev->tx_intr_mask = EDGE_IPC1_TX_INTR_MASK;
+            break;
+        default:
+            return -RT_ERROR;
+    }
+
+    config->endpointsCallbacksArray = dev->cb_array;
+
+    if (!dev->initialized) {
+        Cy_IPC_Pipe_Config(dev->pipe_ep_array);
+    }
+
+    Cy_IPC_Pipe_Init(config);
+
+    /* 注册接收回调 */
+    {
+        cy_ipc_pipe_callback_ptr_t rx_cb = RT_NULL;
+        uint32_t client_id;
+
+        switch (pipe_idx) {
+            case 0:
+                rx_cb = edge_ipc0_rx_callback;
+                client_id = EDGE_IPC0_LOCAL_CLIENT_ID;
+                break;
+            case 1:
+                rx_cb = edge_ipc1_rx_callback;
+                client_id = EDGE_IPC1_LOCAL_CLIENT_ID;
+                break;
+            default:
+                return -RT_ERROR;
+        }
+
+        status = Cy_IPC_Pipe_RegisterCallback(dev->local_ep_addr, rx_cb, client_id);
+        if (status != CY_IPC_PIPE_SUCCESS) {
+            return -RT_ERROR;
+        }
     }
 
     dev->initialized = RT_TRUE;
@@ -154,7 +289,14 @@ static rt_err_t edge_ipc_dev_init(rt_device_t rt_dev)
     if (dev->initialized)
         return RT_EOK;
 
-    return edge_ipc_hw_init(dev);
+    switch (dev->pipe_index) {
+        case 0:
+            return edge_ipc_hw_init(dev, 0, &ipc0_config);
+        case 1:
+            return edge_ipc_hw_init(dev, 1, &ipc1_config);
+        default:
+            return -RT_ERROR;
+    }
 }
 
 static rt_err_t edge_ipc_dev_open(rt_device_t rt_dev, rt_uint16_t oflag)
@@ -199,43 +341,37 @@ static rt_size_t edge_ipc_dev_write(rt_device_t rt_dev, rt_off_t pos, const void
     rt_size_t write_cnt = 0;
     cy_en_ipc_pipe_status_t status;
 
+    (void)pos;
+
     if (buffer == RT_NULL || size == 0) {
         return 0;
     }
 
     while (write_cnt < size) {
-        edge_rc_frame_t* tx;
-        rt_uint32_t pool_idx;
         rt_uint32_t slot = dev->tx_pool_idx++ % EDGE_IPC_FRAME_POOL_SIZE;
+        edge_rc_frame_t* tx = &g_edge_ipc_tx_pool[dev->pipe_index][slot];
 
-#if defined(COMPONENT_CM33) || ((__CORTEX_M) == 33U)
-        pool_idx = 0;
-#elif defined(COMPONENT_CM55) || ((__CORTEX_M) == 55U)
-        pool_idx = 1;
-#else
-    #error "Unsupported core for tx pool selection"
-#endif
-
-        tx = &g_edge_ipc_tx_pool[pool_idx][slot];
         *tx = frame[write_cnt];
-        tx->client_id = EDGE_IPC_LOCAL_CLIENT_ID == CM33_IPC_PIPE_CLIENT_ID ? CM55_IPC_PIPE_CLIENT_ID : CM33_IPC_PIPE_CLIENT_ID;
-        tx->intr_mask = (rt_uint16_t)EDGE_IPC_TX_INTR_MASK;
 
+        
         if (write_cnt > 0) {
             rt_thread_mdelay(1);
         }
-        tx->magic = RC_MAGIC_WORD;
 
 #if defined(COMPONENT_CM33) || ((__CORTEX_M) == 33U)
+        tx->client_id = CM55_IPC_PIPE_CLIENT_ID;
         tx->role = RC_ROLE_M33;
 #elif defined(COMPONENT_CM55) || ((__CORTEX_M) == 55U)
+        tx->client_id = CM33_IPC_PIPE_CLIENT_ID;
         tx->role = RC_ROLE_M55_ECHO;
 #else
-    #error "Unsupported core for ipc_fill_packet"
+    #error "Unsupported core for edge_ipc_device"
 #endif
+        tx->intr_mask = (rt_uint16_t)dev->tx_intr_mask;
+        tx->magic = RC_MAGIC_WORD;
         tx->checksum = edge_rc_checksum(tx);
-        status = Cy_IPC_Pipe_SendMessage(EDGE_IPC_PEER_EP_ADDR,
-                                         EDGE_IPC_LOCAL_EP_ADDR,
+        status = Cy_IPC_Pipe_SendMessage(dev->peer_ep_addr,
+                                         dev->local_ep_addr,
                                          (void*)tx,
                                          0UL);
 
@@ -248,18 +384,16 @@ static rt_size_t edge_ipc_dev_write(rt_device_t rt_dev, rt_off_t pos, const void
                 uint32_t delay_ms = (retry > 10) ? 10 : retry;
                 rt_thread_delay(delay_ms);
 
-                status = Cy_IPC_Pipe_SendMessage(EDGE_IPC_PEER_EP_ADDR,
-                                                EDGE_IPC_LOCAL_EP_ADDR,
+                status = Cy_IPC_Pipe_SendMessage(dev->peer_ep_addr,
+                                                dev->local_ep_addr,
                                                 (void*)tx,
                                                 0UL);
 
                 if (status == CY_IPC_PIPE_SUCCESS) {
-                    // rt_kprintf("[IPC] Send retry success after %lu tries\n", retry + 1);
                     break;
                 }
 
                 if (status != CY_IPC_PIPE_ERROR_SEND_BUSY) {
-                    rt_kprintf("[IPC] Send retry failed with non-BUSY error: %lu\n", status);
                     break;
                 }
             }
@@ -268,7 +402,9 @@ static rt_size_t edge_ipc_dev_write(rt_device_t rt_dev, rt_off_t pos, const void
         if (status != CY_IPC_PIPE_SUCCESS) {
             break;
         }
-        edge_ipc_release_callback();
+        if (dev->parent.tx_complete) {
+            dev->parent.tx_complete(&dev->parent, RT_NULL);
+        }
         write_cnt++;
     }
 
@@ -301,16 +437,18 @@ static const struct rt_device_ops edge_ipc_dev_ops = {
 };
 #endif
 
-rt_device_t edge_ipc_device_find(void)
+rt_device_t edge_ipc_device_find(const char* name)
 {
-    return rt_device_find(EDGE_IPC_DEVICE_NAME);
+    return rt_device_find(name);
 }
 
 int edge_ipc_device_register(void)
 {
-    struct edge_ipc_device* dev = &g_edge_ipc_dev;
-
+    struct edge_ipc_device* dev;
+    rt_err_t result;
+    dev = &g_edge_ipc_dev[0];
     rt_memset(dev, 0, sizeof(*dev));
+    dev->pipe_index = 0;
 
     rt_ringbuffer_init(&dev->rx_rb, dev->rx_buffer, sizeof(dev->rx_buffer));
 
@@ -325,9 +463,40 @@ int edge_ipc_device_register(void)
     dev->parent.control = edge_ipc_dev_control;
 #endif
 
+    result = rt_device_register(&dev->parent,
+                                EDGE_IPC0_DEVICE_NAME,
+                                RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
+    if (result != RT_EOK) {
+        rt_kprintf("[IPC] Failed to register %s\n", EDGE_IPC0_DEVICE_NAME);
+        return result;
+    }
+    rt_kprintf("[IPC] Device '%s' registered (PIPE0, M33->M55)\n", EDGE_IPC0_DEVICE_NAME);
+    dev = &g_edge_ipc_dev[1];
+    rt_memset(dev, 0, sizeof(*dev));
+    dev->pipe_index = 1;
 
-    return rt_device_register(&dev->parent,
-                              EDGE_IPC_DEVICE_NAME,
-                              RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
+    rt_ringbuffer_init(&dev->rx_rb, dev->rx_buffer, sizeof(dev->rx_buffer));
+
+#ifdef RT_USING_DEVICE_OPS
+    dev->parent.ops = &edge_ipc_dev_ops;
+#else
+    dev->parent.init = edge_ipc_dev_init;
+    dev->parent.open = edge_ipc_dev_open;
+    dev->parent.close = edge_ipc_dev_close;
+    dev->parent.read = edge_ipc_dev_read;
+    dev->parent.write = edge_ipc_dev_write;
+    dev->parent.control = edge_ipc_dev_control;
+#endif
+
+    result = rt_device_register(&dev->parent,
+                                EDGE_IPC1_DEVICE_NAME,
+                                RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
+    if (result != RT_EOK) {
+        rt_kprintf("[IPC] Failed to register %s\n", EDGE_IPC1_DEVICE_NAME);
+        return result;
+    }
+    rt_kprintf("[IPC] Device '%s' registered (PIPE1, M55->M33)\n", EDGE_IPC1_DEVICE_NAME);
+
+    return RT_EOK;
 }
 INIT_PREV_EXPORT(edge_ipc_device_register);

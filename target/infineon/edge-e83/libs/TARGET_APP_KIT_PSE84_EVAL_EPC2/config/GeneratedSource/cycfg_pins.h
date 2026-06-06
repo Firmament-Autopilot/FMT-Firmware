@@ -834,7 +834,7 @@ extern "C" {
 #define USB_POWER_EN_PIN 1U
 #define USB_POWER_EN_NUM 1U
 #define USB_POWER_EN_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define USB_POWER_EN_INIT_DRIVESTATE 1
+#define USB_POWER_EN_INIT_DRIVESTATE 0
 #ifndef ioss_0_port_12_pin_1_HSIOM
     #define ioss_0_port_12_pin_1_HSIOM HSIOM_SEL_GPIO
 #endif

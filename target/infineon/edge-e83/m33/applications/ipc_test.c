@@ -85,14 +85,14 @@ void ipc_test_run(void)
     rt_uint32_t fail_cnt = 0;
     rt_bool_t has_ok = RT_FALSE;
 
-    ipc_dev = edge_ipc_device_find();
+    ipc_dev = edge_ipc_device_find(EDGE_IPC0_DEVICE_NAME);
     if (ipc_dev == RT_NULL) {
         if (edge_ipc_device_register() != RT_EOK) {
             rt_kprintf("[M33][IPC] device register failed\r\n");
             return;
         }
 
-        ipc_dev = edge_ipc_device_find();
+        ipc_dev = edge_ipc_device_find(EDGE_IPC0_DEVICE_NAME);
         if (ipc_dev == RT_NULL) {
             rt_kprintf("[M33][IPC] device not found\r\n");
             return;

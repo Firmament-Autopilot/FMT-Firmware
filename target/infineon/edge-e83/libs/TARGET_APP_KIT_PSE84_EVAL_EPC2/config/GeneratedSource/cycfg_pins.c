@@ -912,7 +912,7 @@ const cy_stc_gpio_pin_config_t PWM_CH11_config =
 };
 const cy_stc_gpio_pin_config_t USB_POWER_EN_config =
 {
-    .outVal = 1,
+    .outVal = 0,
     .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
     .hsiom = USB_POWER_EN_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,

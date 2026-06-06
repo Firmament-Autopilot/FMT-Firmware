@@ -3197,7 +3197,7 @@
                         <Param id="driveStrength" value="CY_GPIO_DRIVE_1_2"/>
                         <Param id="extended_drive_sel" value="false"/>
                         <Param id="inFlash" value="true"/>
-                        <Param id="initialState" value="1"/>
+                        <Param id="initialState" value="0"/>
                         <Param id="isrTrigger" value="CY_GPIO_INTR_DISABLE"/>
                         <Param id="nonSec" value="1"/>
                         <Param id="slewRate" value="CY_GPIO_SLEW_FAST"/>
