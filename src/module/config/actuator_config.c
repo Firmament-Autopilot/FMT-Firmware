@@ -37,16 +37,16 @@ static uint8_t actuator_device_num;
 static actuator_mapping actuator_mappings_list[ACTUATOR_MAX_MAPPING_NUM];
 static uint8_t actuator_mapping_num;
 
-static void swap(uint8_t* a, uint8_t* b)
+static void swap(uint16_t* a, uint16_t* b)
 {
-    uint8_t temp = *a;
+    uint16_t temp = *a;
     *a = *b;
     *b = temp;
 }
 
-static int partition(uint8_t arr[], uint8_t arr2[], int low, int high)
+static int partition(uint16_t arr[], uint16_t arr2[], int low, int high)
 {
-    uint8_t pivot = arr[high];
+    uint16_t pivot = arr[high];
     int i = (low - 1);
 
     for (int j = low; j <= high - 1; j++) {
@@ -61,7 +61,7 @@ static int partition(uint8_t arr[], uint8_t arr2[], int low, int high)
     return (i + 1);
 }
 
-static void quickSort(uint8_t arr[], uint8_t arr2[], int low, int high)
+static void quickSort(uint16_t arr[], uint16_t arr2[], int low, int high)
 {
     if (low < high) {
         int pi = partition(arr, arr2, low, high);
@@ -164,6 +164,61 @@ static fmt_err_t actuator_parse_device(const toml_table_t* curtab, int idx)
                 } else {
                     TOML_DBG_W("fail to parse freq value\n");
                     continue;
+                }
+            } else if (MATCH(key, "init-val")) {
+                toml_array_t* array = toml_array_in(curtab, "init-val");
+                if (array == NULL) {
+                    TOML_DBG_E("fail to parse init-val\n");
+                    return FMT_ERROR;
+                }
+
+                if (toml_array_nelem(array) != 2) {
+                    TOML_DBG_E("illegal init-val array length: %d\n", toml_array_nelem(array));
+                    return FMT_ERROR;
+                }
+
+                int64_t ival;
+                uint16_t chan_arr[16] = { 0 };
+                uint16_t val_arr[16] = { 0 };
+                toml_array_t* sub_arr = toml_array_at(array, 0);
+                int arr_size = toml_array_nelem(sub_arr);
+                for (i = 0; i < arr_size; i++) {
+                    if (toml_int_at(sub_arr, i, &ival) == 0) {
+                        chan_arr[i] = (uint16_t)ival;
+                    } else {
+                        TOML_DBG_E("fail to parse init-val channel\n");
+                        return FMT_ERROR;
+                    }
+                }
+
+                sub_arr = toml_array_at(array, 1);
+                if (toml_array_nelem(sub_arr) != arr_size) {
+                    TOML_DBG_E("illegal array length:%d %d\n", toml_array_nelem(sub_arr), arr_size);
+                    return FMT_ERROR;
+                }
+                for (i = 0; i < arr_size; i++) {
+                    if (toml_int_at(sub_arr, i, &ival) == 0) {
+                        val_arr[i] = (uint16_t)ival;
+                    } else {
+                        TOML_DBG_E("fail to parse init-val value\n");
+                        return FMT_ERROR;
+                    }
+                }
+
+                if (arr_size > 0) {
+                    /* sort chan_arr from small to big */
+                    quickSort(chan_arr, val_arr, 0, arr_size - 1);
+
+                    struct actuator_init_value init_value = { .chan_mask = 0 };
+                    for (uint8_t i = 0; i < arr_size; i++) {
+                        init_value.chan_mask |= (1 << (chan_arr[i] - 1));
+                        init_value.value[i] = val_arr[i];
+                    }
+
+                    rt_device_t dev = rt_device_find(DEVICE_LIST[idx].name);
+                    if (rt_device_control(dev, ACT_CMD_SET_INIT_VAL, &init_value) != RT_EOK) {
+                        TOML_DBG_W("fail to set init value.\n");
+                    }
                 }
             } else {
                 TOML_DBG_W("unknown config key: %s\n", key);

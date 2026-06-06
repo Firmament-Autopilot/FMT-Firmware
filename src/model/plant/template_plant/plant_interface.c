@@ -22,7 +22,7 @@ MCN_DEFINE(plant_states, sizeof(Plant_States_Bus));
 /* Model information */
 fmt_model_info_t plant_model_info;
 
-void plant_interface_step(void)
+void plant_interface_step(uint32_t timestamp)
 {
     /* Add your code here */
 }

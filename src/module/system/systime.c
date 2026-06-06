@@ -25,6 +25,7 @@ typedef struct {
 
 static systime_t __systime;
 static rt_device_t systick_dev;
+static uint32_t mlog_time_ref = 0;
 
 /**
  * @brief Systick ISR callback
@@ -206,4 +207,19 @@ fmt_err_t systime_init(void)
     FMT_ASSERT(__systime.msPerPeriod > 0);
 
     return FMT_EOK;
+}
+
+/**
+ * @brief Get the mlog time reference point
+ *
+ * If the reference has not been set yet, it will be initialized on first call.
+ *
+ * @return uint32_t The reference time in ms
+ */
+uint32_t systime_get_origin(void)
+{
+    if (mlog_time_ref == 0) {
+        mlog_time_ref = systime_now_ms();
+    }
+    return mlog_time_ref;
 }

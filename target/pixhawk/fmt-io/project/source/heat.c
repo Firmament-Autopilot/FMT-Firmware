@@ -16,29 +16,32 @@
 
 #include "heat.h"
 
+#ifdef USE_IMU_HEAT
+
 void heat_on()
 {
-	GPIO_SetBits(HEAT_PORT, HEAT_PIN);
+    GPIO_SetBits(HEAT_PORT, HEAT_PIN);
 }
 
 void heat_off()
 {
-	GPIO_ResetBits(HEAT_PORT, HEAT_PIN);
+    GPIO_ResetBits(HEAT_PORT, HEAT_PIN);
 }
-
 
 void heat_init(void)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitTypeDef GPIO_InitStructure;
 
-	/* GPIOD Periph clock enable */
-	RCC_APB2PeriphClockCmd(HEAT_RCC, ENABLE);
+    /* GPIOD Periph clock enable */
+    RCC_APB2PeriphClockCmd(HEAT_RCC, ENABLE);
 
-	/* Configure PD0 and PD2 in output pushpull mode */
-	GPIO_InitStructure.GPIO_Pin = HEAT_PIN;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(HEAT_PORT, &GPIO_InitStructure);
+    /* Configure PD0 and PD2 in output pushpull mode */
+    GPIO_InitStructure.GPIO_Pin = HEAT_PIN;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(HEAT_PORT, &GPIO_InitStructure);
 
-	heat_off();
+    heat_off();
 }
+
+#endif

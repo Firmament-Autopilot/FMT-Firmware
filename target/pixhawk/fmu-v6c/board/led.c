@@ -14,7 +14,9 @@ static uint8_t _b;          /* blue blink enable (1 = blink, 0 = off/solid)
                              * note: when blue is solid we set pin directly */
 static uint8_t _blue_solid; /* 1 = blue solid on */
 static uint8_t _red_mode;   /* 0=off,1=solid,2=slow blink,3=fast blink */
-static uint8_t _hw_fault;   /* hardware fault flag */
+static uint8_t _red_pin_status = 1;
+static uint8_t _blue_pin_status = 1;
+// static uint8_t _hw_fault;   /* hardware fault flag */
 static uint32_t _led_ticks;
 
 static void run_led(void* parameter)
@@ -78,12 +80,12 @@ void vehicle_status_change_cb(uint8_t status)
 void fms_error_change_cb(uint32_t error)
 {
     /* If a hardware fault is signaled, always show red solid */
-    if (_hw_fault) {
-        _red_mode = 1; /* solid red */
-        _b = 0;
-        _blue_solid = 0;
-        return;
-    }
+    // if (_hw_fault) {
+    //     _red_mode = 1; /* solid red */
+    //     _b = 0;
+    //     _blue_solid = 0;
+    //     return;
+    // }
 
     if (error == 0) {
         /* normal: blue blink, red off */
@@ -113,6 +115,12 @@ fmt_err_t led_set(struct device_pin_status pin_sta)
         return FMT_ERROR;
     }
 
+    if (pin_sta.pin == FMU_LED_RED_PIN) {
+        _red_pin_status = (uint8_t)pin_sta.status;
+    } else if (pin_sta.pin == FMU_LED_BLUE_PIN) {
+        _blue_pin_status = (uint8_t)pin_sta.status;
+    }
+
     return FMT_EOK;
 }
 
@@ -120,13 +128,22 @@ fmt_err_t led_toggle(uint32_t pin)
 {
     struct device_pin_status pin_sta = { .pin = pin };
 
-    if (pin_dev->read(pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta)) != sizeof(pin_sta)) {
+    if (pin == FMU_LED_RED_PIN) {
+        pin_sta.status = !_red_pin_status;
+    } else if (pin == FMU_LED_BLUE_PIN) {
+        pin_sta.status = !_blue_pin_status;
+    } else {
         return FMT_ERROR;
     }
 
-    pin_sta.status = !pin_sta.status;
     if (pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(pin_sta)) != sizeof(pin_sta)) {
         return FMT_ERROR;
+    }
+
+    if (pin == FMU_LED_RED_PIN) {
+        _red_pin_status = (uint8_t)pin_sta.status;
+    } else {
+        _blue_pin_status = (uint8_t)pin_sta.status;
     }
 
     return FMT_EOK;
@@ -144,9 +161,6 @@ fmt_err_t led_init(struct device_pin_mode pin_mode)
 fmt_err_t rgb_led_set_color(uint32_t color)
 {
     /* color: 0=RED(solid), 1=BLUE(blink) */
-    /* ensure both leds off first */
-    LED_OFF(FMU_LED_RED_PIN);
-    LED_OFF(FMU_LED_BLUE_PIN);
     /* color meanings for this board:
      * 0 = RED solid (error)
      * 1 = BLUE blink (normal/disarm/standby)
@@ -170,7 +184,7 @@ fmt_err_t rgb_led_set_color(uint32_t color)
     } else {
         _b = 0;
         _blue_solid = 0;
-        _red_mode = 0;
+        _red_mode = 1;
     }
 
     return FMT_EOK;
@@ -203,7 +217,7 @@ fmt_err_t led_control_init(void)
     /* start with blue blinking to indicate normal */
     /* initialize internal state */
     _led_ticks = 0;
-    _hw_fault = 0;
+    //_hw_fault = 0;
     _blue_solid = 0;
     _red_mode = 0;
     rgb_led_set_color(1);
@@ -252,17 +266,17 @@ void led_force_red(void)
 /* Signal a hardware fault to the LED logic. When hw_fault is non-zero,
  * show solid red and turn off blue. When cleared, restore normal blue blink.
  */
-void led_set_hardware_fault(uint8_t hw_fault)
-{
-    if (hw_fault) {
-        _hw_fault = 1;
-        _red_mode = 1; /* solid */
-        _b = 0;
-        _blue_solid = 0;
-    } else {
-        _hw_fault = 0;
-        _red_mode = 0;
-        _b = 1;
-        _blue_solid = 0;
-    }
-}
+// void led_set_hardware_fault(uint8_t hw_fault)
+// {
+//     if (hw_fault) {
+//         _hw_fault = 1;
+//         _red_mode = 1; /* solid */
+//         _b = 0;
+//         _blue_solid = 0;
+//     } else {
+//         _hw_fault = 0;
+//         _red_mode = 0;
+//         _b = 1;
+//         _blue_solid = 0;
+//     }
+// }

@@ -43,10 +43,10 @@ MCN_DECLARE(fms_output);
 
 static uint32_t main_pwm_freq = PWM_DEFAULT_FREQUENCY;
 static uint32_t aux_pwm_freq = PWM_DEFAULT_FREQUENCY;
-// static float main_pwm_dc[MAIN_OUT_CHAN_NUM];
-// static float aux_pwm_dc[AUX_OUT_CHAN_NUM];
 static float main_out_val[MAIN_OUT_CHAN_NUM];
 static float aux_out_val[AUX_OUT_CHAN_NUM];
+static float main_out_init_val[MAIN_OUT_CHAN_NUM];
+static float aux_out_init_val[AUX_OUT_CHAN_NUM];
 
 /* DShot command state array: keeps track of ongoing sequence correctly synced to cyclic update */
 typedef struct {
@@ -668,8 +668,8 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
         if (dev->config.protocol == ACT_PROTOCOL_PWM) {
             /* set to lowest pwm before open */
             for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
-                __main_write_pwm(i, VAL_TO_DC(1000, main_pwm_freq));
-                main_out_val[i] = 1000;
+                __main_write_pwm(i, VAL_TO_DC(main_out_init_val[i], main_pwm_freq));
+                main_out_val[i] = main_out_init_val[i];
             }
         } else {
             TIM1->CCR1 = 0;
@@ -745,6 +745,15 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
         ret = main_act_write(dev, c->chan_mask, c->value, c->size) == c->size ? RT_EOK : RT_ERROR;
         break;
     }
+    case ACT_CMD_SET_INIT_VAL: {
+        const struct actuator_init_value* init_val = (struct actuator_init_value*)arg;
+        uint8_t index = 0;
+        for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
+            if (init_val->chan_mask & (1 << i)) {
+                main_out_init_val[i] = init_val->value[index++];
+            }
+        }
+    } break;
     default:
         ret = RT_EINVAL;
         break;
@@ -759,22 +768,24 @@ static rt_err_t aux_act_control(actuator_dev_t dev, int cmd, void* arg)
 
     switch (cmd) {
     case ACT_CMD_CHANNEL_ENABLE:
-        /* set to lowest pwm before open */
-        for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
-            __aux_write_pwm(i, VAL_TO_DC(1000, aux_pwm_freq));
-            aux_out_val[i] = 1000;
+        if (dev->config.protocol == ACT_PROTOCOL_PWM) {
+            /* set to lowest pwm before open */
+            for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
+                __aux_write_pwm(i, VAL_TO_DC(aux_out_init_val[i], aux_pwm_freq));
+                aux_out_val[i] = aux_out_init_val[i];
+            }
+
+            LL_TIM_EnableCounter(TIM8);
+            LL_TIM_EnableAllOutputs(TIM8);
+            LL_TIM_EnableCounter(TIM12);
+
+            LL_TIM_CC_EnableChannel(TIM8, LL_TIM_CHANNEL_CH1);
+            LL_TIM_CC_EnableChannel(TIM8, LL_TIM_CHANNEL_CH2);
+            LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH1);
+            LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH2);
+
+            DRV_DBG("aux out enabled\n");
         }
-
-        LL_TIM_EnableCounter(TIM8);
-        LL_TIM_EnableAllOutputs(TIM8);
-        LL_TIM_EnableCounter(TIM12);
-
-        LL_TIM_CC_EnableChannel(TIM8, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_EnableChannel(TIM8, LL_TIM_CHANNEL_CH2);
-        LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH2);
-
-        DRV_DBG("aux out enabled\n");
         break;
     case ACT_CMD_CHANNEL_DISABLE:
         LL_TIM_DisableCounter(TIM8);
@@ -788,6 +799,15 @@ static rt_err_t aux_act_control(actuator_dev_t dev, int cmd, void* arg)
 
         DRV_DBG("aux out disabled\n");
         break;
+    case ACT_CMD_SET_INIT_VAL: {
+        const struct actuator_init_value* init_val = (struct actuator_init_value*)arg;
+        uint8_t index = 0;
+        for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
+            if (init_val->chan_mask & (1 << i)) {
+                aux_out_init_val[i] = init_val->value[index++];
+            }
+        }
+    } break;
     default:
         ret = RT_EINVAL;
         break;
@@ -950,6 +970,14 @@ rt_err_t drv_act_init(void)
     timer_gpio_init();
     /* init pwm timer, pwm output mode */
     timer_init();
+
+    for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
+        main_out_init_val[i] = 1000;
+    }
+
+    for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
+        aux_out_init_val[i] = 1000;
+    }
 
     /* register actuator hal device */
     RT_TRY(hal_actuator_register(&main_act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));

@@ -248,7 +248,7 @@ void plant_interface_step(uint32_t timestamp)
     if (mcn_poll(environment_info_nod)) {
         mcn_copy(MCN_HUB(environment_info), environment_info_nod, &Plant_U.Environment_Info);
 
-        Plant_U.Environment_Info.timestamp = systime_now_ms();
+        Plant_U.Environment_Info.timestamp = timestamp;
 
         environment_info_updated = 1;
     }
@@ -256,7 +256,7 @@ void plant_interface_step(uint32_t timestamp)
     if (mcn_poll(states_init_nod)) {
         mcn_copy(MCN_HUB(states_init), states_init_nod, &Plant_U.States_Init);
 
-        Plant_U.States_Init.timestamp = systime_now_ms();
+        Plant_U.States_Init.timestamp = timestamp;
 
         states_init_updated = 1;
     }

@@ -110,7 +110,7 @@ static int ins_output_echo(void* param)
     return 0;
 }
 
-void ins_interface_step(void)
+void ins_interface_step(uint32_t timestamp)
 {
     if (mcn_poll(ext_state_node)) {
         mavlink_fmt_external_state_t external_state;
@@ -119,8 +119,7 @@ void ins_interface_step(void)
 
         mcn_copy(MCN_HUB(external_state), ext_state_node, &external_state);
 
-        // ins_out.timestamp = external_state.timestamp;
-        ins_out.timestamp = systime_now_ms();
+        ins_out.timestamp = timestamp;
 
         ins_out.quat[0] = external_state.quat[0];
         ins_out.quat[1] = external_state.quat[1];
