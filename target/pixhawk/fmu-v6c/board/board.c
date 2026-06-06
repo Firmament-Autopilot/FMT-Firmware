@@ -28,18 +28,19 @@
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/pmu/power_manager.h"
+#include "module/sensor/sensor_gps.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
-#include "module/sensor/sensor_gps.h"
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 
 // Default Configuration
 #include "default_config.h"
@@ -48,6 +49,7 @@
 #include "drv_adc.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
+#include "drv_heater.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_sdio.h"
@@ -476,6 +478,11 @@ void bsp_initialize(void)
         } else {
             printf("airspeed sensor init failed!\n");
         }
+    }
+
+    /* heater driver init */
+    if (drv_heater_init("spi1_dev3") != RT_EOK) {
+        console_println("Warning: heater init failed");
     }
 #endif
 
