@@ -26,6 +26,7 @@
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
+#include "module/system/systime.h"
 #include "module/task_manager/task_manager.h"
 #include "task/logger/task_logger.h"
 
@@ -44,7 +45,6 @@ static void timer_vehicle_update(void* parameter)
 
 void task_vehicle_entry(void* parameter)
 {
-    static uint32_t time_start = 0;
     uint32_t time_now;
     uint32_t timestamp;
     rt_err_t res;
@@ -57,12 +57,8 @@ void task_vehicle_entry(void* parameter)
         if (res == RT_EOK) {
             if (recv_set & EVENT_VEHICLE_UPDATE) {
                 time_now = systime_now_ms();
-                /* record loop start time */
-                if (time_start == 0) {
-                    time_start = time_now;
-                }
-                /* the model simulation start from 0, so we calcualtet the timestamp relative to start time */
-                timestamp = time_now - time_start;
+                /* the model simulation start from 0, so we calculate the timestamp relative to start time */
+                timestamp = time_now - systime_get_origin();
 
 #if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
                 sensor_collect();
