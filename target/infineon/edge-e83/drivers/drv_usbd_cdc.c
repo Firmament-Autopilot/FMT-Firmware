@@ -218,7 +218,9 @@ static rt_size_t cdc_dev_write(usbd_cdc_dev_t dev, rt_off_t pos, const void* buf
         return 0;
     }
 
-    rt_mutex_take(dev->tx_lock, RT_WAITING_FOREVER);
+    if(rt_mutex_take(dev->tx_lock, 100) != RT_EOK) {
+        return 0;
+    }
 
     while (remaining > 0) {
         rt_size_t chunk_size = (remaining > USBD_CDC_TX_BUFSIZE) ? USBD_CDC_TX_BUFSIZE : remaining;
