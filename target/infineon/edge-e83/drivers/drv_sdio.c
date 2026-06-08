@@ -41,6 +41,16 @@
 
 #define CY_SDIO_BOUNCE_ALIGN  (32U)
 #define CY_SDIO_ADMA_MAX_LEN  (64U * 1024U)
+#define IFX_SD_LOCK_TIMEOUT_MS (2000U)
+#define IFX_SD_XFER_TIMEOUT_MS (5000U)
+
+#define IFX_SD_ERROR_MASK (CY_SD_HOST_CMD_TOUT_ERR | CY_SD_HOST_CMD_CRC_ERR | \
+                           CY_SD_HOST_CMD_END_BIT_ERR | CY_SD_HOST_CMD_IDX_ERR | \
+                           CY_SD_HOST_DATA_TOUT_ERR | CY_SD_HOST_DATA_CRC_ERR | \
+                           CY_SD_HOST_DATA_END_BIT_ERR | CY_SD_HOST_CUR_LMT_ERR | \
+                           CY_SD_HOST_AUTO_CMD_ERR | CY_SD_HOST_ADMA_ERR | \
+                           CY_SD_HOST_TUNING_ERR | CY_SD_HOST_RESP_ERR | \
+                           CY_SD_HOST_BOOT_ACK_ERR)
 
 struct ifx_sdio {
     mtb_hal_sdhc_t* sdhc_obj;
@@ -66,24 +76,34 @@ bool Cy_SD_Host_IsCardConnected(SDHC_Type const* base)
 void SDHC_IRQHandler(void)
 {
     uint32_t normal, error;
+    uint32_t handled_normal = 0;
 
     normal = Cy_SD_Host_GetNormalInterruptStatus(SDHC1);
     error = Cy_SD_Host_GetErrorInterruptStatus(SDHC1);
 
-    if (error) {
+    if ((normal & CY_SD_HOST_ERR_INTERRUPT) || error) {
         Cy_SD_Host_ClearErrorInterruptStatus(SDHC1, error);
         rt_event_send(&ifx_sd_dev.event, IFX_SD_EVENT_ERROR);
+        handled_normal |= CY_SD_HOST_ERR_INTERRUPT;
     }
 
     if (normal & CY_SD_HOST_XFER_COMPLETE) {
-        Cy_SD_Host_ClearNormalInterruptStatus(
-            SDHC1, CY_SD_HOST_XFER_COMPLETE);
-
         rt_event_send(&ifx_sd_dev.event,
                       IFX_SD_EVENT_RX_DONE | IFX_SD_EVENT_TX_DONE);
+        handled_normal |= CY_SD_HOST_XFER_COMPLETE;
     }
 
-    Cy_SD_Host_ClearNormalInterruptStatus(SDHC1, normal);
+    if (normal & CY_SD_HOST_CARD_INSERTION) {
+        handled_normal |= CY_SD_HOST_CARD_INSERTION;
+    }
+
+    if (normal & CY_SD_HOST_CARD_REMOVAL) {
+        handled_normal |= CY_SD_HOST_CARD_REMOVAL;
+    }
+
+    if (handled_normal) {
+        Cy_SD_Host_ClearNormalInterruptStatus(SDHC1, handled_normal);
+    }
 }
 
 static rt_err_t ifx_sd_get_bounce(struct ifx_sdio* sdio,
@@ -108,6 +128,31 @@ static rt_err_t ifx_sd_get_bounce(struct ifx_sdio* sdio,
     return RT_EOK;
 }
 
+static void ifx_sd_recover(sd_dev_t dev,
+                           const char* op,
+                           cy_en_sd_host_status_t status)
+{
+    uint32_t normal = Cy_SD_Host_GetNormalInterruptStatus(SDHC1);
+    uint32_t error = Cy_SD_Host_GetErrorInterruptStatus(SDHC1);
+
+    if (normal) {
+        Cy_SD_Host_ClearNormalInterruptStatus(SDHC1, normal);
+    }
+
+    if (error) {
+        Cy_SD_Host_ClearErrorInterruptStatus(SDHC1, error);
+    }
+
+    (void)Cy_SD_Host_AbortTransfer(SDHC1, &ifx_sd_ctx);
+    rt_event_control(&dev->event, RT_IPC_CMD_RESET, RT_NULL);
+
+    rt_kprintf("SD recover on %s: status=%d normal=0x%04lx error=0x%04lx\n",
+               op,
+               status,
+               normal,
+               error);
+}
+
 static rt_err_t ifx_sd_read(sd_dev_t dev,
                             rt_uint8_t* buf,
                             rt_uint32_t sector,
@@ -115,6 +160,7 @@ static rt_err_t ifx_sd_read(sd_dev_t dev,
 {
     struct ifx_sdio* sdio = dev->parent.user_data;
     cy_stc_sd_host_write_read_config_t cfg = { 0 };
+    cy_en_sd_host_status_t sd_status;
     rt_size_t total;
     rt_uint8_t* dma_buf;
     rt_uint32_t evt;
@@ -125,7 +171,9 @@ static rt_err_t ifx_sd_read(sd_dev_t dev,
 
     total = count * IFX_SD_SECTOR_SIZE;
 
-    rt_mutex_take(&ifx_sd_lock, RT_WAITING_FOREVER);
+    if (rt_mutex_take(&ifx_sd_lock, rt_tick_from_millisecond(IFX_SD_LOCK_TIMEOUT_MS)) != RT_EOK) {
+        return -RT_ETIMEOUT;
+    }
 
     err = ifx_sd_get_bounce(sdio, total, &dma_buf);
     if (err != RT_EOK)
@@ -142,7 +190,9 @@ static rt_err_t ifx_sd_read(sd_dev_t dev,
 
     rt_event_control(&dev->event, RT_IPC_CMD_RESET, RT_NULL);
 
-    if (Cy_SD_Host_Read(SDHC1, &cfg, &ifx_sd_ctx) != CY_SD_HOST_SUCCESS) {
+    sd_status = Cy_SD_Host_Read(SDHC1, &cfg, &ifx_sd_ctx);
+    if (sd_status != CY_SD_HOST_SUCCESS) {
+        ifx_sd_recover(dev, "read-start", sd_status);
         err = -RT_ERROR;
         goto exit;
     }
@@ -150,14 +200,16 @@ static rt_err_t ifx_sd_read(sd_dev_t dev,
     if (rt_event_recv(&dev->event,
                       IFX_SD_EVENT_RX_DONE | IFX_SD_EVENT_ERROR,
                       RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-                      rt_tick_from_millisecond(5000),
+                      rt_tick_from_millisecond(IFX_SD_XFER_TIMEOUT_MS),
                       &evt)
         != RT_EOK) {
+        ifx_sd_recover(dev, "read-wait", CY_SD_HOST_ERROR_TIMEOUT);
         err = -RT_ETIMEOUT;
         goto exit;
     }
 
     if (evt & IFX_SD_EVENT_ERROR) {
+        ifx_sd_recover(dev, "read-event", CY_SD_HOST_ERROR);
         err = -RT_ERROR;
         goto exit;
     }
@@ -177,6 +229,7 @@ static rt_err_t ifx_sd_write(sd_dev_t dev,
 {
     struct ifx_sdio* sdio = dev->parent.user_data;
     cy_stc_sd_host_write_read_config_t cfg = { 0 };
+    cy_en_sd_host_status_t sd_status;
     rt_size_t total;
     rt_uint8_t* dma_buf;
     rt_uint32_t evt;
@@ -187,7 +240,9 @@ static rt_err_t ifx_sd_write(sd_dev_t dev,
 
     total = count * IFX_SD_SECTOR_SIZE;
 
-    rt_mutex_take(&ifx_sd_lock, RT_WAITING_FOREVER);
+    if (rt_mutex_take(&ifx_sd_lock, rt_tick_from_millisecond(IFX_SD_LOCK_TIMEOUT_MS)) != RT_EOK) {
+        return -RT_ETIMEOUT;
+    }
 
     err = ifx_sd_get_bounce(sdio, total, &dma_buf);
     if (err != RT_EOK)
@@ -205,7 +260,9 @@ static rt_err_t ifx_sd_write(sd_dev_t dev,
 
     rt_event_control(&dev->event, RT_IPC_CMD_RESET, RT_NULL);
 
-    if (Cy_SD_Host_Write(SDHC1, &cfg, &ifx_sd_ctx) != CY_SD_HOST_SUCCESS) {
+    sd_status = Cy_SD_Host_Write(SDHC1, &cfg, &ifx_sd_ctx);
+    if (sd_status != CY_SD_HOST_SUCCESS) {
+        ifx_sd_recover(dev, "write-start", sd_status);
         err = -RT_ERROR;
         goto exit;
     }
@@ -213,15 +270,18 @@ static rt_err_t ifx_sd_write(sd_dev_t dev,
     if (rt_event_recv(&dev->event,
                       IFX_SD_EVENT_TX_DONE | IFX_SD_EVENT_ERROR,
                       RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-                      rt_tick_from_millisecond(5000),
+                      rt_tick_from_millisecond(IFX_SD_XFER_TIMEOUT_MS),
                       &evt)
         != RT_EOK) {
+        ifx_sd_recover(dev, "write-wait", CY_SD_HOST_ERROR_TIMEOUT);
         err = -RT_ETIMEOUT;
         goto exit;
     }
 
-    if (evt & IFX_SD_EVENT_ERROR)
+    if (evt & IFX_SD_EVENT_ERROR) {
+        ifx_sd_recover(dev, "write-event", CY_SD_HOST_ERROR);
         err = -RT_ERROR;
+    }
 
 exit:
     rt_mutex_release(&ifx_sd_lock);
@@ -244,6 +304,7 @@ rt_err_t ifx_sd_hw_init(sd_dev_t dev)
 {
     cy_en_sd_host_status_t status;
     cy_en_sysint_status_t sysint;
+    uint32_t normal_int;
 
     Cy_SD_Host_Enable(CYBSP_SDHC_1_HW);
 
@@ -275,9 +336,16 @@ rt_err_t ifx_sd_hw_init(sd_dev_t dev)
     if (sysint != CY_SYSINT_SUCCESS)
         return RT_ERROR;
 
-    Cy_SD_Host_SetNormalInterruptMask(
-        CYBSP_SDHC_1_HW,
-        CY_SD_HOST_CARD_INSERTION | CY_SD_HOST_CARD_REMOVAL | CY_SD_HOST_XFER_COMPLETE);
+    normal_int = CY_SD_HOST_CARD_INSERTION | CY_SD_HOST_CARD_REMOVAL |
+                 CY_SD_HOST_XFER_COMPLETE | CY_SD_HOST_ERR_INTERRUPT;
+
+    Cy_SD_Host_ClearNormalInterruptStatus(CYBSP_SDHC_1_HW,
+                                          Cy_SD_Host_GetNormalInterruptStatus(CYBSP_SDHC_1_HW));
+    Cy_SD_Host_ClearErrorInterruptStatus(CYBSP_SDHC_1_HW,
+                                         Cy_SD_Host_GetErrorInterruptStatus(CYBSP_SDHC_1_HW));
+
+    Cy_SD_Host_SetNormalInterruptMask(CYBSP_SDHC_1_HW, normal_int);
+    Cy_SD_Host_SetErrorInterruptMask(CYBSP_SDHC_1_HW, IFX_SD_ERROR_MASK);
 
     NVIC_EnableIRQ(CYBSP_SDHC_1_IRQ);
 
