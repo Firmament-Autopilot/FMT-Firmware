@@ -100,9 +100,7 @@ USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t usb_read_buffer[CDC_MAX_MPS];
 USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t usb_write_buffer[USBD_CDC_TX_BUFSIZE];
 
 static struct usbd_cdc_dev cdc_device;
-static ringbuffer rx_ringbuf;
 static volatile bool ep_tx_busy_flag = false;
-static volatile uint8_t dtr_enable = 0;
 static uint8_t usb_busid = 0;
 static struct usbd_interface intf0;
 static struct usbd_interface intf1;
@@ -178,6 +176,8 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
 
 static rt_err_t cdc_dev_init(usbd_cdc_dev_t dev)
 {
+    (void)dev;
+
     usbd_desc_register(usb_busid, &cdc_descriptor);
 
     usbd_add_interface(usb_busid, usbd_cdc_acm_init_intf(usb_busid, &intf0));
@@ -206,43 +206,31 @@ static rt_size_t cdc_dev_read(usbd_cdc_dev_t dev, rt_off_t pos, void* buf, rt_si
 
 static rt_size_t cdc_dev_write(usbd_cdc_dev_t dev, rt_off_t pos, const void* buf, rt_size_t size)
 {
-    rt_size_t sent_len = 0;
-    rt_size_t remaining = size;
-    const uint8_t* data_ptr = (const uint8_t*)buf;
+    rt_size_t tx_size;
+    int ret;
+
+    (void)dev;
+    (void)pos;
 
     if (buf == NULL || size == 0) {
         return 0;
     }
 
-    if (dev->status != USBD_STATUS_CONNECT && !dtr_enable) {
+    if (ep_tx_busy_flag) {
         return 0;
     }
 
-    if(rt_mutex_take(dev->tx_lock, 100) != RT_EOK) {
+    tx_size = (size > USBD_CDC_TX_BUFSIZE) ? USBD_CDC_TX_BUFSIZE : size;
+    memcpy(usb_write_buffer, buf, tx_size);
+
+    ep_tx_busy_flag = true;
+    ret = usbd_ep_start_write(usb_busid, CDC_IN_EP, usb_write_buffer, tx_size);
+    if (ret < 0) {
+        ep_tx_busy_flag = false;
         return 0;
     }
 
-    while (remaining > 0) {
-        rt_size_t chunk_size = (remaining > USBD_CDC_TX_BUFSIZE) ? USBD_CDC_TX_BUFSIZE : remaining;
-
-        while (ep_tx_busy_flag) {
-            rt_thread_mdelay(1);
-        }
-
-        memcpy(usb_write_buffer, data_ptr, chunk_size);
-
-        ep_tx_busy_flag = true;
-        usbd_ep_start_write(usb_busid, CDC_IN_EP, usb_write_buffer, chunk_size);
-        // rt_completion_wait(&dev->tx_cplt, RT_WAITING_FOREVER);
-
-        sent_len += chunk_size;
-        data_ptr += chunk_size;
-        remaining -= chunk_size;
-    }
-
-    rt_mutex_release(dev->tx_lock);
-
-    return sent_len;
+    return tx_size;
 }
 
 static rt_err_t cdc_dev_control(usbd_cdc_dev_t dev, int cmd, void* arg)
@@ -265,7 +253,7 @@ static rt_err_t cdc_dev_control(usbd_cdc_dev_t dev, int cmd, void* arg)
 }
 
 static struct usbd_cdc_ops cdc_ops = {
-    .dev_init = cdc_dev_init,
+    .dev_init = NULL,
     .dev_read = cdc_dev_read,
     .dev_write = cdc_dev_write,
     .dev_control = cdc_dev_control
@@ -283,19 +271,15 @@ rt_err_t drv_usb_cdc_init(void)
 
     memset(&cdc_device, 0, sizeof(cdc_device));
     cdc_device.ops = &cdc_ops;
-    cdc_device.rx_rb = &rx_ringbuf;
     cdc_device.status = USBD_STATUS_DISCONNECT;
-
-    rt_completion_init(&cdc_device.tx_cplt);
-
-    cdc_device.tx_lock = rt_mutex_create("usb_tx", RT_IPC_FLAG_FIFO);
-    if (cdc_device.tx_lock == RT_NULL) {
-        return RT_ENOMEM;
-    }
 
     ret = hal_usbd_cdc_register(&cdc_device, "usbd_cdc", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, NULL);
     if (ret != RT_EOK) {
-        rt_mutex_delete(cdc_device.tx_lock);
+        return ret;
+    }
+
+    ret = cdc_dev_init(&cdc_device);
+    if (ret != RT_EOK) {
         return ret;
     }
 
