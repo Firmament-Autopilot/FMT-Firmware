@@ -427,6 +427,9 @@ fmt_err_t ftp_stream_send(StreamSession* stream_session)
     uint8_t err_no;
     mavlink_system_t system;
     int br;
+    uint16_t seq_number;
+    uint32_t stream_offset;
+    fmt_err_t send_ret;
 
     FTP_DBG("send stream, seq:%d offset:%d fd:%d", stream_session->stream_seq_number, stream_session->stream_offset, stream_session->fd);
 
@@ -435,21 +438,18 @@ fmt_err_t ftp_stream_send(StreamSession* stream_session)
         return FMT_ERROR;
     }
 
-    ftp_msg_t->seq_number = stream_session->stream_seq_number;
-    ftp_msg_t->offset = stream_session->stream_offset;
+    seq_number = stream_session->stream_seq_number;
+    stream_offset = stream_session->stream_offset;
+
+    ftp_msg_t->seq_number = seq_number;
+    ftp_msg_t->offset = stream_offset;
     ftp_msg_t->session = 0;
     ftp_msg_t->burst_complete = 0;
     ftp_msg_t->opcode = kRspAck;
     ftp_msg_t->req_opcode = kCmdBurstReadFile;
 
-    stream_session->stream_seq_number++;
-
-    if (ftp_msg_t->offset >= stream_session->file_size) {
+    if (stream_offset >= stream_session->file_size) {
         /* stream session complete */
-        mavproxy_cmd_reset(MAVCMD_STREAM_SESSION);
-
-        stream_session->complete = 1;
-
         err_code = kErrEOF;
 
         FTP_DBG("stream session complete");
@@ -463,18 +463,18 @@ fmt_err_t ftp_stream_send(StreamSession* stream_session)
     // 	goto Out;
     // }
 
-    off_t off = lseek(stream_session->fd, ftp_msg_t->offset, SEEK_SET);
+    off_t off = lseek(stream_session->fd, stream_offset, SEEK_SET);
 
-    if (off != ftp_msg_t->offset) {
+    if (off != stream_offset) {
         err_no = rt_get_errno();
         err_code = kErrFailErrno;
 
-        FTP_DBG("seek fail:%d, offset:%d cur_offset:%d", err_no, ftp_msg_t->offset, off);
+        FTP_DBG("seek fail:%d, offset:%d cur_offset:%d", err_no, stream_offset, off);
         goto Out;
     }
 
     // fres = f_read(stream_session->fd, ftp_msg_t->data, MAX_FTP_DATA_LEN, &br);
-    size_t len_to_read = stream_session->file_size - ftp_msg_t->offset;
+    size_t len_to_read = stream_session->file_size - stream_offset;
     len_to_read = len_to_read > MAX_FTP_DATA_LEN ? MAX_FTP_DATA_LEN : len_to_read;
     br = read(stream_session->fd, ftp_msg_t->data, len_to_read);
 
@@ -498,13 +498,11 @@ Out:
 
     if (err_code == kErrNone) {
         ftp_msg_t->opcode = kRspAck;
-        stream_session->stream_offset += ftp_msg_t->size;
-
-        if (stream_session->stream_offset >= stream_session->file_size) {
+        if ((stream_offset + ftp_msg_t->size) >= stream_session->file_size) {
             ftp_msg_t->burst_complete = 1;
         }
 
-        FTP_DBG("RspAck, size:%d offset:%d complete:%d", ftp_msg_t->size, stream_session->stream_offset, ftp_msg_t->burst_complete);
+        FTP_DBG("RspAck, size:%d offset:%d complete:%d", ftp_msg_t->size, stream_offset + ftp_msg_t->size, ftp_msg_t->burst_complete);
     } else {
         ftp_msg_t->opcode = kRspNak;
         ftp_msg_t->size = 1;
@@ -527,7 +525,19 @@ Out:
     system = mavproxy_get_system();
 
     mavlink_msg_file_transfer_protocol_encode(system.sysid, system.compid, &msg, &ftp_protocol_t);
-    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    send_ret = mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    if (send_ret != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    /* advance stream state only after packet is sent successfully */
+    stream_session->stream_seq_number = seq_number + 1;
+    if (err_code == kErrNone) {
+        stream_session->stream_offset = stream_offset + ftp_msg_t->size;
+    } else if (err_code == kErrEOF) {
+        mavproxy_cmd_reset(MAVCMD_STREAM_SESSION);
+        stream_session->complete = 1;
+    }
 
     return FMT_EOK;
 }
