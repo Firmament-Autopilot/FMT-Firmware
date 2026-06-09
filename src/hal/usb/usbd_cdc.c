@@ -72,6 +72,7 @@ static rt_size_t hal_usbd_cdc_write(rt_device_t dev, rt_off_t pos, const void* b
 {
     usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)dev;
     rt_size_t wb = 0;
+    rt_err_t err;
 
     RT_ASSERT(dev != RT_NULL);
 
@@ -83,12 +84,20 @@ static rt_size_t hal_usbd_cdc_write(rt_device_t dev, rt_off_t pos, const void* b
         return 0;
     }
 
+    /* clear stale completion before a new write attempt */
+    rt_completion_init(&usbd->tx_cplt);
+
     if (usbd->ops->dev_write) {
         wb = usbd->ops->dev_write(usbd, pos, buffer, size);
     }
 
-    /* wait until send is finished */
-    rt_completion_wait(&usbd->tx_cplt, TICKS_FROM_MS(USBD_WAIT_TIMEOUT));
+    if (wb > 0) {
+        /* wait until send is finished */
+        err = rt_completion_wait(&usbd->tx_cplt, TICKS_FROM_MS(USBD_WAIT_TIMEOUT));
+        if (err != RT_EOK) {
+            wb = 0;
+        }
+    }
 
     rt_mutex_release(usbd->tx_lock);
     return wb;
@@ -96,9 +105,9 @@ static rt_size_t hal_usbd_cdc_write(rt_device_t dev, rt_off_t pos, const void* b
 
 /**
  * @brief notify the usbd status
- * 
- * @param usbd 
- * @param status 
+ *
+ * @param usbd
+ * @param status
  */
 void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
 {
@@ -135,7 +144,7 @@ void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
 
 /**
  * @brief register a usbd_cdc device
- * 
+ *
  * @param usbd usbd cdc device
  * @param name device name
  * @param flag device flag
