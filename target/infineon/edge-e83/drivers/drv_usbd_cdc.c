@@ -141,23 +141,28 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
 {
     switch (event) {
     case USBD_EVENT_RESET:
+        rt_kprintf("USB device reset\n");
         break;
 
     case USBD_EVENT_CONNECTED:
+        rt_kprintf("USB device connected\n");
         break;
 
     case USBD_EVENT_DISCONNECTED:
+        rt_kprintf("USB device disconnected\n");
         ep_tx_busy_flag = false;
         hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_DISCONNECT);
         break;
 
     case USBD_EVENT_RESUME:
+        rt_kprintf("USB device resumed\n");
         break;
 
     case USBD_EVENT_SUSPEND:
         break;
 
     case USBD_EVENT_CONFIGURED:
+        rt_kprintf("USB device configured\n");
         ep_tx_busy_flag = false;
         usbd_ep_start_read(busid, CDC_OUT_EP, usb_read_buffer, CDC_MAX_MPS);
         hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_CONNECT);
