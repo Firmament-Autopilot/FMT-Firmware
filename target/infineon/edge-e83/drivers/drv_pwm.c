@@ -35,7 +35,7 @@
 
 #define MAIN_PWM_CHAN          (8U)
 #define AUX_PWM_CHAN           (8U)
-#define PWM_DEFAULT_FREQUENCY  PWM_FREQ_400HZ
+#define PWM_DEFAULT_FREQUENCY  PWM_FREQ_50HZ
 
 #if defined(COMPONENT_CM55) || defined(CORE_NAME_CM55_0)
 #define PWM_USE_MAIN_OUT       (0U)
@@ -560,6 +560,9 @@ rt_err_t drv_pwm_init(void)
 #if !PWM_USE_AUX_OUT
     (void)&aux_act_dev;
 #endif
+
+    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &main_pwm_group);
+    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group);
 
 #if PWM_USE_MAIN_OUT
     RT_TRY(hal_actuator_register(&main_act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));

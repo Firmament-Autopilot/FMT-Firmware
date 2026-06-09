@@ -67,6 +67,10 @@ target = "Edge-E83"\n
     protocol = "pwm"\n
     name = "main_out"\n
     freq = 400\n
+    [[actuator.devices]]\n
+    protocol = "pwm"\n
+    name = "aux_out"\n
+    freq = 400\n
     [[actuator.mappings]]\n
     from = "control_out"\n
     to = "main_out"\n
