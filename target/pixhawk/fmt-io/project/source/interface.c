@@ -162,7 +162,7 @@ FMT_Error handle_rx_packet(struct IOPacket* pkt)
 void interface_listen(void)
 {
     uint8_t c;
-    if (read_ch(&c)) {
+    while (read_ch(&c)) {
         if (io_parse_char(&rx_pkt, c) == SYS_EOK) {
             handle_rx_packet(&rx_pkt);
         }
