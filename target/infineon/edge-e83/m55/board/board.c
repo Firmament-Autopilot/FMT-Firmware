@@ -323,8 +323,10 @@ void bsp_initialize(void)
     /* init mavproxy */
     FMT_CHECK(mavproxy_init());
 
-    /* init usbd_cdc */
+    /* UVC AI uses USBHS in host mode, so do not initialize USB device CDC. */
+#ifndef BSP_USING_DEEPCRAFT_AI
     RT_CHECK(drv_usb_cdc_init());
+#endif
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));

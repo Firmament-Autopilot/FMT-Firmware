@@ -3,8 +3,24 @@ from building import *
 import os
 
 cwd  = GetCurrentDir()
-path = [cwd]
+project_root = Dir('#').abspath.replace('\\', '/')
+edge_root = os.path.abspath(os.path.join(cwd, '..', '..')).replace('\\', '/')
+path = [
+    cwd,
+    project_root + '/board/usb',
+    edge_root + '/libraries/deepcraft_ai/include',
+]
 src  = Glob('*.c')
+
+if not GetDepend(['BSP_USING_DEEPCRAFT_AI']):
+    src = [
+        item for item in src
+        if os.path.basename(str(item)) not in [
+            'uvc_ai_app.c',
+            'uvc_ai_cmd.c',
+            'uvc_ai_ethosu_rtos.c',
+        ]
+    ]
 
 group = DefineGroup('Applications', src, depend = [''], CPPPATH = path)
 

@@ -1,0 +1,80 @@
+from building import *
+import os
+
+cwd = os.path.realpath(GetCurrentDir()).replace('\\', '/')
+project_root = Dir('#').abspath.replace('\\', '/')
+common_root = os.path.abspath(os.path.join(cwd, '..')).replace('\\', '/')
+libraries_root = common_root
+pdl_root = os.path.abspath(os.path.join(libraries_root, 'mtb-device-support-pse8xxgp', 'pdl')).replace('\\', '/')
+usb_port = os.path.abspath(os.path.join(project_root, 'board', 'usb')).replace('\\', '/')
+ml_middleware = cwd + '/third_party/ml-middleware'
+tflm_root = cwd + '/third_party/ml-tflite-micro/COMPONENT_ML_TFLM'
+ethosu_root = pdl_root + '/drivers/third_party/COMPONENT_U55'
+
+group = []
+
+if not GetDepend(['BSP_USING_DEEPCRAFT_AI']):
+    Return('group')
+
+src = [
+    'src/uvc_ai.c',
+    'model/model.c',
+    'third_party/ml-middleware/source/mtb_ml.c',
+    'third_party/ml-middleware/source/mtb_ml_utils.c',
+    'third_party/ml-middleware/source/COMPONENT_ML_TFLM/mtb_ml_model.cpp',
+    'third_party/ml-middleware/source/COMPONENT_U55/mtb_ml_ethosu.c',
+    pdl_root + '/drivers/third_party/COMPONENT_U55/src/ethosu_driver.c',
+    pdl_root + '/drivers/third_party/COMPONENT_U55/src/ethosu_device_u55_u65.c',
+    pdl_root + '/drivers/third_party/COMPONENT_U55/src/ethosu_pmu.c',
+]
+
+cpp_path = [
+    cwd + '/include',
+    cwd + '/model',
+    usb_port,
+    project_root + '/applications',
+    libraries_root + '/Infineon_retarget-io-latest',
+    ml_middleware + '/include',
+    ml_middleware + '/source',
+    ml_middleware + '/source/COMPONENT_ML_TFLM',
+    tflm_root + '/include',
+    tflm_root + '/include/flatbuffers/include',
+    tflm_root + '/include/gemmlowp',
+    tflm_root + '/include/gemmlowp/fixedpoint',
+    tflm_root + '/include/ethos-u-core-driver',
+    ethosu_root + '/include',
+    ethosu_root + '/src',
+]
+
+cpp_defines = [
+    'ARM_MATH_AUTOVECTORIZE',
+    'ARM_MATH_DSP',
+    'ARM_MATH_HELIUM',
+    'COMPONENT_CM55',
+    'COMPONENT_CM55_0',
+    'COMPONENT_ML_INT8x8',
+    'COMPONENT_ML_TFLM',
+    'COMPONENT_U55',
+    'ETHOSU55',
+    'ML_IMAGIMOB_CM55',
+    'MODEL_NAME=OBJECT_DETECT',
+    'TF_LITE_STATIC_MEMORY',
+    'CY_ML_ARENA_MEM=.cy_socmem_data',
+]
+
+local_arch_flags = ' -mcpu=cortex-m55 -mthumb -mfloat-abi=hard -mfpu=auto'
+opt_flags = ' -Ofast -ffast-math -fno-math-errno -funroll-loops'
+
+group = DefineGroup(
+    'DeepcraftAi',
+    src,
+    depend=['PKG_CHERRYUSB_HOST_VIDEO', 'BSP_USING_DEEPCRAFT_AI'],
+    CPPPATH=cpp_path,
+    CPPDEFINES=cpp_defines,
+    LOCAL_CFLAGS=local_arch_flags + opt_flags,
+    LOCAL_CXXFLAGS=local_arch_flags + opt_flags + ' -fno-exceptions -fno-rtti -fno-use-cxa-atexit',
+    LIBPATH=[tflm_root + '/COMPONENT_U55/TOOLCHAIN_GCC_ARM'],
+    LIBS=['tensorflow-microlite', 'stdc++', 'supc++'],
+)
+
+Return('group')

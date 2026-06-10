@@ -144,6 +144,7 @@
 
 /* POSIX layer and C standard library */
 #define RT_USING_LIBC
+#define RT_USING_CPLUSPLUS
 
 /*============================================================================
  * Network
@@ -254,11 +255,21 @@
 /*============================================================================
  * Packages
  *============================================================================*/
+// #define BSP_USING_DEEPCRAFT_AI
 #define PKG_USING_CHERRYUSB
+#ifndef BSP_USING_DEEPCRAFT_AI
 #define PKG_CHERRYUSB_DEVICE
 #define PKG_CHERRYUSB_DEVICE_SPEED_HS
 #define PKG_CHERRYUSB_DEVICE_DWC2_INFINEON
 #define PKG_CHERRYUSB_DEVICE_CDC_ACM
+#endif
+#define PKG_CHERRYUSB_HOST
+#define PKG_CHERRYUSB_HOST_DWC2_INFINEON
+#define PKG_CHERRYUSB_HOST_VIDEO
+#define CONFIG_USBHOST_PSC_PRIO 0
+#define CONFIG_USBHOST_PSC_STACKSIZE 4096
+#define CONFIG_USBHOST_REQUEST_BUFFER_LEN 4096
+#define CONFIG_USBHOST_CONTROL_TRANSFER_TIMEOUT 500
 
 #define PKG_USING_RT_VSNPRINTF_FULL
 #define PKG_VSNPRINTF_SUPPORT_DECIMAL_SPECIFIERS

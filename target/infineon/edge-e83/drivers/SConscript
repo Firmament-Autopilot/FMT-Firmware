@@ -29,7 +29,7 @@ if GetDepend('BSP_USING_ADC'):
 if GetDepend('BSP_USING_SDCARD'):
     src += ['drv_sdio.c']
 
-if GetDepend('BSP_USING_USB'):
+if GetDepend('BSP_USING_USB') and not GetDepend('BSP_USING_DEEPCRAFT_AI'):
     src += ['drv_usbd_cdc.c']
 
 if GetDepend('BSP_USING_ETH'):

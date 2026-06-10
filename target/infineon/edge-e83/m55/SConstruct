@@ -146,6 +146,7 @@ objs.extend(SConscript('../libraries/mtb-srf/SConscript', variant_dir='build/lib
 objs.extend(SConscript('../libraries/mtb-ipc/SConscript', variant_dir='build/libraries/components/mtb-ipc', duplicate=0))
 objs.extend(SConscript('../libraries/littlefs/SConscript', variant_dir='build/libraries/components/littlefs', duplicate=0))
 objs.extend(SConscript('../libraries/rt_vsnprintf_full-latest/SConscript', variant_dir='build/libraries/components/rt_vsnprintf_full-latest', duplicate=0))
+objs.extend(SConscript('../libraries/deepcraft_ai/SConscript', variant_dir='build/libraries/deepcraft_ai', duplicate=0))
 
 # make a building
 DoBuilding(TARGET, objs)
