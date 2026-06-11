@@ -1,0 +1,47 @@
+from building import *
+
+cwd = GetCurrentDir()
+project_root = Dir('#').abspath.replace('\\', '/')
+build_uvc_from_source = GetDepend(['PKG_CHERRYUSB_HOST_BUILD_FROM_SOURCE'])
+
+src = [
+    'usbh_uvc_app.c',
+    'cherrymp/chry_mempool.c',
+    'cherrymp/chry_mempool_osal_rtthread.c',
+]
+
+cpp_path = [
+    cwd,
+    cwd + '/cherrymp',
+    project_root + '/applications',
+]
+
+libs = []
+libpath = []
+
+if build_uvc_from_source:
+    src += [
+        'usbh_uvc_port.c',
+        'usbh_uvc_stream.c',
+    ]
+    cpp_path += [
+        project_root + '/../../../../src/lib/cherryusb/common',
+        project_root + '/../../../../src/lib/cherryusb/core',
+        project_root + '/../../../../src/lib/cherryusb/class/hub',
+        project_root + '/../../../../src/lib/cherryusb/class/video',
+        project_root + '/../../../../src/lib/cherryusb/port/dwc2',
+    ]
+else:
+    libpath = [cwd]
+    libs = ['usbh_uvc']
+
+group = DefineGroup(
+    'UsbUvc',
+    src,
+    depend=['PKG_CHERRYUSB_HOST_VIDEO'],
+    CPPPATH=cpp_path,
+    LIBPATH=libpath,
+    LIBS=libs,
+)
+
+Return('group')

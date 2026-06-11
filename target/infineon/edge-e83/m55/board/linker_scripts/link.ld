@@ -56,10 +56,12 @@ MEMORY
     m55_code_INTERNAL : ORIGIN = 0x00000000, LENGTH = 0x00040000
     m55_nvm : ORIGIN = 0x60580000, LENGTH = 0x00800000
     m55_trailer : ORIGIN = 0x60D80000, LENGTH = 0x00040000
+    m55_hyperram : ORIGIN = 0x64200000, LENGTH = 0x00200000
+    m33_m55_shared_hyperram : ORIGIN = 0x64400000, LENGTH = 0x00C00000
     m55_code_secondary : ORIGIN = 0x26000000, LENGTH = 0x00060000
-    m55_data_secondary : ORIGIN = 0x26060000, LENGTH = 0x00160000
-    m33_m55_shared : ORIGIN = 0x261C0000, LENGTH = 0x00040000
-    gfx_mem : ORIGIN = 0x26200000, LENGTH = 0x00300000
+    m55_data_secondary : ORIGIN = 0x26060000, LENGTH = 0x00310000
+    m33_m55_shared : ORIGIN = 0x26370000, LENGTH = 0x00040000
+    m55_ml_input_secondary : ORIGIN = 0x263B0000, LENGTH = 0x00050000
     m55_allocatable_shared : ORIGIN = 0x240FF000, LENGTH = 0x00001000
 }
 
@@ -70,8 +72,10 @@ REGION_ALIAS("m55_trailer_sel", m55_trailer)
 REGION_ALIAS("m55_code_secondary_sel", m55_code_secondary)
 REGION_ALIAS("m55_data_secondary_sel", m55_data_secondary)
 REGION_ALIAS("m33_m55_shared_sel", m33_m55_shared)
-REGION_ALIAS("gfx_mem_sel", gfx_mem)
+REGION_ALIAS("m55_ml_input_secondary_sel", m55_ml_input_secondary)
 REGION_ALIAS("m55_allocatable_shared_sel", m55_allocatable_shared)
+REGION_ALIAS("m55_hyperram_sel", m55_hyperram)
+REGION_ALIAS("m33_m55_shared_hyperram_sel", m33_m55_shared_hyperram)
 
 
 /* Linker script to place sections and symbol values. Should be used together
@@ -174,6 +178,11 @@ SECTIONS
         __vsymtab_end = .;
         . = ALIGN(4);
 
+        __usbh_class_info_start__ = .;
+        KEEP(*(.usbh_class_info))
+        __usbh_class_info_end__ = .;
+        . = ALIGN(4);
+
         /* section information for modules */
         . = ALIGN(4);
         __rtmsymtab_start = .;
@@ -211,6 +220,7 @@ SECTIONS
         _etext = .;
         _estack = .;
     } > m55_nvm_sel
+
     . = ALIGN(4);
     .ctors :
     {
@@ -263,6 +273,11 @@ SECTIONS
         LONG(LOADADDR(.cy_socmem_data))     /* From load address in ext flash  */
         LONG(ADDR(.cy_socmem_data))         /* To run address in SOCMEM  */
         LONG(SIZEOF(.cy_socmem_data)/4)     /* Size in words */
+
+        /* Initialized ML model data in SoCMEM */
+        LONG(LOADADDR(.cy_ml_model_data))   /* From load address in ext flash  */
+        LONG(ADDR(.cy_ml_model_data))       /* To run address in SoCMEM */
+        LONG(SIZEOF(.cy_ml_model_data)/4)   /* Size in words */
 
         /* Code in ITCM */
         LONG (LOADADDR(.app_code_itcm)) /* From load address in ext flash  */
@@ -434,15 +449,69 @@ SECTIONS
       "Error: m55_data_INTERNAL region overflowed with stack. Ensure that the stack size is within the available RAM."
     )
 
+    /* Isolate CherryUSB UVC internal stream buffers from SoCMEM ML arena traffic. */
+    .cy_uvc_stream_data (NOLOAD) :
+    {
+        . = ALIGN(4);
+        KEEP(*libusbh_uvc.a:usbh_uvc_stream.o(.cy_socmem_data))
+        . = ALIGN(4);
+    } > m33_m55_shared_hyperram_sel
+
     /* A section for SOC memory data */
     .cy_socmem_data :
     {
         . = ALIGN(4);
-        KEEP(*(.cy_socmem_data))
+        KEEP(*(EXCLUDE_FILE(*libusbh_uvc.a:usbh_uvc_stream.o) .cy_socmem_data))
 
         . = ALIGN(4);
 
     }  > m55_data_secondary AT > m55_nvm_sel
+
+    .cy_ml_arena_fast_data (NOLOAD) :
+    {
+        . = ALIGN(16);
+        KEEP(*(.cy_ml_arena_fast_data))
+        . = ALIGN(16);
+    } > m55_data_secondary
+
+    .cy_ml_model_data :
+    {
+        . = ALIGN(16);
+        __cy_ml_model_data_start__ = .;
+        KEEP(*(.cy_ml_model_data))
+        . = ALIGN(16);
+        __cy_ml_model_data_end__ = .;
+    } > m55_data_secondary_sel AT > m55_nvm_sel
+    __cy_ml_model_data_load_start__ = LOADADDR(.cy_ml_model_data);
+    __cy_ml_model_data_load_end__ = LOADADDR(.cy_ml_model_data) + SIZEOF(.cy_ml_model_data);
+
+    .cy_ml_input_data (NOLOAD) :
+    {
+        . = ALIGN(16);
+        KEEP(*(.cy_ml_input_data))
+        . = ALIGN(16);
+    } > m55_ml_input_secondary_sel
+
+    .cy_ml_arena_data (NOLOAD) :
+    {
+        . = ALIGN(16);
+        KEEP(*(.cy_ml_arena_data))
+        . = ALIGN(16);
+    } > m33_m55_shared_hyperram_sel
+
+    .cy_ml_postproc_data (NOLOAD) :
+    {
+        . = ALIGN(16);
+        KEEP(*(.cy_ml_postproc_data))
+        . = ALIGN(16);
+    } > m33_m55_shared_sel
+
+    .cy_uvc_rgb565_data (NOLOAD) :
+    {
+        . = ALIGN(16);
+        KEEP(*(.cy_uvc_rgb565_data))
+        . = ALIGN(16);
+    } > m33_m55_shared_sel
 
     /* A section for the heap memory */
     .heap(NOLOAD) :
@@ -459,17 +528,25 @@ SECTIONS
         __HeapLimit = .;
     } > m55_data_secondary
 
-    /* A section for the GPU buffer */
+    /* E83 has no separate GFX memory. Fail the link if GPU buffers are introduced. */
     .cy_gpu_buf(NOLOAD) :
     {
+        . = ALIGN(16);
         KEEP(*(.cy_gpu_buf))
-    } > gfx_mem
+        . = ALIGN(16);
+    } > m55_ml_input_secondary_sel
+    ASSERT(SIZEOF(.cy_gpu_buf) == 0, "Error: E83 has no gfx_mem; do not place .cy_gpu_buf data.")
+    ASSERT(ADDR(.cy_socmem_data) + SIZEOF(.cy_socmem_data) <= ORIGIN(m55_data_secondary) + LENGTH(m55_data_secondary),
+           "Error: .cy_socmem_data exceeds E83 M55 SOCMEM data window.")
+    ASSERT(ADDR(.heap) + SIZEOF(.heap) <= ORIGIN(m55_data_secondary) + LENGTH(m55_data_secondary),
+           "Error: .heap exceeds E83 M55 SOCMEM data window.")
+    ASSERT(ADDR(.cy_ml_input_data) + SIZEOF(.cy_ml_input_data) <= ORIGIN(m55_ml_input_secondary) + LENGTH(m55_ml_input_secondary),
+           "Error: .cy_ml_input_data exceeds E83 ML input SOCMEM window.")
 
     .reserved_socmem(NOLOAD) :
     {
         . = ORIGIN(m33_m55_shared) + LENGTH(m33_m55_shared); /* reserved SOC memory */
     } > m33_m55_shared
-
 
     /* A section for shared RAM memory where only the Cortex-M55 can allocate data but all cores can access */
     .cy_sharedmem(NOLOAD) :
@@ -485,4 +562,17 @@ SECTIONS
     {
     } > m55_trailer_sel
 
+    .m33_m55_shared_hyperram(NOLOAD):
+    {
+    KEEP(*(.m33_m55_shared_hyperram))
+    } > m33_m55_shared_hyperram
+
+    ASSERT((ORIGIN(m55_code_secondary) + LENGTH(m55_code_secondary)) <= ORIGIN(m55_data_secondary),
+           "Error: m55_code_secondary overlaps m55_data_secondary.")
+    ASSERT((ORIGIN(m55_data_secondary) + LENGTH(m55_data_secondary)) <= ORIGIN(m33_m55_shared),
+           "Error: m55_data_secondary overlaps m33_m55_shared.")
+    ASSERT((ORIGIN(m33_m55_shared) + LENGTH(m33_m55_shared)) <= ORIGIN(m55_ml_input_secondary),
+           "Error: m33_m55_shared overlaps m55_ml_input_secondary.")
+    ASSERT((ORIGIN(m55_ml_input_secondary) + LENGTH(m55_ml_input_secondary)) <= 0x26400000,
+           "Error: E83 SOCMEM layout exceeds 4MB range 0x26000000-0x26400000.")
 }
