@@ -30,6 +30,6 @@ $qspi_flashloader_file = "$target_lib_dir/config/GeneratedSource/PSE84_SMIF.FLM"
     -s "$openocd_scripts_dir" `
     -s "$openocd_target_dir" `
     -c "set QSPI_FLASHLOADER $qspi_flashloader_file" `
-    -c "source [find interface/kitprog3.cfg]" `
+    -c "source [find interface/cmsis-dap.cfg]" `
     -c "source [find target/infineon/pse84xgxs2.cfg]" `
     -c "init; reset halt; program $hex_file verify reset exit;"
