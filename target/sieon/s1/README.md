@@ -159,3 +159,5 @@ Task Initialize:
 | MAIN OUT | main_out | M1-M12     |
 | AUX OUT  | aux_out  | PWM(A1-A4) |
 
+## Maintainer
+Josh Zou, zoujiachi666@163.com
