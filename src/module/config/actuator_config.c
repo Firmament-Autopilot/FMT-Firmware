@@ -182,9 +182,9 @@ static fmt_err_t actuator_parse_device(const toml_table_t* curtab, int idx)
                 uint16_t val_arr[16] = { 0 };
                 toml_array_t* sub_arr = toml_array_at(array, 0);
                 int arr_size = toml_array_nelem(sub_arr);
-                for (i = 0; i < arr_size; i++) {
-                    if (toml_int_at(sub_arr, i, &ival) == 0) {
-                        chan_arr[i] = (uint16_t)ival;
+                for (int j = 0; j < arr_size; j++) {
+                    if (toml_int_at(sub_arr, j, &ival) == 0) {
+                        chan_arr[j] = (uint16_t)ival;
                     } else {
                         TOML_DBG_E("fail to parse init-val channel\n");
                         return FMT_ERROR;
@@ -196,9 +196,9 @@ static fmt_err_t actuator_parse_device(const toml_table_t* curtab, int idx)
                     TOML_DBG_E("illegal array length:%d %d\n", toml_array_nelem(sub_arr), arr_size);
                     return FMT_ERROR;
                 }
-                for (i = 0; i < arr_size; i++) {
-                    if (toml_int_at(sub_arr, i, &ival) == 0) {
-                        val_arr[i] = (uint16_t)ival;
+                for (int j = 0; j < arr_size; j++) {
+                    if (toml_int_at(sub_arr, j, &ival) == 0) {
+                        val_arr[j] = (uint16_t)ival;
                     } else {
                         TOML_DBG_E("fail to parse init-val value\n");
                         return FMT_ERROR;
