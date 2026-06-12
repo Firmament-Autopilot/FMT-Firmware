@@ -24,20 +24,20 @@ fmt_err_t task_local_init(void)
 
 void task_local_entry(void* parameter)
 {
-    extern void usbd_poll_connect_status(uint8_t busid);
+    /* main loop */
     while (1) {
-        usbd_poll_connect_status(0);
+        printf("Hello FMT");
         sys_msleep(1000);
     }
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "local",
-    .init = task_local_init,
-    .entry = task_local_entry,
-    .priority = 25,
-    .auto_start = true,
-    .stack_size = 1024,
-    .param = NULL,
-    .dependency = NULL
-};
+// TASK_EXPORT __fmt_task_desc = {
+//     .name = "local",
+//     .init = task_local_init,
+//     .entry = task_local_entry,
+//     .priority = 25,
+//     .auto_start = false,
+//     .stack_size = 1024,
+//     .param = NULL,
+//     .dependency = NULL
+// };

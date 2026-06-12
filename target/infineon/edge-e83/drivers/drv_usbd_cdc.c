@@ -14,11 +14,13 @@
  * limitations under the License.
  *****************************************************************************/
 
+#include <firmament.h>
+
 #include "hal/usb/usbd_cdc.h"
 #include "usbd_cdc.h"
 #include "usbd_cdc_acm.h"
 #include "usbd_core.h"
-#include <firmament.h>
+#include "module/task_manager/task_manager.h"
 
 #define CDC_IN_EP          0x81
 #define CDC_OUT_EP         0x02
@@ -105,6 +107,31 @@ static uint8_t usb_busid = 0;
 static struct usbd_interface intf0;
 static struct usbd_interface intf1;
 
+static fmt_err_t task_init(void)
+{
+    return FMT_EOK;
+}
+
+static void task_entry(void* parameter)
+{
+    extern void usbd_poll_connect_status(uint8_t busid);
+    while (1) {
+        usbd_poll_connect_status(0);
+        sys_msleep(500);
+    }
+}
+
+TASK_EXPORT __fmt_task_desc = {
+    .name = "usbd",
+    .init = task_init,
+    .entry = task_entry,
+    .priority = 24,
+    .auto_start = true,
+    .stack_size = 4096,
+    .param = NULL,
+    .dependency = NULL
+};
+
 void usbd_cdc_acm_bulk_out(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
     if (nbytes > 0) {
@@ -145,24 +172,25 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
         break;
 
     case USBD_EVENT_CONNECTED:
-        rt_kprintf("USB device connected\n");
+        // rt_kprintf("USB device connected\n");
+        // hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_CONNECT);
         break;
 
     case USBD_EVENT_DISCONNECTED:
-        rt_kprintf("USB device disconnected\n");
+        // rt_kprintf("USB device disconnected\n");
         ep_tx_busy_flag = false;
         hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_DISCONNECT);
         break;
 
     case USBD_EVENT_RESUME:
-        rt_kprintf("USB device resumed\n");
+        // rt_kprintf("USB device resumed\n");
         break;
 
     case USBD_EVENT_SUSPEND:
         break;
 
     case USBD_EVENT_CONFIGURED:
-        rt_kprintf("USB device configured\n");
+        // rt_kprintf("USB device configured\n");
         ep_tx_busy_flag = false;
         usbd_ep_start_read(busid, CDC_OUT_EP, usb_read_buffer, CDC_MAX_MPS);
         hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_CONNECT);
