@@ -168,29 +168,23 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
 {
     switch (event) {
     case USBD_EVENT_RESET:
-        rt_kprintf("USB device reset\n");
         break;
 
     case USBD_EVENT_CONNECTED:
-        // rt_kprintf("USB device connected\n");
-        // hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_CONNECT);
         break;
 
     case USBD_EVENT_DISCONNECTED:
-        // rt_kprintf("USB device disconnected\n");
         ep_tx_busy_flag = false;
         hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_DISCONNECT);
         break;
 
     case USBD_EVENT_RESUME:
-        // rt_kprintf("USB device resumed\n");
         break;
 
     case USBD_EVENT_SUSPEND:
         break;
 
     case USBD_EVENT_CONFIGURED:
-        // rt_kprintf("USB device configured\n");
         ep_tx_busy_flag = false;
         usbd_ep_start_read(busid, CDC_OUT_EP, usb_read_buffer, CDC_MAX_MPS);
         hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_CONNECT);
@@ -240,17 +234,28 @@ static rt_size_t cdc_dev_read(usbd_cdc_dev_t dev, rt_off_t pos, void* buf, rt_si
 static rt_size_t cdc_dev_write(usbd_cdc_dev_t dev, rt_off_t pos, const void* buf, rt_size_t size)
 {
     rt_size_t tx_size;
+    rt_tick_t start_tick;
+    rt_tick_t timeout_tick;
     int ret;
 
     (void)dev;
-    (void)pos;
 
     if (buf == NULL || size == 0) {
         return 0;
     }
 
-    if (ep_tx_busy_flag) {
-        return 0;
+    timeout_tick = (rt_tick_t)pos;
+    start_tick = rt_tick_get();
+    while (ep_tx_busy_flag) {
+        if (timeout_tick == 0) {
+            return 0;
+        }
+
+        if (timeout_tick != RT_WAITING_FOREVER && rt_tick_get() - start_tick >= timeout_tick) {
+            return 0;
+        }
+
+        rt_thread_mdelay(1);
     }
 
     tx_size = (size > USBD_CDC_TX_BUFSIZE) ? USBD_CDC_TX_BUFSIZE : size;

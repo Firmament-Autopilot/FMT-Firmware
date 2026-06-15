@@ -325,7 +325,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
                 mavlink_msg_file_transfer_protocol_encode(this_system.sysid, this_system.compid, msg, &ftp_protocol_t);
 
-                mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, msg, false);
+                mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, msg, true);
             }
         }
     } break;

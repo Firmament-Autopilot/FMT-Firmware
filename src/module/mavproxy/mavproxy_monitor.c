@@ -20,6 +20,7 @@
 #include "module/utils/list.h"
 
 #define EVENT_MAV_RX (1 << 0)
+#define MAVPROXY_RX_BUFFER_SIZE 512
 
 struct mavlink_msg_handler_func {
     fmt_err_t (*mavlink_msg_handler)(mavlink_message_t* msg, mavlink_system_t this_system);
@@ -63,7 +64,8 @@ static void mavproxy_rx_entry(void* param)
     mavlink_message_t msg[MAXPROXY_MAX_CHAN];
     mavlink_status_t mav_status[MAXPROXY_MAX_CHAN];
     mavlink_system_t mavlink_system;
-    char byte;
+    uint8_t rx_buf[MAVPROXY_RX_BUFFER_SIZE];
+    rt_size_t read_len;
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_MAV_RX;
     rt_err_t rt_err;
@@ -77,10 +79,12 @@ static void mavproxy_rx_entry(void* param)
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
                 for (uint8_t chan = 0; mavproxy_is_valid_chan(chan); chan++) {
-                    while (mavproxy_dev_read(chan, &byte, 1, 0)) {
-                        /* decode mavlink package */
-                        if (mavlink_parse_char(0, byte, &msg[chan], &mav_status[chan]) == 1) {
-                            handle_mavlink_msg(chan, &msg[chan], mavlink_system);
+                    while ((read_len = mavproxy_dev_read(chan, rx_buf, sizeof(rx_buf), 0)) > 0) {
+                        for (rt_size_t i = 0; i < read_len; i++) {
+                            /* decode mavlink package */
+                            if (mavlink_parse_char(chan, rx_buf[i], &msg[chan], &mav_status[chan]) == 1) {
+                                handle_mavlink_msg(chan, &msg[chan], mavlink_system);
+                            }
                         }
                     }
                 }
