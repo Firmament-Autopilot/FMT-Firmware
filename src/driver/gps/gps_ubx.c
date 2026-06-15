@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <string.h>
 
 #include "driver/gps/gps_ubx.h"
 #include "hal/gps/gps.h"
