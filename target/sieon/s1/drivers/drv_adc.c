@@ -209,7 +209,8 @@ static rt_err_t adc3_hw_init(void)
 
     /** Common config
      */
-    LL_ADC_SetOverSamplingScope(ADC3, LL_ADC_OVS_DISABLE);
+    LL_ADC_SetOverSamplingScope(ADC3, LL_ADC_OVS_GRP_REGULAR_CONTINUED);
+    LL_ADC_ConfigOverSamplingRatioShift(ADC3, 16U, LL_ADC_OVS_SHIFT_RIGHT_4);
     ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_14B;
     ADC_InitStruct.LowPowerMode = LL_ADC_LP_MODE_NONE;
     LL_ADC_Init(ADC3, &ADC_InitStruct);
@@ -219,9 +220,10 @@ static rt_err_t adc3_hw_init(void)
     ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_SINGLE;
     ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_OVERWRITTEN;
     LL_ADC_REG_Init(ADC3, &ADC_REG_InitStruct);
-    ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV1;
+    ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV4;
     ADC_CommonInitStruct.Multimode = LL_ADC_MULTI_INDEPENDENT;
     LL_ADC_CommonInit(__LL_ADC_COMMON_INSTANCE(ADC3), &ADC_CommonInitStruct);
+    LL_ADC_SetBoostMode(ADC3, LL_ADC_BOOST_MODE_20MHZ);
 
     /* Disable ADC deep power down (enabled by default after reset state) */
     LL_ADC_DisableDeepPowerDown(ADC3);
