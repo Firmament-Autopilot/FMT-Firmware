@@ -6,7 +6,7 @@
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
  * device-db 4.37.0.10260
- * mtb-dsl-pse8xxgp 1.5.0.1072
+ * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -32,7 +32,6 @@
 #include "cycfg_notices.h"
 #include "cy_sysclk.h"
 #include "cy_wdt.h"
-#include "cycfg_system.h"
 #include "cycfg_clock_types.h"
 #include "cy_rtc.h"
 #include "cy_gpio.h"

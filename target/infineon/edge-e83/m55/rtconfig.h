@@ -144,6 +144,7 @@
 
 /* POSIX layer and C standard library */
 #define RT_USING_LIBC
+#define RT_USING_CPLUSPLUS
 
 /*============================================================================
  * Network
@@ -227,6 +228,7 @@
 
 /* On-chip Peripheral Drivers */
 #define BSP_USING_CMSIS_DSP
+#define BSP_USING_DEEPCRAFT_AI
 #define BSP_USING_GPIO
 #define BSP_USING_UART
 #define BSP_USING_UART1

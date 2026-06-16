@@ -37,7 +37,6 @@ cymem_ilinkarm_regions_CM33_0.icf
 cymem_ilinkarm_regions_CM33_0_S.icf
 cymem_ilinkarm_regions_CM55_0.icf
 cymem_memory_locations.h
-cymem_memory_locations.mk
 cymem_memory_types.h
 device_mem.json
 edgeproctectsymbols.json

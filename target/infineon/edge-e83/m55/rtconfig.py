@@ -5,7 +5,7 @@ BOARD = 'e83-m55'
 
 # toolchains options
 ARCH='arm'
-CPU='cortex-m7'
+CPU='cortex-m55'
 CROSS_TOOL='gcc'
 
 BUILD = 'release'
@@ -48,7 +48,7 @@ if PLATFORM == 'gcc':
     OBJDUMP = PREFIX + 'objdump'
     OBJCPY = PREFIX + 'objcopy'
 
-    DEVICE = ' -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 --specs=nano.specs -mfloat-abi=hard -ffunction-sections -fdata-sections -nostartfiles -nostartfiles'
+    DEVICE = ' -mcpu=cortex-m55 -mthumb --specs=nano.specs -mfloat-abi=hard -ffunction-sections -fdata-sections -nostartfiles -nostartfiles'
     CFLAGS = DEVICE + ' -g -Wall -pipe -Wno-address-of-packed-member -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -flto -Wl,--gc-sections,-Map=build/fmt_' + BOARD + '.map,-cref,-u,Reset_Handler -T board/linker_scripts/link.ld'
@@ -62,43 +62,9 @@ if PLATFORM == 'gcc':
     else:
         CFLAGS += ' -O2'
 
-    CXXFLAGS = CFLAGS 
+    CXXFLAGS = CFLAGS + ' -fno-rtti -fno-exceptions -std=gnu++11'
 
     POST_ACTION = OBJCPY + ' -O ihex $TARGET build/fmt_' + BOARD + '.hex\n' + SIZE + ' $TARGET \n'
-
-elif PLATFORM == 'armclang':
-    # toolchains
-    CC = 'armclang'
-    CXX = 'armclang'
-    AS = 'armasm'
-    AR = 'armar'
-    LINK = 'armlink'
-    TARGET_EXT = 'axf'
-
-    DEVICE = ' --cpu Cortex-M4.fp '
-    CFLAGS = ' --target=arm-arm-none-eabi -mcpu=cortex-m4 '
-    CFLAGS += ' -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 '
-    CFLAGS += ' -mfloat-abi=hard -c -fno-rtti -funsigned-char -fshort-enums -fshort-wchar '
-    CFLAGS += ' -gdwarf-3 -ffunction-sections '
-    AFLAGS = DEVICE + ' --apcs=interwork '
-    LFLAGS = DEVICE + ' --info sizes --info totals --info unused --info veneers '
-    LFLAGS += ' --list rt-thread.map '
-    LFLAGS += r' --strict --scatter "board\linker_scripts\link.sct" '
-    CFLAGS += ' -I' + EXEC_PATH + '/ARM/ARMCLANG/include'
-    LFLAGS += ' --libpath=' + EXEC_PATH + '/ARM/ARMCLANG/lib'
-
-    EXEC_PATH += '/ARM/ARMCLANG/bin/'
-
-    if BUILD == 'debug':
-        CFLAGS += ' -g -O1' # armclang recommend
-        AFLAGS += ' -g'
-    else:
-        CFLAGS += ' -O2'
-        
-    CXXFLAGS = CFLAGS
-    CFLAGS += ' -std=c99'
-
-    POST_ACTION = 'fromelf --bin $TARGET --output rtthread.bin \nfromelf -z $TARGET'
 
 def dist_handle(BSP_ROOT, dist_dir):
     import sys
