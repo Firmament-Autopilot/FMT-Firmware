@@ -6,7 +6,7 @@
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
  * device-db 4.37.0.10260
- * mtb-dsl-pse8xxgp 1.5.0.1072
+ * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -30,18 +30,6 @@
 #define CYCFG_MEMORY_H
 
 #include "cycfg_notices.h"
-
-#if defined(COMPONENT_CM33_0) && defined(COMPONENT_SECURE_DEVICE)
-#include "cymem_CM33_0_S.h"
-#endif /* defined(COMPONENT_CM33_0) && defined(COMPONENT_SECURE_DEVICE) */
-
-#if defined(COMPONENT_CM33_0) && defined(COMPONENT_NON_SECURE_DEVICE)
-#include "cymem_CM33_0.h"
-#endif /* defined(COMPONENT_CM33_0) && defined(COMPONENT_NON_SECURE_DEVICE) */
-
-#if defined(COMPONENT_CM55_0)
-#include "cymem_CM55_0.h"
-#endif /* defined(COMPONENT_CM55_0) */
 
 #if defined(__cplusplus)
 extern "C" {

@@ -6,7 +6,7 @@
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
  * device-db 4.37.0.10260
- * mtb-dsl-pse8xxgp 1.5.0.1072
+ * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -89,11 +89,11 @@
 #define CY_CFG_SYSCLK_DPLL_LP1_OUTPUT_FREQ 49152000
 #define CY_CFG_SYSCLK_DPLL_HP0_ENABLED 1
 #define CY_CFG_SYSCLK_DPLL_HP0_P_DIV 0
-#define CY_CFG_SYSCLK_DPLL_HP0_N_DIV 7
-#define CY_CFG_SYSCLK_DPLL_HP0_K_DIV 3
+#define CY_CFG_SYSCLK_DPLL_HP0_N_DIV 11
+#define CY_CFG_SYSCLK_DPLL_HP0_K_DIV 1
 #define CY_CFG_SYSCLK_DPLL_HP0_FRAC_DIV 0
 #define CY_CFG_SYSCLK_DPLL_HP0_OUTPUT_MODE CY_SYSCLK_FLLPLL_OUTPUT_AUTO
-#define CY_CFG_SYSCLK_DPLL_HP0_OUTPUT_FREQ 100000000
+#define CY_CFG_SYSCLK_DPLL_HP0_OUTPUT_FREQ 300000000
 #define CY_CFG_SYSCLK_CLKHF0_ENABLED 1
 #define CY_CFG_SYSCLK_CLKHF0_DIVIDER CY_SYSCLK_CLKHF_DIVIDE_BY_2
 #define CY_CFG_SYSCLK_CLKHF0_FREQ_MHZ 200UL
@@ -106,7 +106,7 @@
 #define CY_CFG_SYSCLK_CLKHF1_CLKPATH_NUM 0UL
 #define CY_CFG_SYSCLK_CLKHF2_ENABLED 1
 #define CY_CFG_SYSCLK_CLKHF2_DIVIDER CY_SYSCLK_CLKHF_NO_DIVIDE
-#define CY_CFG_SYSCLK_CLKHF2_FREQ_MHZ 100UL
+#define CY_CFG_SYSCLK_CLKHF2_FREQ_MHZ 300UL
 #define CY_CFG_SYSCLK_CLKHF2_CLKPATH CY_SYSCLK_CLKHF_IN_CLKPATH2
 #define CY_CFG_SYSCLK_CLKHF2_CLKPATH_NUM 2UL
 #define CY_CFG_SYSCLK_CLKHF3_ENABLED 1
@@ -269,8 +269,8 @@ static cy_stc_pll_manual_config_t srss_0_clock_0_pll250m_1_pllConfig =
 static cy_stc_dpll_hp_config_t srss_0_clock_0_pll500m_0_hp_pllConfig =
 {
     .pDiv = 0,
-    .nDiv = 7,
-    .kDiv = 3,
+    .nDiv = 11,
+    .kDiv = 1,
     .nDivFract = 0,
     .freqModeSel = (cy_en_wait_mode_select_t)7,
     .ivrTrim = 0x8U,
@@ -547,14 +547,12 @@ __STATIC_INLINE void Cy_SysClk_Dpll_Hp0_Init(void)
 }
 void init_cycfg_clocks(void)
 {
-    #if defined(CY_CFG_PWR_ENABLED) && defined(CORE_NAME_CM33_0)
-        #if (defined(CY_CFG_PWR_VBACKUP_USING_VDDD) && (CY_CFG_PWR_VBACKUP_USING_VDDD))
-            if (0u == Cy_SysLib_GetResetReason() /* POR, XRES, or BOD */)
-            {
-                Cy_SysLib_ResetBackupDomain();
-            }
-        #endif /* (defined(CY_CFG_PWR_VBACKUP_USING_VDDD) && (CY_CFG_PWR_VBACKUP_USING_VDDD)) */
-    #endif /* CY_CFG_PWR_ENABLED && defined(CORE_NAME_CM33_0) */
+    #if (CY_CFG_PWR_VBACKUP_USING_VDDD)
+        if (0u == Cy_SysLib_GetResetReason() /* POR, XRES, or BOD */)
+        {
+            Cy_SysLib_ResetBackupDomain();
+        }
+    #endif /* CY_CFG_PWR_VBACKUP_USING_VDDD */
     
     /* Set up a temporary fail-safe bypass for the IHO/IMO to the active core */
     Cy_SysClk_IhoInit();
@@ -563,7 +561,7 @@ void init_cycfg_clocks(void)
     Cy_SysClk_ClkHfSetDivider(CY_CFG_SYSCLK_ACTIVE_CORE_HF, CY_SYSCLK_CLKHF_NO_DIVIDE);
     /* Reset and configure platform clocks */
     Cy_WDT_Unlock(); /* Unlock WDT to be able to modify LFCLK registers */
-    for (uint32_t pll = 0; pll < (CY_SRSS_NUM_PLL); ++pll) /* PLL 0 is the first PLL. */
+    for (uint32_t pll = (CY_SRSS_NUM_PLL - 1); pll > 0UL; --pll) /* PLL 1 is the first PLL. 0 is invalid. */
     {
         (void)Cy_SysClk_PllDisable(pll);
     }

@@ -16,6 +16,8 @@
 #ifndef UMCN_H__
 #define UMCN_H__
 
+#include <stdbool.h>
+
 #include <firmament.h>
 
 #ifdef __cplusplus
