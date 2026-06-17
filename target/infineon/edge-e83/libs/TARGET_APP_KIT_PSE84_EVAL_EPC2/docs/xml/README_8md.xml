@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="README_8md" kind="file" language="Markdown">
+    <compoundname>README.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>KIT_PSE84_EVAL_EPC2<sp/>BSP</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Overview</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>PSOC™<sp/>Edge<sp/>E84<sp/>Evaluation<sp/>Kit<sp/>(KIT\_PSE84\_EVAL)<sp/>is<sp/>based<sp/>on<sp/>the<sp/>PSOC™<sp/>Edge<sp/>family<sp/>of<sp/>devices.<sp/>It<sp/>enables<sp/>the<sp/>evaluation<sp/>and<sp/>development<sp/>of<sp/>applications<sp/>for<sp/>the<sp/>PSOC™<sp/>Edge<sp/>E84<sp/>EPC2<sp/>MCU.</highlight></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">To<sp/>use<sp/>code<sp/>from<sp/>the<sp/>BSP,<sp/>simply<sp/>include<sp/>a<sp/>reference<sp/>to<sp/>`cybsp.h`.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Features</highlight></codeline>
+<codeline><highlight class="normal">This<sp/>evaluation<sp/>kit<sp/>carries<sp/>a<sp/>PSOC™<sp/>E84<sp/>EPC2<sp/>MCU<sp/>(PSE846GPS2DBZC4A)<sp/>on<sp/>a<sp/>SODIMM<sp/>based<sp/>detachable<sp/>SOM<sp/>board<sp/>connected<sp/>to<sp/>the<sp/>base\-board.<sp/>The<sp/>MCU<sp/>SOM<sp/>also<sp/>has<sp/>128<sp/>Mb<sp/>QSPI<sp/>flash,<sp/>1<sp/>Gb<sp/>Octal<sp/>flash,<sp/>128<sp/>Mb<sp/>Octal<sp/>RAM,<sp/>PSOC™<sp/>4000T<sp/>as<sp/>CAPSENSE™<sp/>co\-processor<sp/>and<sp/>on\-board<sp/>AIROC™<sp/>Wi\-Fi<sp/>and<sp/>Bluetooth®<sp/>combo<sp/>(CYW55513IUBG).<sp/><sp/><sp/></highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>base\-board<sp/>has<sp/>M.2<sp/>interface<sp/>connectors<sp/>for<sp/>interfacing<sp/>external<sp/>radio<sp/>modules<sp/>based<sp/>on<sp/>AIROC™<sp/>Wi\-Fi<sp/>and<sp/>Bluetooth®<sp/>combos<sp/>and<sp/>external<sp/>memory<sp/>interfaces.<sp/>The<sp/>base\-board<sp/>features<sp/>an<sp/>on\-board<sp/>programmer/debugger(KitProg3\),<sp/>ETM/JTAG/SWD<sp/>debug<sp/>headers,<sp/>custom<sp/>display<sp/>capacitive<sp/>touch<sp/>panel<sp/>connector,<sp/>R\-Pi<sp/>compatible<sp/>MIPI\-DSI<sp/>and<sp/>MIPI\-DSI<sp/>custom<sp/>display,<sp/>Analog<sp/>and<sp/>PDM<sp/>microphones,<sp/>Headphone<sp/>connector,<sp/>Speaker,<sp/>USB<sp/>Host<sp/>Type\-A<sp/>and<sp/>USB<sp/>device<sp/>Type\-C<sp/>connectors,<sp/>RJ45<sp/>Ethernet<sp/>connector,<sp/>M.2<sp/>(B\-key)<sp/>memory<sp/>interface<sp/>and<sp/>M.2<sp/>(E\-key)<sp/>radio<sp/>interface,<sp/>Infineon’s<sp/>Shield2Go<sp/>interface,<sp/>Mikroelektronika&apos;s<sp/>mikroBUS<sp/>compatible<sp/>headers,<sp/>6\-Axis<sp/>IMU<sp/>sensor,<sp/>3\-axis<sp/>Magnetometer,<sp/>microSD<sp/>cardholder,<sp/>CAPSENSE™<sp/>buttons<sp/>and<sp/>slider,<sp/>user<sp/>LEDs<sp/>and<sp/>user<sp/>buttons.<sp/>The<sp/>MCU<sp/>power<sp/>domain<sp/>supports<sp/>following<sp/>operating<sp/>voltages<sp/>\-<sp/>2\.7<sp/>V,<sp/>3\.3<sp/>V,<sp/>4\.2<sp/>V<sp/>and<sp/>the<sp/>peripheral<sp/>power<sp/>domain<sp/>supports<sp/>operating<sp/>voltages<sp/>\-<sp/>1\.8<sp/>V<sp/>and<sp/>3\.3<sp/>V.</highlight></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>BSP<sp/>Configuration</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>BSP<sp/>has<sp/>a<sp/>few<sp/>hooks<sp/>that<sp/>allow<sp/>its<sp/>behavior<sp/>to<sp/>be<sp/>configured.<sp/>Some<sp/>of<sp/>these<sp/>items<sp/>are<sp/>enabled<sp/>by<sp/>default<sp/>while<sp/>others<sp/>must<sp/>be<sp/>explicitly<sp/>enabled.<sp/>Items<sp/>enabled<sp/>by<sp/>default<sp/>are<sp/>specified<sp/>in<sp/>the<sp/>KIT_PSE84_EVAL_EPC2.mk<sp/>file.<sp/>The<sp/>items<sp/>that<sp/>are<sp/>enabled<sp/>can<sp/>be<sp/>changed<sp/>by<sp/>creating<sp/>a<sp/>custom<sp/>BSP<sp/>or<sp/>by<sp/>editing<sp/>the<sp/>application<sp/>makefile.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Components:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Defines:</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>CYBSP_WIFI_CAPABLE<sp/>-<sp/>This<sp/>define,<sp/>disabled<sp/>by<sp/>default,<sp/>causes<sp/>the<sp/>BSP<sp/>to<sp/>initialize<sp/>the<sp/>interface<sp/>to<sp/>an<sp/>onboard<sp/>wireless<sp/>chip<sp/>if<sp/>it<sp/>has<sp/>one.</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>CYBSP_CUSTOM_SYSCLK_PM_CALLBACK<sp/>-<sp/>This<sp/>define,<sp/>disabled<sp/>by<sp/>default,<sp/>causes<sp/>the<sp/>BSP<sp/>to<sp/>skip<sp/>registering<sp/>its<sp/>default<sp/>SysClk<sp/>Power<sp/>Management<sp/>callback,<sp/>if<sp/>any,<sp/>and<sp/>instead<sp/>to<sp/>invoke<sp/>the<sp/>application-defined<sp/>function<sp/>`cybsp_register_custom_sysclk_pm_callback`<sp/>to<sp/>register<sp/>an<sp/>application-specific<sp/>callback.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Clock<sp/>Configuration</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">|<sp/><sp/>Clock<sp/><sp/><sp/>|<sp/><sp/><sp/>Source<sp/><sp/>|<sp/>Output<sp/>Frequency<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>:------:<sp/>|<sp/>:-------:<sp/>|<sp/>:--------------:<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF0<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>200<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF1<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>400<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF2<sp/><sp/>|<sp/>CLK_PATH2<sp/>|<sp/><sp/><sp/><sp/><sp/>300<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF3<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>200<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF4<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>400<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF5<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>200<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF6<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>200<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF7<sp/><sp/>|<sp/>CLK_PATH1<sp/>|<sp/><sp/><sp/><sp/><sp/><sp/>49<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF8<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/><sp/>50<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF9<sp/><sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/><sp/>80<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF10<sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>100<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF11<sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>200<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF12<sp/>|<sp/>CLK_PATH4<sp/>|<sp/><sp/><sp/><sp/><sp/><sp/>24<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>CLK_HF13<sp/>|<sp/>CLK_PATH0<sp/>|<sp/><sp/><sp/><sp/><sp/>100<sp/>MHz<sp/><sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>Power<sp/>Configuration</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">*<sp/>System<sp/>Active<sp/>Power<sp/>Mode:<sp/>HP</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>System<sp/>Idle<sp/>Power<sp/>Mode:<sp/>Deep<sp/>Sleep</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>VDDA<sp/>Voltage:<sp/>1800<sp/>mV</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>VDDD<sp/>Voltage:<sp/>1800<sp/>mV</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">See<sp/>the<sp/>[BSP<sp/>Setttings][settings]<sp/>for<sp/>additional<sp/>board<sp/>specific<sp/>configuration<sp/>settings.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Default<sp/>linker<sp/>scripts</highlight></codeline>
+<codeline><highlight class="normal">The<sp/>default<sp/>linker<sp/>scripts<sp/>define<sp/>a<sp/>lot<sp/>of<sp/>different<sp/>regions<sp/>so<sp/>this<sp/>document<sp/>is<sp/>intended<sp/>to<sp/>explain<sp/>their<sp/></highlight></codeline>
+<codeline><highlight class="normal">purposes.<sp/>The<sp/>analysis<sp/>will<sp/>be<sp/>done<sp/>per<sp/>memory<sp/>area.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>ITCM</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m55_code:<sp/>this<sp/>is<sp/>the<sp/>main<sp/>code<sp/>region<sp/>for<sp/>the<sp/>cm55<sp/>core<sp/>code</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>DTCM</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m55_data:<sp/>this<sp/>is<sp/>the<sp/>main<sp/>data<sp/>region<sp/>for<sp/>the<sp/>cm55<sp/>core<sp/>data</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>RRAM</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>A<sp/>reserved<sp/>region<sp/>that<sp/>should<sp/>never<sp/>be<sp/>removed<sp/>as<sp/>it<sp/>is<sp/>used<sp/>for<sp/>boot<sp/>firmware,<sp/>and<sp/>write-protected</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>user_programmable,<sp/>a<sp/>region<sp/>for<sp/>the<sp/>cm33<sp/>secure<sp/>core<sp/>to<sp/>store<sp/>persistent<sp/>data</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>user_nvm,<sp/>a<sp/>region<sp/>for<sp/>storage<sp/>of<sp/>non-volatile<sp/>data<sp/>from<sp/>non-secure<sp/>cores</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>A<sp/>reserved<sp/>region<sp/>that<sp/>should<sp/>not<sp/>be<sp/>used<sp/>or<sp/>removed,<sp/>reserved<sp/>for<sp/>boot<sp/>firmware</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>SRAM</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33s_shared,<sp/>a<sp/>region<sp/>for<sp/>the<sp/>cm33_s<sp/>core<sp/>to<sp/>place<sp/>data<sp/>that<sp/>need<sp/>to<sp/>be<sp/>shared<sp/>with<sp/>the<sp/>cm33_ns</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33s_code,<sp/>the<sp/>main<sp/>region<sp/>for<sp/>code<sp/>for<sp/>the<sp/>cm33_s<sp/>core<sp/>that<sp/>gets<sp/>copied<sp/>over<sp/>from<sp/>the<sp/>from<sp/>the<sp/>non-volatile<sp/>memory<sp/>(m33s_nvm)<sp/>at<sp/>boot</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33s_data<sp/>the<sp/>main<sp/>data<sp/>region<sp/>for<sp/>the<sp/>cm33_s<sp/>core,<sp/>initialized<sp/>data<sp/>gets<sp/>copied<sp/>over<sp/>from<sp/>the<sp/>non-volatile<sp/>memory<sp/>(m33s_nvm)<sp/>at<sp/>boot,<sp/>non<sp/>initialized<sp/>data<sp/>gets<sp/>zeroed</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33_code,<sp/>the<sp/>main<sp/>region<sp/>for<sp/>code<sp/>for<sp/>the<sp/>cm33_ns<sp/>core<sp/>that<sp/>gets<sp/>copied<sp/>over<sp/>from<sp/>the<sp/>External<sp/>Flash<sp/>at<sp/>boot</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33_data<sp/>the<sp/>main<sp/>data<sp/>region<sp/>set<sp/>aside<sp/>for<sp/>the<sp/>cm33_ns<sp/>core,<sp/>initialized<sp/>data<sp/>gets<sp/>copied<sp/>over<sp/>from<sp/>the<sp/>non-volatile<sp/>memory<sp/>(m33_nvm)<sp/>at<sp/>boot,<sp/>non<sp/>initialized<sp/>data<sp/>gets<sp/>zeroed</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33s_allocatable_shared,<sp/>this<sp/>region<sp/>is<sp/>where<sp/>the<sp/>cm33_s<sp/>core<sp/>can<sp/>allocate<sp/>data<sp/>that<sp/>can<sp/>be<sp/>accessed<sp/>by<sp/>all<sp/>cores.<sp/>It<sp/>has<sp/>to<sp/>be<sp/>uninitialized</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33_allocatable_shared,<sp/>this<sp/>region<sp/>is<sp/>where<sp/>the<sp/>cm33<sp/>core<sp/>can<sp/>allocate<sp/>data<sp/>that<sp/>can<sp/>be<sp/>accessed<sp/>by<sp/>all<sp/>cores.<sp/>It<sp/>has<sp/>to<sp/>be<sp/>uninitialized</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m55_allocatable_shared,<sp/>this<sp/>region<sp/>is<sp/>where<sp/>the<sp/>cm55<sp/>core<sp/>can<sp/>allocate<sp/>data<sp/>that<sp/>can<sp/>be<sp/>accessed<sp/>by<sp/>all<sp/>cores.<sp/>It<sp/>has<sp/>to<sp/>be<sp/>uninitialized</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>SoCMem</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m55_code_secondary:<sp/>this<sp/>is<sp/>an<sp/>additional<sp/>code<sp/>region<sp/>for<sp/>the<sp/>cm55<sp/>core,<sp/>it’s<sp/>slightly<sp/>less<sp/>performing<sp/>than<sp/>the<sp/>ITCM</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m55_data_secondary:<sp/>this<sp/>is<sp/>an<sp/>additional<sp/>data<sp/>region<sp/>for<sp/>the<sp/>cm55<sp/>core,<sp/>it’s<sp/>slightly<sp/>less<sp/>performing<sp/>than<sp/>the<sp/>DTCM</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33_m55_shared:<sp/>this<sp/>is<sp/>a<sp/>data<sp/>region<sp/>created<sp/>to<sp/>share<sp/>data<sp/>between<sp/>the<sp/>non<sp/>secure<sp/>cores<sp/>(cm33_ns<sp/>and<sp/>cm55)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>gfx_mem:<sp/>this<sp/>is<sp/>a<sp/>data<sp/>region<sp/>for<sp/>graphics<sp/>purposes,<sp/>it<sp/>is<sp/>shared<sp/>between<sp/>the<sp/>non<sp/>secure<sp/>cores<sp/>(cm33_ns<sp/>and<sp/>cm55)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>External<sp/>Flash<sp/>(Serial<sp/>Memory<sp/>Interface<sp/>block<sp/>0<sp/>memory<sp/>1)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33s_nvm:<sp/>this<sp/>is<sp/>the<sp/>region<sp/>where<sp/>all<sp/>code<sp/>and<sp/>data<sp/>gets<sp/>placed<sp/>at<sp/>programming<sp/>time<sp/>for<sp/>the<sp/>cm33s<sp/>core<sp/>and<sp/>then<sp/>gets<sp/>copied<sp/>over<sp/>onto<sp/>the<sp/>RAM<sp/>locations<sp/>for<sp/>the<sp/>areas<sp/>that<sp/>are<sp/>specified.<sp/>It<sp/>also<sp/>include<sp/>the<sp/>non-secure<sp/>callable<sp/>(NSC)<sp/>region.</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33s_trailer:<sp/>cm33_s<sp/>trailer</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33_nvm:<sp/>this<sp/>is<sp/>the<sp/>region<sp/>where<sp/>all<sp/>code<sp/>and<sp/>data<sp/>gets<sp/>places<sp/>at<sp/>programming<sp/>time<sp/>for<sp/>the<sp/>cm33_ns<sp/>core<sp/>and<sp/>then<sp/>gets<sp/>copied<sp/>over<sp/>onto<sp/>the<sp/>RAM<sp/>locations<sp/>for<sp/>the<sp/>areas<sp/>that<sp/>are<sp/>specified</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m33_trailer:<sp/>cm33_ns<sp/>trailer</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m55_nvm:<sp/>this<sp/>is<sp/>the<sp/>region<sp/>where<sp/>all<sp/>code<sp/>and<sp/>data<sp/>gets<sp/>places<sp/>at<sp/>programming<sp/>time<sp/>for<sp/>the<sp/>cm55<sp/>core<sp/>and<sp/>then<sp/>gets<sp/>copied<sp/>over<sp/>onto<sp/>the<sp/>RAM<sp/>locations<sp/>for<sp/>the<sp/>areas<sp/>that<sp/>are<sp/>specified</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>m55_trailer:<sp/>cm55<sp/>trailer</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>memory<sp/>configurator<sp/>allows<sp/>to<sp/>move,<sp/>rename,<sp/>resize,<sp/>erase<sp/>regions<sp/>as<sp/>needed.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Memory<sp/>Configurator<sp/>Outputs</highlight></codeline>
+<codeline><highlight class="normal">The<sp/>output<sp/>of<sp/>the<sp/>memory<sp/>configurator<sp/>are<sp/>files<sp/>that<sp/>can<sp/>be<sp/>found<sp/>in<sp/>`%your_project%/bsps/TARGET_%board_name%/config/GeneratedSource`.</highlight></codeline>
+<codeline><highlight class="normal">These<sp/>files<sp/>are:</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>`cymem_CM33_S_0.h`,<sp/>`cymem_CM33_0.h`,<sp/>`cymem_CM55_0.h`:<sp/>these<sp/>three<sp/>files<sp/>generate<sp/>defines<sp/>for<sp/>all<sp/>defined<sp/>regions<sp/>in<sp/>the<sp/>memory<sp/>configurator<sp/>for<sp/>start,<sp/>size<sp/>and<sp/>offset<sp/>for<sp/>the<sp/>regions<sp/>that<sp/>are<sp/>applicable<sp/>to<sp/>that<sp/>core.</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>`cymem_armlink_CM33_S_0.sct`,<sp/>`cymem_armlink_CM33_0.sct`,<sp/>`cymem_armlink_CM55_0.sct`:<sp/>these<sp/>three<sp/>files<sp/>contain<sp/>all<sp/>the<sp/>defines<sp/>for<sp/>the<sp/>regions<sp/>in<sp/>the<sp/>memory<sp/>configurator<sp/>but<sp/>have<sp/>the<sp/>Scatterfile<sp/>extension<sp/>to<sp/>be<sp/>easily<sp/>picked<sp/>up<sp/>and<sp/>integrated<sp/>in<sp/>the<sp/>linker<sp/>scripts<sp/>for<sp/>the<sp/>ARM<sp/>toolchain</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>`cymem_gnu_CM33_S_0.ld`,<sp/>`cymem_gnu_CM33_0.ld`,<sp/>`cymem_gnu_CM55_0.ld`:<sp/>these<sp/>three<sp/>files<sp/>contain<sp/>all<sp/>the<sp/>defines<sp/>for<sp/>the<sp/>regions<sp/>in<sp/>the<sp/>memory<sp/>configurator<sp/>but<sp/>have<sp/>the<sp/>ld<sp/>extension<sp/>to<sp/>be<sp/>easily<sp/>picked<sp/>up<sp/>and<sp/>integrated<sp/>in<sp/>the<sp/>linker<sp/>scripts<sp/>for<sp/>the<sp/>GCC_ARM<sp/>and<sp/>LLVM_ARM<sp/>toolchain</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>`cymem_gnu_regions_CM33_S_0.ld`,<sp/>`cymem_gnu_regions_CM33_0.ld`,<sp/>`cymem_gnu_regions_CM55_0.ld`:<sp/>these<sp/>three<sp/>files<sp/>contain<sp/>all<sp/>the<sp/>MEMORY<sp/>regions<sp/>information<sp/>as<sp/>needed<sp/>by<sp/>the<sp/>GCC_ARM<sp/>and<sp/>LLVM_ARM<sp/>linkers<sp/>to<sp/>partition<sp/>the<sp/>memory<sp/>correctly.</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>`cymem_ilinkarm_CM33_S_0.ld`,<sp/>`cymem_ilinkarm_CM33_0.ld`,<sp/>`cymem_ilinkarm_CM55_0.ld`:<sp/>these<sp/>three<sp/>files<sp/>contain<sp/>all<sp/>the<sp/>defines<sp/>for<sp/>the<sp/>regions<sp/>in<sp/>the<sp/>memory<sp/>onfigurator<sp/>but<sp/>have<sp/>the<sp/>icf<sp/>extension<sp/>to<sp/>be<sp/>easily<sp/>picked<sp/>up<sp/>and<sp/>integrated<sp/>in<sp/>the<sp/>linker<sp/>scripts<sp/>for<sp/>the<sp/>IAR<sp/>toolchain.</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>`cymem_ilinkarm_regions_CM33_S_0.ld`,<sp/>`cymem_ilinkarm_regions_CM33_0.ld`,<sp/>`cymem_ilinkarm_regions_CM55_0.ld`<sp/>:<sp/>these<sp/>three<sp/>files<sp/>contain<sp/>all<sp/>the<sp/>memory<sp/>regions<sp/></highlight></codeline>
+<codeline><highlight class="normal">information<sp/>as<sp/>needed<sp/>by<sp/>the<sp/>IAR<sp/>linkers<sp/>to<sp/>partition<sp/>the<sp/>memory<sp/>correctly.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Note<sp/>on<sp/>memory<sp/>aliases</highlight></codeline>
+<codeline><highlight class="normal">It<sp/>is<sp/>important<sp/>to<sp/>also<sp/>note<sp/>that<sp/>all<sp/>memory<sp/>regions<sp/>can<sp/>have<sp/>up<sp/>to<sp/>4<sp/>different<sp/>valid<sp/>addresses,<sp/>that<sp/>differ<sp/>in<sp/>access<sp/>type.<sp/><sp/>For<sp/>example,<sp/>the<sp/>same<sp/>external<sp/>flash<sp/>(SMIF_Port0)<sp/>address<sp/>can<sp/>be<sp/>accessed<sp/>using:</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>0x08000000<sp/>if<sp/>using<sp/>non<sp/>secure<sp/>access<sp/>over<sp/>CBUS</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>0x60000000<sp/>if<sp/>using<sp/>non<sp/>secure<sp/>access<sp/>over<sp/>SBUS</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>0x18000000<sp/>if<sp/>using<sp/>secure<sp/>access<sp/>over<sp/>CBUS</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>0x70000000<sp/>if<sp/>using<sp/>secure<sp/>access<sp/>over<sp/>SBUS</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>distinction<sp/>between<sp/>secure<sp/>and<sp/>non-secure<sp/>access<sp/>is<sp/>relatively<sp/>simple,<sp/>but<sp/>understanding<sp/>CBUS<sp/>and<sp/>SBUS<sp/>requires<sp/>more<sp/>attention.<sp/>CBUS<sp/>provides<sp/>faster,<sp/>higher-performance<sp/>access<sp/>to<sp/>memory<sp/>regions,<sp/>but<sp/>it<sp/>supports<sp/>only<sp/>read<sp/>operations.<sp/>As<sp/>a<sp/>result,<sp/>CBUS<sp/>is<sp/>typically<sp/>used<sp/>for<sp/>code<sp/>execution<sp/>at<sp/>runtime.<sp/>In<sp/>contrast,<sp/>SBUS<sp/>offers<sp/>both<sp/>read<sp/>and<sp/>write<sp/>capabilities,<sp/>though<sp/>with<sp/>lower<sp/>performance.<sp/>SBUS<sp/>is<sp/>necessary<sp/>when<sp/>writing<sp/>data<sp/>to<sp/>memory,<sp/>such<sp/>as<sp/>during<sp/>device<sp/>programming.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>API<sp/>Reference<sp/>Manual</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>KIT_PSE84_EVAL_EPC2<sp/>Board<sp/>Support<sp/>Package<sp/>provides<sp/>a<sp/>set<sp/>of<sp/>APIs<sp/>to<sp/>configure,<sp/>initialize<sp/>and<sp/>use<sp/>the<sp/>board<sp/>resources.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">See<sp/>the<sp/>[BSP<sp/>API<sp/>Reference<sp/>Manual][api]<sp/>for<sp/>the<sp/>complete<sp/>list<sp/>of<sp/>the<sp/>provided<sp/>interfaces.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>More<sp/>information</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>[KIT_PSE84_EVAL_EPC2<sp/>BSP<sp/>API<sp/>Reference<sp/>Manual][api]</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>[KIT_PSE84_EVAL_EPC2<sp/>Documentation](https://www.infineon.com/product-information/kit_pse84_eval)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>[Infineon<sp/>Technologies<sp/>AG](https://www.infineon.com)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>[Infineon<sp/>GitHub](https://github.com/Infineon)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>[ModusToolbox™](https://www.infineon.com/modustoolbox)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">[api]:<sp/>modules.html</highlight></codeline>
+<codeline><highlight class="normal">[settings]:<sp/>md_bsp_settings.html</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">---</highlight></codeline>
+<codeline><highlight class="normal">©<sp/>Cypress<sp/>Semiconductor<sp/>Corporation<sp/>(an<sp/>Infineon<sp/>company)<sp/>or<sp/>an<sp/>affiliate<sp/>of<sp/>Cypress<sp/>Semiconductor<sp/>Corporation,<sp/>2019-2025.</highlight></codeline>
+    </programlisting>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/README.md"/>
+  </compounddef>
+</doxygen>

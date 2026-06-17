@@ -1,0 +1,263 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_prb-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* PRB personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2024-2025 Cypress Semiconductor Corporation (an Infineon company)
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_prb' name='PRB' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+    <FittingRules>
+        <MappingRules>
+            <IpBlock name='mxs22lppass'/>
+                <Resource name='pass\.prb'/>
+        </MappingRules>
+    </FittingRules>
+
+    <ExposedMembers>
+        <ExposedMember key='INST_NAME_prb'              paramId='INST_NAME_prb'/>
+        <ExposedMember key='prbOut$idxVref'             paramId='prbOut$idxVref' repeatCount='2'/>
+        <ExposedMember key='prbOut$idxVrefVal'          paramId='prbOut$idxVrefVal' repeatCount='2'/>
+        <ExposedMember key='prbOut$idxEnable'           paramId='prbOut$idxEnable' repeatCount='2'/>
+        <ExposedMember key='prbOut$idxVoltage'          paramId='prbOut$idxVoltage' repeatCount='2'/>
+   </ExposedMembers>
+
+    <Parameters>
+
+<!-- Debug -->
+    <ParamBool id='debug' name='debug' group='Internal' default='false' visible='false' editable='true' desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_prb'
+                 name='resource_prb'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].prb[" . 0 . "]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='inFlash'
+                 name='inFlash'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember(resource_pass, "inFlash")}`'/>
+
+    <ParamString id='vdda'
+                 name='vdda'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember(resource_pass, "vdda")}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='INST_NAME_prb' name='INST_NAME_prb' group='Internal' default='`${INST_NAME}`' visible='`${debug}`' editable='false' desc='' />
+
+    <ParamBool id='prbOut0Enable'
+               name='PRB 0 Output Enable'
+               group='PRB Output 0'
+               visible='true'
+               editable='true'
+               desc='Enable the PRB 0 Vref control.'
+               default='false'/>
+
+    <ParamChoice id='prbOut0Vref'
+                 name='VREF 0'
+                 group='PRB Output 0'
+                 visible='`${(prbOut0Enable)}`'
+                 editable='true'
+                 desc='The selector of the source voltage for PRB.'
+                 default='CY_AUTANALOG_PRB_VDDA'>
+                 <Entry name='VDDA'          value='CY_AUTANALOG_PRB_VDDA' visible='true'/>
+                 <Entry name='VBGR (0.9 V)'  value='CY_AUTANALOG_PRB_VBGR' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='prbOut0VrefVal'
+                 name='prbOut0VrefVal'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${prbOut0Vref eq CY_AUTANALOG_PRB_VDDA ? vdda : 900}`'/>
+
+    <ParamChoice id='prbOut0Value'
+                 name='PRB 0 Output Value'
+                 group='PRB Output 0'
+                 visible='`${(prbOut0Enable)}`'
+                 editable='true'
+                 desc='Selector of the tap for the required Vref from PRB 0'
+                 default='CY_AUTANALOG_PRB_TAP_0'>
+                <Entry name='`${(($idx + 1) / 16.0) * prbOut0VrefVal}` mV' value='CY_AUTANALOG_PRB_TAP_$idx' visible='true' repeatCount='16'/>
+    </ParamChoice>
+
+    <ParamString id='prbOut0Voltage'
+                 name='prbOut0Voltage'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${prbOut0Enable ?
+                 (prbOut0Value eq CY_AUTANALOG_PRB_TAP_0  ? (1  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_1  ? (2  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_2  ? (3  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_3  ? (4  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_4  ? (5  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_5  ? (6  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_6  ? (7  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_7  ? (8  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_8  ? (9  / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_9  ? (10 / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_10 ? (11 / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_11 ? (12 / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_12 ? (13 / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_13 ? (14 / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_14 ? (15 / 16.0) * prbOut0VrefVal :
+                  prbOut0Value eq CY_AUTANALOG_PRB_TAP_15 ? (16 / 16.0) * prbOut0VrefVal :
+                 0) : 0}`'/>
+
+    <ParamBool id='prbOut1Enable'
+               name='PRB 1 Output Enable'
+               group='PRB Output 1'
+               visible='true'
+               editable='true'
+               desc='Enable the PRB 1 Vref control.'
+               default='false'/>
+
+    <ParamChoice id='prbOut1Vref'
+                 name='VREF 1'
+                 group='PRB Output 1'
+                 visible='`${(prbOut1Enable)}`'
+                 editable='true'
+                 desc='The selector of the source voltage for PRB.'
+                 default='CY_AUTANALOG_PRB_VDDA'>
+                 <Entry name='VDDA' value='CY_AUTANALOG_PRB_VDDA' visible='true'/>
+                 <Entry name='VBGR (0.9 V)' value='CY_AUTANALOG_PRB_VBGR' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='prbOut1VrefVal'
+                 name='prbOut1VrefVal'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${prbOut1Vref eq CY_AUTANALOG_PRB_VDDA ? vdda : 900}`'/>
+
+    <ParamChoice id='prbOut1Value'
+                 name='PRB 1 Output Value'
+                 group='PRB Output 1'
+                 visible='`${(prbOut1Enable)}`'
+                 editable='true'
+                 desc='Selector of the tap for the required Vref from PRB 1'
+                 default='CY_AUTANALOG_PRB_TAP_0'>
+                <Entry name='`${(($idx + 1) / 16.0) * prbOut1VrefVal}` mV' value='CY_AUTANALOG_PRB_TAP_$idx' visible='true' repeatCount='16'/>
+    </ParamChoice>
+
+    <ParamString id='prbOut1Voltage'
+                 name='prbOut1Voltage'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${prbOut1Enable ?
+                 (prbOut1Value eq CY_AUTANALOG_PRB_TAP_0  ? (1  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_1  ? (2  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_2  ? (3  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_3  ? (4  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_4  ? (5  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_5  ? (6  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_6  ? (7  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_7  ? (8  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_8  ? (9  / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_9  ? (10 / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_10 ? (11 / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_11 ? (12 / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_12 ? (13 / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_13 ? (14 / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_14 ? (15 / 16.0) * prbOut1VrefVal :
+                  prbOut1Value eq CY_AUTANALOG_PRB_TAP_15 ? (16 / 16.0) * prbOut1VrefVal :
+                 0) : 0}`'/>
+    </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure Autonomous Analog.' condition='`${!isBlockUsed(resource_pass)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_pass}`' value='lppass-1.0' valid='true' />
+    </DRC>
+      <DRC type='ERROR' text='The PRB shall have at least one output enabled and configured.' condition='`${!prbOut0Enable &amp;&amp; !prbOut1Enable}`' />
+  </DRCs>
+
+    <ConfigFirmware>
+
+    <ConfigInclude value='cy_autanalog.h' include='true'/>
+
+<!-- The PRB configuration structure -->
+    <ConfigStruct name='`${INST_NAME_prb . "_" . $idx{0}}`' type='cy_stc_autanalog_prb_cfg_t' const='`${inFlash}`' public='true' include='`${prbOut$idxEnable}`' repeatCount='2'>
+        <Member name='enable' value='`${prbOut$idxEnable}`'/>
+        <Member name='src' value='`${prbOut$idxVref}`'/>
+        <Member name='tap' value='`${prbOut$idxValue}`'/>
+    </ConfigStruct>
+
+    <!-- The PRB general configuration -->
+    <ConfigStruct name='`${INST_NAME_prb}`_cfg'
+                  type='cy_stc_autanalog_prb_t'
+                  const='`${inFlash}`'
+                  public='true'
+                  include='`${isBlockUsed(resource_prb)}`'>
+      <ConfigArray name='prb' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${((isBlockUsed(resource_prb)  &amp;&amp; prbOut$idx{0}Enable) ? "&amp;" . INST_NAME_prb . "_" . $idx{0} : "NULL") }`' count='2' />
+      </ConfigArray>
+    </ConfigStruct>
+
+<!-- The PRB State Transition Table structure -->
+    <ConfigArray name='`${INST_NAME_prb}`_stt' type='cy_stc_autanalog_stt_prb_t' const='`${inFlash}`' public='true' include='`${isBlockUsed(resource_prb)}`' >
+        <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='64' include='`${isBlockUsed("pass[" . inst_pass . "].ac[0].state[" . $idx{0} . "]")}`'>
+            <Member name='unlock' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_prbUnlock")}`'/>
+            <Member name='prbVref0Fw' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_prbOut0FirmwareControl")}`'/>
+            <Member name='prbVref0Tap' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_prbOut0Value")}`'/>
+            <Member name='prbVref1Fw' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_prbOut1FirmwareControl")}`'/>
+            <Member name='prbVref1Tap' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_prbOut1Value")}`'/>
+        </ConfigStruct>
+    </ConfigArray>
+
+    </ConfigFirmware>
+
+</PersonalityTemplate>

@@ -1,0 +1,60 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "extract-payload"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the MCUboot format image",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path where to save the MCUboot format image part to be signed.\n\n",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        }
+    }
+}

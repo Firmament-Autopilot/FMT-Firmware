@@ -1,0 +1,53 @@
+        // When using 'attach', make sure your program is running on the board and that your
+        // executable matches the image in the chip exactly, or else strange things can happen
+        // with breakpoints, variables, etc.
+        {
+            "name": "Attach RAM PSOCE84 CM33 (JLink)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
+            "name": "Program RAM (JLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            // executable not needed but need some valid file to get the session to start
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CM0_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "overrideLaunchCommands": [
+                "set {int}0x52401240=0x80000000",
+                "set {int}0x52401244=0x80000000",
+                "set {int}0x52401248=0x80000000",
+                "set {int}0x52410070=0x00000010",
+                "set {int}0x54004090=0x00000002",
+                "set {int}0x54640008=0x0000001f",
+                "set {int}0x52413000=0x108",
+                "set {int}0x54100000=0x108",
+                "set {int}0x54101000=0x01010108",
+                "set {int}0x54004110=0x00000001",
+                "load &&_MTB_RECIPE__HEX_FILE&&",
+                "load &&_MTB_RECIPE__PREBUILT_CM0_IMAGE&&",
+                "monitor go",
+                "detach"
+            ],
+            "postStartSessionCommands": [
+                "quit"
+            ],
+            "preLaunchTask": "Build",    // Set this to run a task from tasks.json
+                                                                // before device programming
+            "showDevDebugOutput": "none"
+        }

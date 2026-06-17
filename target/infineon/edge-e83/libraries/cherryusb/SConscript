@@ -1,0 +1,16 @@
+from building import *
+import rtconfig
+Import('RTT_ROOT')
+
+# get current directory
+cwd = GetCurrentDir()
+path = [cwd]
+src = []
+
+if GetDepend(['PKG_CHERRYUSB_DEVICE_DWC2_INFINEON_EXT']):
+    path = [cwd + '/port/dwc2']
+    src += Glob('./port/dwc2/usb_dc_dwc2.c')
+    src += Glob('./port/dwc2/usb_glue_infineon.c')
+
+group = DefineGroup('CherryUSB', src, depend=[''], CPPPATH=path)
+Return('group')

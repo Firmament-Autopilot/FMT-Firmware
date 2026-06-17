@@ -1,0 +1,15 @@
+from building import *
+import rtconfig
+Import('RTT_ROOT')
+
+# get current directory
+cwd = GetCurrentDir()
+path = [cwd + '/include']
+path += [cwd + '/include/COMPONENT_NON_SECURE_DEVICE']
+path += [cwd + '/include/COMPONENT_NON_SECURE_DEVICE/COMPONENT_MW_MTB_IPC']
+src = ['mtb_srf.c']
+src += ['mtb_srf_ipc.c']
+src += ['mtb_srf_pool.c']
+
+group = DefineGroup('Libraries', src, depend=[''], CPPPATH=path)
+Return('group')

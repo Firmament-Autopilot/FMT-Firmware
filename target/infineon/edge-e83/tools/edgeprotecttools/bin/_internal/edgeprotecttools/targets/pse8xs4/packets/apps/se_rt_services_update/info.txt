@@ -1,0 +1,4 @@
+name: cyapp_se_rts_update
+description: The application updates SE RT SERVICES in DEVELOPMENT and PRODUCTION LCS. Only applicable for CAT4 devices.
+type: Firmware application
+version: 2.0.0.5683

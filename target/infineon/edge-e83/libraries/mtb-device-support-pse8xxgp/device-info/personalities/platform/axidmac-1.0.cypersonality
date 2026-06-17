@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file axidmac.cypersonality
+* \version 1.0
+*
+* \brief
+* AXI DMAC personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2018-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id='axidmac' name='AXI DMAC' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v7'>
+  <Dependencies>
+    <IpBlock name='m55appcpuss,mxaxidmac' />
+    <Resource name='m55appcpuss\.axidmac\d\.chan|axi_dmac\.chan' />
+  </Dependencies>
+  <ExposedMembers>
+    <ExposedMember key='block' paramId='block' />
+    <ExposedMember key='channel' paramId='channel' />
+  </ExposedMembers>
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__axidmac.html' linkText='Open AXI DMAC Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamString id='block' name='block number' group='Internal' default='`${"dw0" eq getBlockType(1) ? 0 : 1}`' visible='false' editable='false' desc='' />
+    <ParamString id='channel' name='channel number' group='Internal' default='`${getInstNumber("chan")}`' visible='false' editable='false' desc='' />
+
+    <!--Channel-->
+    <ParamSignal port='tr_in[0]' name='Trigger Input' group='Channel'  visible='true' desc='Sets up the trigger input signal for the AXI DMA start.' canBeEmpty='true' />
+    <ParamSignal port='tr_out[0]' name='Trigger Output' group='Channel'  visible='true' desc='Sets up the trigger output signal for the AXI DMA completion.' canBeEmpty='true' />
+    <ParamRange id='CHANNEL_PRIORITY' name='Channel Priority' group='Channel' default='3' min='0' max='3' resolution='1' visible='true' editable='true' desc='Priority of the channel in the AXI DMA block. Lower number takes precedence.' />
+    <ParamRange id='NUM_OF_DESCRIPTORS' name='Number of Descriptors' group='Channel' default='4' min='1' max='256' resolution='1' visible='true' editable='true' desc='The number of descriptors sets up rest of the customizer. Based on the number set in this parameter as many instances of Descriptors are created in the customizer.' />
+    <ParamBool id='BUFFERABLE' name='Bufferable' group='Channel' default='false' visible='true' editable='true' desc='Makes the channel data transactions bufferable.' />
+
+    <ParamChoice id='DESCR_SELECTION' name='Select the descriptor' group='Channel' default='0' visible='true' editable='true' desc='Select the descriptor to configure it.'>
+      <Entry name='Descriptor_$idx' value='$idx' visible='`${NUM_OF_DESCRIPTORS &gt; $idx}`' repeatCount='256' />
+    </ParamChoice>
+
+    <!--Descriptor-->
+    <Repeat count='256'>
+        <ParamString id='DESCR_NAME_$idx' name='Descriptor_$idx Name' group='Descriptor' default='Descriptor_$idx' visible='false' editable='false' desc='This parameter sets up the instance name for the Descriptor.'/>
+
+        <ParamBool id='pDescrSelEqIdx_$idx' name='pDescrSelEqIdx_$idx' desc='pDescrSelEqIdx_$idx' group='Internal' default='`${DESCR_SELECTION eq $idx}`' visible='false' editable='false' />
+
+        <ParamChoice id='TRIG_OUT_TYPE_$idx' name='Trigger output' group='Descriptor' default='CY_AXIDMAC_M_LOOP' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This is the selection for what event would trigger the AXI DMA output.'>
+          <Entry name='Trigger on every element transfer completion' value='CY_AXIDMAC_M_LOOP' visible='true' />
+          <Entry name='Trigger on every X loop transfer completion' value='CY_AXIDMAC_X_LOOP' visible='true' />
+          <Entry name='Trigger on descriptor completion' value='CY_AXIDMAC_DESCR' visible='true' />
+          <Entry name='Trigger on completion of entire descriptor chain' value='CY_AXIDMAC_DESCR_CHAIN' visible='true' />
+        </ParamChoice>
+        <ParamChoice id='INTR_OUT_$idx' name='Interrupt type' group='Descriptor' default='CY_AXIDMAC_M_LOOP' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This is the selection for what event would trigger the AXI DMA interrupt.'>
+          <Entry name='Trigger on every element transfer completion' value='CY_AXIDMAC_M_LOOP' visible='true' />
+          <Entry name='Trigger on every X loop transfer completion' value='CY_AXIDMAC_X_LOOP' visible='true' />
+          <Entry name='Trigger on descriptor completion' value='CY_AXIDMAC_DESCR' visible='true' />
+          <Entry name='Trigger on completion of entire descriptor chain' value='CY_AXIDMAC_DESCR_CHAIN' visible='true' />
+        </ParamChoice>
+        <ParamBool id='ENABLE_CHAINING_$idx' name='Enable Chaining' group='Descriptor' default='false' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='Specifies whether or not the descriptor chains to another' />
+        <ParamRange id='CHAIN_TO_$idx' name='Chain to descriptor' group='Descriptor' default='0' min='0' max='`${NUM_OF_DESCRIPTORS - 1}`' resolution='1' visible='`${pDescrSelEqIdx_$idx &amp;&amp; ENABLE_CHAINING_$idx}`' editable='`${pDescrSelEqIdx_$idx &amp;&amp; ENABLE_CHAINING_$idx}`' desc='Defines the descriptor which is chained to this descriptor.' />
+
+        <ParamChoice id='CHAN_STATE_COMPL_$idx' name='Channel state on completion' group='Descriptor' default='CY_AXIDMAC_CHANNEL_ENABLED' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This is the state of the channel when the descriptor is completed.'>
+          <Entry name='Disable' value='CY_AXIDMAC_CHANNEL_DISABLED' visible='true' />
+          <Entry name='Enable' value='CY_AXIDMAC_CHANNEL_ENABLED' visible='true' />
+        </ParamChoice>
+        <ParamChoice id='TRIG_IN_TYPE_$idx' name='Trigger input type' group='Descriptor' default='CY_AXIDMAC_M_LOOP' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='Trigger input type will set up the character of each trigger.'>
+          <Entry name='One transfer per trigger' value='CY_AXIDMAC_M_LOOP' visible='true' />
+          <Entry name='One X loop transfer per trigger' value='CY_AXIDMAC_X_LOOP' visible='true' />
+          <Entry name='An entire descriptor transfer per trigger' value='CY_AXIDMAC_DESCR' visible='true' />
+          <Entry name='Entire descriptor chain per trigger' value='CY_AXIDMAC_DESCR_CHAIN' visible='true' />
+        </ParamChoice>
+        <ParamChoice id='TRIG_DEACT_$idx' name='Trigger deactivation and retriggering' group='Descriptor' default='CY_AXIDMAC_RETRIG_IM' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This parameter sets up the trigger deactivation options for the descriptor.'>
+          <Entry name='Retrigger immediately (pulse trigger)' value='CY_AXIDMAC_RETRIG_IM' visible='true' />
+          <Entry name='Retrigger after 4 Slow Clock cycles' value='CY_AXIDMAC_RETRIG_4CYC' visible='true' />
+          <Entry name='Retrigger after 16 Slow Clock cycles' value='CY_AXIDMAC_RETRIG_16CYC' visible='true' />
+          <Entry name='Wait for trigger reactivation' value='CY_AXIDMAC_WAIT_FOR_REACT' visible='true' />
+        </ParamChoice>
+
+        <ParamBool id='DATA_PREFETCH_$idx' name='Data prefetch' group='Descriptor' default='false' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='Source data transfers are initiated as soon as the channel is enabled, the current descriptor pointer is NOT "0" and there is space available in the channel&apos;s data FIFO.' />
+
+        <!--Descriptor M loop settings-->
+        <ParamRange id='M_NUM_OF_ELEMENTS_$idx' name='Number of data elements to transfer' group='Descriptor M loop settings' default='1' min='1' max='65536' resolution='1' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This parameter configures how many transfers are effected in the M loop. ' />
+
+        <!--Descriptor X loop settings-->
+        <ParamRange id='X_NUM_OF_ELEMENTS_$idx' name='Number of M-loops to execute' group='Descriptor X loop settings' default='1' min='1' max='65536' resolution='1' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This parameter configures how many M-loops are executed in each X loop.' />
+
+        <ParamRange id='X_SRC_INCREMENT_$idx' name='Source increment every cycle by' group='Descriptor X loop settings' default='1' min='-32768' max='32767' resolution='1' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This integer determines the source address increment after each data transfer. When this value is set to zero, it is equivalent to disabling the source increment feature.' />
+
+        <ParamRange id='X_DST_INCREMENT_$idx' name='Destination increment every cycle by' group='Descriptor X loop settings' default='1' min='-32768' max='32767' resolution='1' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This integer determines the destination address increment after each transfer. When this value is set to zero, it is equivalent to disabling the destination increment feature.' />
+
+
+        <!--Descriptor Y loop settings-->
+        <ParamRange id='Y_NUM_OF_ELEMENTS_$idx' name='Number of X-loops to execute' group='Descriptor Y loop settings' default='1' min='1' max='65536' resolution='1' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This parameter configures how many X-loops are executed in each Y loop.' />
+
+        <ParamRange id='Y_SRC_INCREMENT_$idx' name='Source increment every cycle by' group='Descriptor Y loop settings' default='1' min='-32768' max='32767' resolution='1' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This integer determines the source address increment after each X loop execution. When this value is set to zero, it is equivalent to disabling the source increment feature in Y loop.' />
+
+        <ParamRange id='Y_DST_INCREMENT_$idx' name='Destination increment every cycle by' group='Descriptor Y loop settings' default='1' min='-32768' max='32767' resolution='1' visible='`${pDescrSelEqIdx_$idx}`' editable='`${pDescrSelEqIdx_$idx  || (NUM_OF_DESCRIPTORS &gt; $idx)}`' desc='This integer determines the destination address increment after each transfer. When this value is set to zero, it is equivalent to disabling the destination increment feature in Y loop.' />
+
+    </Repeat>
+
+
+    <!--Config-->
+    <ParamBool id='inFlash' name='Store Config in Flash' group='Advanced' default='true' visible='true' editable='true' desc='Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false).' />
+
+    <ParamString id='HWbase' name='base address' group='Internal' default='`${("mxaxidmac" eq getIpBlockName()) ? "AXI_DMAC" : "SAXI_DMAC"}`' visible='false' editable='false' desc='' />
+    <ParamString id='descriptor_struct' name='descriptor struct' group='Internal' default='CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_axidmac_descriptor_t' visible='false' editable='false' desc='' />
+
+    <ParamString id='mxaxidmacIrq' name='MXAXIDMAC IRQ' group='Internal' default='axi_dmac_0_interrupts_`${channel}`_IRQn' visible='false' editable='false' desc='' />
+    <ParamString id='m55cpussAxiDmacIrq' name='M55 AXI DMAC IRQ' group='Internal' default='m55appcpuss_interrupts_axidmac_`${channel}`_IRQn' visible='false' editable='false' desc='' />
+  </Parameters>
+
+  <DRCs>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_axidmac.h' include='true' />
+    <ConfigInclude value='mtb_hal.h' include='true' guard='defined (COMPONENT_MTB_HAL)' />
+
+    <ConfigDefine name='`${INST_NAME . "_HW"}`' value='`${HWbase}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME . "_CHANNEL"}`' value='`${channel}`U' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_IRQ' value='`${("mxaxidmac" eq getIpBlockName()) ? (mxaxidmacIrq) : (m55cpussAxiDmacIrq)}`' public='true' include='true' />
+
+    <ConfigStruct name='`${INST_NAME . "_" . DESCR_NAME_$idx . "_config"}`' type='cy_stc_axidmac_descriptor_config_t' const='`${inFlash}`' public='true' include='`${NUM_OF_DESCRIPTORS > $idx}`' repeatCount='8' >
+      <Member name='retrigger' value='`${TRIG_DEACT_$idx}`' />
+      <Member name='interruptType' value='`${INTR_OUT_$idx}`' />
+      <Member name='triggerOutType' value='`${TRIG_OUT_TYPE_$idx}`' />
+      <Member name='channelState' value='`${CHAN_STATE_COMPL_$idx}`' />
+      <Member name='triggerInType' value='`${TRIG_IN_TYPE_$idx}`' />
+      <Member name='dataPrefetch' value='`${DATA_PREFETCH_$idx}`' />
+
+      <Member name='descriptorType' value='`${(X_NUM_OF_ELEMENTS_$idx eq 1) ? "CY_AXIDMAC_1D_MEMORY_COPY" :
+                                              (Y_NUM_OF_ELEMENTS_$idx ne 1) ? "CY_AXIDMAC_3D_MEMORY_COPY" :
+                                                                              "CY_AXIDMAC_2D_MEMORY_COPY"}`' />
+
+      <Member name='srcAddress' value='NULL' />
+      <Member name='dstAddress' value='NULL' />
+      <Member name='mCount' value='`${M_NUM_OF_ELEMENTS_$idx}`' />
+      <Member name='srcXincrement' value='`${X_SRC_INCREMENT_$idx}`' />
+      <Member name='dstXincrement' value='`${X_DST_INCREMENT_$idx}`' />
+      <Member name='xCount' value='`${X_NUM_OF_ELEMENTS_$idx}`' />
+      <Member name='srcYincrement' value='`${Y_SRC_INCREMENT_$idx}`' />
+      <Member name='dstYincrement' value='`${Y_DST_INCREMENT_$idx}`' />
+      <Member name='yCount' value='`${Y_NUM_OF_ELEMENTS_$idx}`' />
+      <Member name='nextDescriptor' value='`${ENABLE_CHAINING_$idx ? "&amp;" . INST_NAME . "_" . getParamValue("DESCR_NAME_" . CHAIN_TO_$idx) : "NULL"}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME . "_" . DESCR_NAME_$idx}`' type='`${descriptor_struct}`' const='false' public='true' include='`${NUM_OF_DESCRIPTORS &gt; $idx}`' repeatCount='256' >
+      <Member name='ctl' value='0UL' />
+      <Member name='src' value='0UL' />
+      <Member name='dst' value='0UL' />
+      <Member name='mSize' value='0UL' />
+      <Member name='xSize' value='0UL' />
+      <Member name='xIncr' value='0UL' />
+      <Member name='ySize' value='0UL' />
+      <Member name='yIncr' value='0UL' />
+      <Member name='nextPtr' value='0UL' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME . "_channelConfig"}`' type='cy_stc_axidmac_channel_config_t' const='`${inFlash}`' public='true' include='true' >
+      <Member name='descriptor' value='&amp;`${INST_NAME}`_`${DESCR_NAME_0}`' />
+      <Member name='priority' value='`${CHANNEL_PRIORITY}`' />
+      <Member name='enable' value='false' />
+      <Member name='bufferable' value='`${BUFFERABLE}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_hal_config' type='mtb_hal_dma_configurator_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_DMA)'>
+      <Member name='dma_type' value='MTB_HAL_DMA_DMAC' />
+      <Member name='channel' value='`${INST_NAME}`_CHANNEL' />
+      <Member name='dmac_base' value='`${INST_NAME}`_HW' />
+      <Member name='dmac_descriptor' value='&amp;`${INST_NAME}`_Descriptor_`${DESCR_SELECTION}`' />
+    </ConfigStruct>
+
+  </ConfigFirmware>
+</Personality>

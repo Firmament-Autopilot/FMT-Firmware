@@ -1,0 +1,4 @@
+{
+  "description": "This is a template for creating a JWK file containing EC public key based on a key public numbers (CURVE=secp256r1)",
+  "pub": ""
+}

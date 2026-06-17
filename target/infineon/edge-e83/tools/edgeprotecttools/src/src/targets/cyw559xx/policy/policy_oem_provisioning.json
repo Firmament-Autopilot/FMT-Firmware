@@ -1,0 +1,35 @@
+{
+  "policy": {
+    "platform": "cyw559xx",
+    "version": 1.0,
+    "type": "oem_provisioning"
+  },
+  "oem_public_key": {
+    "description": "The path to the RSA public key of the 3072-bit size",
+    "value": "../keys/first_oem_pubkey.pem"
+  },
+  "provisioning_key": {
+    "type": {
+      "description": "Provisioning Key. Applicable values: ASSET_NO_KEY, ASSET_PLAIN_KEY",
+      "value": "ASSET_NO_KEY"
+    },
+    "data": {
+      "description": "Provisioning Key. Accepts hex string or path to binary file. If no key is provided, set the value to 'null'",
+      "value": null
+    }
+  },
+  "code_encryption_key": {
+    "type": {
+      "description": "Code Encryption Key. Applicable values: ASSET_NO_KEY, ASSET_PLAIN_KEY",
+      "value": "ASSET_NO_KEY"
+    },
+    "data": {
+      "description": "Code Encryption Key. Accepts hex string or path to binary file. If no key is provided, set the value to 'null'",
+      "value": null
+    }
+  },
+  "nv_counter": {
+    "description": "Non-Volatile counter corresponding to the software version",
+    "value": "0x00000000"
+  }
+}

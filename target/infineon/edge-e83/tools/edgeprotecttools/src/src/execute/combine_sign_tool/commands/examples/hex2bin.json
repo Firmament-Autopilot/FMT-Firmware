@@ -1,0 +1,31 @@
+{
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "hex2bin command example",
+            "description": "Converts hex file to binary",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex2bin",
+                    "inputs": [
+                        {
+                            "description": "Input hex file",
+                            "file": "input.hex",
+                            "start": "0x32000000",
+                            "end": "0x32000200"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "Output bin file",
+                            "file": "output.bin",
+                            "size": "0x400",
+                            "fill-value": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

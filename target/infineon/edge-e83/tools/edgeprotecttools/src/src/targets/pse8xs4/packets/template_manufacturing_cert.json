@@ -1,0 +1,24 @@
+{ 
+  "VERSION": "1",
+  "TEMPLATE_TYPE": "MANUFACTURING_CERT",
+  "CERTIFICATE_NAME": "",
+  "ISSUER": "Acme Corp.",
+  "SIGNER_ID": "555",
+  "MFG": "Acme Corp.",
+  "ALGORITHM": {
+      "description": "Key algorithm. Applicable values: ES256, ES384",
+      "value": "ES256"
+  },
+  "PUBLIC_KEY_0": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "value":  "keys/ifx_oem0_pubkey.pem"
+  },
+  "DATE": {
+      "description": "The date of creation of the certificate in the format: YYYY-MM-DD hh:mm:ss. If not provided, the system time will be used",
+      "value": "2023-09-19 15:24:47"
+  },
+  "ID": {
+      "description": "Certificate (unique) ID",
+      "value": "ABCDEF"
+  }
+} 

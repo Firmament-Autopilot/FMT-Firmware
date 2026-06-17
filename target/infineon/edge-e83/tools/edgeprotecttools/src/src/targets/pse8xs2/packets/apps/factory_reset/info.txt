@@ -1,0 +1,4 @@
+name: factory_reset_dlm.hex
+description: This DLM injects default factory assets and resets device to factory state.
+type: Firmware application
+version: 2.0.0.5683

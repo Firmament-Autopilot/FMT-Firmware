@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<PersonalityTemplate id='protection' name='Protection' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <Constants>
+    <Const id="MAX_PC" value="8" />
+    <Const id="MAX_CORES" value="4" />
+    <Const id="MAX_DEFAULT_DOMAINS" value="16" />
+    <Const id="MAX_DEFAULT_DOMAINS_MINUS_ONE" value="15" />
+    <Const id="TC_BUS_MASTER_TYPE" value="TC" />
+    <Const id="INVALID_BUS_MASTER_ID" value="-1" />
+    <Const id="INVALID_DEFAULT" value="0" />
+    <Const id="DESC_NON_SECURE" value="No isolation. All resources are unsecured." />
+    <Const id="DESC_SECURE_SERVICES" value="Memory isolation is enabled and can be configured in the Memory tab. All peripherals are unsecured." />
+    <Const id="DESC_SECURE_PERIPHERALS" value="Memory isolation is enabled and can be configured in the Memory tab. Peripheral isolation is enabled and can be configured via the PPC personalities." />
+    <Const id="DESC_SECURE_CUSTOM" value="All configurations of the security hardware are enabled. This is intended to support advanced use cases. Fewer consistency checks can be performed in this mode." />
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='VirtualResource' />
+      <Resource name='vres\.protection' />
+      <OperatingMode value="MCU" />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type="protection_v1">
+      <ExposedMember key='protectionLevel' paramId='type'/>
+      <ExposedMember key='validation_security_boundary' paramId='validation_security_boundary' />
+      <!-- TODO: for now the root domain is simply the first domain. It should be specified by device-db. -->
+      <ExposedMember key='validation_root_domain' templateId="domain0" paramId='domainId' />
+      <ExposedMember key='domain_reserved' paramId='domain_reserved$MAX_DEFAULT_DOMAINS_MINUS_ONE' />
+      <ExposedMember key='domain_root' paramId='domain_root$MAX_DEFAULT_DOMAINS_MINUS_ONE' />
+      <ExposedMember key='domain_unprotected' paramId='domain_unprotected$MAX_DEFAULT_DOMAINS_MINUS_ONE' />
+      <ExposedMember key='pcSwitch' paramId='pcSwitch' />
+      <ExposedMember key='secureDebuggerAccess' paramId='secureDebuggerAccess' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <ParamDoc id='doc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/page_prot_person.html' linkText='Open Protection Documentation' visible='true' desc='Open IDAU/SAU Documentation' />
+
+    <ParamChoice id='type' name='Protection Level' group='' default='NON_SECURE' visible='true' desc='`${type eq NON_SECURE ? "$DESC_NON_SECURE" : (type eq SECURE_SERVICES ? "$DESC_SECURE_SERVICES" : (type eq SECURE_PERIPHERALS ? "$DESC_SECURE_PERIPHERALS" : "$DESC_SECURE_CUSTOM"))}`'>
+      <Entry name='Non-Secure' value='NON_SECURE' />
+      <Entry name='Secure Services Only' value='SECURE_SERVICES' />
+      <Entry name='Secure Services+Peripherals' value='SECURE_PERIPHERALS' />
+      <Entry name='Custom Security' value='SECURE_CUSTOM' />
+    </ParamChoice>
+    <ParamString id='notice' name='Notice' visible='`${type eq SECURE_CUSTOM}`' editable='false' default='Protection level is set to "Custom Security". This enables configurations which are not permitted in other modes. If it is changed to any other mode, selections which are not supported in the new mode will be replaced with a default value' />
+
+    <!-- Handle Protection Context switch -->
+    <ParamBool id='pcSwitch' name='Protection context switching' group='' default='false' visible='true' desc='Will firmware switch PC when transitioning between secure and non-secure?' />
+    <ParamString id='unprivilegedS_match' default='`${pcSwitch ? "unprivilegedS_switch" : "unprivilegedS"}`' />
+    <ParamString id='unprivilegedNS_match' default='`${pcSwitch ? "unprivilegedNS_switch" : "unprivilegedNS"}`' />
+    <ParamString id='pcReadMask_match' default='`${pcSwitch ? "pcReadMask_switch" : "pcReadMask"}`' />
+    <ParamString id='pcWriteMask_match' default='`${pcSwitch ? "pcWriteMask_switch" : "pcWriteMask"}`' />
+    <ParamString id='pcNsMask_match' default='`${pcSwitch ? "pcNsMask_switch" : "pcNsMask"}`' />
+
+    <!-- Handle Secure domain debugger access -->
+    <ParamBool id='secureDebuggerAccess' name='Allow Debug access to secure domain?' default='true' visible='true' desc='Is debugger PC access allowed in the secure default domain?' />
+
+    <ParamChoice id="validation_security_boundary" name="Validation" default="SECURE" visible="true" desc='What level of checking should be done on connections between peripherals.'>
+      <Entry name="None" value="NONE" />
+      <Entry name="Secure/Non-secure only" value="SECURE" />
+      <Entry name="All domain crossings" value="DOMAIN" />
+    </ParamChoice>
+
+    <Repeat count='$MAX_DEFAULT_DOMAINS' repeatId='domainIndex'>
+      <ParamString templateId='domain$idx{domainIndex}' id='domainKey$idx{domainIndex}' default='`${getOrDefault(getCustomDataKeys("/ProtectionDomain", $idx{domainIndex}), "")}`' />
+      <ParamString templateId='domain$idx{domainIndex}' id='domainId' default='`${INST_ID}`' />
+      <ParamString templateId='domain$idx{domainIndex}' id='displayName' default='`${domainKey$idx{domainIndex}}`' />
+
+      <ParamString templateId='domain$idx{domainIndex}' id='accessData' default='`${getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domainKey$idx{domainIndex} . "\"]/@access"), $INVALID_DEFAULT)}`' />
+
+      <ParamChoice templateId='domain$idx{domainIndex}' id='cmseAttribute' default='`${accessData eq "S" ? "SECURE" : accessData eq "NSC" ? "NON_SECURE_CALLABLE" : "NON_SECURE"}`' >
+        <Entry name='Secure' value='SECURE' visible='true' />
+        <Entry name='Non-Secure Callable' value='NON_SECURE_CALLABLE' visible='true' />
+        <Entry name='Non-Secure' value='NON_SECURE' visible='true' />
+      </ParamChoice>
+
+      <ParamString templateId='domain$idx{domainIndex}' id='cmseAttributeDisplay' default='`${ getParamValueDisplay("cmseAttribute")}`' />
+
+      <ParamBool templateId='domain$idx{domainIndex}' id='secureUnprivileged' default='`${getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domainKey$idx{domainIndex} . "\"]/@" . getParamValue("protection","unprivilegedS_match")), $INVALID_DEFAULT)}`' />
+      <ParamBool templateId='domain$idx{domainIndex}' id='nonSecureUnprivileged' default='`${getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domainKey$idx{domainIndex} . "\"]/@" . getParamValue("protection","unprivilegedNS_match")), $INVALID_DEFAULT)}`' />
+      <!-- The PPC hardware only physically supports one "unprivileged access" bit, which it will fetch from either the secure or non-secure register based on the
+           PPC's access type setting. Both types are specified in the device-db data, both to future-proof the interface against more flexible hardware, and to
+           give us the data that we would need to dynamically change our default in the event that we allow some editing of custom domains. Here, we pick the
+           value that corresopnds to this domain's actual security state -->
+      <ParamBool templateId='domain$idx{domainIndex}' id='unprivilegedAccess' default='`${cmseAttribute eq "NON_SECURE" ? nonSecureUnprivileged : secureUnprivileged }`' />
+
+
+      <ParamString templateId='domain$idx{domainIndex}' id='read_perm' default='`${getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domainKey$idx{domainIndex} . "\"]/@" . getParamValue("protection","pcReadMask_match")), $INVALID_DEFAULT)}`' />
+      <ParamString templateId='domain$idx{domainIndex}' id='write_perm' default='`${getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domainKey$idx{domainIndex} . "\"]/@" . getParamValue("protection","pcWriteMask_match")), $INVALID_DEFAULT)}`' />
+      <ParamString templateId='domain$idx{domainIndex}' id="ns_perm" default='`${getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domainKey$idx{domainIndex} . "\"]/@" . getParamValue("protection","pcNsMask_match")), $INVALID_DEFAULT)}`' />
+      <ParamString templateId='domain$idx{domainIndex}' id="en_mask" default='`${getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domainKey$idx{domainIndex} . "\"]/@" . getParamValue("protection","pcReadMask_match")), $INVALID_DEFAULT)}`' />
+
+      <Repeat count='$MAX_PC'>
+        <ParamString templateId='domain$idx{domainIndex}' id='pc$idxname' default='`${getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx . "\"]/@name"), "")}`' />
+        <ParamString templateId='domain$idx{domainIndex}' id='pc$idxBusMaster' default='`${getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx . "\"]/@bus_master_ids"), "$INVALID_BUS_MASTER_ID")}`' />
+        <!-- The pc$idxDebuggerAccess can be thought of as a gate. We generally want to evaluate true so we can passthrough device-db settings, but want to evaluate false if: we are evaluating a Secure default domain, determining the Debugger PC settings, and the top level user-controlled checkbox is set to false in the Custom Security configuration -->
+        <ParamBool templateId='domain$idx{domainIndex}' id='pc$idxDebuggerAccess' default='`${((cmseAttribute eq "SECURE") &amp;&amp; (getOrDefault(getCustomData("/BusMaster[@key=\"" . getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx . "\"]/@bus_master_ids"), "$INVALID_BUS_MASTER_ID") . "\"]/@type"), "") eq "$TC_BUS_MASTER_TYPE")) ? getParamValue("protection","secureDebuggerAccess") : true}`' />
+        <ParamBool templateId='domain$idx{domainIndex}' id='pc$idx' default='`${((pc$idxDebuggerAccess) &amp;&amp; (((read_perm &amp; (0x1 &lt;&lt; $idx)) &gt; 0) || ((write_perm &amp; (0x1 &lt;&lt; $idx)) &gt; 0))) ? true : false}`' />
+        <ParamBool templateId='domain$idx{domainIndex}' id='pc$idxread' default='`${((pc$idxDebuggerAccess) &amp;&amp; ((read_perm &amp; (0x1 &lt;&lt; $idx)) &gt; 0)) ? true : false}`' />
+        <ParamBool templateId='domain$idx{domainIndex}' id='pc$idxwrite' default='`${((pc$idxDebuggerAccess) &amp;&amp; ((write_perm &amp; (0x1 &lt;&lt; $idx)) &gt; 0)) ? true : false}`' />
+        <ParamBool templateId='domain$idx{domainIndex}' id='pc$idxaccess' default='`${((ns_perm &amp; (0x1 &lt;&lt; $idx)) &gt; 0) ? false : true}`' />
+        <ParamBool templateId='domain$idx{domainIndex}' id='pc$idxns' default='`${pc$idxaccess eq false}`' />
+      </Repeat>
+
+      <Repeat count='$MAX_PC' repeatId='pcIndex' >
+        <ParamString templateId='domain$idx{domainIndex}' id='pc$idx{pcIndex}names' default='`${getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx{pcIndex} . "\"]/@name"), "")}`' />
+        <!-- Get the core types for all PCs that are enabled and have bus master IDs. These will be used to determine which cores are associated with this domain later -->
+        <ParamString templateId='domain$idx{domainIndex}' id='pc$idx{pcIndex}busMasterValid' default='`${(pc$idx{pcIndex} &amp;&amp; (((read_perm &amp; (0x1 &lt;&lt; $idx{pcIndex})) &gt; 0) || ((write_perm &amp; (0x1 &lt;&lt; $idx{pcIndex})) &gt; 0))) ? getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx{pcIndex} . "\"]/@bus_master_ids"), "$INVALID_BUS_MASTER_ID") : "$INVALID_BUS_MASTER_ID"}`' />
+        <ParamString templateId='domain$idx{domainIndex}' id='pc$idx{pcIndex}core' default='`${(pc$idx{pcIndex}busMasterValid != $INVALID_BUS_MASTER_ID) ? getOrDefault(getCustomData("/BusMaster[@key=\"" . pc$idx{pcIndex}busMasterValid . "\"]/@core"), getOrDefault(getCustomData("/BusMaster[@key=\"" . pc$idx{pcIndex}busMasterValid . "\"]/@type"), "NA")) : "NA"}`' />
+        <ParamString templateId='domain$idx{domainIndex}' id='pc$idx{pcIndex}coreType' default='`${(pc$idx{pcIndex}core ne "NA" &amp;&amp; pc$idx{pcIndex}core ne "$TC_BUS_MASTER_TYPE") ? getCoreType(pc$idx{pcIndex}core) : "NA"}`' />
+      </Repeat>
+
+      <ParamString templateId='domain$idx{domainIndex}' id='vcore_count' default='`${getVirtualCoreCount()}`' />
+      <ParamString templateId='domain$idx{domainIndex}' id='vcore_names' default='`${getVirtualCoreDefineNames()}`' />
+      <Repeat count='$MAX_CORES'>
+        <ParamString templateId='domain$idx{domainIndex}' id='vcoretype$idx' default='`${$idx &lt; vcore_count ? getCoreType(splitAt(vcore_names, $idx)) : ""}`' />
+        <!-- Determine if any PCs core type is the same as the vcore type. If so, mark coreIsAccessible as true -->
+        <ParamBool   templateId='domain$idx{domainIndex}' id='isCoreAssociated$idx' default='`${(pc0coreType eq vcoretype$idx) || (pc1coreType eq vcoretype$idx) || (pc2coreType eq vcoretype$idx) || (pc3coreType eq vcoretype$idx) || (pc4coreType eq vcoretype$idx) || (pc5coreType eq vcoretype$idx) || (pc6coreType eq vcoretype$idx) || (pc7coreType eq vcoretype$idx)}`' />
+        <ParamBool   templateId='domain$idx{domainIndex}' id='coreIsAccessible$idx' default='`${$idx &lt; vcore_count &amp;&amp; (isCoreAssociated$idx)}`' />
+      </Repeat>
+      <ParamString id="domain_name$idx{domainIndex}" default='`${getOrDefault(getParamValue("domain$idx{domainIndex}", "domainKey$idx{domainIndex}"), "")}`' />
+      <ParamString id="domain_unprotected$idx{domainIndex}" default='`${getOrDefault(getParamValue("domain_unprotected" . ($idx{domainIndex} - 1)), "") . getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domain_name$idx{domainIndex} . "\"]/@unprotected") ? getParamValue("domain$idx{domainIndex}", "domainId") : "", "")}`' />
+      <ParamString id="domain_root$idx{domainIndex}" default='`${getOrDefault(getParamValue("domain_root" . ($idx{domainIndex} - 1)), "") . getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domain_name$idx{domainIndex} . "\"]/@root") ? getParamValue("domain$idx{domainIndex}", "domainId") : "", "")}`' />
+      <ParamString id="domain_reserved$idx{domainIndex}" default='`${getOrDefault(getParamValue("domain_reserved" . ($idx{domainIndex} - 1)), "") . getOrDefault(getCustomData("/ProtectionDomain[@key=\"" . domain_name$idx{domainIndex} . "\"]/@reserved") ? getParamValue("domain$idx{domainIndex}", "domainId") : "", "")}`' />
+    </Repeat>
+
+  </Parameters>
+
+  <DRCs>
+  </DRCs>
+
+  <ConfigFirmware>
+  </ConfigFirmware>
+  <PersonalityTemplate id="domain$idx" repeatCount="$MAX_DEFAULT_DOMAINS" valid='`${$idx &lt; getOrDefault(getCustomDataCount("/ProtectionDomain"), $INVALID_DEFAULT)}`'>
+    <FittingRules>
+      <MappingRules>
+        <IpBlock name='VirtualResource' />
+        <Resource name='vres\.protection\.domain' />
+      </MappingRules>
+    </FittingRules>
+    <BehaviorImplementation>
+      <Implements type="protection_domain_v1">
+        <ExposedMember key='domainId' paramId='domainId' />
+        <ExposedMember key='displayName' paramId='displayName' />
+        <ExposedMember key='cmseAttribute' paramId='cmseAttribute' />
+        <ExposedMember key='pc$idxread' paramId='pc$idxread' repeatCount='$MAX_PC' />
+        <ExposedMember key='pc$idxwrite' paramId='pc$idxwrite' repeatCount='$MAX_PC' />
+        <ExposedMember key='pc$idxns' paramId='pc$idxns' repeatCount='$MAX_PC' />
+        <ExposedMember key='pc$idx' paramId='pc$idx' repeatCount='$MAX_PC' />
+        <!-- This PPC hardware only allows a single setting for both privileged and unprivileged. See the comment on the unprivilegedAccess member. -->
+        <ExposedMember key='secureUnprivileged' paramId='unprivilegedAccess' />
+        <ExposedMember key='nonSecureUnprivileged' paramId='unprivilegedAccess' />
+        <ExposedMember key='coreIsAccessible$idx' paramId='coreIsAccessible$idx' repeatCount='$MAX_CORES' />
+      </Implements>
+    </BehaviorImplementation>
+    <Parameters>
+
+      <ParamDoc id='doc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/page_prot_person.html#Domain_personality' linkText='Open Domain Documentation' visible='true' desc='Open Security Documentation' />
+
+      <ParamString id='displayCmseAttribute' name='Access' group='Top level Protection' default='`${cmseAttributeDisplay}`' visible='true' editable='false' desc='Should access to this be restricted?' />
+
+      <ParamBool id='displayUnprivileged' name='Allow peripheral access in unprivileged mode' group='Peripheral Protection' default='`${unprivilegedAccess}`' visible='true' editable='false' desc='Is this peripheral accessible to unprivileged callers?' />
+
+      <Repeat count='$MAX_PC'>
+        <ParamString id='displayPc$idxname' default='`${pc$idxnames}`' />
+        <ParamBool id='displayPc$idx' name='PC $idx: `${pc$idxnames}`' group='Peripheral Protection/Accessible by:' default='`${pc$idx}`' visible='`${(pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' editable='false' desc='Can this context access peripherals in the domain?' />
+        <ParamBool id='displayPc$idxread' name='Allow reads' group='Memory Protection/PC $idx: `${pc$idxnames}`' default='`${pc$idxread}`' visible='`${pc$idx &amp;&amp; (pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' editable='false' desc='Can memory in this domain be read?' />
+        <ParamBool id='displayPc$idxwrite' name='Allow writes' group='Memory Protection/PC $idx: `${pc$idxnames}`' default='`${pc$idxwrite}`' visible='`${pc$idx &amp;&amp; (pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' editable='false' desc='Can memory in this domain be written?' />
+        <ParamBool id='displayPc$idxaccess' name='Secure?' group='Memory Protection/PC $idx: `${pc$idxnames}`' default='`${pc$idxaccess}`' visible='`${pc$idx &amp;&amp; (pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' editable='false' desc='Is memory in this domain secure? True indicates secure.' />
+      </Repeat>
+
+    </Parameters>
+    <ConfigFirmware>
+    </ConfigFirmware>
+  </PersonalityTemplate>
+</PersonalityTemplate>

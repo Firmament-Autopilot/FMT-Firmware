@@ -1,0 +1,36 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name" : "sign command example",
+            "description": "Signs the input file and converts it to the MCUboot format",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "sign",
+                    "inputs": [
+                        {
+                            "description": "Secure application",
+                            "file": "./rram_1.hex",
+                            "signing-key": "./some_cypress-test-ec-p256.pem",
+                            "overwrite-only": true,
+                            "header-size": "0x400",
+                            "slot-size": "0x1000",
+                            "fill-value": "0x00",
+                            "min-erase-size": "0x200",
+                            "pad": true,
+                            "hex-address": "0x32005000"
+                        }
+                    ],
+                    "outputs" : [
+                        {
+                            "description": "Signed secured application",
+                            "format" : "ihex",
+                            "file": "./rram_1_signed.hex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

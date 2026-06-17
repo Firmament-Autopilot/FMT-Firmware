@@ -1,0 +1,245 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Protected FW Policy Schema",
+    "type": "object",
+    "required": [
+        "policy",
+        "encrypt",
+        "prot_fw_nv_counter",
+        "prot_fw_enable",
+        "prot_fw_auth_method",
+        "prot_fw_auth_next_app",
+        "prot_fw_rot_public_key_0",
+        "prot_fw_rot_public_key_1",
+        "prot_fw_key",
+        "prot_fw_addr",
+        "prot_fw_size",
+        "prot_fw_rw_addr",
+        "prot_fw_rw_size",
+        "prot_fw_ram_addr",
+        "prot_fw_ram_size",
+        "prot_fw_pc_ctl_valid",
+        "prot_fw_pc1_handler",
+        "prot_fw_complete"
+    ],
+    "properties": {
+        "policy": {
+            "type": "object",
+            "required": [
+                "platform",
+                "version",
+                "type"
+            ],
+            "properties": {
+                "platform": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "number",
+                    "minimum": 1.0,
+                    "maximum": 99.99
+                },
+                "type": {
+                    "type": "string",
+                    "const": "prot_fw_policy"
+                }
+            }
+        },
+        "encrypt": {
+            "type": "object",
+            "required": [
+                "enable",
+                "iv"
+            ],
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "iv": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_nv_counter": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "prot_fw_enable": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "prot_fw_auth_method": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "enum": [
+                        "SHA256",
+                        "SIGNATURE"
+                    ]
+                }
+            }
+        },
+        "prot_fw_auth_next_app": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "prot_fw_rot_public_key_0": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_rot_public_key_1":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_key":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_addr":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_size":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_rw_addr":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_rw_size":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_ram_addr":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_ram_size":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_pc_ctl_valid":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "prot_fw_pc1_handler":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "prot_fw_complete":{
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

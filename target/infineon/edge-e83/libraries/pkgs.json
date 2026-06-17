@@ -1,0 +1,32 @@
+[
+ {
+  "name": "INFINEON_CAT1CM0P",
+  "path": "/packages/peripherals/hal-sdk/Infineon/Infineon_cat1cm0p",
+  "ver": "latest"
+ },
+ {
+  "name": "INFINEON_CMSIS",
+  "path": "/packages/peripherals/hal-sdk/Infineon/Infineon_cmsis",
+  "ver": "latest"
+ },
+ {
+  "name": "INFINEON_CORE_LIB",
+  "path": "/packages/peripherals/hal-sdk/Infineon/Infineon_core-lib",
+  "ver": "latest"
+ },
+ {
+  "name": "INFINEON_MTB_HAL_CAT1",
+  "path": "/packages/peripherals/hal-sdk/Infineon/Infineon_mtb-hal-cat1",
+  "ver": "latest"
+ },
+ {
+  "name": "INFINEON_MTB_PDL_CAT1",
+  "path": "/packages/peripherals/hal-sdk/Infineon/Infineon_mtb-pdl-cat1",
+  "ver": "latest"
+ },
+ {
+  "name": "INFINEON_RETARGET_IO",
+  "path": "/packages/peripherals/hal-sdk/Infineon/Infineon_retarget-io",
+  "ver": "latest"
+ }
+]

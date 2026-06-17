@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__functions__edge" kind="group">
+    <compoundname>group_system_config_functions_edge</compoundname>
+    <title>Functions</title>
+    <innergroup refid="group__group__system__config__cm33__functions__edge">Cortex-M33 Control Functions</innergroup>
+    <innergroup refid="group__group__system__config__cm55__functions__edge">Cortex-M55 Control Functions</innergroup>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga93f514700ccf00d08dbdcff7f1224eb2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemInit</definition>
+        <argsstring>(void)</argsstring>
+        <name>SystemInit</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Initializes the system. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Custom steps can be added to this process by overrding the weak <ref refid="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" kindref="member">Cy_SystemInit()</ref> function.</para>
+<para>Initializes the system.</para>
+<para>Initialize the System and update the SystemCoreClock variable. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="224" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="98" bodyend="102" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="224" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemCoreClockUpdate</definition>
+        <argsstring>(void)</argsstring>
+        <name>SystemCoreClockUpdate</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Update information about system clocks. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Gets core clock frequency and updates <ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref>, and <ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref>.</para>
+<para>Updates global variables used by the Cy_SysLib_Delay(), Cy_SysLib_DelayUs(), and Cy_SysLib_DelayCycles().</para>
+<para>Update information about system clocks.</para>
+<para>Updates the SystemCoreClock with current core Clock retrieved from cpu registers. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="234" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="117" bodyend="135" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="234" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga15d44a0428b12582b056c2501fbe52e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemCoreClockSetup</definition>
+        <argsstring>(uint32_t systemCoreClk_freq_hz, uint32_t ahb_freq_hz)</argsstring>
+        <name>SystemCoreClockSetup</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>systemCoreClk_freq_hz</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>ahb_freq_hz</declname>
+        </param>
+        <briefdescription>
+<para>Populates system clock frequency variables with the provided values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets the startup clock frequencies of <ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref>, and <ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref> variables.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>systemCoreClk_freq_hz</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Frequency in Hz for the System Core Clock (e.g. Cortex-M33)</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ahb_freq_hz</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Frequency in Hz of the AHB source</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This API does not take into account any run-time clock frequency updates. Should any updates occur, <ref refid="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" kindref="member">SystemCoreClockUpdate</ref> must be called afterwards on the CM33_NS and CM55.</para>
+</simplesect>
+Populates system clock frequency variables with the provided values.</para>
+<para>Sets the SystemCoreClock with initial core Clock retrieved from cpu registers. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="250" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="140" bodyend="150" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="250" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SystemInit</definition>
+        <argsstring>(void)</argsstring>
+        <name>Cy_SystemInit</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Performs custom system initialization. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The function is called during device startup. This is a weak function that by default does nothing. It can be overridden to add custom steps to SystemInit </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="257" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="107" bodyend="111" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="257" declcolumn="13"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="startup__edge_8h" kind="file" language="C++">
+    <compoundname>startup_edge.h</compoundname>
+    <includes local="yes">cy_device_headers.h</includes>
+    <includedby refid="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__start__pse84_8c" local="yes">ns_start_pse84.c</includedby>
+    <includedby refid="COMPONENT__CM55_2COMPONENT__NON__SECURE__DEVICE_2ns__start__pse84_8c" local="yes">ns_start_pse84.c</includedby>
+    <includedby refid="s__start__pse84_8c" local="yes">s_start_pse84.c</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>startup_edge.h</label>
+        <link refid="startup__edge_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>cy_device_headers.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="startup__edge_8h_1ad6a68b419e6d57afcfaaab0fb39fe9db" prot="public" static="no">
+        <name>ARMV8M_FIXED_EXP_NR</name>
+        <initializer>(15u)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" line="32" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="startup__edge_8h_1a643c3ea4654de2811c559fafb4d8a39a" prot="public" static="no">
+        <name>VECTORTABLE_SIZE</name>
+        <initializer>(MXCM55_SYSTEM_INT_NR + ARMV8M_FIXED_EXP_NR + 1u) /* +1 is for Stack pointer */</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" line="34" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="startup__edge_8h_1a8805e6a0cc4344f8b293ed2a82e8dc86" prot="public" static="no">
+        <name>VECTORTABLE_ALIGN</name>
+        <initializer>(1024) /* CM33 alignment for 195 entries (195x4=780) is 1024 bytes */</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" line="39" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="startup__edge_8h_1ad3401b19be37ff20f59b59559d0ab6bb" prot="public" static="no" mutable="no">
+        <type>ExecFuncPtr</type>
+        <definition>ExecFuncPtr __s_vector_table[]</definition>
+        <argsstring>[]</argsstring>
+        <name>__s_vector_table</name>
+        <briefdescription>
+<para>secure vector table in secure SRAM </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" line="93" column="20" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h" declline="93" declcolumn="20"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Common startup header file for PSOC Edge devices. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="version"><para>1.0</para>
+</simplesect>
+<simplesect kind="copyright"><para>Copyright 2016-2025 Cypress Semiconductor Corporation SPDX-License-Identifier: Apache-2.0</para>
+</simplesect>
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <verbatim>http://www.apache.org/licenses/LICENSE-2.0
+</verbatim> Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/***************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>STARTUP_EDGE_H_</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>STARTUP_EDGE_H_</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;cy_device_headers.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined<sp/>(CY_DOXYGEN)<sp/>||<sp/>defined<sp/>(CY_DEVICE_PSE84_A0)<sp/>||<sp/>defined<sp/>(CY_DEVICE_PSE84)<sp/></highlight><highlight class="comment">/*<sp/>Declarations<sp/>for<sp/>PSE84<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ARMV8M_FIXED_EXP_NR<sp/><sp/><sp/><sp/><sp/>(15u)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined<sp/>(COMPONENT_CM55)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>VECTORTABLE_SIZE<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(MXCM55_SYSTEM_INT_NR<sp/>+<sp/>ARMV8M_FIXED_EXP_NR<sp/>+<sp/>1u)<sp/></highlight><highlight class="comment">/*<sp/>+1<sp/>is<sp/>for<sp/>Stack<sp/>pointer<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>VECTORTABLE_SIZE<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(MXCM33_SYSTEM_INT_NR<sp/>+<sp/>ARMV8M_FIXED_EXP_NR<sp/>+<sp/>1u)<sp/></highlight><highlight class="comment">/*<sp/>+1<sp/>is<sp/>for<sp/>Stack<sp/>pointer<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>COMPONENT_CM55<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>VECTORTABLE_ALIGN<sp/><sp/><sp/><sp/><sp/><sp/><sp/>(1024)<sp/></highlight><highlight class="comment">/*<sp/>CM33<sp/>alignment<sp/>for<sp/>195<sp/>entries<sp/>(195x4=780)<sp/>is<sp/>1024<sp/>bytes<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(__llvm__)<sp/>&amp;&amp;<sp/>!defined(__ARMCC_VERSION)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/>__STATIC_FORCEINLINE<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>__llvm_init_data(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">__copy_table<sp/>{</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>src;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t*<sp/>dest;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/>wlen;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>__copy_table_t;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">__zero_table<sp/>{</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t*<sp/>dest;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/>wlen;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>__zero_table_t;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>__copy_table_t<sp/>__copy_table_start__;</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>__copy_table_t<sp/>__copy_table_end__;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>__zero_table_t<sp/>__zero_table_start__;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>__zero_table_t<sp/>__zero_table_end__;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(__copy_table_t<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>pTable<sp/>=<sp/>&amp;__copy_table_start__;<sp/>pTable<sp/>&lt;<sp/>&amp;__copy_table_end__;<sp/>++pTable)<sp/>{</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(uint32_t<sp/>i=0u;<sp/>i&lt;pTable-&gt;wlen;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pTable-&gt;dest[i]<sp/>=<sp/>pTable-&gt;src[i];</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(__zero_table_t<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>pTable<sp/>=<sp/>&amp;__zero_table_start__;<sp/>pTable<sp/>&lt;<sp/>&amp;__zero_table_end__;<sp/>++pTable)<sp/>{</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(uint32_t<sp/>i=0u;<sp/>i&lt;pTable-&gt;wlen;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pTable-&gt;dest[i]<sp/>=<sp/>0u;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/>ExecFuncPtr)(void)<sp/>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>typedef<sp/>for<sp/>the<sp/>function<sp/>pointers<sp/>in<sp/>the<sp/>vector<sp/>table<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/>ExecFuncPtrRw)(void);</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ExecFuncPtrRw<sp/>__s_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(</highlight><highlight class="stringliteral">&quot;.ram_vectors&quot;</highlight><highlight class="normal">)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));<sp/></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/>extern<sp/>ExecFuncPtrRw<sp/>__ns_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(&quot;.ram_vectors&quot;)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));<sp/></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight><highlight class="preprocessor">#elif<sp/>defined(__ARMCC_VERSION)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ExecFuncPtr)(void);<sp/></highlight><highlight class="comment">/*<sp/>typedef<sp/>for<sp/>the<sp/>function<sp/>pointers<sp/>in<sp/>the<sp/>vector<sp/>table<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/>ExecFuncPtrRw)(void);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ExecFuncPtrRw<sp/>__s_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(<sp/></highlight><highlight class="stringliteral">&quot;.bss.noinit.RESET_RAM&quot;</highlight><highlight class="normal">)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));<sp/></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>extern<sp/>ExecFuncPtrRw<sp/>__ns_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(<sp/>&quot;.bss.noinit.RESET_RAM&quot;)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight><highlight class="preprocessor">#elif<sp/>defined<sp/>(__GNUC__)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/>ExecFuncPtr)(void)<sp/>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>typedef<sp/>for<sp/>the<sp/>function<sp/>pointers<sp/>in<sp/>the<sp/>vector<sp/>table<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/>ExecFuncPtrRw)(void);</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ExecFuncPtrRw<sp/>__s_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(</highlight><highlight class="stringliteral">&quot;.ram_vectors&quot;</highlight><highlight class="normal">)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));<sp/></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>extern<sp/>ExecFuncPtrRw<sp/>__ns_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(&quot;.ram_vectors&quot;)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));<sp/></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="preprocessor">#elif<sp/>defined<sp/>(__ICCARM__)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ExecFuncPtr)(void)<sp/>;<sp/></highlight><highlight class="comment">/*<sp/>typedef<sp/>for<sp/>the<sp/>function<sp/>pointers<sp/>in<sp/>the<sp/>vector<sp/>table<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void(*<sp/>ExecFuncPtrRw)(void)<sp/>;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ExecFuncPtrRw<sp/>__s_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(</highlight><highlight class="stringliteral">&quot;.intvec_ram&quot;</highlight><highlight class="normal">)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));<sp/></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/>extern<sp/>ExecFuncPtrRw<sp/>__ns_vector_table_rw[VECTORTABLE_SIZE]<sp/><sp/><sp/>__attribute__(<sp/>(<sp/>section(&quot;.intvec_ram&quot;)))<sp/>__attribute__((aligned(VECTORTABLE_ALIGN)));<sp/></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ExecFuncPtr<sp/>__s_vector_table[]<sp/>;<sp/></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>defined<sp/>(CY_DOXYGEN)<sp/>||<sp/>defined<sp/>(CY_DEVICE_PSE84_A0)<sp/>||<sp/>defined<sp/>(CY_DEVICE_PSE84)<sp/><sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>STARTUP_EDGE_H_<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/startup_edge.h"/>
+  </compounddef>
+</doxygen>

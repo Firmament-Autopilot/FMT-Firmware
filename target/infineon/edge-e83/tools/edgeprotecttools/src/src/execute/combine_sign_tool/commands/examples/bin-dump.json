@@ -1,0 +1,28 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "bin-dump command example",
+            "description": "Creates binary file",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "bin-dump",
+                    "inputs": [
+                        {
+                            "description": "Hex string or random value",
+                            "data": "0011223344556677889900AABBCCDDEEFF",
+                            "random": null
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "Output file",
+                            "file": "output.bin"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

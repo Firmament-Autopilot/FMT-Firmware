@@ -1,0 +1,75 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "shift"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The input hex file to containing the segment to shift",
+                        "type": "string"
+                    },
+                    "address": {
+                        "title": "Address of the segment that has to be shifted",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The output file containing the shifted segment and the other segments from the input file",
+                        "type": "string"
+                    },
+                    "address": {
+                        "title": "The new address of the segment",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    }
+                },
+                "required": [
+                    "file",
+                    "address"
+                ]
+            }
+        }
+    }
+}

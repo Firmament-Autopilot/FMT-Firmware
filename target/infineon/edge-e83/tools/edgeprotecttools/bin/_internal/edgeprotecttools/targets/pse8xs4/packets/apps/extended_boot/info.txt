@@ -1,0 +1,4 @@
+name: Extended boot image
+description: The signed Extended boot CBOR packages with Alternate Serial v1.1.0.1700 and no-Serial v1.0.0.1700 support.
+type: Firmware application
+version: 1.1.0.1700

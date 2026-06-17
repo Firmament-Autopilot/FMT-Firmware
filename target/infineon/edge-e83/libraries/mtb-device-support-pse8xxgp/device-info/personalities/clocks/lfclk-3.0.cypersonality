@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lfclk.cypersonality
+* \version 3.0
+*
+* \brief
+* CLK_LF personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lfclk' name='CLK_LF' version='3.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40srss,mxs40ssrss,mxs40srss_ver3,mxs22srss,mxs40srss_ver2' />
+      <Resource name='srss\.clock\.lfclk' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_supervised_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClock' />
+      <ExposedMember key='csvEnabled' paramId='ClkLfCsv' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__clk__lf.html' linkText='Open Low-Frequency Clock Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamChoice id='sourceClock' name='Source Clock' group='General' default='`${hasBlock("srss[0].clock[0].pilo[0]") ? pilo : hasBlock("srss[0].clock[0].ilo[1]") ? ilo0 : ilo}`' visible='true' desc='The clock source for CLK_LF'>
+      <Entry name='ALTLF' value='altlf' visible='`${hasBlock("srss[0].clock[0].altlf[0]")}`'/>
+      <Entry name='ILO' value='ilo' visible='`${!hasBlock("srss[0].clock[0].ilo[1]")}`'/>
+      <Entry name='ILO0' value='ilo0' visible='`${hasBlock("srss[0].clock[0].ilo[1]")}`'/>
+      <Entry name='ILO1' value='ilo1' visible='`${hasBlock("srss[0].clock[0].ilo[1]")}`'/>
+      <Entry name='PILO' value='pilo' visible='`${hasBlock("srss[0].clock[0].pilo[0]")}`'/>
+      <Entry name='WCO' value='wco' visible='`${hasBlock("srss[0].clock[0].wco[0]")}`'/>
+      <Entry name='ECO_PRESCALER' value='ecoprescaler' visible='`${hasBlock("srss[0].clock[0].ecoprescaler[0]")}`'/>
+      <Entry name='LPECO_PRESCALER' value='lpecoprescaler' visible='`${hasBlock("srss[0].clock[0].lpecoprescaler[0]")}`'/>
+    </ParamChoice>
+    <ParamString id='sourceClockRsc' default='`${sourceClock eq ilo1 ? "srss[0].clock[0].ilo[1]" : (sourceClock eq ilo0 ? "srss[0].clock[0].ilo[0]" : "srss[0].clock[0]." . sourceClock . "[0]")}`' />
+    <ParamString id='sourceClockApiName' default='`${sourceClock eq ilo   ? "ILO" :
+                                                     sourceClock eq wco   ? "WCO" :
+                                                     sourceClock eq ilo0  ? "ILO" :
+                                                     sourceClock eq ilo1  ? "ILO1" :
+                                                     sourceClock eq ecoprescaler   ? "ECO_PRESCALER" :
+                                                     sourceClock eq altlf ? "ALTLF" : "PILO"}`' />
+    <ParamString id='frequency' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The CLK_LF frequency provided by the chosen clock source' />
+
+    <ParamBool id='ClkLfCsv' name='CSV' group='CSV' default='false' visible='`${("mxs40ssrss" eq getIpBlockName() || "mxs22srss" eq getIpBlockName()) &amp;&amp; (CSV_PRESENT == 1)}`' desc='Enables/Disables CSV configuration.' />
+    <ParamRange id='accuracyCsv' name='Accuracy' group='CSV' default='99' min='1' max='100' resolution='1' visible='`${ClkLfCsv}`' desc='Accuracy of the source clock.' />
+    <ParamChoice id='sourceClockCsv' name='Reference Clock' group='CSV' default='IMO' visible='`${ClkLfCsv}`' desc='The reference clock source selection'>
+      <Entry name='IMO' value='IMO' />
+      <Entry name='EXT' value='EXT' />
+      <Entry name='ECO' value='ECO' visible='`${hasBlock("srss[0].clock[0].eco[0]")}`'/>
+      <Entry name='IHO' value='IHO' />
+     </ParamChoice>
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for CLK_LF is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKLF_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKLF_FREQ_HZ' value='`${frequency}`' public='true' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKLF_SOURCE' value='CY_SYSCLK_CLKLF_IN_`${sourceClockApiName}`' public='true' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKLF_CSV_ACCURACY' public='true' value='`${accuracyCsv}`UL' include='`${ClkLfCsv}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKLF_CSV_ENABLED' public='false' value='`${ClkLfCsv}`' include='`${ClkLfCsv}`' />
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_ClkLfInit(void)' public='false'>
+      <Line value='/* The WDT is unlocked in the default startup code */' />
+      <Line value='Cy_SysClk_ClkLfSetSource(CY_SYSCLK_CLKLF_IN_`${sourceClockApiName}`);' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_ClkLfCsvInit(void)' public='false' include='`${ClkLfCsv}`'>
+      <Line value='Cy_SysClk_ClkLfCsvConfigure(CY_SYSCLK_CLKLF_CSV_REF_`${sourceClockCsv}`, CY_CFG_SYSCLK_CLKLF_CSV_ACCURACY);' />
+      <Line value='Cy_SysClk_ClkLfCsvEnable();' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>
