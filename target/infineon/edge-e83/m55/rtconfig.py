@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'E83-m55'
+BOARD = 'e83-m55'
 
 # toolchains options
 ARCH='arm'
@@ -51,7 +51,7 @@ if PLATFORM == 'gcc':
     DEVICE = ' -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 --specs=nano.specs -mfloat-abi=hard -ffunction-sections -fdata-sections -nostartfiles -nostartfiles'
     CFLAGS = DEVICE + ' -g -Wall -pipe -Wno-address-of-packed-member -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
-    LFLAGS = DEVICE + ' -flto -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,Reset_Handler -T board/linker_scripts/link.ld'
+    LFLAGS = DEVICE + ' -flto -Wl,--gc-sections,-Map=build/fmt_' + BOARD + '.map,-cref,-u,Reset_Handler -T board/linker_scripts/link.ld'
 
     CPATH = ''
     LPATH = ''
@@ -64,7 +64,7 @@ if PLATFORM == 'gcc':
 
     CXXFLAGS = CFLAGS 
 
-    POST_ACTION = OBJCPY + ' -O ihex $TARGET rtthread.hex\n' + SIZE + ' $TARGET \n'
+    POST_ACTION = OBJCPY + ' -O ihex $TARGET build/fmt_' + BOARD + '.hex\n' + SIZE + ' $TARGET \n'
 
 elif PLATFORM == 'armclang':
     # toolchains
