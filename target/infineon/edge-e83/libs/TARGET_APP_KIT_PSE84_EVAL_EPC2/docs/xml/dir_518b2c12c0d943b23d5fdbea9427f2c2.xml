@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="dir_518b2c12c0d943b23d5fdbea9427f2c2" kind="dir">
+    <compoundname>bsps</compoundname>
+    <innerdir refid="dir_d62c600266a66eb2d33a6815665d6a1e">TARGET_KIT_PSE84_EVAL_EPC2</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="output/bsps/"/>
+  </compounddef>
+</doxygen>

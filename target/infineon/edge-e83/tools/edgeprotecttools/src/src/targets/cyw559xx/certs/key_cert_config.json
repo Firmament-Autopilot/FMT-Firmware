@@ -1,0 +1,22 @@
+{
+  "certificate": {
+    "type": "KEY_CERT",
+    "version": 1.0
+  },
+  "cert_keypair": {
+    "description": "Path to the private key used to sign the certificate. The RSA key of the 3072-bit size",
+    "value": ""
+  },
+  "cert_keypair_pwd": {
+    "description": "Certificate private key password (if applicable)",
+    "value": ""
+  },
+  "nv_counter": {
+    "description": "Non-Volatile counter corresponding to the software version in the certificate",
+    "value": 0
+  },
+  "next_cert_pubkey": {
+    "description": "Path to the public key of the next certificate in the chain. The RSA key of the 3072-bit size",
+    "value": ""
+  }
+}

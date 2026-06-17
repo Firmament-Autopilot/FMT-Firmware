@@ -1,0 +1,76 @@
+{
+  "policy": {
+    "platform": "psoc_c3",
+    "version": 1.0,
+    "type": "prot_fw_policy"
+  },
+  "encrypt": {
+    "enable": false,
+    "iv": ""
+  },
+  "prot_fw_nv_counter": {
+    "description": "Protected FW NV counter",
+    "value": 0
+  },
+  "prot_fw_enable": {
+    "description": "Indicates whether BootFW launches Protected FW and configures it by PROT_FW policy",
+    "value": true
+  },
+  "prot_fw_auth_method": {
+    "description": "An authentication method. Use SHA-256 comparison against Protected FW hash or a signature authentication of Protected FW app image",
+    "applicable_conf": "SHA256, SIGNATURE",
+    "value": "SHA256"
+  },
+  "prot_fw_auth_next_app": {
+    "description": "Indicates whether to authenticate the next application after the Protected FW application",
+    "value": true
+  },
+  "prot_fw_rot_public_key_0": {
+    "description": "Path to the OEM RoT public key 0 used to authenticate this application",
+    "value": "../keys/prot_fw_rot_pub_key_0.pem"
+  },
+  "prot_fw_rot_public_key_1": {
+    "description": "Path to the OEM RoT public key 1 used to authenticate this application",
+    "value": "../keys/prot_fw_rot_pub_key_1.pem"
+  },
+  "prot_fw_key": {
+    "description": "An encryption key used by Protected FW (128-bit)",
+    "value": "../keys/prot_fw_key.bin"
+  },
+  "prot_fw_addr": {
+    "description": "A flash area containing Protected FW code and read-only data",
+    "value": "0x32000000"
+  },
+  "prot_fw_size": {
+    "description": "Protected FW size",
+    "value": "0x00006000"
+  },
+  "prot_fw_rw_addr": {
+    "description": "A flash area containing the EmEEPROM used by Protected FW",
+    "value": "0x32006000"
+  },
+  "prot_fw_rw_size": {
+    "description": "Size of the read and write region",
+    "value": "0x00006000"
+  },
+  "prot_fw_ram_addr": {
+    "description": "RAM address reserved for Protected FW",
+    "value": "0x34000000"
+  },
+  "prot_fw_ram_size": {
+    "description": "RAM size reserved for Protected FW",
+    "value": "0x0000F000"
+  },
+  "prot_fw_pc_ctl_valid": {
+    "description": "Specifies whether PC1 can only be entered via PC1 interrupt handler (true) or Protected FW may be called without CM33_PC1_HANDLER interrupt vector (false)",
+    "value": false
+  },
+  "prot_fw_pc1_handler": {
+    "description": "PC1_HANDLER address to switch to PC1",
+    "value": "0xFFFFFFFF"
+  },
+  "prot_fw_complete": {
+    "description": "Specifies that the assets are finalized in SFLASH and no further update is allowed",
+    "value": false
+  }
+}

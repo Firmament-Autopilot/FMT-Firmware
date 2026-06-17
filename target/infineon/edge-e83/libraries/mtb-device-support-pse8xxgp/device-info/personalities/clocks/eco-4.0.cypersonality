@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file eco.cypersonality
+* \version 4.0
+*
+* \brief
+* ECO personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='eco' name='ECO' version='4.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <RequiresConnectivity>
+        <SignalGroup type='ANY'>
+          <Signal port='eco_in[0]'/>
+          <Signal port='eco_out[0]'/>
+        </SignalGroup>
+      </RequiresConnectivity>
+      <IpBlock name='mxs22srss' />
+      <Resource name='srss\.clock\.eco' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_pin_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracyPct' />
+      <ExposedMember key='suppressCodeGen' paramId='suppressCodeGen' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__eco.html' linkText='Open ECO Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamRange id='ecoFrequency' name='Frequency (MHz)' group='General' default='17.2032' visible='true' editable='true' min='4' max='38' resolution='0.0001' desc='' />
+    <ParamRange id='frequency' name='Frequency (Hz)' group='Internal' default='`${ecoFrequency * 1000000}`' visible='false' editable='false' min='4000000' max='38000000' resolution='1' desc='' />
+    <ParamRange id='esr' name='ESR (ohms)' group='General' default='100' min='0' max='65535' resolution='1' visible='true' editable='true' desc='Crystal equivalent series resistance. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+        Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamRange id='cshunt' name='Cshunt (pF)' group='General' default='2' min='0' max='65535' resolution='1' visible='true' editable='true' desc='Crystal shunt cap. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+        Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamRange id='ctrace' name='Ctrace (pF)' group='General' default='2' min='0' max='65535' resolution='1' visible='true' editable='true' desc='External trace cap at crystal terminals wrt gnd. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+        Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamRange id='cmotional' name='Cmotional (fF)' group='General' default='9' min='0' max='65535' resolution='1' visible='true' editable='true' desc='Crystal motional (series) cap. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+        Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamRange id='dls' name='Drive Level spec (uW)' group='General' default='100' min='0' max='65535' resolution='1' visible='true' editable='true' desc='Crystal drive level max limit. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+        Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamChoice id='ec' name='External Cap' group='General' default='0' visible='true' editable='true' desc='Select Yes for ceramic resonator, No for crystal.'>
+  <Entry name='Crystal' value='0' visible='true'/>
+  <Entry name='Ceramic Resonator' value='1' visible='true'/>
+</ParamChoice>
+    <ParamRange id='cload' name='Cload (pF)' group='General' default='10' min='0' max='65535' resolution='1' visible='`${ec eq 0}`' editable='true' desc='Only for crystal. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamRange id='c1' name='C1 (pF)' group='General' default='20' min='0' max='65535' resolution='1' visible='`${ec eq 1}`' editable='true' desc='Only  for ceramic resonator. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamRange id='c2' name='C2 (pF)' group='General' default='20' min='0' max='65535' resolution='1' visible='`${ec eq 1}`' editable='true' desc='Only  for ceramic resonator. All input parameters are interdependent, so it is not possible to define a valid range for each parameter individually.
+Only after providing values for all parameters, the configurability can be determined.' />
+    <ParamString id='path' name='path' group='General' default='`${cy_libs_path()}`/device-info/personalities/clocks/'  visible='false' editable='false' desc='Script path' />
+
+       <!-- Hidden parameter to call eco_solver TCL script with all required arguments -->
+    <ParamString id='ecoSolverResult' name='ECO Solver Result' group='Internal'
+      default='`${runTcl("eco_solver-1.0.tcl", ecoFrequency, esr, cshunt, ctrace, cmotional, dls, ec, cload, c1, c2, path)}`'
+      visible='false' editable='false'
+      desc='Result from eco_solver TCL script' />
+
+    <!-- Use the ctrim value returned by the TCL script -->
+    <ParamRange id='ctrim' name='Ctrim output value' group='General'
+      default='`${getTclVar("ctrim", ecoSolverResult)}`'
+      min='0' max='31' resolution='1'
+      visible='true' editable='false'
+      desc='Ctrim value for ECO, calculated by script' />
+
+    <!-- Use the gtrim value returned by the TCL script -->
+    <ParamRange id='gtrim' name='Gtrim output value' group='General'
+      default='`${getTclVar("gtrim", ecoSolverResult)}`'
+      min='0' max='31' resolution='1'
+      visible='true' editable='false'
+      desc='Gtrim value for ECO, calculated by script' />
+
+    <!-- Use the iboost value returned by the TCL script -->
+    <ParamRange id='iboost' name='Iboost output value' group='General'
+      default='`${getTclVar("iboost", ecoSolverResult)}`'
+      min='0' max='1' resolution='1'
+      visible='true' editable='false'
+      desc='Iboost value for ECO, calculated by script' />
+
+    <ParamRange id='accuracyPpm' name='Accuracy (±ppm)' group='General' default='0' min='0' max='1000000' resolution='1' visible='true' desc='Clock accuracy in ppm' />
+    <ParamString id='accuracyPct' name='Accuracy (±%)' group='General' default='`${accuracyPpm/10000.0}`' visible='true' editable='false' desc='Clock accuracy in %' />
+
+    <!-- Restrict ECO connections to pins -->
+    <ParamSignal port='eco_in[0]' name='Input' group='Connections' visible='true' desc='The input/passive terminal of the internal ECO circuitry' canBeEmpty='false' requirePreferred='true'>
+      <Constraint type='REQUIRE' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='eco_out[0]' name='Output' group='Connections' visible='true' desc='The output/active terminal of the internal ECO circuitry' canBeEmpty='false' requirePreferred='true'>
+      <Constraint type='REQUIRE' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' />
+    </ParamSignal>
+
+    <ParamBool id='suppressCodeGen' default='true' />
+  </Parameters>
+
+  <Variables>
+    <Variable id='gpio_in_port' value='`${getInstFromLocation(getParamValue("eco_in[0]"), "port")}`' />
+    <Variable id='gpio_in_pin' value='`${getInstFromLocation(getParamValue("eco_in[0]"), "pin")}`' />
+    <Variable id='gpio_out_port' value='`${getInstFromLocation(getParamValue("eco_out[0]"), "port")}`' />
+    <Variable id='gpio_out_pin' value='`${getInstFromLocation(getParamValue("eco_out[0]"), "pin")}`' />
+  </Variables>
+
+  <DRCs>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_gpio.h' />
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_FREQ' value='`${frequency}`UL' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_GPIO_IN_PRT' value='GPIO_PRT`${gpio_in_port}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_GPIO_IN_PIN' value='`${gpio_in_pin}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_GPIO_OUT_PRT' value='GPIO_PRT`${gpio_out_port}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_GPIO_OUT_PIN' value='`${gpio_out_pin}`' public='false' />
+    <ConfigStruct name='`${INST_NAME . "_config"}`' type='cy_stc_clk_eco_config_t' const='true' public='false'>
+      <Member name='ecoClkfreq' value='`${frequency}`U' />
+      <Member name='ecoCtrim' value='`${ctrim}`U' />
+      <Member name='ecoGtrim' value='`${gtrim}`U' />
+      <Member name='ecoIboost' value='`${iboost}`U' />
+    </ConfigStruct>
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_EcoInit(void)' public='false'>
+      <Line value='(void)Cy_GPIO_Pin_FastInit(GPIO_PRT`${gpio_in_port}`, `${gpio_in_pin}`, CY_GPIO_DM_ANALOG, 0UL, HSIOM_SEL_GPIO);' />
+      <Line value='(void)Cy_GPIO_Pin_FastInit(GPIO_PRT`${gpio_out_port}`, `${gpio_out_pin}`, CY_GPIO_DM_ANALOG, 0UL, HSIOM_SEL_GPIO);' />
+      <Line value='if (CY_SYSCLK_BAD_PARAM == Cy_SysClk_EcoManualConfigure(&amp;`${INST_NAME}`_config))' />
+      <Line value='{' />
+      <Line value='    cycfg_ClockStartupError(CY_CFG_SYSCLK_ECO_ERROR);' />
+      <Line value='}' />
+      <Line value='if (CY_SYSCLK_TIMEOUT == Cy_SysClk_EcoEnable(3000UL))' />
+      <Line value='{' />
+      <Line value='    cycfg_ClockStartupError(CY_CFG_SYSCLK_ECO_ERROR);' />
+      <Line value='}' />
+      <Line value='Cy_SysClk_EcoSetFrequency(CY_CFG_SYSCLK_ECO_FREQ);' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

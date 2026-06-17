@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!--****************************************************************************
+* \file eth-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* Ethernet personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2024), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id="eth" name="Ethernet" version="1.0" xmlns="http://cypress.com/xsd/cyhwpersonality_v5">
+  <Dependencies>
+    <IpBlock name="mxeth,mxeth_ver2" />
+    <Resource name="eth" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id="mac_api_doc" name="MAC API Help" group="Documentation" default="file:///`${cy_libs_path()}`/docs/html/group__group__ethif.html" linkText="Open ETH_MAC Driver Documentation" visible="true" desc="Opens the Peripheral Library Documentation." />
+    <ParamDoc id="phy_api_doc" name="PHY API Help" group="Documentation" default="file:///`${cy_libs_path()}`/docs/html/group__group__ephy.html" linkText="Open ETH_PHY Driver Documentation" visible="true" desc="Opens the Peripheral Library Documentation." />
+
+    <!-- eth instance name -->
+    <ParamString id="Instancename" name="selected Instance name" group="Test" default="`${INST_NAME}`" visible="false" editable="false" desc="" />
+
+    <!-- eth instance number -->
+    <ParamString id="InstNumber" name="InstNumber" group="Test" default="`${getInstNumber(&quot;eth&quot;)}`" visible="false" editable="false" desc="" />
+
+    <!-- eth version number -->
+    <ParamString id="version" name="version number" group="Internal" default="`${getVersion()}`" visible="false" editable="false" desc="" />
+
+    <!-- Network Interface Settings -->
+    <ParamChoice id="PHYInterconnect" name="PHY Interconnect" group="Network Interface Settings" default="`${(InstNumber) ? 3u : 0u}`" visible="true" editable="true" desc="Select the interconnect mode needed for communication. MII:0 RMII:1 GMII:2 RGMII:3 ">
+      <Entry name="MII" value="0u" visible="`${!InstNumber}`" />
+      <Entry name="RMII" value="1u" visible="`${!InstNumber}`" />
+      <Entry name="GMII" value="2u" visible="false" />
+      <Entry name="RGMII" value="3u" visible="`${InstNumber}`" />
+    </ParamChoice>
+    <ParamChoice id="eth_phy_device" name="PHY Device" group="Network Interface Settings" default="ETH_PHY_DP83867IR" visible="true" editable="true" desc="Physical layer device (PHY) selection. To use any other PHY device, select the &quot;User Defined&quot; option.">
+      <Entry name="DP83867IR" value="ETH_PHY_DP83867IR" visible="true" />
+      <Entry name="LAN8710AI" value="ETH_PHY_LAN8710AI" visible="true" />
+      <Entry name="DP83825I" value="ETH_PHY_DP83825I" visible="true" />
+      <Entry name="User Defined" value="ETH_PHY_USER_DEFINED" visible="true" />
+    </ParamChoice>
+    <ParamRange id="eth_phy_address" name="PHY Address" group="Network Interface Settings" default="0" min="0" max="31" resolution="1" visible="true" editable="true" desc="Physical layer device ID. This ID is specified by the manufacturer." />
+    <ParamBool id="Autonegotiate" name="Enable Autonegotiation" group="Network Interface Settings" default="true" visible="true" editable="true" desc="Enable Autonegotiation" />
+    <ParamChoice id="PHYspeed" name="PHY Speed" group="Network Interface Settings" default="`${(PHYInterconnect == 3u) ? 2u : 1u}`u" visible="`${(!Autonegotiate)}`" editable="true" desc="Select the interconnect mode needed for communication. 0:10 Mbit/sec 1: 100Mbit/sec 2: 1000Mbit/sec">
+      <Entry name="10 Mbit/sec" value="0u" visible="true" />
+      <Entry name="100 Mbit/sec" value="1u" visible="true" />
+      <Entry name="1000 Mbit/sec" value="2u" visible="`${PHYInterconnect == 3u}`" />
+    </ParamChoice>
+    <ParamChoice id="PHYduplexmode" name="PHY Duplex Mode" group="Network Interface Settings" default="1u" visible="`${(!Autonegotiate)}`" editable="true" desc="Select the interconnect mode needed for communication. 0: Half Duplex 1:Full Duplex 2: Auto">
+      <Entry name="Half Duplex" value="0u" visible="false" />
+      <Entry name="Full Duplex" value="1u" visible="true" />
+    </ParamChoice>
+    <ParamString id="eth_mac_address" name="Mac Address" group="Network Interface Settings" default="00:03:19:45:00:00" visible="true" editable="true" desc="The MAC address for the device. The values are in the hexadecimal format. Configures a hardware address of the ETH peripheral. The values require the hexadecimal format MM:MM:MM:SS:SS:SS." />
+    <ParamBool id="Promiscuousmode" name="Enable Promiscuous mode" group="Network Interface Settings" default="false" visible="true" editable="true" desc="Enable/Disable promiscuous mode" />
+    <ParamBool id="Acceptbroadcastframe" name="Accept Broadcast Frames" group="Network Interface Settings" default="true" visible="true" editable="true" desc="Enable accepting all braodcast frames" />
+    <ParamChoice id="MACclk" name="MAC Reference Clock" group="Network Interface Settings" default="0u" visible="true" editable="true" desc="Select the reference clock for MAC. 0:External clk 1:Internal clk.">
+      <Entry name="External Clk" value="0u" visible="true" />
+      <Entry name="Internal Clk" value="1u" visible="true" />
+    </ParamChoice>
+    <ParamRange id="NVICintrnum" name="NVIC Mux Interrupt Number" group="Network Interface Settings" default="3" min="0" max="7" resolution="1" visible="`${(version &lt;= 2)}`" editable="true" desc="Select the Mux interrpt number ranging from 0-7." />
+    <ParamRange id="num_recv_buffers" name="Number of receive buffers:" group="Network Interface Settings" default="20" min="20" max="40" resolution="1" visible="false" editable="true" desc="Physical layer device ID. This ID is specified by the manufacturer." />
+    <ParamRange id="num_trans_buffers" name="Number of transmit buffers:" group="Network Interface Settings" default="4" min="1" max="4" resolution="1" visible="false" editable="true" desc="Physical layer device ID. This ID is specified by the manufacturer." />
+
+    <!-- General settings -->
+    <ParamBool id="netifBool" name="Enable netif hostname" group="General Settings" default="false" visible="true" editable="true" desc="Enable setting the name for the network interface." />
+    <ParamString id="netif_host_name" name="Enable netif hostname" group="General Settings" default="lwip" visible="`${netifBool}`" editable="`${netifBool}`" desc="The name of the netif interface." />
+    <ParamRange id="tcp_task_priority" name="TCPIP task priority:" group="General Settings" default="4" min="0" max="7" resolution="1" visible="true" editable="true" desc="Select the task priority." />
+    <ParamRange id="tcp_task_stack_size" name="TCPIP task stack size:" group="General Settings" default="4096" min="0" max="1048576" resolution="1" visible="true" editable="true" desc="TCPIP stack size range." />
+
+    <!-- IP settings -->
+    <ParamBool id="DHCPBool" name="Use DHCP" group="IP Settings" default="true" visible="true" editable="true" desc="Enable DHCP IP assignment settings." />
+    <ParamString id="eth_ip_address" name="IP address:" group="IP Settings" default="192.168.00.100" visible="`${!DHCPBool}`" editable="`${!DHCPBool}`" desc="The static IP address for the device." />
+    <ParamString id="eth_subnet_mask" name="Subnet mask:" group="IP Settings" default="255.255.255.00" visible="`${!DHCPBool}`" editable="`${!DHCPBool}`" desc="The subnet mask of the IP address." />
+    <ParamString id="eth_gateway_address" name="gateway address:" group="IP Settings" default="192.168.00.100" visible="`${!DHCPBool}`" editable="`${!DHCPBool}`" desc="Gateway address." />
+    <ParamBool id="enable_ip_option" name="Enable IP option" group="IP Settings" default="true" visible="true" editable="true" desc="Enable IP option." />
+    <ParamBool id="enable_ipv6" name="Enable IPv6" group="IP Settings" default="true" visible="true" editable="true" desc="Enable IPv6 support." />
+    <ParamBool id="enable_ip_fragment" name="Enable IP fragmentator" group="IP Settings" default="false" visible="true" editable="true" desc="Enable DHCP IP fragmentator." />
+    <ParamBool id="enable_ip_reassembly" name="Enable IP reassembly" group="IP Settings" default="false" visible="true" editable="true" desc="Enable DHCP IP reassembly." />
+    <ParamRange id="mtu" name="Max. Transmission unit(MTU):" group="IP Settings" default="1500" min="0" max="2048" resolution="1" visible="true" editable="true" desc="Select the MTU range." />
+    <ParamRange id="ttl" name="Default time to live(TTL):" group="IP Settings" default="255" min="1" max="255" resolution="1" visible="true" editable="true" desc="Select the ttl." />
+
+    <!-- Protocol Settings -->
+    <ParamRange id="arp_tab_size" name="ARP table size:" group="Protocol Settings" default="10" min="1" max="300" resolution="1" visible="true" editable="true" desc="ARP table size." />
+    <ParamBool id="autoip" name="Enable AUTOIP" group="Protocol Settings" default="false" visible="true" editable="true" desc="Enable Auto IP" />
+    <ParamBool id="icmp" name="Enable ICMP" group="Protocol Settings" default="true" visible="true" editable="true" desc="Enable ICMP" />
+    <ParamBool id="igmp" name="Enable IGMP" group="Protocol Settings" default="true" visible="true" editable="true" desc="Enable IGMP" />
+    <ParamBool id="dnsBool" name="Enable DNS" group="Protocol Settings" default="false" visible="true" editable="true" desc="Enable DNS" />
+    <ParamString id="dns_server_address" name="DNS server:" group="Protocol Settings" default="208.67.222.222" visible="`${dnsBool}`" editable="`${dnsBool}`" desc="The static IP address for the device." />
+    <ParamBool id="tcpBool" name="Enable TCP" group="Protocol Settings" default="true" visible="true" editable="true" desc="Enable TCP" />
+    <ParamRange id="mss" name="Maximum segment size (TCP_MSS):" group="Protocol Settings" default="1460" min="100" max="3000" resolution="1" visible="true" editable="true" desc="Set the specific value for TCP MSS." />
+    <ParamRange id="windowsize" name="Window Size (TCP_WND):" group="Protocol Settings" default="5840" min="100" max="9000" resolution="1" visible="true" editable="true" desc="Set the specific value for TCP WND. The size of a TCP window. This must be at least (2 * TCP_MSS) for things to work." />
+    <ParamRange id="tcp_snd_buf" name="TCP sender buffer space bytes(TCP_SND_BUF):" group="Protocol Settings" default="5840" min="1000" max="9000" resolution="1" visible="`${tcpBool}`" editable="`${tcpBool}`" desc="TCP sender buffer space bytes. To achieve good performance, this should be at least 2 * TCP_MSS." />
+    <ParamRange id="tcp_snd_pbuf" name="TCP sender buffer space pbufs(TCP_SND_QUEUELEN):" group="Protocol Settings" default="25" min="1" max="300" resolution="1" visible="`${tcpBool}`" editable="`${tcpBool}`" desc="TCP sender buffer space pbufs(TCP_SND_QUEUELEN). This must be at least as much as (2 * TCP_SND_BUF/TCP_MSS) for things to work." />
+    <ParamBool id="udp" name="Enable UDP" group="Protocol Settings" default="true" visible="true" editable="true" desc="Enable UDP" />
+
+    <!-- Memory Settings -->
+    <ParamRange id="mem_size" name="HEAP size(MEM_SIZE):" group="Memory Settings" default="1600" min="1" max="32000" resolution="1" visible="true" editable="true" desc="If the application will send a lot of data that needs to be copied, this should be set high." />
+    <ParamRange id="pbuf_pool_size" name="Packet buffer pool size(PBUF_POOL_SIZE):" group="Memory Settings" default="50" min="1" max="60" resolution="1" visible="true" editable="true" desc="Maximum number of received frames waiting to be processed." />
+    <ParamRange id="memp_num_pbuf" name="Number of memp struct pbufs(MEMP_NUM_PBUF):" group="Memory Settings" default="16" min="1" max="2500" resolution="1" visible="true" editable="true" desc="The number of memp struct pbufs (used for PBUF_ROM and PBUF_REF). If the application sends a lot of data out of ROM (or other static memory), this should be set high." />
+    <ParamRange id="memp_num_raw_pcb" name="Number of raw connection pcbs(MEMP_NUM_RAW_PCB):" group="Memory Settings" default="4" min="1" max="16000" resolution="1" visible="true" editable="true" desc="Number of raw connection PCBs. Requires the LWIP_RAW option." />
+    <ParamRange id="memp_num_udp_pcb" name="Simultaneously active UDP connections(MEMP_NUM_UDP_PCB):" group="Memory Settings" default="8" min="0" max="16000" resolution="1" visible="`${udp}`" editable="true" desc="The number of UDP protocol control blocks. One per active UDP connection. Requires the LWIP_UDP option." />
+    <ParamRange id="memp_num_tcp_pcb" name="Simultaneously active TCP connections(MEMP_NUM_TCP_PCB):" group="Memory Settings" default="8" min="0" max="16000" resolution="1" visible="`${tcpBool}`" editable="true" desc="The number of simultaneously active TCP connections. Requires the LWIP_TCP option." />
+    <ParamRange id="memp_num_tcp_pcb_listen" name="Listening TCP connections(MEMP_NUM_TCP_PCB_LISTEN):" group="Memory Settings" default="1" min="0" max="5" resolution="1" visible="`${tcpBool}`" editable="true" desc="The number of listening TCP connections. Requires the LWIP_TCP option." />
+    <ParamRange id="memp_num_tcp_seg" name="Simultaneously queued TCP segments(MEMP_NUM_TCP_SEG):" group="Memory Settings" default="27" min="0" max="16000" resolution="1" visible="`${tcpBool}`" editable="true" desc="The number of simultaneously queued TCP segments. Requires the LWIP_TCP option." />
+    <ParamRange id="memp_num_resass_data" name="Simultaneously IP packets queued for reassembly(MEMP_NUM_REASSDATA):" group="Memory Settings" default="5" min="0" max="3000" resolution="1" visible="`${enable_ip_reassembly}`" editable="true" desc="The number of IP packets simultaneously queued for reassembly." />
+    <ParamRange id="memp_num_arp_queue" name="Simultaneously queued pbufs waiting for ARP response(MEMP_NUM_ARP_QUEUE):" group="Memory Settings" default="30" min="0" max="16000" resolution="1" visible="true" editable="true" desc="The number of simultaneously queued outgoing packets (pbufs) that are waiting for an ARP request (to resolve their destination address) to finish." />
+    <ParamRange id="memp_num_netbuf" name="Number of struct netbufs(MEMP_NUM_NETBUF):" group="Memory Settings" default="8" min="0" max="16000" resolution="1" visible="true" editable="true" desc="The number of struct netbufs. (only needed if you use the sequential API, like api_lib.c)." />
+    <ParamRange id="memp_num_netconn" name="Number of struct netconns(MEMP_NUM_NETCONN):" group="Memory Settings" default="16" min="0" max="16000" resolution="1" visible="true" editable="true" desc="The number of struct netconns. (only needed if you use the sequential API, like api_lib.c)." />
+    <ParamRange id="memp_num_tcpip_msg_api" name="Number of struct tcpip_msg for callback/timeout(MEMP_NUM_TCPIP_MSG_API):" group="Memory Settings" default="8" min="0" max="16000" resolution="1" visible="true" editable="true" desc="Number of concurrent executable functions need to be posted on mailbox of TCP/IP thread." />
+    <ParamRange id="memp_num_tcpip_msg_inpkt" name="Number of struct tcpip_msg for incoming packets(MEMP_NUM_TCPIP_MSG_INPKT):" group="Memory Settings" default="8" min="0" max="16000" resolution="1" visible="true" editable="true" desc="Number of concurrent data packets need to be posted on mailbox of TCP/IP thread." />
+
+    <!-- Internal -->
+    <ParamString id="call_mac_parser" name="MAC Parser" group="Internal" default="`${runTcl(&quot;eth_mac_parser-1.0.tcl&quot;, eth_mac_address)}`" visible="false" editable="false" desc="" />
+    <ParamString id="call_ip_parser" name="IP Addr Parser" group="Internal" default="`${runTcl(&quot;eth_ip_parser-1.0.tcl&quot;, eth_ip_address)}`" visible="false" editable="false" desc="" />
+    <ParamString id="call_subnet_mask_parser" name="Subnet mask Parser" group="Internal" default="`${runTcl(&quot;eth_ip_parser-1.0.tcl&quot;, eth_subnet_mask)}`" visible="false" editable="false" desc="" />
+    <ParamString id="call_gateway_ip_parser" name="Gateway Addr Parser" group="Internal" default="`${runTcl(&quot;eth_ip_parser-1.0.tcl&quot;, eth_gateway_address)}`" visible="false" editable="false" desc="" />
+
+    <!-- Connections -->
+    <ParamSignal port="clk_tsu[0]" name="clk_tsu" group="Connections" visible="`${hasVisibleOption(&quot;clk_tsu[0]&quot;)}`" desc="" canBeEmpty="false" />
+    <ParamSignal port="ref_clk_int[0]" name="ref_clk_int" group="Connections" visible="`${hasVisibleOption(&quot;ref_clk_int[0]&quot;)}`" desc="" canBeEmpty="false" />
+    <ParamSignal port="ref_clk[0]" name="ref_clk" group="Connections" visible="`${hasVisibleOption(&quot;ref_clk[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <ParamSignal port="eth_tsu_timer_cmp_val[0]" name="eth_tsu_timer_cmp_val" group="Connections" visible="`${hasVisibleOption(&quot;eth_tsu_timer_cmp_val[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <ParamSignal port="mdc[0]" name="mdc" group="Connections" visible="`${hasVisibleOption(&quot;mdc[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <ParamSignal port="mdio[0]" name="mdio" group="Connections" visible="`${hasVisibleOption(&quot;mdio[0]&quot;)}`" desc="" canBeEmpty="true" />
+
+    <ParamSignal port="tx_clk[0]" name="tx_clk" group="Connections" visible="`${hasVisibleOption(&quot;tx_clk[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <ParamSignal port="tx_ctl[0]" name="tx_ctl" group="Connections" visible="`${hasVisibleOption(&quot;tx_ctl[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <ParamSignal port="tx_er[0]" name="tx_er" group="Connections" visible="`${hasVisibleOption(&quot;tx_er[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <Repeat count="8">
+      <ParamSignal port="txd[$idx]" name="txd[$idx]" group="Connections" visible="`${(hasVisibleOption(&quot;txd[$idx]&quot;)) &amp;&amp; (((PHYInterconnect eq 1u) &amp;&amp; ($idx &gt; 1)) ? false : ((((PHYInterconnect eq 0u) || (PHYInterconnect eq 3u)) &amp;&amp; ($idx &gt; 3)) ? false : true))}`" desc="" canBeEmpty="true" />
+    </Repeat>
+
+    <ParamSignal port="rx_clk[0]" name="rx_clk" group="Connections" visible="`${hasVisibleOption(&quot;rx_clk[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <ParamSignal port="rx_ctl[0]" name="rx_ctl" group="Connections" visible="`${hasVisibleOption(&quot;rx_ctl[0]&quot;)}`" desc="" canBeEmpty="true" />
+    <ParamSignal port="rx_er[0]" name="rx_er" group="Connections" visible="`${hasVisibleOption(&quot;rx_er[0]&quot;)}`" desc="" canBeEmpty="true"  />
+    <Repeat count="8">
+    <ParamSignal port="rxd[$idx]" name="rxd[$idx]" group="Connections" visible="`${(hasVisibleOption(&quot;rxd[$idx]&quot;)) &amp;&amp; (((PHYInterconnect eq 1u) &amp;&amp; ($idx &gt; 1)) ? false : ((((PHYInterconnect eq 0u) || (PHYInterconnect eq 3u)) &amp;&amp; ($idx &gt; 3)) ? false : true))}`" desc="" canBeEmpty="true" />
+    </Repeat>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type="ERROR" text="Unable to parse the MAC address, because it does not match the hexadecimal format MM:MM:MM:SS:SS:SS." condition="`${!hasMatch(eth_mac_address, &quot;^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$&quot;)}`" paramId="eth_mac_address" />
+  </DRCs>
+
+  <ConfigFirmware>
+    <!-- PHY Configuration -->
+    <ConfigDefine name="`${eth_phy_device}`" value="" public="true" include="true" />
+    <ConfigDefine name="`${INST_NAME}`_PHY_ADDR" value="`${eth_phy_address}`" public="true" include="true" />
+    <ConfigDefine name="`${INST_NAME}`_PHY_INTERFACE" public="true" value="`${PHYInterconnect}`" include="true" preventOverride="false" />
+    <ConfigDefine name="`${INST_NAME}`_PHY_SPEED" public="true" value="`${(Autonegotiate) ? 3u : PHYspeed}`" include="true" preventOverride="false" />
+    <ConfigDefine name="`${INST_NAME}`_PHY_MODE" public="true" value="`${(Autonegotiate) ? 2u : PHYduplexmode}`" include="true" preventOverride="false" />
+
+    <!-- MAC HW Address Configuration -->
+    <ConfigDefine name="`${INST_NAME}`_MAC_ADDR$idx" value="0x`${getTclVar(&quot;macField$idx&quot;, call_mac_parser)}`U" public="true" include="true" repeatCount="6" />
+    <ConfigDefine name="`${INST_NAME}`_MAC_ADDR" value="(((uint64_t)`${INST_NAME}`_MAC_ADDR0&lt;&lt;0) | ((uint64_t)`${INST_NAME}`_MAC_ADDR1&lt;&lt;8) | ((uint64_t)`${INST_NAME}`_MAC_ADDR2&lt;&lt;16) | ((uint64_t)`${INST_NAME}`_MAC_ADDR3&lt;&lt;24) | ((uint64_t)`${INST_NAME}`_MAC_ADDR4&lt;&lt;32) | ((uint64_t)`${INST_NAME}`_MAC_ADDR5&lt;&lt;40))" public="true" include="true" />
+
+    <ConfigDefine name="`${INST_NAME}`_STATIC_IP" public="true" value="`${(DHCPBool) ? 0u : 1u}`" include="true" preventOverride="false" />
+    <!-- Static IP Address Configuration -->
+    <ConfigDefine name="`${INST_NAME}`_IP_ADDR$idx" value="`${getTclVar(&quot;ipField$idx&quot;, call_ip_parser)}`U" public="true" include="`${!DHCPBool}`" repeatCount="4" />
+    <ConfigDefine name="`${INST_NAME}`_IP_ADDR" value="(((uint32_t)`${INST_NAME}`_IP_ADDR0&lt;&lt;0) | ((uint32_t)`${INST_NAME}`_IP_ADDR1&lt;&lt;8) | ((uint32_t)`${INST_NAME}`_IP_ADDR2&lt;&lt;16) | ((uint32_t)`${INST_NAME}`_IP_ADDR3&lt;&lt;24) )" public="true" include="`${!DHCPBool}`" />
+    <!-- Subnet Mask Configuration -->
+    <ConfigDefine name="`${INST_NAME}`_SUBNET_MASK$idx" value="`${getTclVar(&quot;ipField$idx&quot;, call_subnet_mask_parser)}`U" public="true" include="`${!DHCPBool}`" repeatCount="4" />
+    <ConfigDefine name="`${INST_NAME}`_SUBNET_MASK" value="(((uint32_t)`${INST_NAME}`_SUBNET_MASK0&lt;&lt;0) | ((uint32_t)`${INST_NAME}`_SUBNET_MASK1&lt;&lt;8) | ((uint32_t)`${INST_NAME}`_SUBNET_MASK2&lt;&lt;16) | ((uint32_t)`${INST_NAME}`_SUBNET_MASK3&lt;&lt;24) )" public="true" include="`${!DHCPBool}`" />
+    <!-- Gateway Address Configuration -->
+    <ConfigDefine name="`${INST_NAME}`_GATEWAY_IP_ADDR$idx" value="`${getTclVar(&quot;ipField$idx&quot;, call_gateway_ip_parser)}`U" public="true" include="`${!DHCPBool}`" repeatCount="4" />
+    <ConfigDefine name="`${INST_NAME}`_GATEWAY_IP_ADDR" value="(((uint32_t)`${INST_NAME}`_GATEWAY_IP_ADDR0&lt;&lt;0) | ((uint32_t)`${INST_NAME}`_GATEWAY_IP_ADDR1&lt;&lt;8) | ((uint32_t)`${INST_NAME}`_GATEWAY_IP_ADDR2&lt;&lt;16) | ((uint32_t)`${INST_NAME}`_GATEWAY_IP_ADDR3&lt;&lt;24) )" public="true" include="`${!DHCPBool}`" />
+
+    <!-- MAC Clock Configuration -->
+    <ConfigDefine name="`${INST_NAME}`_MAC_CLOCK" public="true" value="`${MACclk}`" include="true" preventOverride="false" />
+
+    <!-- Promisuous mode Configuration -->
+    <ConfigDefine name="`${INST_NAME}`_PROMISCUOUS_MODE" public="true" value="`${Promiscuousmode}`" include="true" preventOverride="false" />
+    <!-- Broadcast frame Configuration -->
+    <ConfigDefine name="`${INST_NAME}`_ACCEPT_BROADCAST_FRAMES" public="true" value="`${Acceptbroadcastframe}`" include="true" preventOverride="false" />
+    <!-- Ethernet Index Number -->
+    <ConfigDefine name="`${INST_NAME}`_ETHERNET_INDEX" public="true" value="`${InstNumber}`" include="true" preventOverride="false" />
+
+    <!-- Setup IRQ source for 0, 1, and 2 priority queue for XMC7x series -->
+    <ConfigDefine name="`${INST_NAME}`_INTRSRC_Q0" value="((`${NVICintrnum}`&lt;&lt;16) | `${INST_NAME}`_interrupt_eth_0_IRQn)" public="true" include="`${(version &lt;= 2)}`" />
+    <ConfigDefine name="`${INST_NAME}`_INTRSRC_Q1" value="((`${NVICintrnum}`&lt;&lt;16) | `${INST_NAME}`_interrupt_eth_1_IRQn)" public="true" include="`${(version &lt;= 2)}`" />
+    <ConfigDefine name="`${INST_NAME}`_INTRSRC_Q2" value="((`${NVICintrnum}`&lt;&lt;16) | `${INST_NAME}`_interrupt_eth_2_IRQn)" public="true" include="`${(version &lt;= 2)}`" />
+    <ConfigDefine name="`${INST_NAME}`_INTRMUXNUMBER" public="true" value="`${NVICintrnum}`" include="`${(version &lt;= 2)}`" preventOverride="false" />
+
+    <!-- Setup IRQ source for 0, 1, and 2 priority queue for explorer series -->
+    <ConfigDefine name="`${INST_NAME}`_INTRSRC_Q0" value="(eth_interrupt_eth_0_IRQn)" public="true" include="`${(version &gt;= 3)}`" />
+    <ConfigDefine name="`${INST_NAME}`_INTRSRC_Q1" value="(eth_interrupt_eth_1_IRQn)" public="true" include="`${(version &gt;= 3)}`" />
+    <ConfigDefine name="`${INST_NAME}`_INTRSRC_Q2" value="(eth_interrupt_eth_2_IRQn)" public="true" include="`${(version &gt;= 3)}`" />
+
+    <ConfigDefine name="`${INST_NAME}`_INTRPRIORITY" value="3UL" public="true" include="`${(version &gt;= 1)}`" />
+
+    <ConfigDefine name="CYCFG_XMC7100_DEFINED" value="1u" public="true" include="`${(version eq 2)}`" />
+
+    <!-- General settings Configuration -->
+    <ConfigDefine name="CYCFG_NETIF_NAME" public="true" value="&quot;`${netif_host_name}`&quot;" include="`${netifBool}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_TCPIP_THREAD_PRIO" public="true" value="`${tcp_task_priority}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_TCPIP_THREAD_STACKSIZE" public="true" value="`${tcp_task_stack_size}`" include="true" preventOverride="false" />
+
+    <!-- IP settings Configuration -->
+    <ConfigDefine name="CYCFG_IP_OPTIONS_ALLOWED" public="true" value="`${(enable_ip_option) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_LWIP_IPV6" public="true" value="`${(enable_ipv6) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_IP_FRAG" public="true" value="`${(enable_ip_fragment) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_IP_REASSEMBLY" public="true" value="`${(enable_ip_reassembly) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_IP_DEFAULT_TTL" public="true" value="`${ttl}`" include="true" preventOverride="false" />
+
+    <!-- Protocol Settings -->
+    <ConfigDefine name="CYCFG_ARP_TABLE_SIZE" public="true" value="`${arp_tab_size}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_LWIP_AUTOIP" public="true" value="`${(autoip) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_LWIP_ICMP" public="true" value="`${(icmp) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_LWIP_IGMP" public="true" value="`${(igmp) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_LWIP_TCP" public="true" value="`${(tcpBool) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_TCP_MSS" public="true" value="`${mss}`" include="`${(tcpBool) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_TCP_WND" public="true" value="`${windowsize}`" include="`${(tcpBool) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_TCP_SND_BUF" public="true" value="`${tcp_snd_buf}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_TCP_SND_QUEUELEN" public="true" value="`${tcp_snd_pbuf}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_LWIP_UDP" public="true" value="`${(udp) ? 1 : 0}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_LWIP_DNS" public="true" value="`${(dnsBool) ? 1 : 0}`" include="`${(dnsBool) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_DNS_MAX_SERVERS" public="true" value="`${1}`" include="`${(dnsBool) ? true : false}`" preventOverride="false" />
+
+    <!-- Memory Settings -->
+    <ConfigDefine name="CYCFG_MEM_SIZE" public="true" value="`${mem_size}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_PBUF_POOL_SIZE" public="true" value="`${pbuf_pool_size}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_PBUF" public="true" value="`${memp_num_pbuf}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_RAW_PCB" public="true" value="`${memp_num_raw_pcb}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_UDP_PCB" public="true" value="`${memp_num_udp_pcb}`" include="`${(udp) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_TCP_PCB" public="true" value="`${memp_num_tcp_pcb}`" include="`${(tcpBool) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_TCP_PCB_LISTEN" public="true" value="`${memp_num_tcp_pcb_listen}`" include="`${(tcpBool) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_TCP_SEG" public="true" value="`${memp_num_tcp_seg}`" include="`${(tcpBool) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_REASSDATA" public="true" value="`${memp_num_resass_data}`" include="`${(enable_ip_reassembly) ? true : false}`" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_ARP_QUEUE" public="true" value="`${memp_num_arp_queue}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_NETBUF" public="true" value="`${memp_num_netbuf}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_NETCONN" public="true" value="`${memp_num_netconn}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_TCPIP_MSG_API" public="true" value="`${memp_num_tcpip_msg_api}`" include="true" preventOverride="false" />
+    <ConfigDefine name="CYCFG_MEMP_NUM_TCPIP_MSG_INPKT" public="true" value="`${memp_num_tcpip_msg_inpkt}`" include="true" preventOverride="false" />
+
+    <!-- enables ethernet core clock -->
+    <ConfigInstruction value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_ETH0_PERI_NR, CY_MMIO_ETH0_GROUP_NR, CY_MMIO_ETH0_SLAVE_NR, CY_MMIO_ETH0_CLK_HF_NR);" include="true" />
+
+  </ConfigFirmware>
+</Personality>

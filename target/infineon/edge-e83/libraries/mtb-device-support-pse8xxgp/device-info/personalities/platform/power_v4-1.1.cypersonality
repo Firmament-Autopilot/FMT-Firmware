@@ -1,0 +1,375 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--****************************************************************************
+* \file power_v4.cypersonality
+* \version 1.1
+*
+* \brief
+* Personality description file for MCU part of Low Power Assistant.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='power_v4' name='Power Settings' version='1.1' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <Constants>
+    <Const id='BACKUPSRC' value='VDDD'/>
+    <Const id='MIN_CURR_REGULATOR' value='CY_SYSPM_LDO_MODE_NORMAL'/>
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs22srss' />
+      <Resource name='srss\.power' />
+    </MappingRules>
+  </FittingRules>
+  <BehaviorImplementation>
+    <Implements type="power_v1">
+      <ExposedMember key='vddaMv' paramId='vddaMv' />
+      <ExposedMember key='usingUlp' paramId='usingUlp' />
+      <ExposedMember key='usingLp' paramId='usingLp' />
+      <ExposedMember key='usingHp' paramId='usingHp' />
+      <ExposedMember key='deepsleepWhenIdle' paramId='deepsleepWhenIdle' />
+      <ExposedMember key='activePowerMode' paramId='activePowerMode' />
+      <ExposedMember key='pd1Enable' paramId='pd1Enable' />
+      </Implements>
+  </BehaviorImplementation>
+  <Parameters>
+    <!-- Documentation -->
+    <ParamDoc id='pdlDoc' name='SysPm API Reference' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__syspm.html' linkText='Open SysPm Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamBool id='is_mxs22srssv1' name='is_mxs22srssv1' group="" default='`${(getVersion() eq 1)}`' visible='false' editable='false' desc='True if the IP version is MX22SRSS v1' />
+    <ParamBool id='is_mxs22srssv2_1' name='is_mxs22srssv2_1' group="" default='`${(getVersion() eq 2) &amp;&amp; (GENERATED.IP_MINOR_VERSION == 1)}`' visible='false' editable='false' desc='True if the IP version is MX22SRSS v2.1' />
+    <ParamChoice id='actPwrMode' name='System Active Power Profile' group='General' default='POWER_PROFILE_LP' visible='true'
+      desc='Selects the system operating power mode.'>
+      <Entry name='Power Profile - ULP   (Ultra Low Power Profile  - vccd = 0.7V, vccsram = 0.8V )' value='POWER_PROFILE_ULP' visible='`${is_mxs22srssv1}`' />
+      <Entry name='Power Profile - LP    (Low Power Profile - vccd = 0.8V, vccsram = 0.8V )' value='POWER_PROFILE_LP' visible='true' />
+      <Entry name='Power Profile - HP    (High Performance Profile - vccd = 0.9V, vccsram = 0.9V )' value='POWER_PROFILE_HP' visible='true' />
+    </ParamChoice>
+
+    <ParamString id='activePowerMode' default='`${actPwrMode eq POWER_PROFILE_ULP ? "ULP"  :
+                                                  actPwrMode eq POWER_PROFILE_LP  ? "LP"   :
+                                                  actPwrMode eq POWER_PROFILE_HP  ? "HP"   :
+                                                  "LP"}`' visible='false' />
+
+    <!-- Power settings -->
+    <ParamBool id='pmicEnable' default='false' visible='false' />
+
+    <!-- Power domains -->
+    <ParamBool id='pd1Enable' name='PD1 power domain' group='Power domains' default='`${is_mxs22srssv1}`' visible='`${is_mxs22srssv1}`'
+      desc='Enables or disables PD1 power domain. It is required for peripherals like SMIF, SOCMEM, TCM, CM55, U55.' />
+
+    <!-- Idle Power modes -->
+    <ParamChoice id='idlePwrMode' name='System Idle Power Mode' group='System Idle Parameters' default='CY_CFG_PWR_MODE_DEEPSLEEP' visible='true'
+      desc='Selects the lowest power mode the system attempts to enter when there is no active tasks to execute, i.e. the system is in idle state.'>
+      <Entry name='Active' value='CY_CFG_PWR_MODE_ACTIVE' visible='true' />
+      <Entry name='CPU Sleep' value='CY_CFG_PWR_MODE_SLEEP' visible='true' />
+      <Entry name='System Deep Sleep' value='CY_CFG_PWR_MODE_DEEPSLEEP' visible='true' />
+      <Entry name='System Deep Sleep RAM' value='CY_CFG_PWR_MODE_DEEPSLEEP_RAM' visible='true' />
+      <Entry name='System Deep Sleep OFF' value='CY_CFG_PWR_MODE_DEEPSLEEP_OFF' visible='true' />
+      <Entry name="System Hibernate RAM" value="CY_CFG_PWR_MODE_HIBERNATE_RAM" visible="`${is_mxs22srssv2_1}`" />
+    </ParamChoice>
+
+    <ParamRange id='deepsleepLatency' name='Deep Sleep Latency (ms)' group='System Idle Parameters' default='0' min='0' max='1000' resolution='1' visible='true'
+      desc='Greater between the time required to enter to and exit from the deep sleep power mode.
+            This option only applies for an RTOS based application.' />
+    <!-- Operating conditions -->
+    <!-- Core Buck -->
+    <ParamString id='coreBuckParam' default='`${actPwrMode eq POWER_PROFILE_LP  ? "0.8V High Power"   :
+                                                actPwrMode eq POWER_PROFILE_ULP ? "0.7V High Power"   :
+                                                actPwrMode eq POWER_PROFILE_HP  ? "0.9V High Power"   :
+                                                                                  "0.8V High Power"}`' visible='false'/>
+
+    <ParamString id='coreBuckVoltageMode' name='Core Buck Voltage and Mode' group='Operating Conditions' default='`${coreBuckParam}`' visible='true' editable='false' desc='Core Buck Voltage and Mode..' />
+
+    <!-- SDR0 Regulator -->
+    <ParamRange id='vddaMv'    name='VDDA Voltage (mV)'    group='Operating Conditions' default='1800' min='1710' max='1890' resolution='1' visible='true' desc='VDDA voltage in millivolts.' />
+    <ParamRange id='vdddMv'    name='VDDD Voltage (mV)'    group='Operating Conditions' default='1800' min='1710' max='1890' resolution='1' visible='true' desc='VDDD voltage in millivolts.' />
+    <ParamRange id='vddio0Mv'  name='VDDIO0 Voltage (mV)'  group='Operating Conditions' default='1800' min='1710' max='1890' resolution='1' visible='true' desc='VDDIO0 voltage in millivolts.' />
+    <ParamRange id='vddio1Mv'  name='VDDIO1 Voltage (mV)'  group='Operating Conditions' default='1800' min='1710' max='1890' resolution='1' visible='true' desc='VDDIO1 voltage in millivolts.' />
+
+    <!-- Wakeup pins -->
+    <ParamSignal port='hibernate_wakeup[0]' name='Hibernate Wakeup (0)' group='Wakeup Pins' visible='`${hasVisibleOption("hibernate_wakeup[0]")}`'
+      desc='Reserve the hibernate_wakeup[0] pin to use it as the wakeup source from Hibernate power mode.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamChoice id='hibernate_wakeup_polarity_0' name='Hibernate Wakeup (0) Polarity' group='Wakeup Pins' default='CY_SYSPM_HIBERNATE_PIN0_LOW' visible='`${hasConnection("hibernate_wakeup", 0)}`' editable='`${hasConnection("hibernate_wakeup", 0)}`' desc='Select the polarity for the hibernate_wakeup[0] to wakeup from Hibernate power mode.' >
+      <Entry name='Low Level' value='CY_SYSPM_HIBERNATE_PIN0_LOW' visible='true' />
+      <Entry name='High Level' value='CY_SYSPM_HIBERNATE_PIN0_HIGH' visible='true' />
+    </ParamChoice>
+
+    <ParamSignal port='hibernate_wakeup[1]' name='Hibernate Wakeup (1)' group='Wakeup Pins' visible='`${hasVisibleOption("hibernate_wakeup[1]")}`'
+      desc='Reserve the hibernate_wakeup[1] pin to use it as the wakeup source from Hibernate power mode.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamChoice id='hibernate_wakeup_polarity_1' name='Hibernate Wakeup (1) Polarity' group='Wakeup Pins' default='CY_SYSPM_HIBERNATE_PIN1_LOW' visible='`${hasConnection("hibernate_wakeup", 1)}`' editable='`${hasConnection("hibernate_wakeup", 1)}`' desc='Select the polarity for the hibernate_wakeup[1] to wakeup from Hibernate power mode.' >
+      <Entry name='Low Level' value='CY_SYSPM_HIBERNATE_PIN1_LOW' visible='true' />
+      <Entry name='High Level' value='CY_SYSPM_HIBERNATE_PIN1_HIGH' visible='true' />
+    </ParamChoice>
+
+    <ParamSignal port='hibernate_wakeup[2]' name='Hibernate Wakeup (2)' group='Wakeup Pins' visible='`${hasVisibleOption("hibernate_wakeup[2]")}`'
+      desc='Reserve the hibernate_wakeup[2] pin to use it as the wakeup source from Hibernate power mode.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamChoice id='hibernate_wakeup_polarity_2' name='Hibernate Wakeup (2) Polarity' group='Wakeup Pins' default='CY_SYSPM_HIBERNATE_PIN2_LOW' visible='`${hasConnection("hibernate_wakeup", 2)}`' editable='`${hasConnection("hibernate_wakeup", 2)}`' desc='Select the polarity for the hibernate_wakeup[2] to wakeup from Hibernate power mode.' >
+      <Entry name='Low Level' value='CY_SYSPM_HIBERNATE_PIN2_LOW' visible='true' />
+      <Entry name='High Level' value='CY_SYSPM_HIBERNATE_PIN2_HIGH' visible='true' />
+    </ParamChoice>
+
+    <ParamSignal port='hibernate_wakeup[3]' name='Hibernate Wakeup (3)' group='Wakeup Pins' visible='`${hasVisibleOption("hibernate_wakeup[3]")}`'
+      desc='Reserve the hibernate_wakeup[3] pin to use it as the wakeup source from Hibernate power mode.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamChoice id='hibernate_wakeup_polarity_3' name='Hibernate Wakeup (3) Polarity' group='Wakeup Pins' default='CY_SYSPM_HIBERNATE_PIN3_LOW' visible='`${hasConnection("hibernate_wakeup", 3)}`' editable='`${hasConnection("hibernate_wakeup", 3)}`' desc='Select the polarity for the hibernate_wakeup[3] to wakeup from Hibernate power mode.' >
+      <Entry name='Low Level' value='CY_SYSPM_HIBERNATE_PIN3_LOW' visible='true' />
+      <Entry name='High Level' value='CY_SYSPM_HIBERNATE_PIN3_HIGH' visible='true' />
+    </ParamChoice>
+
+    <ParamSignal port='pmic_wakeup_in[0]' name='PMIC Wakeup Input' group='Wakeup Pins' visible='`${pmicEnable}`'
+      desc='Reserve the pmic_wakeup_in pin' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='`${pmicEnable}`' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+
+    <ParamSignal port='pmic_wakeup_out[0]' name='PMIC Wakeup Output' group='Wakeup Pins' visible='`${pmicEnable}`'
+      desc='Reserve the pmic_wakeup_out pin' canBeEmpty='`${!pmicEnable}`' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='`${pmicEnable}`' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamBool id='usingUlp' default='`${activePowerMode eq "ULP"}`' visible='false' />
+    <ParamBool id='usingLp' default='`${activePowerMode eq "LP"}`' visible='false' />
+    <ParamBool id='usingHp' default='`${activePowerMode eq "HP"}`' visible='false' />
+    <ParamBool id='deepsleepWhenIdle' default='`${idlePwrMode eq CY_CFG_PWR_MODE_DEEPSLEEP}`' visible='false' />
+
+  </Parameters>
+
+  <Variables>
+    <Variable id='coreBuckVoltMacro' value='`${coreBuckParam eq "0.8V High Power" ? "CY_SYSPM_CORE_BUCK_VOLTAGE_0_80V"   :
+                                               coreBuckParam eq "0.7V High Power" ? "CY_SYSPM_CORE_BUCK_VOLTAGE_0_70V"   :
+                                               coreBuckParam eq "0.9V High Power" ? "CY_SYSPM_CORE_BUCK_VOLTAGE_0_90V"   :
+                                                                                   "CY_SYSPM_CORE_BUCK_VOLTAGE_0_80V"}`'/>
+
+    <Variable id='coreBuckModeMacro' value='`${coreBuckParam eq "0.8V High Power" ? "CY_SYSPM_CORE_BUCK_MODE_HP"   :
+                                                    coreBuckParam eq "0.7V High Power" ? "CY_SYSPM_CORE_BUCK_MODE_HP"   :
+                                                    coreBuckParam eq "0.9V High Power" ? "CY_SYSPM_CORE_BUCK_MODE_HP"   :
+                                                                                         "CY_SYSPM_CORE_BUCK_MODE_HP"}`'/>
+    <Variable id='sramLdoVoltage' value='`${actPwrMode eq POWER_PROFILE_LP    ? "0.8V"   :
+                                            actPwrMode eq POWER_PROFILE_ULP   ? "0.8V"   :
+                                            actPwrMode eq POWER_PROFILE_HP    ? "0.9V"   :
+                                                                                "0.8V"}`' />
+
+    <Variable id='sramLdoVoltMacro' value='`${sramLdoVoltage eq "0.8V Regulated"    ? "CY_SYSPM_SRAMLDO_VOLTAGE_0_80V"   :
+                                              sramLdoVoltage eq "0.9V Regulated"    ? "CY_SYSPM_SRAMLDO_VOLTAGE_0_90V"   :
+                                                                                      "CY_SYSPM_SRAMLDO_VOLTAGE_0_80V"}`' />
+
+    <!-- In this context, "peripheral" means "not memory" and encompasses CPUs as well -->
+    <Variable id='ppuModePeripheral' value='`${(idlePwrMode eq CY_CFG_PWR_MODE_ACTIVE)         ? "PPU_V1_MODE_ON"       :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_SLEEP)          ? "PPU_V1_MODE_ON"       :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_DEEPSLEEP)      ? "PPU_V1_MODE_FULL_RET" :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_DEEPSLEEP_RAM)  ? "PPU_V1_MODE_OFF"      :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_DEEPSLEEP_OFF)  ? "PPU_V1_MODE_OFF"      :
+                                                                                                 "PPU_V1_MODE_OFF" }`' />
+
+    <Variable id='ppuModeMemory'     value='`${(idlePwrMode eq CY_CFG_PWR_MODE_ACTIVE)         ? "PPU_V1_MODE_ON"      :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_SLEEP)          ? "PPU_V1_MODE_ON"      :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_DEEPSLEEP)      ? "PPU_V1_MODE_MEM_RET" :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_DEEPSLEEP_RAM)  ? "PPU_V1_MODE_MEM_RET" :
+                                               (idlePwrMode eq CY_CFG_PWR_MODE_DEEPSLEEP_OFF)  ? "PPU_V1_MODE_OFF"     :
+                                                                                                 "PPU_V1_MODE_OFF" }`' />
+  </Variables>
+
+  <!-- Error checking -->
+  <DRCs>
+    <DRC type='ERROR' text='The input voltage of VDDD is set to `${vdddMv}` which is out of range. The value must be between 1700 and VDDA (`${vddaMv}`).' condition='`${(vdddMv &gt; vddaMv)}`' />
+    <DRC type='ERROR' text='The input voltage of VDDIO0 is set to `${vddio0Mv}` which is out of range. The value must be between 1700 and VDDA (`${vddaMv}`).' condition='`${(vddio0Mv &gt; vddaMv)}`' />
+    <DRC type='ERROR' text='The input voltage of VDDIO1 is set to `${vddio1Mv}` which is out of range. The value must be between 1700 and VDDA (`${vddaMv}`).' condition='`${(vddio1Mv &gt; vddaMv)}`' />
+  </DRCs>
+
+  <!-- Generated firmware -->
+  <ConfigFirmware>
+    <ConfigInclude value='cy_syspm.h'/>
+    <ConfigInclude value='system_edge.h' include='`${pd1Enable}`' />
+    <ConfigInclude value='cy_sysclk.h' include='`${pd1Enable}`' />
+    <ConfigInclude value='cy_syspm_pdcm.h' include='`${pd1Enable}`' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_LP'             public='true' value='0x01UL' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_ULP'            public='true' value='0x02UL' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_HP'             public='true' value='0x03UL' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_ACTIVE'         public='true' value='0x04UL' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_SLEEP'          public='true' value='0x08UL' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_DEEPSLEEP'      public='true' value='0x10UL' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_DEEPSLEEP_RAM'  public='true' value='0x11UL' />
+    <ConfigDefine name='CY_CFG_PWR_MODE_DEEPSLEEP_OFF'  public='true' value='0x12UL' />
+    <ConfigDefine name="CY_CFG_PWR_MODE_HIBERNATE_RAM"  public="true" value="0x13UL" include="`${is_mxs22srssv2_1}`" />
+    <ConfigDefine name='CY_CFG_PWR_SYS_IDLE_MODE'       public='true' value='`${idlePwrMode}`'/>
+    <ConfigDefine name='CY_CFG_PWR_DEEPSLEEP_LATENCY'   public='true' value='`${deepsleepLatency}`UL' include='true' />
+    <ConfigDefine name='CY_CFG_PWR_SYS_ACTIVE_MODE'     public='true' value='CY_CFG_PWR_MODE_`${activePowerMode}`'/>
+    <ConfigDefine name='CY_CFG_PWR_SYS_ACTIVE_PROFILE'  public='true' value='CY_CFG_PWR_MODE_`${activePowerMode}`'/>
+    <ConfigDefine name='CY_CFG_PWR_ENABLED'             public='false' value='1'/>
+    <ConfigDefine name='CY_CFG_PWR_INIT'                public='false' value='1'/>
+    <ConfigDefine name='CY_CFG_PWR_USING_PMIC'          public='false' value='`${pmicEnable ? 1 : 0}`'/>
+    <ConfigDefine name='CY_CFG_PWR_VBACKUP_USING_VDDD'  public='false' value='`${("$BACKUPSRC" eq "VDDD") ? 1 : 0}`'/>
+    <ConfigDefine name='CY_CFG_PWR_REGULATOR_MODE_MIN'  public='false' value='`${("$MIN_CURR_REGULATOR" eq "CY_SYSPM_LDO_MODE_MIN") ? 1 : 0}`'/>
+    <ConfigDefine name='CY_CFG_PWR_USING_ULP'           public='false' value='`${usingUlp ? 1 : 0}`'/>
+    <ConfigDefine name='CY_CFG_PWR_USING_LP'           public='false' value='`${usingLp ? 1 : 0}`'/>
+    <ConfigDefine name='CY_CFG_PWR_USING_HP'           public='false' value='`${usingHp ? 1 : 0}`'/>
+    <!-- Operating conditions -->
+    <ConfigDefine name='CY_CFG_PWR_VDDA_MV'                public='true' value='`${vddaMv}`'/>
+    <ConfigDefine name='CY_CFG_PWR_VDDD_MV'                public='true' value='`${vdddMv}`'/>
+    <ConfigDefine name='CY_CFG_PWR_VDDIO0_MV'              public='true' value='`${vddio0Mv}`'/>
+    <ConfigDefine name='CY_CFG_PWR_VDDIO1_MV'              public='true' value='`${vddio1Mv}`'/>
+    <ConfigDefine name='CY_CFG_PWR_CBUCK_VOLT'             public='true' value='`${coreBuckVoltMacro}`'/>
+    <ConfigDefine name='CY_CFG_PWR_CBUCK_MODE'             public='true' value='`${coreBuckModeMacro}`'/>
+    <ConfigDefine name='CY_CFG_PWR_SRAMLDO_VOLT'           public='true' value='`${sramLdoVoltMacro}`'/>
+    <ConfigDefine name='CY_CFG_PWR_PD1_DOMAIN'             public='true' value='`${pd1Enable ? 1 : 0}`'/>
+    <!-- PPU default configuration -->
+    <ConfigDefine name='CY_CFG_PWR_PPU_MAIN'     public='true' value='`${ppuModePeripheral}`' />
+    <ConfigDefine name='CY_CFG_PWR_PPU_PD1'      public='true' value='`${ppuModePeripheral}`' />
+    <ConfigDefine name='CY_CFG_PWR_PPU_SRAM0'    public='true' value='`${ppuModeMemory}`' />
+    <ConfigDefine name='CY_CFG_PWR_PPU_SRAM1'    public='true' value='`${ppuModeMemory}`' />
+    <ConfigDefine name='CY_CFG_PWR_PPU_SYSCPU'   public='true' value='`${ppuModePeripheral}`' />
+    <ConfigDefine name='CY_CFG_PWR_PPU_APPCPUSS' public='true' value='`${ppuModePeripheral}`' />
+    <ConfigDefine name='CY_CFG_PWR_PPU_APPCPU'   public='true' value='`${ppuModePeripheral}`' />
+    <ConfigDefine name='CY_CFG_PWR_PPU_SOCMEM'   public='true' value='`${ppuModeMemory}`' />
+    <!-- The U55 is explicitly turned either on or off. It never goes into DeepSleep -->
+    <ConfigDefine name='CY_CFG_PWR_PPU_U55'      public='true' value='PPU_V1_MODE_ON' />
+
+    <ConfigFunction signature='void init_cycfg_ns_power(void)' public='true' replicateForAliases='false' include='`${is_mxs22srssv1}`'>
+      <Line value='/* Update global variables used by DeepSleep functions */' />
+      <Line value='#if (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP)' />
+      <Line value='    Cy_SysPm_DeepSleepSetup(CY_SYSPM_MODE_DEEPSLEEP);' />
+      <Line value='#elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_RAM)' />
+      <Line value='    Cy_SysPm_DeepSleepSetup(CY_SYSPM_MODE_DEEPSLEEP_RAM);' />
+      <Line value='#elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_OFF)' />
+      <Line value='    Cy_SysPm_DeepSleepSetup(CY_SYSPM_MODE_DEEPSLEEP_OFF);' />
+      <Line value='#endif /* CY_CFG_PWR_SYS_IDLE_MODE */' />
+      <Line value='' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='void init_cycfg_ns_power(void)' public='true' replicateForAliases='false' include='`${is_mxs22srssv2_1}`'>
+      <Line value='/* Update global variables used by DeepSleep functions */' />
+      <Line value='#if (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP)' />
+      <Line value='    Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP);' />
+      <Line value='#elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_RAM)' />
+      <Line value='    Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_RAM);' />
+      <Line value='#elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_OFF)' />
+      <Line value='    Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_OFF);' />
+      <Line value='#endif /* CY_CFG_PWR_SYS_IDLE_MODE */' />
+      <Line value='' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='void init_cycfg_power(void)' public='true' replicateForAliases='false' include='`${is_mxs22srssv1}`'>
+      <Line value='   Cy_SysPm_Init();' />
+      <Line value='' />
+      <Line value='   /* **System Active Power Mode Profile Configuration** */' />
+      <Line value='   #if (CY_CFG_PWR_SYS_ACTIVE_PROFILE == CY_CFG_PWR_MODE_HP)' />
+      <Line value='       Cy_SysPm_SystemEnterHp();' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_ACTIVE_PROFILE == CY_CFG_PWR_MODE_ULP)' />
+      <Line value='       Cy_SysPm_SystemEnterUlp();' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_ACTIVE_PROFILE == CY_CFG_PWR_MODE_LP)' />
+      <Line value='       Cy_SysPm_SystemEnterLp();' />
+      <Line value='   #endif /* CY_CFG_PWR_SYS_IDLE_MODE */' />
+      <Line value='' />
+      <Line value='   /* **System Domain Idle Power Mode Configuration** */' />
+      <Line value='   #if (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP)' />
+      <Line value='       Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP);' />
+      <Line value='       Cy_SysPm_SetAppDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP);' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_RAM)' />
+      <Line value='       Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_RAM);' />
+      <Line value='       Cy_SysPm_SetAppDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_RAM);' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_OFF)' />
+      <Line value='       Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_OFF);' />
+      <Line value='       Cy_SysPm_SetAppDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_OFF);' />
+      <Line value='   #endif /* CY_CFG_PWR_SYS_IDLE_MODE */' />
+      <Line value='' />
+      <Line value='   /* **Wakeup pin `${$idx}` Configuration** */&#xA;        Cy_SysPm_SetHibernateWakeupSource(`${hibernate_wakeup_polarity_$idx}`);' include='`${hasConnection("hibernate_wakeup", $idx)}`' repeatCount='4'/>
+      <Line value='' />
+      <Line value='   Cy_SysPm_DeepSleepUpdate();' />
+      <Line value='' />
+      <Line value='   /* **Power domains Configuration** */' />
+      <Line value='   #if (CY_CFG_PWR_PD1_DOMAIN)' />
+      <Line value='       #if defined(CORE_NAME_CM33_0) &amp;&amp; defined(CY_PDL_TZ_ENABLED)' />
+      <Line value='           /* Enables PD1 power domain */' />
+      <Line value='           Cy_System_EnablePD1();' />
+      <Line value='           /* Enables APP_MMIO_TCM memory for CM55 core */' />
+      <Line value='           Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_CM55_TCM_512K_PERI_NR, CY_MMIO_CM55_TCM_512K_GROUP_NR, \' />
+      <Line value='                                 CY_MMIO_CM55_TCM_512K_SLAVE_NR, CY_MMIO_CM55_TCM_512K_CLK_HF_NR);' />
+      <Line value='' />
+      <Line value='           /* Clear SYSCPU and APPCPU power domain dependency set by boot code */' />
+      <Line value='           cy_pd_pdcm_clear_dependency(CY_PD_PDCM_APPCPU, CY_PD_PDCM_SYSCPU);' />
+      <Line value='' />
+      <Line value='       #endif /* defined(CORE_NAME_CM33_0) &amp;&amp; defined(CY_PDL_TZ_ENABLED) */' />
+      <Line value='   #endif /* (CY_CFG_PWR_PD1_DOMAIN) */' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='void init_cycfg_power(void)' public='true' replicateForAliases='false' include='`${is_mxs22srssv2_1}`'>
+      <Line value='   Cy_SysPm_Init();' />
+      <Line value='' />
+      <Line value='   /* **System Active Power Mode Profile Configuration** */' />
+      <Line value='   #if (CY_CFG_PWR_SYS_ACTIVE_PROFILE == CY_CFG_PWR_MODE_HP)' />
+      <Line value='       Cy_SysPm_SystemEnterHp();' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_ACTIVE_PROFILE == CY_CFG_PWR_MODE_ULP)' />
+      <Line value='       Cy_SysPm_SystemEnterUlp();' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_ACTIVE_PROFILE == CY_CFG_PWR_MODE_LP)' />
+      <Line value='       Cy_SysPm_SystemEnterLp();' />
+      <Line value='   #endif /* CY_CFG_PWR_SYS_IDLE_MODE */' />
+      <Line value='' />
+      <Line value='   /* **System Domain Idle Power Mode Configuration** */' />
+      <Line value='   #if (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP)' />
+      <Line value='       Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP);' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_RAM)' />
+      <Line value='       Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_RAM);' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP_OFF)' />
+      <Line value='       Cy_SysPm_SetDeepSleepMode(CY_SYSPM_MODE_DEEPSLEEP_OFF);' />
+      <Line value='   #elif (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_HIBERNATE_RAM)' />
+      <Line value='       Cy_SysPm_SetHibernateRamMode();' />
+      <Line value='   #endif /* CY_CFG_PWR_SYS_IDLE_MODE */' />
+      <Line value='' />
+      <Line value='   /* **Wakeup pin `${$idx}` Configuration** */&#xA;        Cy_SysPm_SetHibernateWakeupSource(`${hibernate_wakeup_polarity_$idx}`);' include='`${hasConnection("hibernate_wakeup", $idx)}`' repeatCount='4'/>
+      <Line value='' />
+    </ConfigFunction>
+    <ConfigInstruction purpose='INITIALIZE' value='init_cycfg_power();' include='true' guard='defined (CY_CFG_PWR_ENABLED) &amp;&amp; defined (CY_CFG_PWR_INIT)' />
+  </ConfigFirmware>
+</PersonalityTemplate>

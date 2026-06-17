@@ -1,0 +1,25 @@
+# CM33 port
+target remote:3333
+
+# Open all memory
+set mem inaccessible-by-default off
+
+# Enable semihosting
+monitor arm semihosting enable
+
+# Load the executable
+# load <LOCATION OF ELF FILE>
+
+# Set PC and SP. This is valid for GCC compiler only.
+set $pc = &Reset_Handler
+set $sp = &__StackTop
+set $xPSR = 0x01000000
+
+# Set temporary breakpoint at main
+tbreak main
+
+# Print registers
+monitor reg
+
+# Continue program execution
+continue

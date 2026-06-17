@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file hfclk.cypersonality
+* \version 4.0
+*
+* \brief
+* CLK_HF personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2022-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+<PersonalityTemplate id='hfclk_v2' name='CLK_HF' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <Constants>
+  <!-- Hard coded frequency maxes for now, but should be dynamically fetched -->
+    <Const id='CLK_FREQUENCIES_EXPLORER_ULP' value=' 50; 50; 50; 50; 50; 50; 50; 25; 50; 25; 25; 50; 50; 25' />
+    <Const id='CLK_FREQUENCIES_EXPLORER_LP'  value=' 80;140;110;200;200;104;104; 50; 50; 50; 40; 80; 50; 60' />
+    <Const id='CLK_FREQUENCIES_EXPLORER_HP'  value='200;400;300;400;400;208;208;100; 50;100;100;200; 64;125' />
+
+    <Const id='CLK_FREQUENCIES_PSB3_LP'      value='  96;96;96;96;96' />
+    <Const id='CLK_FREQUENCIES_PSB3_HP'      value=' 192;96;96;96;96' />
+
+  <!-- Constants used throughout the personality-->
+    <Const id='MAX_SOURCE_FREQUENCY_EXPLORER'  value='500000000' />
+    <Const id='MAX_SOURCE_FREQUENCY_PSB3'      value='192000000' />
+    <Const id='MHZ_CONVERSION'                 value='1000000' />
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs22srss' />
+      <Resource name='srss\.clock\.hfclk' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_supervised_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClockDisplayName' />
+      <ExposedMember key='csvEnabled' paramId='ClkHfCsv' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__clk__hf.html' linkText='Open High-Frequency Clocks Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamBool id='is22srssAvailable' default='`${("mxs22srss" eq getIpBlockName())}`' />
+    <ParamBool id='is_mxs22srssv1' name='is_mxs22srssv1' group="" default='`${ is22srssAvailable &amp;&amp; (getVersion() eq 1)}`' visible='false' editable='false' desc='True if the IP version is MX22SRSS v1' />
+    <ParamBool id='is_mxs22srssv2_1' name='is_mxs22srssv2_1' group="" default='`${ is22srssAvailable &amp;&amp; (getVersion() eq 2) &amp;&amp; (GENERATED.IP_MINOR_VERSION == 1)}`' visible='false' editable='false' desc='True if the IP version is MX22SRSS v2.1' />
+
+    <ParamString id='clockInst' default='`${getInstNumber("hfclk")}`' />
+    <ParamString id='maxFrequency' default='`${is_mxs22srssv2_1 ? $MAX_SOURCE_FREQUENCY_PSB3: $MAX_SOURCE_FREQUENCY_EXPLORER}`' />
+    <ParamChoice id='sourceClockNumber' name='Source Clock' group='General' default='0' visible='true' desc='The clock source for CLK_HF`${clockInst}`'>
+      <Entry name='CLK_PATH$idx'  value='$idx'  visible='`${NUM_CLKPATH &gt; $idx}`' repeatCount='16' />
+    </ParamChoice>
+    <ParamBool id='ClkHfCsv' name='CSV' group='CSV' default='false' visible='`${(CSV_PRESENT == 1)}`' desc='Enables/Disables CSV configuration.' />
+    <ParamRange id='accuracyCsv' name='Accuracy' group='CSV' default='99' min='1' max='100' resolution='1' visible='`${ClkHfCsv}`' desc='Accuracy of the source clock.' />
+    <ParamChoice id='sourceClockCsv' name='Reference Clock' group='CSV' default='IMO' visible='`${ClkHfCsv}`' desc='The reference clock source selection'>
+      <Entry name='IMO' value='IMO' />
+      <Entry name='EXT' value='EXT' />
+      <Entry name='ECO' value='ECO' visible='`${hasBlock("srss[0].clock[0].eco[0]")}`'/>
+      <Entry name='IHO' value='IHO' />
+     </ParamChoice>
+
+    <ParamChoice id='actionCsv' name='Action' group='CSV' default='FAULT' visible='`${ClkHfCsv}`' desc='CSV action'>
+      <Entry name='Fault' value='FAULT' />
+      <Entry name='Reset' value='RESET' />
+    </ParamChoice>
+
+    <!-- If the FLL/PLL are enabled, their output drive the corresponding clock path -->
+    <ParamBool id='isPll250mUsed' default='`${(sourceClockNumber &lt; NUM_DPLL_LP) &amp;&amp; isBlockUsed("srss[0].clock[0].pll250m[" . (sourceClockNumber) . "]")}`' />
+    <ParamBool id='isPll500mUsed' default='`${(sourceClockNumber eq NUM_DPLL_LP) &amp;&amp; isBlockUsed("srss[0].clock[0].pll500m[" . (sourceClockNumber - (NUM_DPLL_LP)) . "]")}`' />
+
+    <ParamString id='sourceClock' default='`${isPll250mUsed ? "pll250m[" . (sourceClockNumber) . "]" :
+                                              ((sourceClockNumber eq NUM_DPLL_LP) &amp;&amp; isPll500mUsed) ? "pll500m[" . (sourceClockNumber - (NUM_DPLL_LP)) . "]" :
+                                              "pathmux[" . sourceClockNumber . "]"}`' />
+
+    <ParamString id='sourceClockDisplayName' default='`${getParamValueDisplay("sourceClock")}`' />
+    <ParamString id='sourceClockRsc' default='srss[0].clock[0].`${sourceClock}`' />
+
+    <ParamRange id='sourceFreq' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' min='0' max='`${maxFrequency}`' resolution='0.001' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+    <ParamString id='sourceFrequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(sourceFreq,accuracy)}`' visible='true' editable='false' desc='Source clock frequency' />
+
+    <ParamChoice id='divider' name='Divider' group='General' default='1' visible='true' desc='The source clock frequency divider'>
+      <Entry name='$idx' value='$idx' repeatCount='17' visible='`${$idx &gt; 0}`' />
+    </ParamChoice>
+    <ParamRange id='frequency' default='`${sourceFreq / divider}`' min='0' max='`${maxFrequency}`' resolution='1' />
+    <!-- If the frequency is less than one MHz, display its value in kHz -->
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The resulting CLK_HF`${clockInst}` output clock frequency' />
+    <ParamSignal port='root_clk[0]' name='Clock Output' group='General' visible='`${hasVisibleOption("root_clk[0]")}`' desc='A high-frequency clock output driving specific peripherals' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='WARNING' reason=''>
+          <Choice>
+            <Option value='CY_GPIO_DM_STRONG_IN_OFF'/>
+            <Option value='CY_GPIO_DM_STRONG'/>
+            <Option value='CY_GPIO_DM_OD_DRIVESLOW_IN_OFF'/>
+            <Option value='CY_GPIO_DM_OD_DRIVESHIGH_IN_OFF'/>
+            <Option value='CY_GPIO_DM_OD_DRIVESLOW'/>
+            <Option value='CY_GPIO_DM_OD_DRIVESHIGH'/>
+            <Option value='CY_GPIO_DM_PULLUP_IN_OFF'/>
+            <Option value='CY_GPIO_DM_PULLDOWN_IN_OFF'/>
+            <Option value='CY_GPIO_DM_PULLUP_DOWN_IN_OFF'/>
+            <Option value='CY_GPIO_DM_PULLUP'/>
+            <Option value='CY_GPIO_DM_PULLDOWN'/>
+            <Option value='CY_GPIO_DM_PULLUP_DOWN'/>
+          </Choice>
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for CLK_HF`${clockInst}` is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='CLK_HF0 is slower than legal min 200 kHz.' condition='`${(clockInst == 0) &amp;&amp; (sourceFreq &lt; 200000)}`' />
+    <!-- Max frequencies are determined by power mode -->
+    <DRC type='ERROR' text='CLK_HF`${clockInst}` is greater than legal max `${splitAt(getExposedMember("srss[0].power[0]", "usingUlp") ? "$CLK_FREQUENCIES_EXPLORER_ULP" : (getExposedMember("srss[0].power[0]", "usingLp") ? "$CLK_FREQUENCIES_EXPLORER_LP" : "$CLK_FREQUENCIES_EXPLORER_HP"), clockInst)}` MHz.'
+         condition='`${is_mxs22srssv1 &amp;&amp; (frequency &gt; ("$MHZ_CONVERSION" * splitAt(getExposedMember("srss[0].power[0]", "usingUlp") ? "$CLK_FREQUENCIES_EXPLORER_ULP" : (getExposedMember("srss[0].power[0]", "usingLp") ? "$CLK_FREQUENCIES_EXPLORER_LP" : "$CLK_FREQUENCIES_EXPLORER_HP"), clockInst)))}`' />
+
+    <DRC type='ERROR' text='CLK_HF`${clockInst}` is greater than legal max `${splitAt((getExposedMember("srss[0].power[0]", "usingLp") ? "$CLK_FREQUENCIES_PSB3_LP" : "$CLK_FREQUENCIES_PSB3_HP"), clockInst)}` MHz.'
+         condition='`${is_mxs22srssv2_1 &amp;&amp; (frequency &gt; ("$MHZ_CONVERSION" * splitAt((getExposedMember("srss[0].power[0]", "usingLp") ? "$CLK_FREQUENCIES_PSB3_LP" : "$CLK_FREQUENCIES_PSB3_HP"), clockInst)))}`' />
+
+    <!--DRC type='ERROR' text='Only one connection between the clock system and GPIO pins is possible, either EXTCLK or CLK_HF4.' condition='`${hasConnection("root_clk", 0) &amp;&amp; isBlockUsed("srss[0].clock[0].ext[0]")}`' /-->
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_ENABLED' public='false' value='1' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_DIVIDER' public='false' value='CY_SYSCLK_CLKHF_`${divider == 1 ? "NO_DIVIDE" : ("DIVIDE_BY_" . divider)}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`' public='true' value='`${clockInst}`UL' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_FREQ_MHZ' public='false' value='`${frequency / $MHZ_CONVERSION}`UL' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CLKPATH' public='false' value='CY_SYSCLK_CLKHF_IN_CLKPATH`${sourceClockNumber}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CLKPATH_NUM' public='false' value='`${sourceClockNumber}`UL' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CSV_ENABLED' public='false' value='1' include='`${ClkHfCsv}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CSV_ACCURACY' public='false' value='`${accuracyCsv}`UL' include='`${ClkHfCsv}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CSV_ACTION' public='false' value='CY_SYSCLK_CLKHF_CSV_ACTION_`${actionCsv}`' include='`${ClkHfCsv}`' />
+
+    <ConfigStruct name='cycfg_hf`${clockInst}`Config' type='cycfg_clkhf_config_t' const='true' public='true' include='true'>
+      <Member name='source' value='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CLKPATH' />
+      <Member name='divider' value='CY_CFG_SYSCLK_CLKHF`${clockInst}`_DIVIDER' />
+    </ConfigStruct>
+    <ConfigStruct name='cycfg_hf`${clockInst}`CsvConfig' type='cycfg_clkhf_csv_config_t' const='true' public='true' include='`${ClkHfCsv}`'>
+      <Member name='refClk' value='CY_SYSCLK_CLKHF_CSV_REF_`${sourceClockCsv}`' />
+      <Member name='accuracy' value='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CSV_ACCURACY' />
+      <Member name='action' value='CY_CFG_SYSCLK_CLKHF`${clockInst}`_CSV_ACTION' />
+    </ConfigStruct>
+  </ConfigFirmware>
+</PersonalityTemplate>

@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_adc_scangrp-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* Scan Group personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2024-2025 Cypress Semiconductor Corporation (an Infineon company)
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_adc_scangrp' name='SAR ADC Scan Groups' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <PhysicalResource ipblock='mxs22lppass' version='1'>
+    <PhysicalResource type='sar'>
+      <VirtualResourceDefinition type='group'
+                                 display_name='Group $idx{0}'
+                                 display_path='$display_path{1}/$display_name{1}/Scan Groups'
+                                 display_mode='DYNAMIC'
+                                 count='32'>
+        <VirtualResourceDefinition type='scan'
+                                   display_name='Scan $idx{0}'
+                                   display_path='$display_path{1}/$display_name{1}'
+                                   display_mode='DYNAMIC'
+                                   count='32'/>
+      </VirtualResourceDefinition>
+    </PhysicalResource>
+  </PhysicalResource>
+
+  <FittingRules>
+   <MappingRules>
+     <IpBlock name='mxs22lppass' />
+     <Resource name='pass\.sar\.group'/>
+   </MappingRules>
+   <RoutingRules>
+   </RoutingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='conversionMode'       paramId='conversionMode'/>
+    <ExposedMember key='simultaneousSampling' paramId='simultaneousSampling'/>
+  </ExposedMembers>
+
+    <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_ac'
+                 name='inst_ac'
+                 group='Internal'
+                 default='`${getInstNumber("ac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='operatingMode' name='operatingMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_ac, "opMode")}`'/>
+    <ParamString id='lpAutosetConversionRate' name='lpAutosetConversionRate' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_lpAutosetConversionRate")}`'/>
+    <ParamString id='hsAutosetConversionRate' name='hsAutosetConversionRate' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_hsAutosetConversionRate")}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamChoice id='conversionMode'
+                 name='Conversion Mode'
+                 group='Scan Groups'
+                 visible='true'
+                 editable='true'
+                 desc='Select Single-Shot or Continuous conversion mode'
+                 default='false'>
+      <Entry name='Single'     value='false' visible='true'/>
+      <Entry name='Continuous' value='true'  visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='simultaneousSampling'
+               name='Simultaneous Sampling'
+               group='Scan Groups'
+               visible='`${(operatingMode eq "HighSpeed")}`'
+               editable='true'
+               desc='Enables Simultaneous Sampling of the Channels in this Scan Group in High Speed mode'
+               default='false'/>
+<!-- DRIVERS-19853
+    <ParamString id='conversionTime'
+                 name='Set conversion Time'
+                 group='Scan Groups'
+                 default='TBD'
+                 visible='`${(operatingMode eq "HighSpeed" ? hsAutosetConversionRate : lpAutosetConversionRate) &amp;&amp; (!conversionMode)}`'
+                 editable='true'
+                 desc='Automatically set conversion time for the scan group by adjusting sample times and accumulation' />
+
+    <ParamString id='conversionRate'
+                 name='Set conversion Rate'
+                 group='Scan Groups'
+                 default='TBD'
+                 visible='`${(operatingMode eq "HighSpeed" ? hsAutosetConversionRate : lpAutosetConversionRate) &amp;&amp; (conversionMode)}`'
+                 editable='true'
+                 desc='Automatically set conversion rate for scan group by adjusting sample times and accumulation' />
+
+    <ParamString id='achievedConversionTime'
+                 name='Achieved conversion Time'
+                 group='Scan Groups'
+                 default='TBD'
+                 visible='true'
+                 editable='false'
+                 desc='Expected conversion time for the entire scan group' />
+
+    <ParamString id='achievedConversionRate'
+                 name='Achieved conversion Rate'
+                 group='Scan Groups'
+                 default='TBD'
+                 visible='`${(conversionMode)}`'
+                 editable='false'
+                 desc='Expected sample rate for the entire scan group' />
+-->
+    </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Parent resource for ADC Scan Groups should be enabled and configured.' condition='`${!isBlockUsed(resource_sar)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_sar}`' value='lppass_adc-1.0' valid='true' />
+    </DRC>
+  </DRCs>
+
+</PersonalityTemplate>

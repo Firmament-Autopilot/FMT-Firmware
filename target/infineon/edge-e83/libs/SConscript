@@ -1,0 +1,35 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd = GetCurrentDir()
+src = []
+group = []
+CPPPATH = []
+DIR = '/TARGET_APP_KIT_PSE84_EVAL_EPC2/'
+
+if rtconfig.PLATFORM in ['iccarm']:
+    print("\nThe current project does not support IAR build\n")
+    Return('group')
+elif rtconfig.PLATFORM in ['gcc', 'armclang']:
+
+        src += ['TARGET_APP_KIT_PSE84_EVAL_EPC2/cybsp.c']
+        src += ['TARGET_APP_KIT_PSE84_EVAL_EPC2/system_edge.c']
+        src += Glob('TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource/*.c')
+
+        if GetDepend(['KIT_PROCE84_EVK_M55']):
+                src += ['TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM55/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c']
+                src += ['TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM55/COMPONENT_NON_SECURE_DEVICE/ns_start_pse84.c']
+        if GetDepend(['KIT_PROCE84_EVK_M33']):
+                src += ['TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c']
+                src += ['TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_start_pse84.c']
+
+        CPPPATH = [
+                cwd + DIR,
+                cwd + DIR + 'config/GeneratedSource',
+                cwd + DIR + 'config',
+                cwd + DIR + 'bluetooth'
+        ]
+
+group = DefineGroup('libs', src, depend=[''], CPPPATH=CPPPATH, LOCAL_CPPPATH=CPPPATH)
+Return('group')

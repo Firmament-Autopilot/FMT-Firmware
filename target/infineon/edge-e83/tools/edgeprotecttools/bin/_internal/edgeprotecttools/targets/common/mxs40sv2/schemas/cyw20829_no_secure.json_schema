@@ -1,0 +1,534 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema#",
+    "id": "#",
+    "required": true,
+    "type": "object",
+    "properties": {
+        "device_policy": {
+            "id": "device_policy",
+            "required": true,
+            "type": "object",
+            "description" : "Device configuration parameters",
+            "properties": {
+                "debug": {
+                    "id": "debug",
+                    "required": false,
+                    "type": "object",
+                    "description" : "Debug access restrictions",
+                    "properties": {
+                        "cpu": {
+                            "id": "cpu",
+                            "required": true,
+                            "type": "object",
+                            "description" : "CM33 debug access port (DAP) access restrictions",
+                            "properties": {
+                                "ap_cm33": {
+                                    "id": "ap_cm33",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the CM33 debug access port availability in the SECURE or NORMAL_NO_SECURE LCS",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Disable", "Permanently Disable"]
+                                        }
+                                    }
+                                },
+                                "listen_window": {
+                                    "id": "listen_window",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the listen window time to acquire the CM33 debug access port in the SECURE or NORMAL_NO_SECURE LCS",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["100 ms", "20 ms", "2 ms", "0 ms"]
+                                        }
+                                    }
+                                },
+                                "cm33_dbg": {
+                                    "id": "cm33_dbg",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the invasive debug of CM33 core",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Disable", "Permanently Disable"]
+                                        }
+                                    }
+                                },
+                                "cm33_nid": {
+                                    "id": "cm33_nid",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the non-invasive debug of CM33 core",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Disable", "Permanently Disable"]
+                                        }
+                                    }
+                                },
+                                "dead_ap_cm33": {
+                                    "id": "dead_ap_cm33",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the CM33 debug access port availability in the DEAD branch",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Permanently Disable"]
+                                        }
+                                    }
+                                },
+                                "dead_cm33_dbg": {
+                                    "id": "dead_cm33_dbg",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the invasive debug of CM33 core in the DEAD branch",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Permanently Disable"]
+                                        }
+                                    }
+                                },
+                                "dead_cm33_nid": {
+                                    "id": "dead_cm33_nid",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the non-invasive debug of CM33 core in the DEAD branch",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Permanently Disable"]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "system": {
+                            "id": "system",
+                            "required": true,
+                            "type": "object",
+                            "description" : "System debug access port (DAP) access restrictions",
+                            "properties": {
+                                "ap": {
+                                    "id": "ap",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the System debug access port (DAP) availability in the SECURE or NORMAL_NO_SECURE LCS",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Disable", "Permanently Disable"]
+                                        }
+                                    }
+                                },
+                                "mpc/ppc": {
+                                    "id": "mpc/ppc",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Indicates that the MPC/PPC on the system access port must be programmed and locked according to the settings in the next fields",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Disable"]
+                                        }
+                                    }
+                                },
+                                "sram": {
+                                    "id": "sram",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures what portion of SRAM macro 0 is accessible through the System debug access port in the SECURE or NORMAL_NO_SECURE LCS. Only a portion of SRAM starting at the bottom of the area is exposed",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Entire region", "7/8", "3/4", "1/2", "1/4", "1/8", "1/16", "Nothing"]
+                                        }
+                                    }
+                                },
+                                "mmio": {
+                                    "id": "mmio",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures what portion of the MMIO region is accessible through the System debug access port in the SECURE or NORMAL_NO_SECURE LCS",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["All", "Only IPC", "No access"]
+                                        }
+                                    }
+                                },
+                                "dead_ap": {
+                                    "id": "dead_ap",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures the System debug access port (DAP) availability in the DEAD branch",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Permanently Disable"]
+                                        }
+                                    }
+                                },
+                                "dead_mpc/ppc": {
+                                    "id": "dead_mpc/ppc",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Indicates that the MPC/PPC on the system access port must be programmed and locked in the DEAD branch according to the next fields settings",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Enable", "Disable"]
+                                        }
+                                    }
+                                },
+                                "dead_sram": {
+                                    "id": "dead_sram",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures what portion of SRAM macro 0 is accessible through the System debug access port in the DEAD branch. Only a portion of SRAM starting at the bottom of the area is exposed",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["Entire region", "7/8", "3/4", "1/2", "1/4", "1/8", "1/16", "Nothing"]
+                                        }
+                                    }
+                                },
+                                "dead_mmio": {
+                                    "id": "dead_mmio",
+                                    "required": true,
+                                    "type": "object",
+                                    "description": "Configures what portion of the MMIO region is accessible through the system debug access port in the DEAD branch",
+                                    "properties": {
+                                        "value":
+                                        {
+                                            "type": "string",
+                                            "enum": ["All", "Only IPC", "No access"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "smif_config": {
+                    "id": "smif_config",
+                    "required": false,
+                    "type": "object",
+                    "description": "SMIF Configuration",
+                    "properties": {
+                        "smif_configuration": {
+                            "id": "smif_configuration",
+                            "required": true,
+                            "description": "SMIF Configuration",
+                            "type": "object",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string",
+                                    "enum": ["SFDP 1.5 and above", "QER_1", "QER_2", "QER_3", "QER_4", "QER_5", "QER_6"]
+                                }
+                            }
+                        },
+                        "chip_select": {
+                            "id": "chip_select",
+                            "required": true,
+                            "description": "Chip Select",
+                            "type": "object",
+                            "properties": {
+                                "value":
+                                {
+                                   "type": "string",
+                                    "enum": ["CS0", "CS1"]
+                                }
+                            }
+                        },
+                        "data_width": {
+                            "id": "data_width",
+                            "required": true,
+                            "description": "Data width",
+                            "type": "object",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string",
+                                    "enum": ["1X", "2X", "4X"]
+                                }
+                            }
+                        },
+                        "data_select": {
+                            "id": "data_select",
+                            "required": true,
+                            "description": "Data Select",
+                            "type": "object",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string",
+                                    "enum": ["SEL0", "SEL1"]
+                                }
+                            }
+                        },
+                        "addressing_mode": {
+                            "id": "addressing_mode",
+                            "required": true,
+                            "description": "Addressing Mode",
+                            "type": "object",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string",
+                                    "enum": ["3-byte", "4-byte"]
+                                }
+                            }
+                        },
+                        "encryption": {
+                            "id": "encryption",
+                            "required": false,
+                            "description": "Enables SMIF encryption",
+                            "properties": {
+                                "value": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "reprovisioning": {
+                    "id": "reprovisioning",
+                    "required": false,
+                    "type": "object",
+                    "description": "Re-provisioning assets",
+                    "properties": {
+                        "nv_counter": {
+                            "id": "nv_counter",
+                            "required": false,
+                            "description": "Anti-rollback counter (supports up to 32 updates)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 32
+                                }
+                            }
+                        },
+                        "revoke_oem_pubkey_0": {
+                            "id": "revoke_oem_pubkey_0",
+                            "required": false,
+                            "description": "Revokes OEM public key 0. The OEM public key 1 is used for image verification (this can be done only once). This option is not applicable if SMIF encryption is enabled",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "revoke_icv_pubkey_0": {
+                            "id": "revoke_icv_pubkey_0",
+                            "required": false,
+                            "description": "Revokes ICV public key 0. The ICV public key 1 is used for service application verification (this can be done only once)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "flow_control": {
+                    "id": "flow_control",
+                    "required": true,
+                    "type": "object",
+                    "description": "Flow Control",
+                    "properties": {
+                        "target_lcs": {
+                            "id": "target_lcs",
+                            "required": true,
+                            "description": "The device LCS after the device is reset after service application completes execution",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "string",
+                                    "enum": ["NORMAL", "NORMAL_NO_SECURE", "SECURE"]
+                                }
+                            }
+                        },
+                        "program_oem_assets": {
+                            "id": "program_oem_assets",
+                            "required": false,
+                            "description": "Programs OEM assets (SMIF_CONFIG, LISTEN_WINDOW, ACCESS RESTRICTIONS) and makes them immutable (this can be done only once)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "program_oem_key_0_hash": {
+                            "id": "program_oem_key_0_hash",
+                            "required": false,
+                            "description": "Programs the OEM key 0 hash and makes it immutable (this can be done only once)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "program_oem_key_1_hash": {
+                            "id": "program_oem_key_1_hash",
+                            "required": false,
+                            "description": "Programs the OEM key 1 hash and makes it immutable (this can be done only once)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "program_oem_secure_key": {
+                            "id": "program_oem_secure_key",
+                            "required": false,
+                            "description": "Programs the OEM secure key and makes it immutable (this can be done only once)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "pre_build": {
+            "id": "pre_build",
+            "required": false,
+            "type": "object",
+            "description": "Pre-build parameters",
+            "properties": {
+                "keys": {
+                    "id": "keys",
+                    "required": false,
+                    "type": "object",
+                    "description": "Paths the OEM symmetric public keys and asymmetric key (optional)",
+                    "properties": {
+                        "oem_pub_key_0": {
+                            "id": "oem_pub_key_0",
+                            "required": false,
+                            "description": "Path to the OEM public key 0",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "oem_pub_key_1": {
+                            "id": "oem_pub_key_1",
+                            "required": false,
+                            "description": "Path to the OEM public key 1",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "encrypt_key": {
+                            "id": "encrypt_key",
+                            "required": false,
+                            "description": "Path to the AES-128 key for image encryption",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "oem_secure_key": {
+                            "id": "oem_secure_key",
+                            "required": false,
+                            "description": "Hex string (16-bytes) or path to the OEM secure key",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "post_build": {
+        "id": "post_build",
+        "required": false,
+        "type": "object",
+        "description": "Post-build parameters",
+            "properties": {
+                "keys": {
+                    "id": "keys",
+                    "required": false,
+                    "type": "object",
+                    "description": "Paths the OEM symmetric private keys and asymmetric key (optional)",
+                    "properties": {
+                        "oem_priv_key_0": {
+                            "id": "oem_priv_key_0",
+                            "required": false,
+                            "description": "Path to the OEM private key 0",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "oem_priv_key_1": {
+                            "id": "oem_priv_key_1",
+                            "required": false,
+                            "description": "Path to the OEM private key 1",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "smif_aes_key": {
+                            "id": "smif_aes_key",
+                            "required": false,
+                            "description": "Path to the AES-128 key for image encryption",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

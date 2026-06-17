@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file pclk_v2.cypersonality
+* \version 1.0
+*
+* \brief
+* Peripheral Clock personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2020-2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='pclk_v2' name='Peripheral Clock' version='1.1' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxperi_ver3,mxsperi' />
+      <Resource name='peri\.group\.div_(8|16|16_5|24_5)' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='peripheral_clock_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='divider' paramId='divider' />
+      <ExposedMember key='type' paramId='typeApiConst' />
+      <ExposedMember key='sourceClockRsc' paramId='sourceClockRsc' />
+      <ExposedMember key='clockSel' paramId='clockSel' />
+      <ExposedMember key='instName' paramId='instName' />
+      <ExposedMember key='number' paramId='number' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__clk__peripheral.html' linkText='Open Peripherals Clock Dividers Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <!-- Find the root HF clock used, if applicable -->
+    <ParamSignal port='clk_pclk_root[0]' canBeEmpty='false' visible='true' group='General' name='Source Clock' desc='Source Clock'  />
+    <ParamString id='hf_clk_idx' name='' group='Internal' default='`${getInstFromLocation(getBlockFromSignal("clk_pclk_root[0]"), "hfclk")}`' visible='false' editable='false' desc='Source clock' />
+
+    <!-- Instance name -->
+    <ParamString id='instName' default='`${INST_NAME}`' />
+
+    <!-- Get the name of the source clock resource -->
+    <ParamString id='sourceClockRscV1' default='srss[0].clock[0].hfclk[`${getInstNumber("group")}`]' />
+    <ParamString id='sourceClockRscV2' default='srss[0].clock[0].hfclk[`${hf_clk_idx}`]' />
+    <ParamString id='sourceClockRscV3' default='srss[0].clock[0].`${getInstNumber("group") == 0 ? "periclk[0]" : "hfclk[2]"}`' />
+    <ParamString id='sourceClockRsc' default='`${"mxsperi" eq getIpBlockName() ? (getVersion() == 1 ? sourceClockRscV1 : sourceClockRscV2) : sourceClockRscV3 }`' />
+
+    <!-- Source clock frequency -->
+    <ParamString id='sourceFreq' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+
+    <!-- Get the peripheral clock divider type, width and number -->
+    <ParamString id='type' default='`${getBlockType(2)}`' />
+    <ParamString id='width'  default='`${type eq "div_8" ? 8 : type eq "div_24_5" ? 24 : 16}`' />
+
+    <!-- Determine if the divider is fractional -->
+    <ParamBool   id='isFractional' default='`${(type eq "div_16_5") || (type eq "div_24_5")}`' />
+
+    <!-- Dividers -->
+    <ParamRange  id='intDivider' name='`${isFractional ? "Integer Divider" : "Divider"}`' group='General' default='1' min='1' max='`${pow(2, width)}`' resolution='1' visible='true' desc='' />
+    <ParamRange  id='fracDivider' name='Fractional Divider' group='General' default='0' min='0' max='31' resolution='1' visible='`${isFractional}`' desc='' />
+    <ParamString id='divider' default='`${isFractional ? intDivider + fracDivider / 32.0 : intDivider}`' />
+
+    <!-- Output frequency -->
+    <ParamString id='frequency' default='`${cast(int64, ((sourceFreq / cast(float, divider) + 0.0005) * 1000)) / 1000.0}`' editable='false' desc='The resulting output clock frequency' />
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The resulting output clock frequency' />
+    <ParamBool   id='startOnReset' name='Start on Reset' group='General' default='true' visible='true' desc='If checked, this option will cause the clock to be enabled by the clock initialization routine' />
+    <ParamSignal port='clk[0]' name='Peripherals' group='General' visible='true' desc='This signal can be used to drive peripherals' canBeEmpty='true' />
+
+    <ParamString id='typeApiConst' name='' group='Internal' default='CY_SYSCLK_`${toUpper(type)}`_BIT' />
+    <ParamString id='number' name='' group='Internal' default='`${getInstNumber(getBlockType(2))}`' />
+    <ParamString id='clockSel' name='' group='Internal' default='`${typeApiConst}`, `${number}`U' />
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='CLK_HF1 clock is not enabled' condition='`${!isBlockUsed("srss[0].clock[0].hfclk[1]") &amp;&amp; (getInstNumber("peri") == 0) &amp;&amp; (getInstNumber("group")  &gt; 0) &amp;&amp; ("mxsperi" eq getIpBlockName()) &amp;&amp; (getVersion() == 1)}`' >
+      <FixIt action='ENABLE_BLOCK' target='srss[0].clock[0].hfclk[1]' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='CLK_HF`${hf_clk_idx}` clock is not enabled' condition='`${!isBlockUsed(sourceClockRscV2) &amp;&amp; ("mxsperi" eq getIpBlockName()) &amp;&amp; (getVersion() == 2)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRscV2}`' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='CLK_HF2 clock is not enabled' condition='`${!isBlockUsed("srss[0].clock[0].hfclk[2]") &amp;&amp; (getInstNumber("group") &gt; 0) &amp;&amp; ("mxperi_ver3" eq getIpBlockName())}`' >
+      <FixIt action='ENABLE_BLOCK' target='srss[0].clock[0].hfclk[2]' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+
+    <ConfigDefine name="`${INST_NAME}`_HW" value="`${typeApiConst}`" public="true" include="true" guard="!defined (CY_USING_HAL) &amp;&amp; !defined (CY_USING_HAL_LITE)"/>
+    <ConfigDefine name='`${INST_NAME}`_NUM' value='`${number}`U' public='true' />
+    <ConfigDefine name='`${toUpper(INST_NAME)}`_GRP_NUM' value='((`${getInstNumber("group")}`U &lt;&lt; PERI_PCLK_GR_NUM_Pos) | (`${getInstNumber("peri")}`U &lt;&lt; PERI_PCLK_INST_NUM_Pos))' public='true' />
+    <ConfigDefine name='`${INST_NAME}`_GRP_NUM' value='`${toUpper(INST_NAME)}`_GRP_NUM' public='true' guard='!defined (`${INST_NAME}`_GRP_NUM)'/>
+
+    <ConfigInstruction value='Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)`${toUpper(INST_NAME)}`_GRP_NUM, `${clockSel}`);'  purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)`${toUpper(INST_NAME)}`_GRP_NUM, `${clockSel}`, `${intDivider-1}`U);' include='`${!isFractional}`'  purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_PeriPclkSetFracDivider((en_clk_dst_t)`${toUpper(INST_NAME)}`_GRP_NUM, `${clockSel}`, `${intDivider-1}`U, `${fracDivider}`U);' include='`${isFractional}`'  purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)`${toUpper(INST_NAME)}`_GRP_NUM, `${clockSel}`);' include='`${startOnReset}`'  purpose='INITIALIZE' />
+
+  </ConfigFirmware>
+</PersonalityTemplate>

@@ -1,0 +1,17 @@
+{
+    "policy": {
+        "platform": "cyw89829",
+        "version": 2.0,
+        "type": "reprovisioning_no_secure"
+    },
+    "device_policy":
+    {
+        "flow_control":
+        {
+            "sys_reset_req": {
+                "description": "Resets a device after service application completes execution",
+                "value": false
+            }
+        }
+    }
+}

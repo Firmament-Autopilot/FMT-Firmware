@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BehaviorDefintion xmlns="http://cypress.com/xsd/cybehavior_v1">
+  <!--Any clock or divider on the device. The clock tree diagrams use expressions to update what they display. Clocks displayed in the diagram are expected to implement this to allow for their speed to be displayed in the clock body.-->
+  <Behavior type="clock_v1">
+    <!--The current frequency of the clock. This is combined with the accuracy using `${formatFrequency(frequency, accuracy)}` to get the information to show in the clock body.-->
+    <Member key="frequency"/>
+    <!--The current accuracy of the clock. This is combined with the frequency using `${formatFrequency(frequency, accuracy)}` to get the information to show in the clock body.-->
+    <Member key="accuracy"/>
+  </Behavior>
+
+  <!--Input clocks that are directly connected to pins (eg: ExtClk, ECO, WCO). The clock tree diagrams use expressions to update what they display. Clocks displayed in the diagram that have multiple source options are expected to implement this to allow for their selected source to be shown in the mux feeding into them.-->
+  <Behavior type="clock_pin_v1">
+    <Extends type="clock_v1"/>
+    <!--Indication whether code generation should be suppressed for the pins connected to this clock.-->
+    <Member key="suppressCodeGen"/>
+  </Behavior>
+
+  <Behavior type="peripheral_clock_v1">
+    <Extends type="clock_v1"/>
+    <Member key="divider"/>
+    <Member key="type"/>
+    <Member key="sourceClockRsc"/>
+    <Member key="clockSel"/>
+    <Member key="instName"/>
+    <Member key="number"/>
+  </Behavior>
+
+  <!--Derived clocks that have multiple options for their source clock. The clock tree diagrams use expressions to update what they display. Clocks displayed in the diagram that have multiple source options are expected to implement this to allow for their selected source to be shown in the mux feeding into them.-->
+  <Behavior type="clock_sourced_v1">
+    <Extends type="clock_v1"/>
+    <!--The display name for the clock's source clock. This is displayed on a mux prior to the clock in the diagram to show the user the selected source clock.-->
+    <Member key="sourceClockDisplayName"/>
+  </Behavior>
+
+  <!--Clocks with clock supervisor. Code generation uses this to determine whether the CSV block should be enabled.-->
+  <Behavior type="clock_supervised_v1">
+    <Extends type="clock_sourced_v1"/>
+    <!--Indication whether The clock supervisor is enabled.-->
+    <Member key="csvEnabled"/>
+  </Behavior>
+
+  <!--Any special behavior for the MMIO clock to expose the standard clock_v1 behavior for all dividers. -->
+  <Behavior type="clock_mmio_v1">
+    <Member key="frequency$idx" repeatCount='16' />
+    <Member key="accuracy$idx" repeatCount='16' />
+    <Member key="displayedTargets$idx" repeatCount="16" />
+    <Member key="dividerEnabled$idx" repeatCount="16" />
+    <Member key='dividerFreq$idx' repeatCount="16" />
+  </Behavior>
+
+  <!-- Memory regions exposed by the memory personality -->
+  <Behavior type="memory_regions_v1">
+    <Member key="regionPhysMemIds" /> <!-- Semicolon-separated list of the physical memory ID of each region -->
+    <Member key="regionOffsets" /> <!-- Semicolon-separated list of the offset of each region from the beginning of the physical memory -->
+    <Member key="regionSizes" /> <!-- Semicolon-separated list of the size of each region in bytes -->
+    <Member key="regionIds" /> <!-- Semicolon-separated list of the name of each region -->
+    <Member key="regionCores" /> <!-- Semicolon-separated list of the core(s) each region is assigned to. Multiple cores may be separated by commas. -->
+    <Member key="regionDescription$idx{0}" repeatCount="256" /> <!-- Description of each region -->
+    <Member key="regionReservedGUIDs" /> <!-- Semicolon-separated list of reserved region GUIDs. User-defined regions should be listed as "USER_DEFINED" -->
+    <Member key="maxSupportedRegions" /> <!-- Maximum number of memory regions -->
+    <Member key="maxSupportedCores" /> <!-- Maximum number of cores -->
+    <Member key="maxSupportedViewMaps" /> <!-- Maximum number of address aliases for a physical memory -->
+  </Behavior>
+
+  <!-- Memory regions exposed by the memory personality -->
+  <Behavior type="memory_regions_v2">
+    <Member key="maxSupportedRegions" /> <!-- Maximum number of memory regions -->
+    <Member key="maxSupportedCores" /> <!-- Maximum number of cores -->
+    <Member key="maxSupportedViewMaps" /> <!-- Maximum number of address aliases for a physical memory -->
+  </Behavior>
+
+  <!-- Exposed data from memory_region_data personality. Other personalities should not implement this. -->
+  <Behavior type="memory_region_data_v1">
+    <Member key="regionId" /> <!-- Name of region -->
+    <Member key="memoryId" /> <!-- ID of memory memory that contains the region -->
+    <Member key="offset" /> <!-- Offset in bytes from beginning of containing memory -->
+    <Member key="size" /> <!-- Size in bytes -->
+    <Member key="domain" /> <!-- Protection domain ID -->
+    <Member key="reservedGuid" /> <!-- Reserved region GUID. User-defined regions should set this to "USER_DEFINED" -->
+    <Member key="description" /> <!-- Description of region -->
+  </Behavior>
+
+  <!-- Exposes data from MPU personality -->
+  <Behavior type="security_mpu_v1">
+    <Member key="name$idx" repeatCount="8" /> <!-- Name of each region -->
+    <Member key="enable$idx" repeatCount="8" /> <!-- State of each MPU region -->
+    <Member key="base_addr$idx" repeatCount="8" /> <!-- Base address of each MPU region -->
+    <Member key="end_addr$idx" repeatCount="8" /> <!-- End address of each MPU region -->
+  </Behavior>
+
+  <!-- Allows client personalities to expose memory ranges(aliases) that will be shown on the memory configurator -->
+  <Behavior type="memory_ranges_v1">
+    <Member key="memoryRangeCount" /> <!-- Number of ranges defined by the client -->
+    <Member key="memoryRangeName$idx" repeatCount="16" /> <!-- Name of each range -->
+    <Member key="memoryRangeDescription$idx" repeatCount="16" /> <!-- Description of the range -->
+    <Member key="memoryRangeMemoryId$idx" repeatCount="16" /> <!-- Memory ID for the memory used by the range -->
+    <Member key="memoryRangeOffset$idx" repeatCount="16" /> <!-- Offset of the range within its Memory -->
+    <Member key="memoryRangeSize$idx" repeatCount="16" /> <!-- Size in bytes of the range -->
+  </Behavior>
+
+  <!-- Information about chip power configuration -->
+  <Behavior type="power_v1">
+    <Member key='vddaMv'/>
+    <Member key='usingUlp'/>
+    <Member key='usingLp'/>
+    <Member key='usingHp'/>
+    <Member key='deepsleepWhenIdle'/>
+    <Member key='activePowerMode'/>
+    <Member key='pd1Enable'/>
+  </Behavior>
+
+  <!-- Exposed data from reserved memory regions -->
+  <Behavior type="reserved_v1">
+    <Member key="guid" />
+    <Member key="is_name_user_editable" />
+    <Member key="name" />
+    <Member key="is_size_user_editable" />
+    <Member key="size" />
+    <Member key="is_offset_user_editable" />
+    <Member key="offset" />
+    <Member key="is_cores_user_editable" />
+    <Member key="cores" />
+    <Member key="is_memory_user_editable" />
+    <Member key="memory" />
+    <Member key="required_memory_capabilities" />
+    <Member key="is_protection_user_editable" />
+    <Member key="protection" />
+  </Behavior>
+
+</BehaviorDefintion>

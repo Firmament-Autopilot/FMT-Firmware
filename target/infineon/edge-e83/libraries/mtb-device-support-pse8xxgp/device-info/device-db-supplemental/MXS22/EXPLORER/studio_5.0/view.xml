@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns="http://cypress.com/xsd/cystudioview_v2">
+  <Parameters>
+    <Param name="PERI0_MMIO0_TARGETS" value="mxrramc[0];m33syscpuss[0];mxsramc[0];mxsramc[1];mxcm33[0];mxipc[0];mxfault[0];srss[0];debug600[0];m0seccpuss[0];crypto[0]" />
+    <Param name="PERI0_MMIO1_TARGETS" value="ioss[0];canfd[0].chan[0];canfd[0].chan[1];tcpwm[0];lpcomp[0].comp[0];lpcomp[0].comp[1];scb[0];scb[2];scb[3];scb[4];scb[5];scb[6];scb[7];scb[8];scb[9];scb[10];scb[11];i3c[0]" />
+    <Param name="PERI0_MMIO2_TARGETS" value="dft[0];eth[0]" />
+    <Param name="PERI0_MMIO3_TARGETS" value="scb[1]" />
+    <Param name="PERI0_MMIO4_TARGETS" value="mxnnlite[0]" />
+    <Param name="PERI0_MMIO5_TARGETS" value="pass[0]" />
+    <Param name="PERI1_MMIO0_TARGETS" value="m55appcpuss[0];mxcm55[0];saxidmac[0];mxipc[1]" />
+    <Param name="PERI1_MMIO1_TARGETS" value="pdm[0];tdm[0].tdm[0];tdm[0].tdm[1];smif[0].core[0];smif[0].core[1];smif[1].core[0];smif[1].core[1]" />
+    <Param name="PERI1_MMIO2_TARGETS" value="mxu55[0];socmem[0]" />
+    <Param name="PERI1_MMIO3_TARGETS" value="gfxss[0];sdhc[0];sdhc[1];usbhs[0]" />
+    <Param name="PERI1_MMIO4_TARGETS" value="m55appcpuss[0]" />
+  </Parameters>
+  <ExposedParameterKeys>
+    <ExposedParamKey id="PERI0_MMIO0_TARGETS" param_name="PERI0_MMIO0_TARGETS" />
+    <ExposedParamKey id="PERI0_MMIO1_TARGETS" param_name="PERI0_MMIO1_TARGETS" />
+    <ExposedParamKey id="PERI0_MMIO2_TARGETS" param_name="PERI0_MMIO2_TARGETS" />
+    <ExposedParamKey id="PERI0_MMIO3_TARGETS" param_name="PERI0_MMIO3_TARGETS" />
+    <ExposedParamKey id="PERI0_MMIO4_TARGETS" param_name="PERI0_MMIO4_TARGETS" />
+    <ExposedParamKey id="PERI0_MMIO5_TARGETS" param_name="PERI0_MMIO5_TARGETS" />
+    <ExposedParamKey id="PERI1_MMIO0_TARGETS" param_name="PERI1_MMIO0_TARGETS" />
+    <ExposedParamKey id="PERI1_MMIO1_TARGETS" param_name="PERI1_MMIO1_TARGETS" />
+    <ExposedParamKey id="PERI1_MMIO2_TARGETS" param_name="PERI1_MMIO2_TARGETS" />
+    <ExposedParamKey id="PERI1_MMIO3_TARGETS" param_name="PERI1_MMIO3_TARGETS" />
+    <ExposedParamKey id="PERI1_MMIO4_TARGETS" param_name="PERI1_MMIO4_TARGETS" />
+  </ExposedParameterKeys>
+  <MpcLocations location="mpc_locations.cydata" />
+  <CustomData location="protection.cydata" />
+  <CustomData location="protection_regions.cydata" />
+</View>

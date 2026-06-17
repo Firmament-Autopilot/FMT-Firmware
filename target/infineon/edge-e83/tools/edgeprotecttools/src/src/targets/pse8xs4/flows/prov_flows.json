@@ -1,0 +1,42 @@
+{
+  "flows": {
+    "prov_oem": {
+      "desc": "Normal provisioned",
+      "apps": [
+        "prov_oem"
+      ]
+    },
+    "rma": {
+      "desc": "Converts a part to RMA LCS",
+      "apps": [
+        "to_rma"
+      ]
+    },
+    "device_integrity_exam": {
+      "desc": "Device Integrity Exam app ensures that there is a genuine Infineon device and it is in a known state",
+      "apps": [
+        "device_integrity_exam"
+      ]
+    },
+    "factory_reset": {
+      "desc": "This application injects default factory assets and resets device to factory state.",
+      "apps": [
+        "factory_reset"
+      ]
+    },
+    "se_rt_services_update": {
+      "desc": "This application updates se_rt_services image.",
+      "apps": [
+        "se_rt_services_update"
+      ]
+    }
+  },
+  "paths": {
+    "prov_oem": "../packets/apps/prov_oem/config.json",
+    "to_rma": "../packets/apps/to_rma/config.json",
+    "device_integrity_exam": "../packets/apps/device_integrity_exam/config.json",
+    "factory_reset": "../packets/apps/factory_reset/config.json",
+    "se_rt_services_update": "../packets/apps/se_rt_services_update/config.json",
+    "extended_boot": "../packets/apps/extended_boot/info.txt"
+  }
+}

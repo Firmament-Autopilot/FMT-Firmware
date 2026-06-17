@@ -1,0 +1,12 @@
+{
+    "opt": {
+        "documentation": [
+            {
+                "type": "api-guide",
+                "title": "CMSIS Reference Guide",
+                "location": "docs/cmsis_reference_manual.html",
+                "path": ["Reference Guides", "CMSIS"]
+            }
+        ]
+    }
+}

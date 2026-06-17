@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="partition__edge_8h" kind="file" language="C++">
+    <compoundname>partition_edge.h</compoundname>
+    <includedby refid="partition__ARMCM33_8h" local="yes">partition_ARMCM33.h</includedby>
+    <includedby refid="system__edge_8h" local="yes">system_edge.h</includedby>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="partition__edge_8h_1a34480f40358fc14434e1f2a546298318" prot="public" static="no">
+        <name>MMIO_NS_M33SYS_START</name>
+        <initializer>0x42000000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="30" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1aacc20387c011d242e4a3e0b5a34e2170" prot="public" static="no">
+        <name>MMIO_S_M33SYS_START</name>
+        <initializer>0x52000000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="32" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1a4a1a8141ded7406f1d54de5ec5c9c4c0" prot="public" static="no">
+        <name>MMIO_M33SYS_SIZE</name>
+        <initializer>0x02000000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="34" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1a0a2c816a8890e25386fb9408614ec687" prot="public" static="no">
+        <name>MMIO_NS_M55APP_START</name>
+        <initializer>0x44000000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="37" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1a4287e5b1167cc456fcfd9a73b084897b" prot="public" static="no">
+        <name>MMIO_S_M55APP_START</name>
+        <initializer>0x54000000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="39" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1a4f78bdf36e2b998b791e5d69786cab3f" prot="public" static="no">
+        <name>MMIO_M55APP_SIZE</name>
+        <initializer>0x01000000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="41" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1aa4a0866f95fab5403724626bc0bc27dd" prot="public" static="no">
+        <name>SRAM0_NS_SAHB_START</name>
+        <initializer>CY_SRAM_NS_SBUS_BASE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="44" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1aa38ace5b3bdaace7b3d72537dac5facc" prot="public" static="no">
+        <name>RRAM_NS_SAHB_START</name>
+        <initializer>CY_RRAM_NS_SBUS_BASE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="46" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1a48bc0ab6700a3c5d74972799be90b270" prot="public" static="no">
+        <name>SOCMEM_NS_RAM_SAHB_START</name>
+        <initializer>CY_SOCMEM_RAM_NS_SBUS_BASE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="48" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1a575b202ae801a51755b614f6760bc51a" prot="public" static="no">
+        <name>FLASH_NS_SAHB_START</name>
+        <initializer>CY_XIP_PORT0_BASE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="50" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="partition__edge_8h_1a07b7ba45069d594eaef7ce8c884abed7" prot="public" static="no">
+        <name>SOCMEM_RAM_SIZE</name>
+        <initializer>0x00500000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" line="52" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="version"><para>1.0.0</para>
+</simplesect>
+Partition file contains memory addresses</para>
+<para>The main purpose of the partition file is to describe how the sections in the linker files should be mapped into the output file, and to control the memory layout of the output file.</para>
+<para><simplesect kind="copyright"><para>Copyright (c) (2020-2025), Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation. SPDX-License-Identifier: Apache-2.0</para>
+</simplesect>
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <verbatim>http://www.apache.org/licenses/LICENSE-2.0
+</verbatim> Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/***************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>SYS_MMIO<sp/>registers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MMIO_NS_M33SYS_START<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x42000000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>SYS_MMIO<sp/>registers<sp/>for<sp/>secure<sp/>access</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MMIO_S_M33SYS_START<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x52000000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Size<sp/>of<sp/>the<sp/>SYS_MMIO<sp/>registers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MMIO_M33SYS_SIZE<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x02000000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>APP_MMIO<sp/>registers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MMIO_NS_M55APP_START<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x44000000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>APP_MMIO<sp/>registers<sp/>for<sp/>secure<sp/>access</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MMIO_S_M55APP_START<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x54000000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Size<sp/>of<sp/>the<sp/>APP_MMIO<sp/>registers<sp/>(APP_MMIO<sp/>0<sp/>through<sp/>3)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MMIO_M55APP_SIZE<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x01000000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>SRAM<sp/>non-secure<sp/>SAHB</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SRAM0_NS_SAHB_START<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CY_SRAM_NS_SBUS_BASE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>RRAM<sp/>non-secure<sp/>SAHB</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RRAM_NS_SAHB_START<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CY_RRAM_NS_SBUS_BASE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>SOCMEM<sp/>non-secure<sp/>SAHB</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SOCMEM_NS_RAM_SAHB_START<sp/><sp/><sp/>CY_SOCMEM_RAM_NS_SBUS_BASE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Start<sp/>address<sp/>of<sp/>the<sp/>EXT<sp/>FLASH<sp/>non-secure<sp/>SAHB</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FLASH_NS_SAHB_START<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CY_XIP_PORT0_BASE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Size<sp/>of<sp/>SOCMEM_RAM</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SOCMEM_RAM_SIZE<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x00500000</highlight></codeline>
+    </programlisting>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/partition_edge.h"/>
+  </compounddef>
+</doxygen>

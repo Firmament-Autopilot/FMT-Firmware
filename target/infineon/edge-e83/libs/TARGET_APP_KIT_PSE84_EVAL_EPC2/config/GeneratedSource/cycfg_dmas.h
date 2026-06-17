@@ -1,0 +1,139 @@
+/*******************************************************************************
+ * File Name: cycfg_dmas.h
+ *
+ * Description:
+ * DMA configuration
+ * This file was automatically generated and should not be modified.
+ * Configurator Backend 3.70.0
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.5.0.1072
+ *
+ *******************************************************************************
+ * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
+ * an affiliate of Cypress Semiconductor Corporation.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+#if !defined(CYCFG_DMAS_H)
+#define CYCFG_DMAS_H
+
+#include "cycfg_notices.h"
+#include "cy_dma.h"
+
+#if defined (COMPONENT_MTB_HAL)
+#include "mtb_hal.h"
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined(__cplusplus)
+extern "C" {
+#endif /* defined(__cplusplus) */
+
+#define CYBSP_UART2_TX_DMA_ENABLED 1U
+#define CYBSP_UART2_TX_DMA_HW DW0
+#define CYBSP_UART2_TX_DMA_CHANNEL 0U
+#define CYBSP_UART2_TX_DMA_IRQ cpuss_interrupts_dw0_0_IRQn
+#define CYBSP_UART1_TX_DMA_ENABLED 1U
+#define CYBSP_UART1_TX_DMA_HW DW0
+#define CYBSP_UART1_TX_DMA_CHANNEL 1U
+#define CYBSP_UART1_TX_DMA_IRQ cpuss_interrupts_dw0_1_IRQn
+#define CYBSP_UART5_TX_DMA_ENABLED 1U
+#define CYBSP_UART5_TX_DMA_HW DW0
+#define CYBSP_UART5_TX_DMA_CHANNEL 2U
+#define CYBSP_UART5_TX_DMA_IRQ cpuss_interrupts_dw0_2_IRQn
+#define CYBSP_UART10_TX_DMA_ENABLED 1U
+#define CYBSP_UART10_TX_DMA_HW DW0
+#define CYBSP_UART10_TX_DMA_CHANNEL 3U
+#define CYBSP_UART10_TX_DMA_IRQ cpuss_interrupts_dw0_3_IRQn
+#define CYBSP_UART11_TX_DMA_ENABLED 1U
+#define CYBSP_UART11_TX_DMA_HW DW0
+#define CYBSP_UART11_TX_DMA_CHANNEL 4U
+#define CYBSP_UART11_TX_DMA_IRQ cpuss_interrupts_dw0_4_IRQn
+#define CYBSP_UART9_TX_DMA_ENABLED 1U
+#define CYBSP_UART9_TX_DMA_HW DW0
+#define CYBSP_UART9_TX_DMA_CHANNEL 5U
+#define CYBSP_UART9_TX_DMA_IRQ cpuss_interrupts_dw0_5_IRQn
+#define CYBSP_UART4_TX_DMA_ENABLED 1U
+#define CYBSP_UART4_TX_DMA_HW DW0
+#define CYBSP_UART4_TX_DMA_CHANNEL 6U
+#define CYBSP_UART4_TX_DMA_IRQ cpuss_interrupts_dw0_6_IRQn
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART2_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART2_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART2_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART2_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART2_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART1_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART1_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART1_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART1_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART1_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART5_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART5_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART5_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART5_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART5_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART10_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART10_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART10_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART10_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART10_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART11_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART11_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART11_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART11_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART11_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART9_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART9_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART9_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART9_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART9_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART4_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART4_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART4_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART4_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART4_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+#if defined(__cplusplus)
+}
+#endif /* defined(__cplusplus) */
+
+#endif /* CYCFG_DMAS_H */

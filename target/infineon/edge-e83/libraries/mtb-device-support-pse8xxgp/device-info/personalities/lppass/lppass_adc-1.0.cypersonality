@@ -1,0 +1,1353 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_adc-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* SAR ADC personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_adc' name='SAR ADC' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs22lppass' />
+      <Resource name='pass\.sar'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='INST_NAME_adc'                paramId='INST_NAME_adc' />
+    <ExposedMember key='sar_adcIsUsed'                paramId='adcIsUsed'/>
+    <ExposedMember key='sar_differentialMode'         paramId='differentialMode'/>
+    <ExposedMember key='sar_opMode'                   paramId='operatingMode'/>
+    <ExposedMember key='sar_lpAutosetConversionRate'  paramId='lpAutosetConversionRate'/>
+    <ExposedMember key='sar_hsAutosetConversionRate'  paramId='hsAutosetConversionRate'/>
+    <ExposedMember key='sar_accumulationMode'         paramId='accumulationMode'/>
+    <ExposedMember key='sar_accumulationShiftMode'    paramId='accumulationShiftMode'/>
+    <ExposedMember key='sar_limitDetection'           paramId='limitDetection'/>
+    <ExposedMember key='sar_limitCondition$idx'       paramId='limitCondition$idx'          repeatCount='4'/>
+    <ExposedMember key='sar_lowerThreshold$idx'       paramId='lowerThreshold$idx'          repeatCount='4'/>
+    <ExposedMember key='sar_upperThreshold$idx'       paramId='upperThreshold$idx'          repeatCount='4'/>
+    <ExposedMember key='sar_offsetAndGainCorrection'  paramId='offsetAndGainCorrection'/>
+    <ExposedMember key='sar_hsGpioResultMaskValue'    paramId='hsGpioResultMaskValue'/>
+    <ExposedMember key='sar_lpMuxResultMaskValue'     paramId='lpMuxResultMaskValue'/>
+    <ExposedMember key='sar_allowBufferBypass'        paramId='allowBufferBypass'/>
+    <ExposedMember key='sar_noninvInputBufferPower'   paramId='noninvInputBufferPower'/>
+    <ExposedMember key='sar_invInputBufferPower'      paramId='invInputBufferPower'/>
+    <ExposedMember key='sar_vrefSel'                  paramId='sar_vrefSel'/>
+    <ExposedMember key='sar_gpiochan_$idx_enabled'    paramId='gpiochan_$idx_enabled'       repeatCount='8'/>
+    <ExposedMember key='sar_muxchan_$idx_enabled'     paramId='muxchan_$idx_enabled'        repeatCount='16'/>
+    <ExposedMember key='sar_scanCnt'                  paramId='total_scanCnt'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_prb'
+                 name='inst_prb'
+                 group='Internal'
+                 default='`${getInstNumber("prb")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_ac'
+                 name='inst_ac'
+                 group='Internal'
+                 default='`${getInstNumber("ac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_fifo'
+                 name='inst_fifo'
+                 group='Internal'
+                 default='`${getInstNumber("fifo")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_prb'
+                 name='resource_prb'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].prb[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "]"}`'/>
+
+    <ParamString id='resource_fifo'
+                 name='resource_fifo'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].fifo[" . 0 . "]"}`'/>
+
+      <ParamBool id='resource_fifo_enabled'
+                 name='resource_fifo_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${(isBlockUsed(resource_fifo))}`'/>
+
+    <Repeat count='16'>
+      <ParamString id='resource_muxchan_$idx'
+                   name='resource_muxchan_$idx'
+                   group='Internal'
+                   visible='`${debug}`'
+                   desc=''
+                   editable='false'
+                   default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].muxchan[" . $idx . "]"}`'/>
+
+      <ParamBool id='muxchan_$idx_enabled'
+                 name='muxchan_$idx_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${(isBlockUsed(resource_muxchan_$idx))}`'/>
+    </Repeat>
+
+    <Repeat count='8'>
+      <ParamString id='resource_gpiochan_$idx'
+                   name='resource_gpiochan_$idx'
+                   group='Internal'
+                   visible='`${debug}`'
+                   desc=''
+                   editable='false'
+                   default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].gpiochan[" . $idx . "]"}`'/>
+
+    <ParamBool id='gpiochan_$idx_enabled'
+                 name='gpiochan_$idx_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${(isBlockUsed(resource_gpiochan_$idx))}`'/>
+    </Repeat>
+
+    <Repeat count='32'>
+    <ParamString id='resource_group_$idx'
+                 name='resource_group_$idx'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].group[" . $idx . "]"}`'/>
+
+    <ParamBool   id='group_$idx_enabled'
+                 name='group_$idx_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${isBlockUsed(resource_group_$idx)}`'/>
+    </Repeat>
+
+    <Repeat count='32'>
+        <Repeat count='32'>
+            <ParamString id='resource_group_$idx{1}_scan_$idx{0}'
+                 name='resource_group_$idx{1}_scan_$idx{0}'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].group[" . $idx{1} . "].scan[" . $idx{0} . "]"}`'/>
+
+            <ParamBool   id='group_$idx{1}_scan_$idx{0}_enabled'
+                   name='group_$idx{1}_scan_$idx{0}_enabled'
+                   group='Internal'
+                   visible='`${debug}`'
+                   desc=''
+                   editable='false'
+                   default='`${isBlockUsed("pass[" . inst_pass . "].sar[" . inst_sar . "].group[" . $idx{1} . "].scan[" . $idx{0} . "]")}`'/>
+        </Repeat>
+    </Repeat>
+
+    <Repeat count='2'>
+      <ParamString id='resource_firfilter_$idx'
+                   name='resource_firfilter_$idx'
+                   group='Internal'
+                   visible='`${debug}`'
+                   desc=''
+                   editable='false'
+                   default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].firfilter[" . $idx . "]"}`'/>
+
+    <ParamBool id='firfilter_$idx_enabled'
+                 name='firfilter_$idx_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${(isBlockUsed(resource_firfilter_$idx))}`'/>
+    </Repeat>
+
+<!-- LPPASS external variables -->
+    <ParamString id='inFlash'
+                 name='inFlash'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember(resource_pass, "inFlash")}`'/>
+
+    <ParamString id='operatingMode'
+                 name='operatingMode'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${isBlockUsed(resource_ac) ? getExposedMember(resource_ac, "opMode") : "LowPower"}`'/>
+
+    <ParamString id='vdda'
+                 name='vdda'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember(resource_pass, "vdda")}`'/>
+
+    <Repeat count='2'>
+      <ParamBool   id='prbOut$idxIsEnabled'
+                   name='prbOut$idxIsEnabled'
+                   group=''
+                   visible='`${debug}`'
+                   editable='false'
+                   desc=''
+                   default='`${isBlockUsed("pass[" . inst_pass . "].prb[0]") ? getExposedMember("pass[" . inst_pass . "].prb[0]", "prbOut$idxEnable") : "false"}`'/>
+
+      <ParamString id='prbOut$idxVoltage'
+                   name='prbOut$idxVoltage'
+                   group='Internal'
+                   editable='false'
+                   visible='`${debug}`'
+                   desc=''
+                   default='`${getExposedMember(resource_prb, "prbOut" . $idx . "Voltage")}`'/>
+    </Repeat>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='INST_NAME_adc' name='INST_NAME_adc' group='Internal' default='`${INST_NAME}`' visible='`${debug}`' editable='false' desc='' />
+
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false'
+                 default=''/>
+
+    <ParamString id='operatingModeAdc' name='Operating Mode' group='Static Configuration'
+                 default='`${(operatingMode eq "LowPower") ? "Low-Power" : "High-Speed"}`' visible='true' editable='false' desc='Modes of the ADC: Low-Power or High-Speed'/>
+
+    <ParamBool id='differentialMode'
+               name='Differential Mode'
+               group='LP Mode ADC Settings'
+               visible='`${(operatingMode eq "LowPower")}`'
+               editable='`${(operatingMode eq "LowPower")}`'
+               desc='Single-ended / Differential mode available'
+               default='true'/>
+
+    <ParamChoice id='lpModeVrefSelect'
+                 name='VREF Select'
+                 group='LP Mode ADC Settings'
+                 visible='`${(operatingMode eq "LowPower")}`'
+                 editable='true'
+                 desc='Select the reference voltage of the ADC'
+                                     default='`${differentialMode ? CY_AUTANALOG_SAR_VREF_VDDA : CY_AUTANALOG_SAR_VREF_VDDA_BY_2}`'>
+      <Entry name='VDDA'               value='CY_AUTANALOG_SAR_VREF_VDDA'      visible='`${differentialMode}`'/>
+      <Entry name='VDDA/2'             value='CY_AUTANALOG_SAR_VREF_VDDA_BY_2' visible='true'/>
+      <Entry name='VBGR (0.9 V)'       value='CY_AUTANALOG_SAR_VREF_VBGR'      visible='true'/>
+      <Entry name='External Reference' value='CY_AUTANALOG_SAR_VREF_EXT'       visible='true'/>
+      <Entry name='PRB OUT0'           value='CY_AUTANALOG_SAR_VREF_PRB_OUT0'  visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+      <Entry name='PRB OUT1'           value='CY_AUTANALOG_SAR_VREF_PRB_OUT1'  visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+    </ParamChoice>
+
+    <ParamRange id='lpModeReferenceValue'
+                name='VREF Value, mV'
+                group='LP Mode ADC Settings'
+                min='10'
+                max='1800'
+                resolution='1'
+                visible='`${(operatingMode eq "LowPower")}`'
+                editable='`${(operatingMode eq "LowPower") &amp;&amp; (lpModeVrefSelect eq CY_AUTANALOG_SAR_VREF_EXT)}`'
+                desc='Voltage reference value for LP operating mode'
+                default='`${(lpModeVrefSelect eq "CY_AUTANALOG_SAR_VREF_VDDA") ? vdda :
+                (lpModeVrefSelect eq CY_AUTANALOG_SAR_VREF_VDDA_BY_2) ? vdda / 2.0 :
+                (lpModeVrefSelect eq CY_AUTANALOG_SAR_VREF_VBGR) ? 900 :
+                (lpModeVrefSelect eq CY_AUTANALOG_SAR_VREF_EXT) ? 1800 :
+                (lpModeVrefSelect eq CY_AUTANALOG_SAR_VREF_PRB_OUT0) ? prbOut0Voltage :
+                (lpModeVrefSelect eq CY_AUTANALOG_SAR_VREF_PRB_OUT1) ? prbOut1Voltage :
+                1800}`'/>
+
+    <ParamBool id='lpAutosetConversionRate'
+               name='Autoset Conversion Rate'
+               group='LP Mode ADC Settings'
+               visible='`${(operatingMode eq "LowPower")}`'
+               editable='true'
+               desc='Automatically sets sample rates for scan groups by adjusting sample times and accumulation. Not reccomended for Low Power designs.'
+               default='false'/>
+
+    <Repeat count='4'>
+      <ParamRange id='lpGlobalSampleTime$idx'
+                  name='Global Sample Time $idx'
+                  group='LP Mode ADC Settings'
+                  min='6'
+                  max='1024'
+                  resolution='1'
+                  visible='`${(operatingMode eq "LowPower") &amp;&amp; (!lpAutosetConversionRate)}`'
+                  editable='true'
+                  desc='Global Sample Time $idx in ADC clock cycles that can be used for individual channels.'
+                  default='6'/>
+
+      <ParamString id='lpactualTime$idx' name='actualTime$idx' group='Internal' visible='`${debug}`' editable='false' desc=''
+                   default='`${lpGlobalSampleTime$idx / 4096000.0}`'/>
+
+      <ParamString id='lpGlobalActualTime$idx'
+          name='Global Actual Time $idx'
+          group='LP Mode ADC Settings'
+          visible='`${(operatingMode eq "LowPower") &amp;&amp; (!lpAutosetConversionRate)}`'
+          editable='false'
+          desc='Actual time in ADC clock cycles = Sample Time $idx / 4.096MHz'
+          default='`${lpactualTime$idx ge 0.001 ? "" . lpactualTime$idx * 1000 . " m" :
+                      lpactualTime$idx ge 0.000001 ? "" . lpactualTime$idx * 1000000 . " u" :
+                      lpactualTime$idx ge 0.000000001 ? "" . lpactualTime$idx * 1000000000 . " n" :
+                      "" . lpactualTime$idx * 1000000000000 . " p"}`s'/>
+    </Repeat>
+
+    <ParamChoice id='hsModeVrefSelect'
+                 name='VREF Select'
+                 group='HS Mode ADC Settings'
+                 visible='`${(operatingMode eq "HighSpeed")}`'
+                 editable='true'
+                 desc='Select the reference voltage of the ADC'
+                                     default='CY_AUTANALOG_SAR_VREF_VDDA'>
+      <Entry name='VDDA'               value='CY_AUTANALOG_SAR_VREF_VDDA'      visible='true'/>
+      <Entry name='VDDA/2'             value='CY_AUTANALOG_SAR_VREF_VDDA_BY_2' visible='true'/>
+      <Entry name='VBGR (0.9 V)'       value='CY_AUTANALOG_SAR_VREF_VBGR'      visible='true'/>
+      <Entry name='External Reference' value='CY_AUTANALOG_SAR_VREF_EXT'       visible='true'/>
+      <Entry name='PRB OUT0'           value='CY_AUTANALOG_SAR_VREF_PRB_OUT0'  visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+      <Entry name='PRB OUT1'           value='CY_AUTANALOG_SAR_VREF_PRB_OUT1'  visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+    </ParamChoice>
+
+    <ParamRange id='hsModeReferenceValue'
+                name='VREF Value, mV'
+                group='HS Mode ADC Settings'
+                min='10'
+                max='1800'
+                resolution='1'
+                visible='`${(operatingMode eq "HighSpeed")}`'
+                editable='`${(operatingMode eq "HighSpeed") &amp;&amp; (hsModeVrefSelect eq CY_AUTANALOG_SAR_VREF_EXT)}`'
+                desc='Voltage reference value for HS operating mode'
+                default='`${(hsModeVrefSelect eq "CY_AUTANALOG_SAR_VREF_VDDA") ? vdda :
+                (hsModeVrefSelect eq CY_AUTANALOG_SAR_VREF_VDDA_BY_2) ? vdda / 2.0 :
+                (hsModeVrefSelect eq CY_AUTANALOG_SAR_VREF_VBGR) ? 900 :
+                (hsModeVrefSelect eq CY_AUTANALOG_SAR_VREF_EXT) ? 1800 :
+                (hsModeVrefSelect eq CY_AUTANALOG_SAR_VREF_PRB_OUT0) ? prbOut0Voltage :
+                (hsModeVrefSelect eq CY_AUTANALOG_SAR_VREF_PRB_OUT1) ? prbOut1Voltage :
+                1800}`'/>
+
+    <ParamBool id='hsAutosetConversionRate'
+               name='Autoset Conversion Rate'
+               group='HS Mode ADC Settings'
+               visible='`${(operatingMode eq "HighSpeed")}`'
+               editable='true'
+               desc='Automatically sets sample rates for scan groups by adjusting sample times and accumulation.'
+               default='false'/>
+
+      <ParamString id='resource_srss_clock_hfclk9' name='resource_srss_clock_hfclk9' group='Internal' visible='`${debug}`' editable='false' desc=''
+                default='`${"srss[0].clock[0].hfclk[9]"}`' />
+      <ParamString id='externvalue_frequency' name='externvalue_frequency' group='Internal'  visible='`${debug}`' editable='false' desc=''
+                 default='`${(getExposedMember(resource_srss_clock_hfclk9, "frequency"))}`'/>
+
+    <Repeat count='4'>
+      <ParamRange id='hsGlobalSampleTime$idx'
+                  name='Global Sample Time $idx'
+                  group='HS Mode ADC Settings'
+                  min='5'
+                  max='1024'
+                  resolution='1'
+                  visible='`${(operatingMode eq "HighSpeed")}`'
+                  editable='`${(!hsAutosetConversionRate)}`'
+                  desc='Global Sample Time $idx in ADC clock cycles that can be used for individual channels.'
+                  default='32'/>
+
+      <ParamString id='hsactualTime$idx' name='actualTime$idx' group='Internal' visible='`${debug}`' editable='false' desc=''
+                   default='`${cast(float, hsGlobalSampleTime$idx) / externvalue_frequency}`' />
+
+      <ParamString id='hsGlobalActualTime$idx'
+          name='Global Actual Time $idx'
+          group='HS Mode ADC Settings'
+          visible='`${operatingMode eq "HighSpeed"}`'
+          editable='false'
+          desc='Actual time in ADC clock cycles = Sample Time $idx / CLK_HF9'
+          default='`${hsactualTime$idx ge 0.001 ? "" . hsactualTime$idx * 1000 . " m" :
+                      hsactualTime$idx ge 0.000001 ? "" . hsactualTime$idx * 1000000 . " u" :
+                      hsactualTime$idx ge 0.000000001 ? "" . hsactualTime$idx * 1000000000 . " n" :
+                      "" . hsactualTime$idx * 1000000000000 . " p"}`s'/>
+    </Repeat>
+
+    <ParamChoice id='accumulationMode'
+                 name='Accumulation Mode'
+                 group='Common ADC Settings'
+                 visible='true'
+                 editable='true'
+                 desc='Accumulation mode applied to all channels in a scan with enabled averaging.'
+                                      default='CY_AUTANALOG_SAR_ACC_DISABLED'>
+      <Entry name='Disabled'            value='CY_AUTANALOG_SAR_ACC_DISABLED'    visible='true'/>
+      <Entry name='Accumulate and Dump' value='CY_AUTANALOG_SAR_ACC_ACCUNDUMP'   visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='accumulationShiftMode'
+                 name='Accumulation Shift Mode'
+                 group='Common ADC Settings'
+                 visible='`${(accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED)}`'
+                 editable='true'
+                 desc='Shifts the accumulated data to 12 or 16-bit resolution, if the shift is enabled for the channel.'
+                 default='true'>
+      <Entry name='12 bits' value='false' visible='true'/>
+      <Entry name='16 bits' value='true'  visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='includeChannelId'
+               name='Include Channel ID'
+               group='Common ADC Settings'
+               visible='true'
+               editable='true'
+               desc='Include an 8-bit channel ID in the MSB of the ADC data ([31:24]) sent to the FIFO'
+               default='false'/>
+
+    <ParamBool id='limitDetection'
+               name='Limit Detection'
+               group='Common ADC Settings'
+               visible='true'
+               editable='true'
+               desc='Enable Limit Detection that generates triggers / interrupts. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+               default='false'/>
+
+    <Repeat count='4'>
+      <ParamChoice id='limitCondition$idx'
+                   name='Limit Condition $idx'
+                   group='Common ADC Settings'
+                   visible='`${(limitDetection)}`'
+                   editable='`${(limitDetection)}`'
+                   desc=''
+                   default='CY_AUTANALOG_SAR_COND_BELOW'>
+        <Entry name='Below the Threshold' value='CY_AUTANALOG_SAR_COND_BELOW'   visible='true'/>
+        <Entry name='Above the Threshold' value='CY_AUTANALOG_SAR_COND_ABOVE'   visible='true'/>
+        <Entry name='Inside the Window'   value='CY_AUTANALOG_SAR_COND_INSIDE'  visible='true'/>
+        <Entry name='Outside the Window'  value='CY_AUTANALOG_SAR_COND_OUTSIDE' visible='true'/>
+      </ParamChoice>
+
+    <ParamString id='limitCondition$idx_Info'
+                 name='Limit Condition Equation $idx'
+                 group='Common ADC Settings'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${(limitDetection)}`'
+                 editable='false'
+                 default='`${(limitCondition$idx eq CY_AUTANALOG_SAR_COND_BELOW) ? "ADC Data &lt; Lower Threshold $idx" : (limitCondition$idx eq CY_AUTANALOG_SAR_COND_ABOVE) ? "ADC Data &gt; Upper Threshold $idx" : (limitCondition$idx eq CY_AUTANALOG_SAR_COND_INSIDE) ? "Lower Threshold $idx &lt;= ADC Data &lt; Upper Threshold $idx" : (limitCondition$idx eq CY_AUTANALOG_SAR_COND_OUTSIDE) ? "ADC Data &lt; Lower Threshold $idx or ADC Data &gt;= Upper Threshold $idx" : "N/A"}`'/>
+
+      <ParamRange id='lowerThreshold$idx'
+                  name='Lower Threshold $idx'
+                  group='Common ADC Settings'
+                  min='-2147483648'
+                  max='2147483647'
+                  resolution='1'
+                  visible='`${(limitDetection) &amp;&amp; (limitCondition$idx ne CY_AUTANALOG_SAR_COND_ABOVE)}`'
+                  editable='`${(limitDetection) &amp;&amp; (limitCondition$idx ne CY_AUTANALOG_SAR_COND_ABOVE)}`'
+                  desc=''
+                  default='0'/>
+
+      <ParamRange id='upperThreshold$idx'
+                  name='Upper Threshold $idx'
+                  group='Common ADC Settings'
+                  min='-2147483648'
+                  max='2147483647'
+                  resolution='1'
+                  visible='`${(limitDetection) &amp;&amp; (limitCondition$idx ne CY_AUTANALOG_SAR_COND_BELOW)}`'
+                  editable='`${(limitDetection) &amp;&amp; (limitCondition$idx ne CY_AUTANALOG_SAR_COND_BELOW)}`'
+                  desc=''
+                  default='0'/>
+    </Repeat>
+
+    <ParamBool id='showAdvancedSettings'
+               name='Show Advanced Settings'
+               group='Common ADC Settings'
+               visible='true'
+               editable='true'
+               desc='Unlocks advanced controls for Gain and Offset Correction, Input Buffer power, and ADC'
+               default='false'/>
+
+    <ParamBool id='offsetAndGainCorrection'
+               name='Offset and Gain Correction'
+               group='Common ADC Settings'
+               visible='`${(showAdvancedSettings)}`'
+               editable='true'
+               desc='User must generate and load the offset and gain correction coefficients using the firmware APIs before starting the ADC'
+               default='false'/>
+
+    <ParamChoice id='noninvInputBufferPower'
+                 name='Non-Inverting Buffer Power'
+                 group='Common ADC Settings'
+                 visible='`${(showAdvancedSettings)}`'
+                 editable='true'
+                 desc='Controls power consumption, Max sample rate and input voltage range of the Non-Inverting Input Buffer'
+                 default='CY_AUTANALOG_SAR_BUF_PWR_OFF'>
+      <Entry name='Off'                             value='CY_AUTANALOG_SAR_BUF_PWR_OFF'             visible='true'/>
+      <Entry name='Ultra-Low'                       value='CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW'       visible='true'/>
+      <Entry name='Ultra-Low, Rail-to-Rail Inputs'  value='CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL'  visible='true'/>
+      <Entry name='Low, Rail-to-Rail Inputs'        value='CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL'        visible='true'/>
+      <Entry name='Medium, Rail-to-Rail Inputs'     value='CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL'     visible='true'/>
+      <Entry name='High, Rail-to-Rail Inputs'       value='CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL'       visible='true'/>
+      <Entry name='Ultra-High, Rail-to-Rail Inputs' value='CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='noninvInputBufferCurrent'
+                 name='Non-Inverting Buffer Current'
+                 group='Common ADC Settings'
+                 default='`${noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW ? "15" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL ? "35" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL ? "150" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL ? "200" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL ? "600" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL ? "800" : ""}` uA'
+                 visible='`${showAdvancedSettings &amp;&amp; (noninvInputBufferPower ne CY_AUTANALOG_SAR_BUF_PWR_OFF)}`'
+                 editable='false'
+                 desc='Non-Inverting Buffer quiescent current' />
+
+    <ParamString id='noninvInputBufferVoltage'
+                 name='Non-Inverting Buffer Common Mode Range'
+                 group='Common ADC Settings'
+                 default='`${noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW ? "0.2 V to VDDA - 1.0 V" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" : ""}`'
+                 visible='`${showAdvancedSettings &amp;&amp; (noninvInputBufferPower ne CY_AUTANALOG_SAR_BUF_PWR_OFF)}`'
+                 editable='false'
+                 desc='Non-Inverting Buffer common mode voltage range' />
+
+    <ParamString id='noninvInputBufferBandwidth'
+                 name='Non-Inverting Buffer Bandwidth'
+                 group='Common ADC Settings'
+                 default='`${noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW ? "30 kHz" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL ? "30 kHz" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL ? "350 kHz" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL ? "700 kHz" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL ? "1.75 MHz" :
+                             noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL ? "2.8 MHz" : ""}`'
+                 visible='`${showAdvancedSettings &amp;&amp; (noninvInputBufferPower ne CY_AUTANALOG_SAR_BUF_PWR_OFF)}`'
+                 editable='false'
+                 desc='Non-Inverting Buffer frequency bandwidth' />
+
+    <ParamChoice id='invInputBufferPower'
+                 name='Inverting Buffer Power'
+                 group='Common ADC Settings'
+                 visible='`${(showAdvancedSettings)}`'
+                 editable='true'
+                 desc='Controls power consumption, Max sample rate and input voltage range of the Inverting Input Buffer'
+                 default='CY_AUTANALOG_SAR_BUF_PWR_OFF'>
+      <Entry name='Off'                             value='CY_AUTANALOG_SAR_BUF_PWR_OFF'             visible='true'/>
+      <Entry name='Ultra-Low'                       value='CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW'       visible='true'/>
+      <Entry name='Ultra-Low, Rail-to-Rail Inputs'  value='CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL'  visible='true'/>
+      <Entry name='Low, Rail-to-Rail Inputs'        value='CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL'        visible='true'/>
+      <Entry name='Medium, Rail-to-Rail Inputs'     value='CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL'     visible='true'/>
+      <Entry name='High, Rail-to-Rail Inputs'       value='CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL'       visible='true'/>
+      <Entry name='Ultra-High, Rail-to-Rail Inputs' value='CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='invInputBufferCurrent'
+                 name='Inverting Buffer Current'
+                 group='Common ADC Settings'
+                 default='`${invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW ? "15" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL ? "35" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL ? "150" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL ? "200" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL ? "600" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL ? "800" : ""}` uA'
+                 visible='`${showAdvancedSettings &amp;&amp; (invInputBufferPower ne CY_AUTANALOG_SAR_BUF_PWR_OFF)}`'
+                 editable='false'
+                 desc='Inverting Buffer quiescent current' />
+
+    <ParamString id='invInputBufferVoltage'
+                 name='Inverting Buffer Common Mode Range'
+                 group='Common ADC Settings'
+                 default='`${invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW ? "0.2 V to VDDA - 1.0 V" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" : ""}`'
+                 visible='`${showAdvancedSettings &amp;&amp; (invInputBufferPower ne CY_AUTANALOG_SAR_BUF_PWR_OFF)}`'
+                 editable='false'
+                 desc='Inverting Buffer common mode voltage range' />
+
+    <ParamString id='invInputBufferBandwidth'
+                 name='Inverting Buffer Bandwidth'
+                 group='Common ADC Settings'
+                 default='`${invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW ? "30 kHz" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW_RAIL ? "30 kHz" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_LOW_RAIL ? "350 kHz" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_MEDIUM_RAIL ? "700 kHz" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_HIGH_RAIL ? "1.75 MHz" :
+                             invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_ULTRA_HIGH_RAIL ? "2.8 MHz" : ""}`'
+                 visible='`${showAdvancedSettings &amp;&amp; (invInputBufferPower ne CY_AUTANALOG_SAR_BUF_PWR_OFF)}`'
+                 editable='false'
+                 desc='Inverting Buffer frequency bandwidth' />
+
+    <ParamBool id='allowBufferBypass'
+               name='Allow Buffer Bypass'
+               group='Common ADC Settings'
+               visible='`${(showAdvancedSettings)}`'
+               editable='true'
+               desc='Allow ADC channels to bypass Input Buffers'
+               default='false'/>
+
+    <ParamChoice id='calibrationAtStartup'
+                 name='Calibration at Startup'
+                 group='Common ADC Settings'
+                 visible='`${(showAdvancedSettings)}`'
+                 editable='true'
+                 desc='Calibrate the ADC when powered up'
+                                       default='CY_AUTANALOG_SAR_CAL_DISABLED'>
+      <Entry name='Disabled'             value='CY_AUTANALOG_SAR_CAL_DISABLED'  visible='true'/>
+      <Entry name='Offset and Linearity' value='CY_AUTANALOG_SAR_CAL_BOTH'      visible='true'/>
+      <Entry name='Offset Only'          value='CY_AUTANALOG_SAR_CAL_OFFSET'    visible='true'/>
+      <Entry name='Linearity Only'       value='CY_AUTANALOG_SAR_CAL_LINEARITY' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='hsGpioResultMaskValue'
+                name='hsGpioResultMaskValue'
+                group=''
+                default='`${(gpiochan_0_enabled ? 1 &lt;&lt; 0 : 0) |
+                            (gpiochan_1_enabled ? 1 &lt;&lt; 1 : 0) |
+                            (gpiochan_2_enabled ? 1 &lt;&lt; 2 : 0) |
+                            (gpiochan_3_enabled ? 1 &lt;&lt; 3 : 0) |
+                            (gpiochan_4_enabled ? 1 &lt;&lt; 4 : 0) |
+                            (gpiochan_5_enabled ? 1 &lt;&lt; 5 : 0) |
+                            (gpiochan_6_enabled ? 1 &lt;&lt; 6 : 0) |
+                            (gpiochan_7_enabled ? 1 &lt;&lt; 7 : 0)}`'
+                visible='`${debug}`'
+                editable='false'
+                desc='' />
+
+    <ParamString id='lpMuxResultMaskValue'
+                name='lpMuxResultMaskValue'
+                group=''
+                default='`${(muxchan_0_enabled  ? 1 &lt;&lt; 0  : 0) |
+                            (muxchan_1_enabled  ? 1 &lt;&lt; 1  : 0) |
+                            (muxchan_2_enabled  ? 1 &lt;&lt; 2  : 0) |
+                            (muxchan_3_enabled  ? 1 &lt;&lt; 3  : 0) |
+                            (muxchan_4_enabled  ? 1 &lt;&lt; 4  : 0) |
+                            (muxchan_5_enabled  ? 1 &lt;&lt; 5  : 0) |
+                            (muxchan_6_enabled  ? 1 &lt;&lt; 6  : 0) |
+                            (muxchan_7_enabled  ? 1 &lt;&lt; 7  : 0) |
+                            (muxchan_8_enabled  ? 1 &lt;&lt; 8  : 0) |
+                            (muxchan_9_enabled  ? 1 &lt;&lt; 9  : 0) |
+                            (muxchan_10_enabled ? 1 &lt;&lt; 10 : 0) |
+                            (muxchan_11_enabled ? 1 &lt;&lt; 11 : 0) |
+                            (muxchan_12_enabled ? 1 &lt;&lt; 12 : 0) |
+                            (muxchan_13_enabled ? 1 &lt;&lt; 13 : 0) |
+                            (muxchan_14_enabled ? 1 &lt;&lt; 14 : 0) |
+                            (muxchan_15_enabled ? 1 &lt;&lt; 15 : 0)}`'
+                visible='`${debug}`'
+                editable='false'
+                desc='' />
+
+    <ParamString id='firResultMaskValue'
+                name='firResultMaskValue'
+                group=''
+                default='`${(firfilter_0_enabled ? 1 &lt;&lt; 0 : 0) |
+                            (firfilter_1_enabled ? 1 &lt;&lt; 1 : 0)}`'
+                visible='`${debug}`'
+                editable='false'
+                desc='' />
+
+    <Repeat count='32'>
+      <ParamRange id='group_$idx{0}_scanCnt' name='group_$idx{0}_scanCnt' group='Internal'
+              default='`${group_$idx{0}_enabled ?
+                          ((group_$idx{0}_scan_0_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_1_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_2_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_3_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_4_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_5_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_6_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_7_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_8_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_9_enabled  ? 1 : 0) +
+                          (group_$idx{0}_scan_10_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_11_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_12_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_13_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_14_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_15_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_16_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_17_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_18_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_19_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_20_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_21_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_22_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_23_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_24_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_25_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_26_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_27_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_28_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_29_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_30_enabled ? 1 : 0) +
+                          (group_$idx{0}_scan_31_enabled ? 1 : 0)) : 0}`'
+              min='0' max='32' resolution='1' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+      <ParamRange id='total_scanCnt' name='total_scanCnt' group='Internal'
+              default='`${group_0_scanCnt  +
+                          group_1_scanCnt  +
+                          group_2_scanCnt  +
+                          group_3_scanCnt  +
+                          group_4_scanCnt  +
+                          group_5_scanCnt  +
+                          group_6_scanCnt  +
+                          group_7_scanCnt  +
+                          group_8_scanCnt  +
+                          group_9_scanCnt  +
+                          group_10_scanCnt +
+                          group_11_scanCnt +
+                          group_12_scanCnt +
+                          group_13_scanCnt +
+                          group_14_scanCnt +
+                          group_15_scanCnt +
+                          group_16_scanCnt +
+                          group_17_scanCnt +
+                          group_18_scanCnt +
+                          group_19_scanCnt +
+                          group_20_scanCnt +
+                          group_21_scanCnt +
+                          group_22_scanCnt +
+                          group_23_scanCnt +
+                          group_24_scanCnt +
+                          group_25_scanCnt +
+                          group_26_scanCnt +
+                          group_27_scanCnt +
+                          group_28_scanCnt +
+                          group_29_scanCnt +
+                          group_30_scanCnt +
+                          group_31_scanCnt }`'
+              min='0' max='1024' resolution='1' visible='`${debug}`' editable='false' desc='' />
+
+    <ParamBool id='adcIsUsed' name='adcIsUsed' group='Internal' editable='false' visible='false' desc='' default='`${((operatingMode eq "LowPower") ? (lpMuxResultMaskValue != 0) : ((lpMuxResultMaskValue != 0) || (hsGpioResultMaskValue != 0))) &amp;&amp; (total_scanCnt != 0)}`' />
+
+    <ParamString id='sar_vrefSel'
+                name='sar_vrefSel'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc=''
+                default='`${(operatingMode eq "LowPower") ? lpModeVrefSelect : hsModeVrefSelect}`'/>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure Autonomous Analog.' condition='`${!isBlockUsed(resource_pass)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_pass}`' value='lppass-1.0' valid='true' />
+    </DRC>
+
+    <DRC type='ERROR' text='The SAR ADC shall have at least one scan configured within the scan group.' condition='`${(total_scanCnt eq 0) &amp;&amp; ((lpMuxResultMaskValue != 0) || (hsGpioResultMaskValue != 0))}`' />
+    <DRC type='ERROR'
+         text='For SAR ADC, the total number of scans configured across all groups must be less than or equal to 32.'
+         condition='`${total_scanCnt &gt; 32}`'/>
+
+    <DRC type='ERROR'
+         text='Enable the PRB output $idx to generate a reference voltage for the ADC.'
+         condition='`${(lpModeVrefSelect eq CY_AUTANALOG_SAR_VREF_PRB_OUT$idx || hsModeVrefSelect eq CY_AUTANALOG_SAR_VREF_PRB_OUT$idx) &amp;&amp; !prbOut$idxIsEnabled}`' repeatCount='2'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 0 to provide a signal to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 1 to provide a signal to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 0 to provide a signal to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 1 to provide a signal to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 0 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode eq "LowPower") &amp;&amp; differentialMode ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 1 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode eq "LowPower") &amp;&amp; differentialMode ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 0 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode eq "LowPower") &amp;&amp; differentialMode ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 1 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode eq "LowPower") &amp;&amp; differentialMode ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 0 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode ne "LowPower") &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 1 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode ne "LowPower") &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 0 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode ne "LowPower") &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 1 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (operatingMode ne "LowPower") &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 0 in the comparator mode to be connected to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 1 in the comparator mode to be connected to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 0 in the comparator mode to be connected to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 1 in the comparator mode to be connected to the Non-Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 0 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 1 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 0 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 1 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 0  in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 1 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 0 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 1 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Enable DAC 0 to generate a reference voltage on the Non-Inverting MUX Input for the ADC.'
+         condition='`${(muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") eq "CY_AUTANALOG_SAR_PIN_MUX_DAC0" : "false") &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].dac[0]")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable DAC 1 to generate a reference voltage on the Non-Inverting MUX Input for the ADC.'
+         condition='`${(muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") eq "CY_AUTANALOG_SAR_PIN_MUX_DAC1" : "false") &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].dac[1]")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Enable DAC 0 to generate a reference voltage on the Inverting MUX Input for the ADC.'
+         condition='`${differentialMode &amp;&amp; (muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") eq "CY_AUTANALOG_SAR_PIN_MUX_DAC0" : "false") &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].dac[0]")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable DAC 1 to generate a reference voltage on the Inverting MUX Input for the ADC.'
+         condition='`${differentialMode &amp;&amp; (muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") eq "CY_AUTANALOG_SAR_PIN_MUX_DAC1" : "false") &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].dac[1]")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable DAC 0 to generate a reference voltage on the Inverting MUX Input for the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") == true)) ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") eq "CY_AUTANALOG_SAR_PIN_MUX_DAC0" : "false") &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].dac[0]")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable DAC 1 to generate a reference voltage on the Inverting MUX Input for the ADC.'
+         condition='`${((muxchan_$idx_enabled &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") == true)) ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") eq "CY_AUTANALOG_SAR_PIN_MUX_DAC1" : "false") &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].dac[1]")}`' repeatCount='16'/>
+
+    <DRC type='WARNING'
+         text='The same input is selected on the Non-Inverting and Inverting Input of the ADC MUX channel $idx.'
+         condition='`${muxchan_$idx_enabled ? ((operatingMode eq "HighSpeed") ? getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") : differentialMode) &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") eq getExposedMember(resource_muxchan_$idx, "sar_mux_invPin")) &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") ne "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") : "false"}`' repeatCount='16'/>
+    <DRC type='WARNING'
+         text='The same input is selected on the Non-Inverting and Inverting Input of the ADC GPIO channel $idx.'
+         condition='`${gpiochan_$idx_enabled ? (getExposedMember(resource_gpiochan_$idx, "sar_gpio_pseudoDiffMode") &amp;&amp; getExposedMember(resource_gpiochan_$idx, "sar_gpio_nonInvPin") eq getExposedMember(resource_gpiochan_$idx, "sar_gpio_invPin")) : "false"}`' repeatCount='8'/>
+    <DRC type='ERROR'
+         text='The Inverting Input for the ADC MUX channel $idx must also be connected to the temperature sensor.'
+         condition='`${muxchan_$idx_enabled ? differentialMode &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") eq "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") ne "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") : "false"}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='The Inverting Input for the ADC MUX channel $idx must also be connected to the temperature sensor.'
+         condition='`${muxchan_$idx_enabled ? (getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") == true) &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") eq "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") ne "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") : "false"}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='The Non-Inverting Input for the ADC MUX channel $idx must also be connected to the temperature sensor.'
+         condition='`${muxchan_$idx_enabled ? differentialMode &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") ne "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") eq "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") : "false"}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='The Non-Inverting Input for the ADC MUX channel $idx must also be connected to the temperature sensor.'
+         condition='`${muxchan_$idx_enabled ? (getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode") == true) &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") ne "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") &amp;&amp; (getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") eq "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") : "false"}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='The ADC MUX channel $idx must only use the temperature sensor in differential or pseudo-differential mode.'
+         condition='`${muxchan_$idx_enabled ? (((operatingMode eq "LowPower" &amp;&amp; !differentialMode) || (operatingMode eq "HighSpeed" &amp;&amp; !getExposedMember(resource_muxchan_$idx, "sar_mux_pseudoDiffMode"))) &amp;&amp; getExposedMember(resource_muxchan_$idx, "sar_mux_nonInvPin") eq "CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR") : ("false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 0 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 1 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 0 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 1 to provide a signal to the Inverting MUX Input of the ADC.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 0 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 1 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 0 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 1 in the comparator mode to be connected to the Inverting MUX Input of the ADC.'
+         condition='`${differentialMode &amp;&amp; ((muxchan_$idx_enabled ? getExposedMember(resource_muxchan_$idx, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1") eq "CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT") &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' repeatCount='16'/>
+
+    <DRC type='ERROR'
+         text='Select and configure at least one MUX or GPIO channel in HS mode.'
+         condition='`${(operatingMode eq "HighSpeed") &amp;&amp; (lpMuxResultMaskValue == 0) &amp;&amp; (hsGpioResultMaskValue == 0)}`' />
+    <DRC type='ERROR'
+         text='Select and configure at least one MUX channel in LP mode.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; (lpMuxResultMaskValue == 0)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_muxchan_0}`' value='lppass_adc_mux_channel-1.0' valid='true' />
+    </DRC>
+
+    <DRC type='ERROR'
+         text='The selection of the GPIO channel is not valid in LP mode.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; (hsGpioResultMaskValue != 0)}`' />
+
+    <DRC type='ERROR'
+         text='The SAR ADC FIR filters must be selected sequentially.'
+         condition='`${!firfilter_0_enabled &amp;&amp; firfilter_1_enabled}`' />
+
+    <DRC type='ERROR' text='Lower Threshold is greater then or equal to Upper Threshold for the SAR ADC.' repeatCount='4'
+         condition='`${(upperThreshold$idx &lt; lowerThreshold$idx || upperThreshold$idx eq lowerThreshold$idx) &amp;&amp; (limitCondition$idx eq CY_AUTANALOG_SAR_COND_INSIDE || limitCondition$idx eq CY_AUTANALOG_SAR_COND_OUTSIDE)}`' />
+
+    <DRC type='ERROR'
+         text='Power the SAR ADC Non-Inverting Input Buffer for MUX channels if not bypassed in Low Power mode.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; showAdvancedSettings &amp;&amp; (noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; !allowBufferBypass}`' />
+    <DRC type='ERROR'
+         text='Power the SAR ADC Inverting Input Buffer for MUX channels in differential configuration if not bypassed in Low Power mode.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; showAdvancedSettings &amp;&amp; (invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; !allowBufferBypass &amp;&amp; differentialMode}`' />
+    <DRC type='ERROR'
+         text='Power the SAR ADC Non-Inverting Input Buffer for MUX channels if not bypassed in Low Power mode.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; showAdvancedSettings &amp;&amp; (noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; allowBufferBypass &amp;&amp;
+                      ((muxchan_0_enabled  ? !getExposedMember(resource_muxchan_0,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_1_enabled  ? !getExposedMember(resource_muxchan_1,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_2_enabled  ? !getExposedMember(resource_muxchan_2,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_3_enabled  ? !getExposedMember(resource_muxchan_3,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_4_enabled  ? !getExposedMember(resource_muxchan_4,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_5_enabled  ? !getExposedMember(resource_muxchan_5,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_6_enabled  ? !getExposedMember(resource_muxchan_6,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_7_enabled  ? !getExposedMember(resource_muxchan_7,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_8_enabled  ? !getExposedMember(resource_muxchan_8,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_9_enabled  ? !getExposedMember(resource_muxchan_9,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_10_enabled ? !getExposedMember(resource_muxchan_10, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_11_enabled ? !getExposedMember(resource_muxchan_11, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_12_enabled ? !getExposedMember(resource_muxchan_12, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_13_enabled ? !getExposedMember(resource_muxchan_13, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_14_enabled ? !getExposedMember(resource_muxchan_14, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_15_enabled ? !getExposedMember(resource_muxchan_15, "sar_mux_bypassBuffers") : false))}`' />
+
+    <DRC type='ERROR'
+         text='Power the SAR ADC Inverting Input Buffer for MUX channels in differential configuration if not bypassed in Low Power mode.'
+         condition='`${(operatingMode eq "LowPower") &amp;&amp; showAdvancedSettings &amp;&amp; (invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; allowBufferBypass &amp;&amp; differentialMode &amp;&amp;
+                      ((muxchan_0_enabled  ? !getExposedMember(resource_muxchan_0,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_1_enabled  ? !getExposedMember(resource_muxchan_1,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_2_enabled  ? !getExposedMember(resource_muxchan_2,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_3_enabled  ? !getExposedMember(resource_muxchan_3,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_4_enabled  ? !getExposedMember(resource_muxchan_4,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_5_enabled  ? !getExposedMember(resource_muxchan_5,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_6_enabled  ? !getExposedMember(resource_muxchan_6,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_7_enabled  ? !getExposedMember(resource_muxchan_7,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_8_enabled  ? !getExposedMember(resource_muxchan_8,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_9_enabled  ? !getExposedMember(resource_muxchan_9,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_10_enabled ? !getExposedMember(resource_muxchan_10, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_11_enabled ? !getExposedMember(resource_muxchan_11, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_12_enabled ? !getExposedMember(resource_muxchan_12, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_13_enabled ? !getExposedMember(resource_muxchan_13, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_14_enabled ? !getExposedMember(resource_muxchan_14, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_15_enabled ? !getExposedMember(resource_muxchan_15, "sar_mux_bypassBuffers") : false))}`' />
+    <DRC type='ERROR'
+         text='Power the SAR ADC Non-Inverting Input Buffer for MUX channels if not bypassed in High Speed mode.'
+         condition='`${(operatingMode eq "HighSpeed") &amp;&amp; lpMuxResultMaskValue &amp;&amp; showAdvancedSettings &amp;&amp; (noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; !allowBufferBypass}`' />
+    <DRC type='ERROR'
+         text='Power the SAR ADC Inverting Input Buffer for MUX channels in pseudo-differential configuration if not bypassed in High Speed mode.'
+         condition='`${(operatingMode eq "HighSpeed") &amp;&amp; lpMuxResultMaskValue &amp;&amp; showAdvancedSettings &amp;&amp; (invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; !allowBufferBypass &amp;&amp;
+                      ((muxchan_0_enabled  ? getExposedMember(resource_muxchan_0,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_1_enabled  ? getExposedMember(resource_muxchan_1,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_2_enabled  ? getExposedMember(resource_muxchan_2,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_3_enabled  ? getExposedMember(resource_muxchan_3,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_4_enabled  ? getExposedMember(resource_muxchan_4,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_5_enabled  ? getExposedMember(resource_muxchan_5,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_6_enabled  ? getExposedMember(resource_muxchan_6,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_7_enabled  ? getExposedMember(resource_muxchan_7,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_8_enabled  ? getExposedMember(resource_muxchan_8,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_9_enabled  ? getExposedMember(resource_muxchan_9,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_10_enabled ? getExposedMember(resource_muxchan_10, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_11_enabled ? getExposedMember(resource_muxchan_11, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_12_enabled ? getExposedMember(resource_muxchan_12, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_13_enabled ? getExposedMember(resource_muxchan_13, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_14_enabled ? getExposedMember(resource_muxchan_14, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_15_enabled ? getExposedMember(resource_muxchan_15, "sar_mux_pseudoDiffMode") : false))}`' />
+    <DRC type='ERROR'
+         text='Power the SAR ADC Non-Inverting Input Buffer for MUX channels if not bypassed in High Speed mode.'
+         condition='`${(operatingMode eq "HighSpeed") &amp;&amp; lpMuxResultMaskValue &amp;&amp; showAdvancedSettings &amp;&amp; (noninvInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; allowBufferBypass &amp;&amp;
+                      ((muxchan_0_enabled  ? !getExposedMember(resource_muxchan_0,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_1_enabled  ? !getExposedMember(resource_muxchan_1,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_2_enabled  ? !getExposedMember(resource_muxchan_2,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_3_enabled  ? !getExposedMember(resource_muxchan_3,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_4_enabled  ? !getExposedMember(resource_muxchan_4,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_5_enabled  ? !getExposedMember(resource_muxchan_5,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_6_enabled  ? !getExposedMember(resource_muxchan_6,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_7_enabled  ? !getExposedMember(resource_muxchan_7,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_8_enabled  ? !getExposedMember(resource_muxchan_8,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_9_enabled  ? !getExposedMember(resource_muxchan_9,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_10_enabled ? !getExposedMember(resource_muxchan_10, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_11_enabled ? !getExposedMember(resource_muxchan_11, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_12_enabled ? !getExposedMember(resource_muxchan_12, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_13_enabled ? !getExposedMember(resource_muxchan_13, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_14_enabled ? !getExposedMember(resource_muxchan_14, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_15_enabled ? !getExposedMember(resource_muxchan_15, "sar_mux_bypassBuffers") : false))}`' />
+    <DRC type='ERROR'
+         text='Power the SAR ADC Inverting Input Buffer for MUX channels in pseudo-differential configuration if not bypassed in High Speed mode.'
+         condition='`${(operatingMode eq "HighSpeed") &amp;&amp; lpMuxResultMaskValue &amp;&amp; showAdvancedSettings &amp;&amp; (invInputBufferPower eq CY_AUTANALOG_SAR_BUF_PWR_OFF) &amp;&amp; allowBufferBypass &amp;&amp;
+                      ((muxchan_0_enabled  ? getExposedMember(resource_muxchan_0,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_1_enabled  ? getExposedMember(resource_muxchan_1,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_2_enabled  ? getExposedMember(resource_muxchan_2,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_3_enabled  ? getExposedMember(resource_muxchan_3,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_4_enabled  ? getExposedMember(resource_muxchan_4,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_5_enabled  ? getExposedMember(resource_muxchan_5,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_6_enabled  ? getExposedMember(resource_muxchan_6,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_7_enabled  ? getExposedMember(resource_muxchan_7,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_8_enabled  ? getExposedMember(resource_muxchan_8,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_9_enabled  ? getExposedMember(resource_muxchan_9,  "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_10_enabled ? getExposedMember(resource_muxchan_10, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_11_enabled ? getExposedMember(resource_muxchan_11, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_12_enabled ? getExposedMember(resource_muxchan_12, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_13_enabled ? getExposedMember(resource_muxchan_13, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_14_enabled ? getExposedMember(resource_muxchan_14, "sar_mux_pseudoDiffMode") : false) ||
+                       (muxchan_15_enabled ? getExposedMember(resource_muxchan_15, "sar_mux_pseudoDiffMode") : false)) &amp;&amp;
+                      ((muxchan_0_enabled  ? !getExposedMember(resource_muxchan_0,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_1_enabled  ? !getExposedMember(resource_muxchan_1,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_2_enabled  ? !getExposedMember(resource_muxchan_2,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_3_enabled  ? !getExposedMember(resource_muxchan_3,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_4_enabled  ? !getExposedMember(resource_muxchan_4,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_5_enabled  ? !getExposedMember(resource_muxchan_5,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_6_enabled  ? !getExposedMember(resource_muxchan_6,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_7_enabled  ? !getExposedMember(resource_muxchan_7,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_8_enabled  ? !getExposedMember(resource_muxchan_8,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_9_enabled  ? !getExposedMember(resource_muxchan_9,  "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_10_enabled ? !getExposedMember(resource_muxchan_10, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_11_enabled ? !getExposedMember(resource_muxchan_11, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_12_enabled ? !getExposedMember(resource_muxchan_12, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_13_enabled ? !getExposedMember(resource_muxchan_13, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_14_enabled ? !getExposedMember(resource_muxchan_14, "sar_mux_bypassBuffers") : false) ||
+                       (muxchan_15_enabled ? !getExposedMember(resource_muxchan_15, "sar_mux_bypassBuffers") : false))}`' />
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_autanalog.h' include='true' />
+
+<!-- The channel range detection -->
+    <ConfigArray    name='`${INST_NAME_adc}`_lim_cfg' type='cy_stc_autanalog_sar_limit_t' const='`${inFlash}`' public='true' include='`${limitDetection}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='4' include='true'>
+        <Member     name='cond'  value='`${limitCondition$idx{1}}`' />
+        <Member     name='low'   value='`${lowerThreshold$idx{1}}`' />
+        <Member     name='high'  value='`${upperThreshold$idx{1}}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The GPIO channel configuration -->
+    <ConfigArray name='`${INST_NAME_adc}`_gpio_ch_cfg' type='cy_stc_autanalog_sar_hs_chan_t' const='`${inFlash}`' public='true' include='`${(operatingMode eq "HighSpeed") &amp;&amp; (hsGpioResultMaskValue != 0)}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='8' include='`${gpiochan_$idx{0}_enabled}`'>
+        <Member name='posPin'   value='`${gpiochan_$idx{1}_enabled ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_nonInvPin")           : "CY_AUTANALOG_SAR_PIN_GPIO0"}`' />
+        <Member name='hsDiffEn' value='`${gpiochan_$idx{1}_enabled ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_pseudoDiffMode")           : "false"}`' />
+        <Member name='sign'     value='`${gpiochan_$idx{1}_enabled ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_resultFormat")                 : "false"}`' />
+        <Member name='posCoeff' value='`${gpiochan_$idx{1}_enabled ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_nonInvertingInputCoefficient") : "CY_AUTANALOG_SAR_CH_COEFF_DISABLED"}`' />
+        <Member name='negPin'   value='`${gpiochan_$idx{1}_enabled &amp;&amp; (getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_pseudoDiffMode")) ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_invPin")              : "CY_AUTANALOG_SAR_PIN_GPIO0"}`' />
+        <Member name='accShift' value='`${gpiochan_$idx{1}_enabled ? (accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) &amp;&amp; getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_accumulationShift")            : "false"}`' />
+        <Member name='negCoeff' value='`${gpiochan_$idx{1}_enabled &amp;&amp; (getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_pseudoDiffMode")) ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_invertingInputCoefficient")    : "CY_AUTANALOG_SAR_CH_COEFF_DISABLED"}`' />
+        <Member name='hsLimit'  value='`${gpiochan_$idx{1}_enabled ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_limitDetectionSelect")         : "CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED"}`' />
+        <Member name='fifoSel'  value='`${gpiochan_$idx{1}_enabled ? getExposedMember(resource_gpiochan_$idx{1}, "sar_gpio_fifoSelect")                   : "CY_AUTANALOG_FIFO_DISABLED"}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The MUX channel configuration -->
+    <ConfigArray name='`${INST_NAME_adc}`_mux_ch_cfg' type='cy_stc_autanalog_sar_mux_chan_t' const='`${inFlash}`' public='true' include='`${(operatingMode eq "LowPower") || (operatingMode eq "HighSpeed") &amp;&amp; (lpMuxResultMaskValue != 0)}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='16' include='`${muxchan_$idx{0}_enabled}`'>
+        <Member name='posPin'     value='`${muxchan_$idx{1}_enabled ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_nonInvPin")                 : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1"}`' />
+        <Member name='sign'       value='`${muxchan_$idx{1}_enabled ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_resultFormat")                 : "false"}`' />
+        <Member name='posCoeff'   value='`${muxchan_$idx{1}_enabled ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_nonInvertingInputCoefficient") : "CY_AUTANALOG_SAR_CH_COEFF_DISABLED"}`' />
+        <Member name='negPin'     value='`${muxchan_$idx{1}_enabled &amp;&amp; (differentialMode || getExposedMember(resource_muxchan_$idx{1}, "sar_mux_pseudoDiffMode")) ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_invPin") : "CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1"}`' />
+        <Member name='buffBypass' value='`${muxchan_$idx{1}_enabled ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_bypassBuffers")                     : "true"}`' />
+        <Member name='accShift'   value='`${muxchan_$idx{1}_enabled ? (accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) &amp;&amp; getExposedMember(resource_muxchan_$idx{1}, "sar_mux_accumulationShift")            : "false"}`' />
+        <Member name='negCoeff'   value='`${muxchan_$idx{1}_enabled &amp;&amp; (differentialMode || getExposedMember(resource_muxchan_$idx{1}, "sar_mux_pseudoDiffMode")) ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_invertingInputCoefficient") : "CY_AUTANALOG_SAR_CH_COEFF_DISABLED"}`' />
+        <Member name='muxLimit'   value='`${muxchan_$idx{1}_enabled ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_limitDetectionSelect")         : "CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED"}`' />
+        <Member name='fifoSel'    value='`${muxchan_$idx{1}_enabled ? getExposedMember(resource_muxchan_$idx{1}, "sar_mux_fifoSelect")                   : "CY_AUTANALOG_FIFO_DISABLED"}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The part of the Static configuration for HS mode -->
+      <ConfigStruct name='`${INST_NAME_adc}`_sta_hs_cfg' type='cy_stc_autanalog_sar_sta_hs_t' const='`${inFlash}`' public='true' include='`${operatingMode eq "HighSpeed"}`'>
+        <Member name='hsVref' value='`${hsModeVrefSelect}`' />
+        <ConfigArray name='hsSampleTime' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${hsGlobalSampleTime$idx{0} - 1}`U' count='4'/>
+        </ConfigArray>
+        <ConfigArray name='hsGpioChan' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${(gpiochan_$idx{0}_enabled) ? "&amp;" . getExposedMember(resource_sar, "INST_NAME_adc") . "_gpio_ch_cfg[" . $idx{0} . "U]" : "NULL"}`' count='8'/>
+        </ConfigArray>
+        <Member name='hsGpioResultMask'
+        value='`${" &#13; " .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 0)) &amp;&amp; (hsGpioResultMaskValue &gt; 1)   ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO0 | &#13; " : (hsGpioResultMaskValue &amp; (1 &lt;&lt; 0)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO0" : "") .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 1)) &amp;&amp; (hsGpioResultMaskValue &gt; 3)   ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO1 | &#13; " : (hsGpioResultMaskValue &amp; (1 &lt;&lt; 1)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO1" : "") .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 2)) &amp;&amp; (hsGpioResultMaskValue &gt; 7)   ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO2 | &#13; " : (hsGpioResultMaskValue &amp; (1 &lt;&lt; 2)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO2" : "") .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 3)) &amp;&amp; (hsGpioResultMaskValue &gt; 15)  ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO3 | &#13; " : (hsGpioResultMaskValue &amp; (1 &lt;&lt; 3)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO3" : "") .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 4)) &amp;&amp; (hsGpioResultMaskValue &gt; 31)  ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO4 | &#13; " : (hsGpioResultMaskValue &amp; (1 &lt;&lt; 4)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO4" : "") .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 5)) &amp;&amp; (hsGpioResultMaskValue &gt; 63)  ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO5 | &#13; " : (hsGpioResultMaskValue &amp; (1 &lt;&lt; 5)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO5" : "") .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 6)) &amp;&amp; (hsGpioResultMaskValue &gt; 127) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO6 | &#13; " : (hsGpioResultMaskValue &amp; (1 &lt;&lt; 6)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO6" : "") .
+                  ((hsGpioResultMaskValue &amp; (1 &lt;&lt; 7)) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO7" : (hsGpioResultMaskValue eq 0) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO_DISABLED" : "")}`' />
+      </ConfigStruct>
+
+<!-- The part of the Static configuration for LP mode -->
+      <ConfigStruct name='`${INST_NAME_adc}`_sta_lp_cfg' type='cy_stc_autanalog_sar_sta_lp_t' const='`${inFlash}`' public='true' include='`${operatingMode eq "LowPower"}`'>
+        <Member name='lpDiffEn' value='`${differentialMode}`' />
+        <Member name='lpVref'   value='`${lpModeVrefSelect}`' />
+        <ConfigArray name='lpSampleTime' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${lpGlobalSampleTime$idx{0} - 1}`U' count='4'/>
+        </ConfigArray>
+      </ConfigStruct>
+
+<!-- The ADC static configuration -->
+      <ConfigStruct name='`${INST_NAME_adc}`_sta_cfg' type='cy_stc_autanalog_sar_sta_t' const='`${inFlash}`' public='true' include='true'>
+        <Member name='lpStaCfg'   value='`${(operatingMode eq "LowPower")  ? "&amp;" . getExposedMember(resource_sar, "INST_NAME_adc") . "_sta_lp_cfg" : "NULL"}`' />
+        <Member name='hsStaCfg'   value='`${(operatingMode eq "HighSpeed") ? "&amp;" . getExposedMember(resource_sar, "INST_NAME_adc") . "_sta_hs_cfg" : "NULL"}`' />
+        <Member name='posBufPwr'  value='`${noninvInputBufferPower}`' />
+        <Member name='negBufPwr'  value='`${invInputBufferPower}`' />
+        <Member name='accMode'    value='`${(accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) ? "CY_AUTANALOG_SAR_ACC_ACCUNDUMP" : "CY_AUTANALOG_SAR_ACC_DISABLED"}`' />
+        <Member name='startupCal' value='`${calibrationAtStartup}`' />
+        <Member name='chanID'     value='`${includeChannelId}`' />
+        <Member name='shiftMode'  value='`${(accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) ? accumulationShiftMode : false}`' />
+        <ConfigArray name='intMuxChan' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${(muxchan_$idx{0}_enabled) ? "&amp;" . getExposedMember(resource_sar, "INST_NAME_adc") . "_mux_ch_cfg[" . $idx{0} . "U]" : "NULL"}`' count='16'/>
+        </ConfigArray>
+        <ConfigArray name='limitCond' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${(limitDetection) ? ("&amp;" . getExposedMember(resource_sar, "INST_NAME_adc") . "_lim_cfg[" . $idx{0} . "U]") : "NULL"}`' count='4'/>
+        </ConfigArray>
+        <Member name='muxResultMask'
+        value='`${" &#13; " .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 0))  &amp;&amp; (lpMuxResultMaskValue &gt; 1)     ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX0 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 0))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX0"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 1))  &amp;&amp; (lpMuxResultMaskValue &gt; 3)     ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX1 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 1))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX1"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 2))  &amp;&amp; (lpMuxResultMaskValue &gt; 7)     ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX2 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 2))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX2"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 3))  &amp;&amp; (lpMuxResultMaskValue &gt; 15)    ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX3 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 3))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX3"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 4))  &amp;&amp; (lpMuxResultMaskValue &gt; 31)    ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX4 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 4))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX4"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 5))  &amp;&amp; (lpMuxResultMaskValue &gt; 63)    ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX5 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 5))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX5"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 6))  &amp;&amp; (lpMuxResultMaskValue &gt; 127)   ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX6 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 6))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX6"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 7))  &amp;&amp; (lpMuxResultMaskValue &gt; 255)   ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX7 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 7))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX7"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 8))  &amp;&amp; (lpMuxResultMaskValue &gt; 511)   ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX8 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 8))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX8"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 9))  &amp;&amp; (lpMuxResultMaskValue &gt; 1023)  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX9 | &#13;  " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 9))  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX9"  : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 10)) &amp;&amp; (lpMuxResultMaskValue &gt; 2047)  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX10 | &#13; " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 10)) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX10" : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 11)) &amp;&amp; (lpMuxResultMaskValue &gt; 4095)  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX11 | &#13; " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 11)) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX11" : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 12)) &amp;&amp; (lpMuxResultMaskValue &gt; 8191)  ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX12 | &#13; " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 12)) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX12" : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 13)) &amp;&amp; (lpMuxResultMaskValue &gt; 16383) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX13 | &#13; " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 13)) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX13" : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 14)) &amp;&amp; (lpMuxResultMaskValue &gt; 32767) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX14 | &#13; " : (lpMuxResultMaskValue &amp; (1 &lt;&lt; 14)) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX14" : "") .
+                  ((lpMuxResultMaskValue &amp; (1 &lt;&lt; 15)) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX15" : (lpMuxResultMaskValue eq 0) ? "CY_AUTANALOG_SAR_CHAN_MASK_MUX_DISABLED" : "")}`' />
+        <Member name='firResultMask'
+        value='`${" &#13; " .
+                  ((firResultMaskValue &amp; (1 &lt;&lt; 0)) &amp;&amp; (firResultMaskValue &gt; 1)   ? "CY_AUTANALOG_SAR_MASK_FIR0 | &#13; " : (firResultMaskValue &amp; (1 &lt;&lt; 0)) ? "CY_AUTANALOG_SAR_MASK_FIR0" : "") .
+                  ((firResultMaskValue &amp; (1 &lt;&lt; 1)) ? "CY_AUTANALOG_SAR_MASK_FIR1" : (firResultMaskValue eq 0) ? "CY_AUTANALOG_SAR_MASK_FIR_DISABLED" : "")}`' />
+      </ConfigStruct>
+
+<!-- The ADC Sequencer Table configuration for HS mode -->
+    <ConfigArray name='`${INST_NAME_adc}`_seq_hs_cfg' type='cy_stc_autanalog_sar_seq_tab_hs_t' const='`${inFlash}`' public='true' include='`${operatingMode eq "HighSpeed"}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='1024' include='`${(getParamValue("group_" . $idx{0}/32 . "_enabled") ? "true" : "false" ) &amp;&amp; (getParamValue("group_" . $idx{0}/32 . "_scan_" . $idx{0}%32 . "_enabled") ? "true" : "false")}`'>
+        <Member name='chanEn'       value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (getExposedMember(getParamValue("resource_group_" . $idx{1}/32), "simultaneousSampling") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "simultaneousSamplingGPIOch") : getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "nonSimultaneousSamplingGPIOch")) : "0U"}`' />
+        <Member name='muxMode'      value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (getExposedMember(getParamValue("resource_group_" . $idx{1}/32), "simultaneousSampling") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "simultaneousMuxMode") : getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "nonSimultaneousMuxMode")) : "0U"}`' />
+        <Member name='mux0Sel'      value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (getExposedMember(getParamValue("resource_group_" . $idx{1}/32), "simultaneousSampling") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "simultaneousMux0Sel") : getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "nonSimultaneousMux0Sel")) : "0U"}`' />
+        <Member name='mux1Sel'      value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (getExposedMember(getParamValue("resource_group_" . $idx{1}/32), "simultaneousSampling") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "simultaneousMux1Sel") : "CY_AUTANALOG_SAR_CHAN_CFG_MUX0") : "0U"}`' />
+        <Member name='sampleTimeEn' value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "sampleTimeEnable")) : "false"}`' />
+        <Member name='sampleTime'   value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "sampleTimeEnable") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "sampleTimeSelect") : "CY_AUTANALOG_SAR_SAMPLE_TIME0") : "CY_AUTANALOG_SAR_SAMPLE_TIME0"}`' />
+        <Member name='accEn'        value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? ((accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "accumulationEnable") : "false") : "false"}`' />
+        <Member name='accCount'     value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? ((accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) &amp;&amp; getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "accumulationEnable") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "accCount") : "CY_AUTANALOG_SAR_ACC_CNT2") : "CY_AUTANALOG_SAR_ACC_CNT2"}`' />
+        <Member name='calReq'       value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "calibrationInRuntime")) : "CY_AUTANALOG_SAR_CAL_DISABLED"}`' />
+        <Member name='nextAction'   value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? (((getParamValue("group_" . $idx{1}/32 . "_scanCnt") - 1) == $idx{1}%32) ? ((getExposedMember(getParamValue("resource_group_" . $idx{1}/32), "conversionMode") == false) ? "CY_AUTANALOG_SAR_NEXT_ACTION_STATE_STOP" : "CY_AUTANALOG_SAR_NEXT_ACTION_GO_TO_ENTRY_ADDR") : ("CY_AUTANALOG_SAR_NEXT_ACTION_GO_TO_NEXT")) : "CY_AUTANALOG_SAR_NEXT_ACTION_STATE_STOP"}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The ADC Sequencer Table configuration for LP mode -->
+    <ConfigArray name='`${INST_NAME_adc}`_seq_lp_cfg' type='cy_stc_autanalog_sar_seq_tab_lp_t' const='`${inFlash}`' public='true' include='`${operatingMode eq "LowPower"}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='1024' include='`${(getParamValue("group_" . $idx{0}/32 . "_enabled") ? "true" : "false" ) &amp;&amp; (getParamValue("group_" . $idx{0}/32 . "_scan_" . $idx{0}%32 . "_enabled") ? "true" : "false")}`'>
+        <Member name='chanEn'       value='`${lpMuxResultMaskValue != 0}`' />
+        <Member name='mux0Sel'      value='`${getParamValue("group_" . $idx{1}/32 . "_scan_" . $idx{1}%32 . "_enabled") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "channelMux") : "CY_AUTANALOG_SAR_CHAN_CFG_MUX0"}`' />
+        <Member name='sampleTimeEn' value='`${getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "sampleTimeEnable")}`' />
+        <Member name='sampleTime'   value='`${getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "sampleTimeEnable") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "sampleTimeSelect") : "CY_AUTANALOG_SAR_SAMPLE_TIME0"}`' />
+        <Member name='accEn'        value='`${(accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "accumulationEnable") : "false"}`' />
+        <Member name='accCount'     value='`${(accumulationMode ne CY_AUTANALOG_SAR_ACC_DISABLED) &amp;&amp; getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "accumulationEnable") ? getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "accCount") : "CY_AUTANALOG_SAR_ACC_CNT2"}`' />
+        <Member name='calReq'       value='`${getExposedMember(getParamValue("resource_group_" . $idx{1}/32 . "_scan_" . $idx{1}%32), "calibrationInRuntime")}`' />
+        <Member name='nextAction'   value='`${((getParamValue("group_" . $idx{1}/32 . "_scanCnt") - 1) == $idx{1}%32) ? ((getExposedMember(getParamValue("resource_group_" . $idx{1}/32), "conversionMode") == false) ? "CY_AUTANALOG_SAR_NEXT_ACTION_STATE_STOP" : "CY_AUTANALOG_SAR_NEXT_ACTION_GO_TO_ENTRY_ADDR") : ("CY_AUTANALOG_SAR_NEXT_ACTION_GO_TO_NEXT")}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The FIR filter 0 coefficients array -->
+    <ConfigArray name='`${INST_NAME_adc}`_fir0_coeff' type='int16_t' const='false' public='true' include='`${firfilter_0_enabled &amp;&amp; (getExposedMember(resource_firfilter_0, "filterCoefficients") == 1)}`' >
+        <ArrayElement value='0' count='64' include='`${$idx{0} &lt; getExposedMember(resource_firfilter_0, "numberOfTaps")}`'/>
+    </ConfigArray>
+
+<!-- The FIR filter 1 coefficients array -->
+    <ConfigArray name='`${INST_NAME_adc}`_fir1_coeff' type='int16_t' const='false' public='true' include='`${firfilter_1_enabled &amp;&amp; (getExposedMember(resource_firfilter_1, "filterCoefficients") == 1)}`' >
+        <ArrayElement value='0' count='64' include='`${$idx{0} &lt; getExposedMember(resource_firfilter_1, "numberOfTaps")}`'/>
+    </ConfigArray>
+
+<!-- The FIR filter configuration -->
+    <ConfigArray name='`${INST_NAME_adc}`_fir_cfg' type='cy_stc_autanalog_sar_fir_cfg_t' const='`${inFlash}`' public='true' include='`${firfilter_0_enabled || firfilter_1_enabled}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='2' include='`${firfilter_$idx{0}_enabled}`'>
+        <Member name='chanSel'      value='`${getExposedMember(resource_firfilter_$idx{1}, "inputChannel")}`' />
+        <Member name='coeff'        value='`${INST_NAME_adc . "_fir" . $idx{1} . "_coeff"}`' />
+        <Member name='tapSel'       value='`${getExposedMember(resource_firfilter_$idx{1}, "numberOfTaps") - 1}`U' />
+        <Member name='shiftSel'     value='`${getExposedMember(resource_firfilter_$idx{1}, "shiftOutput")}`U' />
+        <Member name='waitTapInit'  value='`${getExposedMember(resource_firfilter_$idx{1}, "waitForTapInit") ? true : false}`' />
+        <Member name='firLimit'     value='`${limitDetection ? getExposedMember(resource_firfilter_$idx{1}, "limitDetectionSelect") : "CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED"}`' />
+        <Member name='fifoSel'      value='`${getExposedMember(resource_firfilter_$idx{1}, "fifoSelect")}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The FIFO configuration -->
+      <ConfigStruct name='`${INST_NAME_adc}`_fifo_cfg' type='cy_stc_autanalog_fifo_cfg_t' const='`${inFlash}`' public='true' include='`${resource_fifo_enabled}`'>
+        <Member name='split' value='`${isBlockUsed(resource_fifo) ? getExposedMember(resource_fifo, "numberOfFifosChoice") : "CY_AUTANALOG_FIFO_SPLIT1"}`' />
+        <ConfigArray name='level' type='nested' const='false' public='true' include='true' >
+          <ArrayElement value='`${(isBlockUsed(resource_fifo) ? getExposedMember(resource_fifo, "fifo" . $idx{0} . "LevelDetect") : "512") - 1}`U' count='8'/>
+        </ConfigArray>
+      </ConfigStruct>
+
+<!-- The configuration structure to set up the entire ADC -->
+      <ConfigStruct name='`${INST_NAME_adc}`_cfg' type='cy_stc_autanalog_sar_t' const='false' public='true' repeatCount='1' include='`${isBlockUsed(resource_sar)}`'>
+        <Member name='sarStaCfg'   value='&amp;`${INST_NAME_adc}`_sta_cfg' />
+        <Member name='hsSeqTabNum' value='`${(operatingMode eq "HighSpeed") ? ("sizeof(" . INST_NAME_adc . "_seq_hs_cfg)/sizeof(" . INST_NAME_adc . "_seq_hs_cfg[0U])") : "0U"}`' />
+        <Member name='hsSeqTabArr' value='`${(operatingMode eq "HighSpeed") ? ("&amp;" . INST_NAME_adc . "_seq_hs_cfg[0U]") : "NULL"}`' />
+        <Member name='lpSeqTabNum' value='`${(operatingMode eq "LowPower")  ? ("sizeof(" . INST_NAME_adc . "_seq_lp_cfg)/sizeof(" . INST_NAME_adc . "_seq_lp_cfg[0U])") : "0U"}`' />
+        <Member name='lpSeqTabArr' value='`${(operatingMode eq "LowPower")  ? ("&amp;" . INST_NAME_adc . "_seq_lp_cfg[0U]") : "NULL"}`' />
+        <Member name='firNum'      value='`${(firfilter_0_enabled || firfilter_1_enabled) ? ("sizeof(" . INST_NAME_adc . "_fir_cfg)/sizeof(" . INST_NAME_adc . "_fir_cfg[0U])") : "0U"}`' />
+        <Member name='firCfg'      value='`${(firfilter_0_enabled || firfilter_1_enabled) ? ("&amp;" . INST_NAME_adc . "_fir_cfg[0U]") : "NULL"}`' />
+        <Member name='fifoCfg'     value='`${resource_fifo_enabled ? ("&amp;" . INST_NAME_adc . "_fifo_cfg") : "NULL"}`' />
+      </ConfigStruct>
+
+    <!-- The ADC State Transition Table structure -->
+    <ConfigArray name='`${INST_NAME_adc}`_stt' type='cy_stc_autanalog_stt_sar_t' const='`${inFlash}`' public='true' include='`${isBlockUsed(resource_sar)}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='64' include='`${isBlockUsed("pass[" . inst_pass . "].ac[0].state[" . $idx{0} . "]")}`'>
+        <Member name='unlock'     value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcUnlock")}`' />
+        <Member name='enable'     value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcEnable")}`' />
+        <Member name='trigger'    value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcTrigger")}`' />
+        <Member name='entryState' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 0  ? 0 :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 1  ? group_0_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 2  ? group_0_scanCnt + group_1_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 3  ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 4  ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 5  ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 6  ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 7  ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 8  ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 9  ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 10 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 11 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 12 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 13 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 14 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 15 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 16 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 17 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 18 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 19 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 20 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 21 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 22 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 23 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 24 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 25 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt + group_24_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 26 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt + group_24_scanCnt + group_25_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 27 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt + group_24_scanCnt + group_25_scanCnt + group_26_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 28 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt + group_24_scanCnt + group_25_scanCnt + group_26_scanCnt + group_27_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 29 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt + group_24_scanCnt + group_25_scanCnt + group_26_scanCnt + group_27_scanCnt + group_28_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 30 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt + group_24_scanCnt + group_25_scanCnt + group_26_scanCnt + group_27_scanCnt + group_28_scanCnt + group_29_scanCnt :
+                                            getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sarAdcScanGroup") == 31 ? group_0_scanCnt + group_1_scanCnt + group_2_scanCnt + group_3_scanCnt + group_4_scanCnt + group_5_scanCnt + group_6_scanCnt + group_7_scanCnt + group_8_scanCnt + group_9_scanCnt + group_10_scanCnt + group_11_scanCnt + group_12_scanCnt + group_13_scanCnt + group_14_scanCnt + group_15_scanCnt + group_16_scanCnt + group_17_scanCnt + group_18_scanCnt + group_19_scanCnt + group_20_scanCnt + group_21_scanCnt + group_22_scanCnt + group_23_scanCnt + group_24_scanCnt + group_25_scanCnt + group_26_scanCnt + group_27_scanCnt + group_28_scanCnt + group_29_scanCnt + group_30_scanCnt : 0}`U' />
+      </ConfigStruct>
+    </ConfigArray>
+
+    <!-- The ADC HAL Configurator structure -->
+      <ConfigStruct name='`${INST_NAME_adc}`_hal_config' type='mtb_hal_adc_configurator_t' const='`${inFlash}`' public='true' include='`${isBlockUsed(resource_sar)}`' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_ADC)'>
+        <Member name='config' value='&amp;`${INST_NAME_adc}`_cfg' />
+        <Member name='num_channels' value='`${(operatingMode eq "HighSpeed") ? ("sizeof(" . INST_NAME_adc . "_seq_hs_cfg)/sizeof(" . INST_NAME_adc . "_seq_hs_cfg[0U])") : "0U"}`' />
+        <Member name='clock' value='NULL'/>
+        <Member name='adc_index' value='0U'/>
+      </ConfigStruct>
+
+  </ConfigFirmware>
+</PersonalityTemplate>

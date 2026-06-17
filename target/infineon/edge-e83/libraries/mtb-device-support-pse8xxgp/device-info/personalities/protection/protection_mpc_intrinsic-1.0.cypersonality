@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<PersonalityTemplate id='protection_mpc_intrinsic' name='MPC_intrinsic' intrinsic='true' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <Constants>
+    <Const id="PROTECTION_LOC" value='vres[0].protection[0]'/>
+    <Const id='REGION_COUNT' value='99' />
+    <Const id='DOMAIN_COUNT' value='16' />
+    <Const id='PC_REGION_COUNT' value='792' />
+    <Const id='PC_COUNT' value='8' />
+    <Const id='CY_4KB' value='4096' />
+    <Const id='CY_128KB' value='131072' />
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxsramc,mxs22rramc,mxsmif,mxsocmem' />
+      <Resource name='(mxsramc|mxrramc|smif|socmem)\.mpc' />
+      <OperatingMode value='MCU' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type="mpc_intrinsic_v1">
+      <ExposedMember key='block_name' paramId='block_name'/>
+      <ExposedMember key='blockSize' paramId='blockSizeEnumUnified'/>
+      <ExposedMember key='RegisterDefine' paramId='RegisterDefine'/>
+      <ExposedMember key='RegisterDefineUnified' paramId='RegisterDefineUnified'/>
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <ParamString id='block_name' name='block_name' group='' default='`${getBlockType(0)}`_`${getInstNumber(getBlockType(0))}`_`${getBlockType(1)}`_`${getInstNumber(getBlockType(1))}`' visible='false' editable='false' desc='' />
+    <ParamString id='blockSize' name='blockSize' group='' default='`${(lookupExpression("MPC.BLOCK_SIZE", 0))}`' visible='false' editable='false' desc='' />
+
+    <ParamBool id='isRram' default='`${getBlockType(0) eq "mxrramc"}`' />
+    <ParamBool id='isSmif' default='`${getBlockType(0) eq "smif"}`' />
+    <ParamBool id='isSmif0' default='`${(getBlockType(0) eq "smif")&amp;&amp;(getInstNumber(getBlockType(0)) eq 0)}`' />
+    <ParamBool id='isSmif1' default='`${(getBlockType(0) eq "smif")&amp;&amp;(getInstNumber(getBlockType(0)) eq 1)}`' />
+    <ParamBool id='isSocmem' default='`${getBlockType(0) eq "socmem"}`' />
+    <ParamBool id='isSram0' default='`${(getBlockType(0) eq "mxsramc")&amp;&amp;(getInstNumber(getBlockType(0)) eq 0)}`' />
+    <ParamBool id='isSram1' default='`${(getBlockType(0) eq "mxsramc")&amp;&amp;(getInstNumber(getBlockType(0)) eq 1)}`' />
+
+    <ParamString id='RegisterDefine' default='`${
+      (isRram ? "(MPC_Type*)RRAMC0_MPC0" :
+      (isSmif0 ? "(MPC_Type*)SMIF0_CACHE_BLOCK_CACHEBLK_AHB_MPC0" :
+      (isSmif1 ? "(MPC_Type*)SMIF1_CACHE_BLOCK_CACHEBLK_AHB_MPC0" :
+      (isSocmem ? "(MPC_Type*)SOCMEM_SRAM_MPC0" :
+      (isSram0 ? "(MPC_Type*)RAMC0_MPC0" :
+      (isSram1 ? "(MPC_Type*)RAMC1_MPC0" : "NULL"
+      ))))))}`' />
+    <ParamString id='RegisterDefineUnified' default='`${
+      (isRram ? "NULL" :
+      (isSmif0 ? "(MPC_Type*)SMIF0_CORE_AXI_MPC0" :
+      (isSmif1 ? "(MPC_Type*)SMIF1_CORE_AXI_MPC0" :
+      (isSocmem ? "NULL" :
+      (isSram0 ? "NULL" :
+      (isSram1 ? "NULL" : "NULL"
+      ))))))}`' />
+    <ParamString id='blockSizeEnumUnified' default='`${
+                  blockSize == 0 ? "CY_MPC_SIZE_32B" :
+                  blockSize == 1 ? "CY_MPC_SIZE_64B" :
+                  blockSize == 2 ? "CY_MPC_SIZE_128B" :
+                  blockSize == 3 ? "CY_MPC_SIZE_256B" :
+                  blockSize == 4 ? "CY_MPC_SIZE_512B" :
+                  blockSize == 5 ? "CY_MPC_SIZE_1KB" :
+                  blockSize == 6 ? "CY_MPC_SIZE_2KB" :
+                  blockSize == 7 ? "CY_MPC_SIZE_4KB" :
+                  blockSize == 8 ? "CY_MPC_SIZE_8KB" :
+                  blockSize == 9 ? "CY_MPC_SIZE_16KB" :
+                  blockSize == 10 ? "CY_MPC_SIZE_32KB" :
+                  blockSize == 11 ? "CY_MPC_SIZE_64KB" :
+                  blockSize == 12 ? "CY_MPC_SIZE_128KB" :
+                  blockSize == 13 ? "CY_MPC_SIZE_256KB" :
+                  blockSize == 14 ? "CY_MPC_SIZE_512KB" :
+                  blockSize == 15 ? "CY_MPC_SIZE_1MB" :
+                  "CY_MPC_SIZE_1MB"}`' />
+  </Parameters>
+
+  <Variables>
+    <Variable id='alignment' value='`${(1 &lt;&lt; blockSize) * 32}`' />
+    <Variable id='region_starts' value='`${getMpcRegionStarts(INST_LOC)}`' />
+    <Variable id='region_ends' value='`${getMpcRegionEnds(INST_LOC)}`' />
+    <Variable id='region_domain_ids' value='`${getMpcRegionDomainIds(INST_LOC)}`' />
+    <Variable id='region_count' value='`${splitCount(region_starts)}`' />
+    <Variable id='region_start$idx' value='`${($idx >= region_count) ? 0 : splitAt(region_starts, $idx)}`' repeatCount='$REGION_COUNT' />
+    <Variable id='region_end$idx' value='`${($idx >= region_count) ? 0 : splitAt(region_ends, $idx)}`' repeatCount='$REGION_COUNT' />
+    <Variable id='region_size$idx' value='`${($idx >= region_count) ? 0 : toHex(region_end$idx - region_start$idx)}`' repeatCount='$REGION_COUNT' />
+    <Variable id='domain_id$idx' value='`${($idx >= region_count) ? "" : getBlockFromInstance(splitAt(region_domain_ids, $idx))}`' repeatCount='$REGION_COUNT' />
+    <Variable id='domain_reserved$idx' value='`${isBlockUsed(domain_id$idx{region}) ? (splitAt(region_domain_ids, $idx) eq (getOrDefault(getExposedMember("$PROTECTION_LOC", "domain_reserved"), ""))) : ""}`' repeatCount='$REGION_COUNT' repeatId='region'/>
+    <Variable id='physMemId' value='`${(getBlockType(0) eq "mxsramc") ? "SRAM" : (getBlockType(0) eq "mxrramc") ? "RRAM" : (getBlockType(0) eq "socmem") ? "SOCMEM_RAM" : ((getBlockType(0) eq "smif")&amp;&amp;(getInstNumber(getBlockType(0)) eq 0)) ? "SMIF0MEM1" : ((getBlockType(0) eq "smif")&amp;&amp;(getInstNumber(getBlockType(0)) eq 1)) ? "SMIF1MEM2" : ""}`' />
+    <Variable id='tcl_drcs' value='`${!isBlockUsed("m33syscpuss[0].cm33[0].sau[0]") ? "param:drc_count=0" : (physMemId eq "") ? "param:drc_count=0" : runTcl("security_mpc-1.0.tcl", getOrDefault(memoryViewAddresses(physMemId, "CORE_NAME_CM33_0"), ""), region_starts, region_ends, "SAU", getExposedMember("m33syscpuss[0].cm33[0].sau[0]", "starts_list"), getExposedMember("m33syscpuss[0].cm33[0].sau[0]", "ends_list"))}`' />
+    <Variable id='tcl_drc_count' value='`${getTclVar("drc_count", tcl_drcs)}`' />
+    <Variable id='ReadBit$idx' value='`${($idx >= region_count * $PC_COUNT) ? 0 : getExposedMember(lookupExpression("domain_id" . ($idx / $PC_COUNT)), "pc" . ($idx % $PC_COUNT) . "read")}`' repeatCount='$PC_REGION_COUNT' />
+    <Variable id='WriteBit$idx' value='`${($idx >= region_count * $PC_COUNT) ? 0 : getExposedMember(lookupExpression("domain_id" . ($idx / $PC_COUNT)), "pc" . ($idx % $PC_COUNT) . "write")}`' repeatCount='$PC_REGION_COUNT' />
+    <Variable id='RwBits$idx' value='`${(ReadBit$idx ? 1 : 0) + (WriteBit$idx ? 2 : 0)}`' repeatCount='$PC_REGION_COUNT' />
+    <Variable id='AccessEnum$idx' value='`${isRram ? ((RwBits$idx == 0 ? "IFX_SE_MPC_ACCESS_DISABLED" : (RwBits$idx == 1 ? "IFX_SE_MPC_ACCESS_R" : (RwBits$idx == 2 ? "IFX_SE_MPC_ACCESS_W" : "IFX_SE_MPC_ACCESS_RW")))) : ((RwBits$idx == 0 ? "CY_MPC_ACCESS_DISABLED" : (RwBits$idx == 1 ? "CY_MPC_ACCESS_R" : (RwBits$idx == 2 ? "CY_MPC_ACCESS_W" : "CY_MPC_ACCESS_RW")))) }`' repeatCount='$PC_REGION_COUNT' />
+    <Variable id='NSecureBit$idx' value='`${($idx >= region_count * $PC_COUNT) ? 0 : getExposedMember(lookupExpression("domain_id" . ($idx / $PC_COUNT)), "pc" . ($idx % $PC_COUNT) . "ns")}`' repeatCount='$PC_REGION_COUNT' />
+    <Variable id='SecureEnum$idx' value='`${isRram ? (NSecureBit$idx ? "IFX_SE_MPC_NON_SECURE" : "IFX_SE_MPC_SECURE") : (NSecureBit$idx ? "CY_MPC_NON_SECURE" : "CY_MPC_SECURE") }`' repeatCount='$PC_REGION_COUNT' />
+    <Variable id='ExposedVarAccess' value='`${
+      (isRram ? "response0" :
+      (isSmif0 ? "response4" :
+      (isSmif1 ? "response5" :
+      (isSocmem ? "response1" :
+      (isSram0 ? "response2" :
+      (isSram1 ? "response3" : "UnknownMemory"
+      )))))) }`' />
+    <Variable id='BaseAddressesDefine' value='`${
+      (isRram ? "0x22000000" :
+      (isSmif0 ? "0x60000000" :
+      (isSmif1 ? "0x64000000" :
+      (isSocmem ? "0x26000000" :
+      (isSram0 ? "0x24000000" :
+      (isSram1 ? "0x24080000" : "NULL"
+      ))))))}`' />
+    <Variable id='AccessResponse' value='`${isBlockUsed("vres[0].protection[0].mpc[0]") ? getExposedMember("vres[0].protection[0].mpc[0]", ExposedVarAccess) : "CY_MPC_RZWI"}`' />
+
+    <!-- Compile the domain read/write/ns perms into one mask each-->
+    <Variable id='read_perm$idx' value='`${isBlockUsed(domain_id$idx{region}) ? (
+        (getExposedMember(domain_id$idx{region}, "pc0read") eq true ? 1 : 0) |
+        ((getExposedMember(domain_id$idx{region}, "pc1read") eq true ? 1 : 0) &lt;&lt; 1u) |
+        ((getExposedMember(domain_id$idx{region}, "pc2read") eq true ? 1 : 0) &lt;&lt; 2u) |
+        ((getExposedMember(domain_id$idx{region}, "pc3read") eq true ? 1 : 0) &lt;&lt; 3u) |
+        ((getExposedMember(domain_id$idx{region}, "pc4read") eq true ? 1 : 0) &lt;&lt; 4u) |
+        ((getExposedMember(domain_id$idx{region}, "pc5read") eq true ? 1 : 0) &lt;&lt; 5u) |
+        ((getExposedMember(domain_id$idx{region}, "pc6read") eq true ? 1 : 0) &lt;&lt; 6u) |
+        ((getExposedMember(domain_id$idx{region}, "pc7read") eq true ? 1 : 0) &lt;&lt; 7u) ) : "NULL"
+        }`' repeatCount='$REGION_COUNT' repeatId='region' />
+    <Variable id='write_perm$idx' value='`${isBlockUsed(domain_id$idx{region}) ? (
+        (getExposedMember(domain_id$idx{region}, "pc0write") eq true ? 1 : 0) |
+        ((getExposedMember(domain_id$idx{region}, "pc1write") eq true ? 1 : 0) &lt;&lt; 1u) |
+        ((getExposedMember(domain_id$idx{region}, "pc2write") eq true ? 1 : 0) &lt;&lt; 2u) |
+        ((getExposedMember(domain_id$idx{region}, "pc3write") eq true ? 1 : 0) &lt;&lt; 3u) |
+        ((getExposedMember(domain_id$idx{region}, "pc4write") eq true ? 1 : 0) &lt;&lt; 4u) |
+        ((getExposedMember(domain_id$idx{region}, "pc5write") eq true ? 1 : 0) &lt;&lt; 5u) |
+        ((getExposedMember(domain_id$idx{region}, "pc6write") eq true ? 1 : 0) &lt;&lt; 6u) |
+        ((getExposedMember(domain_id$idx{region}, "pc7write") eq true ? 1 : 0) &lt;&lt; 7u) ) : "NULL"
+        }`' repeatCount='$REGION_COUNT' repeatId='region' />
+    <Variable id='ns_perm$idx' value='`${isBlockUsed(domain_id$idx{region}) ? (
+        (getExposedMember(domain_id$idx{region}, "pc0ns") eq true ? 1 : 0) |
+        ((getExposedMember(domain_id$idx{region}, "pc1ns") eq true ? 1 : 0) &lt;&lt; 1u) |
+        ((getExposedMember(domain_id$idx{region}, "pc2ns") eq true ? 1 : 0) &lt;&lt; 2u) |
+        ((getExposedMember(domain_id$idx{region}, "pc3ns") eq true ? 1 : 0) &lt;&lt; 3u) |
+        ((getExposedMember(domain_id$idx{region}, "pc4ns") eq true ? 1 : 0) &lt;&lt; 4u) |
+        ((getExposedMember(domain_id$idx{region}, "pc5ns") eq true ? 1 : 0) &lt;&lt; 5u) |
+        ((getExposedMember(domain_id$idx{region}, "pc6ns") eq true ? 1 : 0) &lt;&lt; 6u) |
+        ((getExposedMember(domain_id$idx{region}, "pc7ns") eq true ? 1 : 0) &lt;&lt; 7u) ) : "NULL"
+        }`' repeatCount='$REGION_COUNT' repeatId='region' />
+
+  </Variables>
+
+  <DRCs>
+    <DRC type='ERROR' text='`${getOrDefault(getTclVar("drc$idx", tcl_drcs), "")}`' condition='`${$idx &lt; tcl_drc_count}`' repeatCount='32' />
+    <DRC type='ERROR' text="Invalid 'Range $idx' start offset. The value must be greater than or equal to 0x00000000. Use the Memory Regions tab to adjust the memory regions allocated to this MPC." condition='`${$idx &lt; region_count &amp;&amp; region_start$idx &lt; 0}`' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text="Invalid 'Range $idx' start offset. The value must be less than 0xFFFFE000. Use the Memory Regions tab to adjust the memory regions allocated to this MPC." condition='`${$idx &lt; region_count &amp;&amp; region_start$idx &gt; 4294959104}`' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text="Invalid 'Range $idx' end offset. The value must be greater than or equal to 0x00000000. Use the Memory Regions tab to adjust the memory regions allocated to this MPC." condition='`${$idx &lt; region_count &amp;&amp; region_end$idx &lt; 0}`' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text="Invalid 'Range $idx' end offset. The value must be less than 0xFFFFE000. Use the Memory Regions tab to adjust the memory regions allocated to this MPC." condition='`${$idx &lt; region_count &amp;&amp; region_end$idx &gt; 4294959104}`' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text="Invalid 'Range $idx' size. The range size must be greater than or equal to 0x00000000. Use the Memory Regions tab to adjust the memory regions allocated to this MPC." condition='`${$idx &lt; region_count &amp;&amp; region_size$idx &lt; 0}`' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='`${domain_id$idx}` is used but not enabled.' condition='`${$idx &lt; region_count &amp;&amp; isBlockUsed(domain_id$idx) == false}`' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='The overall size of the memory regions associated with the `${getExposedMember(getBlockFromInstance(splitAt(region_domain_ids, $idx)), "displayName")}` domain is not aligned to `${(isSmif ? "128KB" : "4KB")}` in `${physMemId}` memory. Please make adjustments to re-align the size of the memory regions associated with the `${getExposedMember(getBlockFromInstance(splitAt(region_domain_ids, $idx)), "displayName")}` domain to a multiple of `${(isSmif ? "128KB" : "4KB")}`.' condition='`${(isSmif ? ((region_size$idx{region} % $CY_128KB) != 0) : ((region_size$idx{region} % $CY_4KB) != 0)) &amp;&amp; $idx &lt; region_count}`' repeatCount='$REGION_COUNT' repeatId='region' location="vres[0].memory[0]"/>
+    <DRC type='ERROR' text='The offset of the memory regions associated with the `${getExposedMember(getBlockFromInstance(splitAt(region_domain_ids, $idx)), "displayName")}` domain is not aligned to `${(isSmif ? "128KB" : "4KB")}` in `${physMemId}` memory. Please make adjustments to re-align the offset of the memory regions associated with the `${getExposedMember(getBlockFromInstance(splitAt(region_domain_ids, $idx)), "displayName")}` domain to a multiple of `${(isSmif ? "128KB" : "4KB")}`.' condition='`${(isSmif ? ((region_start$idx{region} % $CY_128KB) != 0) : ((region_start$idx{region} % $CY_4KB) != 0)) &amp;&amp; $idx &lt; region_count}`' repeatCount='$REGION_COUNT' repeatId='region' location="vres[0].memory[0]"/>
+  </DRCs>
+
+  <!-- Generated firmware -->
+  <ConfigFirmware>
+    <ConfigDefine name='`${block_name}`_RESPONSE' value='`${AccessResponse}`' public='true' include='true' />
+
+    <ConfigDefine name='`${block_name}`_REGION_COUNT' value='`${(isSmif ? region_count * 2 : region_count)}`U' public='true' include='true' />
+
+    <ConfigArray name='`${block_name}`_srf_protection_range_s' type='mtb_srf_protection_range_s_t' const='true' public='true' include='`${(isBlockUsed("vres[0].memory[0]") &amp;&amp; (region_count &gt; 0))}`' arraySize='`${block_name}`_REGION_COUNT' guard='defined(COMPONENT_SECURE_DEVICE) &amp;&amp; defined(COMPONENT_MW_MTB_SRF)'>
+      <ConfigStruct name='empty' type='nested' const='true' public='true' include='`${ ((region_count &gt; $idx{0}) &amp;&amp; (domain_reserved$idx{region} ne "true")) }`' repeatCount='$REGION_COUNT' repeatId='region' >
+        <Member name='start' value='(void *) `${toHex(BaseAddressesDefine + region_start$idx{region}, 8)}` ' />
+        <Member name='length'   value='`${region_size$idx{region}}`U' />
+        <Member name='is_secure'   value='`${isBlockUsed(domain_id$idx{region}) ? ((ns_perm$idx{region} &gt; 0) ? "false" : "true") : "true"}`' />
+      </ConfigStruct>
+      <ConfigStruct name='empty' type='nested' const='true' public='true' include='`${ ((region_count &gt; $idx{0}) &amp;&amp; (isSmif eq true) &amp;&amp; (domain_reserved$idx{region} ne "true")) }`' repeatCount='$REGION_COUNT' repeatId='region' >
+        <Member name='start' value='(void *) `${toHex(BaseAddressesDefine + region_start$idx{region}, 8)}`' />
+        <Member name='length'   value='`${region_size$idx{region}}`U' />
+        <Member name='is_secure'   value='`${isBlockUsed(domain_id$idx{region}) ? ((ns_perm$idx{region} &gt; 0) ? "false" : "true") : "true"}`' />
+      </ConfigStruct>
+    </ConfigArray>
+  </ConfigFirmware>
+</PersonalityTemplate>

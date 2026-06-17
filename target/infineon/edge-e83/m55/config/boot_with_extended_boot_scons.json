@@ -1,0 +1,65 @@
+{
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "relocate_proj_cm33_ns",
+            "description": "relocate the hex to a programmable (S-BUS) address",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex-relocate",
+                    "inputs": [
+                        {
+                            "file": "rtthread.hex",
+                            "regions": [
+                                { "start": "0x02000000", "size": "0x00080000", "dest": "0x22000000" },
+                                { "start": "0x04000000", "size": "0x00100000", "dest": "0x24000000" },
+                                { "start": "0x06000000", "size": "0x00500000", "dest": "0x26000000" },
+                                { "start": "0x08000000", "size": "0x01000000", "dest": "0x60000000" },
+                                { "start": "0x0C000000", "size": "0x01000000", "dest": "0x64000000" },
+                                { "start": "0x12000000", "size": "0x00080000", "dest": "0x32000000" },
+                                { "start": "0x14000000", "size": "0x00100000", "dest": "0x34000000" },
+                                { "start": "0x16000000", "size": "0x00500000", "dest": "0x36000000" },
+                                { "start": "0x18000000", "size": "0x01000000", "dest": "0x70000000" },
+                                { "start": "0x1C000000", "size": "0x01000000", "dest": "0x74000000" }
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "file": "build/rtthread.hex"
+                        }
+                    ]
+                }
+            ]
+        }//,
+        // {
+        //     "name": "merge",
+        //     "description": "combine individual project hex files into a single hex",
+        //     "enabled": true,
+        //     "commands" :
+        //     [
+        //         {
+        //             "command" : "merge",
+        //             "inputs" :
+        //             [
+        //                 {
+        //                     "file" : "build/rtthread.hex"
+        //                 },
+        //                 {
+        //                     "file" : "../../tools/edgeprotecttools/cm33_s_signed_fw/proj_cm33_s_signed.hex"
+        //                 }
+        //             ],
+        //             "outputs" :
+        //             [
+        //                 {
+        //                     "file" : "build/rtthread.hex",
+        //                     "format" : "ihex",
+        //                     "overlap" : "ignore"
+        //                 }
+        //             ]
+        //         }
+        //     ]
+        // }
+    ]
+}

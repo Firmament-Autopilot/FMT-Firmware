@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__bsp__errors" kind="group">
+    <compoundname>group_bsp_errors</compoundname>
+    <title>Error Codes</title>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__group__bsp__errors_1gabe54a894efe81418f881d299f35266a1" prot="public" static="no">
+        <name>CYBSP_PC2</name>
+        <initializer>(2U)</initializer>
+        <briefdescription>
+<para>Protection context 2. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/cybsp.h" line="55" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/cybsp.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__bsp__errors_1gaee745bd3fccec6eb2df1e83fc4c9f775" prot="public" static="no">
+        <name>CYBSP_RSLT_ERR_SYSCLK_PM_CALLBACK</name>
+        <initializer>    (CY_RSLT_CREATE(CY_RSLT_TYPE_ERROR, CY_RSLT_MODULE_ABSTRACTION_BSP, 0))</initializer>
+        <briefdescription>
+<para>Failed to configure sysclk power management callback. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/cybsp.h" line="58" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/cybsp.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Error codes specific to the board. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

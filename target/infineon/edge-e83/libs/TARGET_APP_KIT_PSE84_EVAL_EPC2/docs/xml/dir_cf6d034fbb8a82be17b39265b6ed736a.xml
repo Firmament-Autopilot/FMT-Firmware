@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="dir_cf6d034fbb8a82be17b39265b6ed736a" kind="dir">
+    <compoundname>output</compoundname>
+    <innerdir refid="dir_518b2c12c0d943b23d5fdbea9427f2c2">bsps</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="output/"/>
+  </compounddef>
+</doxygen>

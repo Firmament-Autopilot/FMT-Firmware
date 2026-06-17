@@ -1,0 +1,4 @@
+name: cyapp_prot_fw_dfu
+description: This application performs DFU to update PROT_FW application image in Flash.
+type: Firmware application
+version: 1.0.0.4508
