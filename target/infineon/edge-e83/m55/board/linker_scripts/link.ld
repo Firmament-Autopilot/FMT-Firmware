@@ -394,7 +394,7 @@ SECTIONS
         . = ALIGN(4);
 
         __data_end__ = .;
-    } > m55_data_INTERNAL AT > m55_nvm_sel
+    } > m55_data_secondary AT > m55_nvm_sel
 
     /* A section for variables that should not be initialized during the device startup */
     .noinit (NOLOAD) :
