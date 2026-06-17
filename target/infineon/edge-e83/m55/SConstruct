@@ -19,7 +19,7 @@ except Exception as e:
     print(RTT_ROOT)
     sys.exit(-1)
 
-TARGET = 'rt-thread.' + rtconfig.TARGET_EXT
+TARGET = 'build/fmt_' + rtconfig.BOARD + '.' + rtconfig.TARGET_EXT
 
 DefaultEnvironment(tools=[])
 
