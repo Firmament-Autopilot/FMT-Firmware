@@ -61,7 +61,7 @@ void task_vehicle_entry(void* parameter)
                 timestamp = time_now - systime_get_origin();
 
 #if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
-                sensor_collect();
+                sensor_collect_high_freq();
 #endif
                 pilot_cmd_collect();
                 gcs_cmd_collect();
