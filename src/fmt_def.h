@@ -24,18 +24,18 @@ extern "C" {
 #endif
 
 /* Firmament version information */
-#define FMT_VERSION                      "v1.1.3"
+#define FMT_VERSION                "v1.1.3"
 
 /* Thread Prority */
-#define VEHICLE_THREAD_PRIORITY          3
-#define LOW_FREQ_SENSORS_THREAD_PRIORITY 4
-#define FMTIO_THREAD_PRIORITY            7
-#define DRONECAN_THREAD_PRIORITY         4
-#define MAVLINK_RX_THREAD_PRIORITY       10
-#define MAVGCS_THREAD_PRIORITY           11
-#define MAVOBC_THREAD_PRIORITY           12
-#define LOGGER_THREAD_PRIORITY           13
-#define STATUS_THREAD_PRIORITY           14
+#define VEHICLE_THREAD_PRIORITY    3
+#define SENSORS_THREAD_PRIORITY    4
+#define DRONECAN_THREAD_PRIORITY   5
+#define FMTIO_THREAD_PRIORITY      7
+#define MAVLINK_RX_THREAD_PRIORITY 10
+#define MAVGCS_THREAD_PRIORITY     11
+#define MAVOBC_THREAD_PRIORITY     12
+#define LOGGER_THREAD_PRIORITY     13
+#define STATUS_THREAD_PRIORITY     14
 
 #if !defined(bool) && !defined(__cplusplus)
 typedef int bool;

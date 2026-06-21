@@ -2,7 +2,7 @@
 
 TASKS = [
     'vehicle/normal/*.c',
-    'low_freq_sensors/*.c',
+    'sensor/*.c',
     'comm/*.c',
     'logger/*.c',
     'fmtio/*.c',

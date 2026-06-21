@@ -138,7 +138,7 @@ typedef struct {
     float temperature_deg;
 } airspeed_data_t;
 
-void sensor_collect(void);
+void sensor_collect_all(void);
 void sensor_collect_high_freq(void);
 void sensor_collect_low_freq(void);
 fmt_err_t sensor_update_calibration(void);

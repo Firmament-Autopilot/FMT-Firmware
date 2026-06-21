@@ -20,47 +20,47 @@
 #include "module/system/systime.h"
 #include "module/task_manager/task_manager.h"
 
-#define LOW_FREQ_SENSORS_PERIOD_MS    10
-#define EVENT_LOW_FREQ_SENSORS_UPDATE (1 << 0)
+#define SENSORS_PERIOD_MS    5
+#define EVENT_SENSORS_UPDATE (1 << 0)
 
-static struct rt_timer timer_low_freq_sensors;
-static struct rt_event event_low_freq_sensors;
+static struct rt_timer timer_sensors;
+static struct rt_event event_sensors;
 
-static void timer_low_freq_sensors_update(void* parameter)
+static void timer_sensors_update(void* parameter)
 {
-    rt_event_send(&event_low_freq_sensors, EVENT_LOW_FREQ_SENSORS_UPDATE);
+    rt_event_send(&event_sensors, EVENT_SENSORS_UPDATE);
 }
 
-fmt_err_t task_low_freq_sensors_init(void)
+static fmt_err_t task_sensors_init(void)
 {
-    if (rt_event_init(&event_low_freq_sensors, "lfsens", RT_IPC_FLAG_FIFO) != RT_EOK) {
+    if (rt_event_init(&event_sensors, "sensor", RT_IPC_FLAG_FIFO) != RT_EOK) {
         return FMT_ERROR;
     }
 
-    rt_timer_init(&timer_low_freq_sensors,
-                  "lfsens",
-                  timer_low_freq_sensors_update,
+    rt_timer_init(&timer_sensors,
+                  "sensor",
+                  timer_sensors_update,
                   RT_NULL,
-                  TICKS_FROM_MS(LOW_FREQ_SENSORS_PERIOD_MS),
+                  TICKS_FROM_MS(SENSORS_PERIOD_MS),
                   RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
-    if (rt_timer_start(&timer_low_freq_sensors) != RT_EOK) {
+    if (rt_timer_start(&timer_sensors) != RT_EOK) {
         return FMT_ERROR;
     }
 
     return FMT_EOK;
 }
 
-void task_low_freq_sensors_entry(void* parameter)
+void task_sensors_entry(void* parameter)
 {
     rt_err_t res;
     rt_uint32_t recv_set = 0;
-    uint32_t wait_set = EVENT_LOW_FREQ_SENSORS_UPDATE;
+    uint32_t wait_set = EVENT_SENSORS_UPDATE;
 
     while (1) {
-        res = rt_event_recv(&event_low_freq_sensors, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
+        res = rt_event_recv(&event_sensors, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
 
         if (res == RT_EOK) {
-            if (recv_set & EVENT_LOW_FREQ_SENSORS_UPDATE) {
+            if (recv_set & EVENT_SENSORS_UPDATE) {
 #if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
                 sensor_collect_low_freq();
 #endif
@@ -70,10 +70,10 @@ void task_low_freq_sensors_entry(void* parameter)
 }
 
 TASK_EXPORT __fmt_task_desc = {
-    .name = "low_freq_sensors",
-    .init = task_low_freq_sensors_init,
-    .entry = task_low_freq_sensors_entry,
-    .priority = LOW_FREQ_SENSORS_THREAD_PRIORITY,
+    .name = "sensor",
+    .init = task_sensors_init,
+    .entry = task_sensors_entry,
+    .priority = SENSORS_THREAD_PRIORITY,
     .auto_start = true,
     .stack_size = 3072,
     .param = NULL,

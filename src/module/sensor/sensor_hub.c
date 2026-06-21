@@ -853,7 +853,7 @@ void sensor_collect_low_freq(void)
     }
 }
 
-void sensor_collect(void)
+void sensor_collect_all(void)
 {
     sensor_collect_high_freq();
     sensor_collect_low_freq();
