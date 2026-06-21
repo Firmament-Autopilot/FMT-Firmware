@@ -6,6 +6,7 @@ TASKS = [
     # 'fmtio/*.c',
     'status/*.c',
     'vehicle/normal/*.c',
+    'low_freq_sensors/*.c',
 ]
 
 TASKS_CPPPATH = []

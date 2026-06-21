@@ -139,6 +139,8 @@ typedef struct {
 } airspeed_data_t;
 
 void sensor_collect(void);
+void sensor_collect_high_freq(void);
+void sensor_collect_low_freq(void);
 fmt_err_t sensor_update_calibration(void);
 fmt_err_t advertise_sensor_imu(uint8_t id);
 fmt_err_t advertise_sensor_mag(uint8_t id);
