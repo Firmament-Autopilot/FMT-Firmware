@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2288
+ * Model version                  : 1.2289
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue May 19 14:10:38 2026
+ * C/C++ source code generated on : Sun Jun 21 10:43:42 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -136,25 +136,25 @@ struct_xXeuwAPh0ajaUfdgPpGaUB FMS_PARAM = {
   0.15F,
   0.1F,
   0.1F,
-  0.95F,
-  1.0F,
+  1.2F,
+  1.5F,
   5.0F,
+  1.5F,
   2.5F,
-  2.5F,
-  1.04719758F,
-  0.52359879F,
+  1.57079601F,
+  0.523599F,
   15.0F,
   5.0F,
   5.0F,
-  1.5F,
+  1.2F,
   1.0F,
   0.5F,
-  0.3F,
+  0.7F,
   0.6F,
   120U,
   1U,
   1300U,
-  0.5F
+  0.8F
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<Root>/ACCEPT_R'
@@ -2108,6 +2108,7 @@ static void FMS_Mode(void)
       if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
           && ((FMS_U.INS_Out.flag & 32U) != 0U) && ((FMS_U.INS_Out.flag & 64U)
            != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+        FMS_exit_internal_Mode();
         FMS_DW.is_Mode = FMS_IN_Mission_c;
         FMS_B.target_mode = PilotMode_Mission;
       } else {
@@ -3462,11 +3463,12 @@ static void FMS_Vehicle(void)
           FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
           if ((FMS_DW.chartAbsoluteTimeCounter -
                FMS_DW.durationLastReferenceTick_2 >= 500) || ((FMS_B.target_mode
-                == PilotMode_Offboard) && FMS_B.LogicalOperator) ||
-              ((FMS_ManualArmEvent
+                == PilotMode_Offboard) && FMS_B.LogicalOperator &&
+               (FMS_DW.prep_takeoff != 1.0)) || ((FMS_ManualArmEvent
                 (FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle,
                  FMS_B.BusConversion_InsertedFor_FMS_f.mode) == 1.0) &&
-               (FMS_B.target_mode != PilotMode_None))) {
+               ((FMS_B.target_mode != PilotMode_None) && (FMS_DW.prep_takeoff !=
+                 1.0)))) {
             FMS_DW.prep_takeoff = 0.0;
             sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
             if ((!sf_internal_predicateOutput) ||
