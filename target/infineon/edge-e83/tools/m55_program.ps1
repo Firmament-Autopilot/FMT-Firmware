@@ -3,7 +3,7 @@ param (
     [string]$scriptDir = $(Convert-Path (Split-Path -Path $scriptPath -Parent)),
     [string]$tools_dir_path = "$scriptDir/OpenOCD-Infineon",
     [string]$target_lib_dir = "$scriptDir/../libs/TARGET_APP_KIT_PSE84_EVAL_EPC2",
-    [string]$hex_file = "$scriptDir/../m55/rtthread.hex"
+    [string]$hex_file = "$scriptDir/../m55/build/fmt_e83-m55.hex"
 )
 
 
