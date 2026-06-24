@@ -51,6 +51,8 @@
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
+#include "module/sensor/sensor_gps.h"
+#include "module/log/boot_log.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/config/actuator_config.h"
 #include "module/sysio/auto_cmd.h"

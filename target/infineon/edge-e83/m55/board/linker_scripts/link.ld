@@ -56,10 +56,9 @@ MEMORY
     m55_code_INTERNAL : ORIGIN = 0x00000000, LENGTH = 0x00040000
     m55_nvm : ORIGIN = 0x60580000, LENGTH = 0x00800000
     m55_trailer : ORIGIN = 0x60D80000, LENGTH = 0x00040000
-    m55_code_secondary : ORIGIN = 0x26000000, LENGTH = 0x00060000
-    m55_data_secondary : ORIGIN = 0x26060000, LENGTH = 0x00160000
-    m33_m55_shared : ORIGIN = 0x261C0000, LENGTH = 0x00040000
-    gfx_mem : ORIGIN = 0x26200000, LENGTH = 0x00300000
+    m55_code_secondary : ORIGIN = 0x26000000, LENGTH = 0x00040000
+    m55_data_secondary : ORIGIN = 0x26040000, LENGTH = 0x00380000
+    m33_m55_shared : ORIGIN = 0x263C0000, LENGTH = 0x00040000
     m55_allocatable_shared : ORIGIN = 0x240FF000, LENGTH = 0x00001000
 }
 
@@ -70,9 +69,7 @@ REGION_ALIAS("m55_trailer_sel", m55_trailer)
 REGION_ALIAS("m55_code_secondary_sel", m55_code_secondary)
 REGION_ALIAS("m55_data_secondary_sel", m55_data_secondary)
 REGION_ALIAS("m33_m55_shared_sel", m33_m55_shared)
-REGION_ALIAS("gfx_mem_sel", gfx_mem)
 REGION_ALIAS("m55_allocatable_shared_sel", m55_allocatable_shared)
-
 
 /* Linker script to place sections and symbol values. Should be used together
  * with other linker script that defines memory regions FLASH and RAM.
@@ -459,17 +456,15 @@ SECTIONS
         __HeapLimit = .;
     } > m55_data_secondary
 
-    /* A section for the GPU buffer */
-    .cy_gpu_buf(NOLOAD) :
-    {
-        KEEP(*(.cy_gpu_buf))
-    } > gfx_mem
-
     .reserved_socmem(NOLOAD) :
     {
         . = ORIGIN(m33_m55_shared) + LENGTH(m33_m55_shared); /* reserved SOC memory */
     } > m33_m55_shared
 
+    ASSERT(
+      ORIGIN(m33_m55_shared) + LENGTH(m33_m55_shared) <= 0x26400000,
+      "Error: SoCMEM layout exceeds the 4MB PSoC E83 SoCMEM window."
+    )
 
     /* A section for shared RAM memory where only the Cortex-M55 can allocate data but all cores can access */
     .cy_sharedmem(NOLOAD) :

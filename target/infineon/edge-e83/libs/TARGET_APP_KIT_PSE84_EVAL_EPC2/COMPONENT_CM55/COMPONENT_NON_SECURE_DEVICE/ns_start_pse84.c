@@ -481,7 +481,7 @@ int __low_level_init(void)
 /**/
 #endif /* defined(__GNUC__) && !defined(__ARMCC_VERSION) */
 
-#if defined (BUILD_KIT_PROCE84_EVK_M55)
+#if defined (BUILD_KIT_PROCE84_EVK_M55) && !defined(__GNUC__) && !defined(__clang__)
 __STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
 {
     (void)MainStackPtrLimit;

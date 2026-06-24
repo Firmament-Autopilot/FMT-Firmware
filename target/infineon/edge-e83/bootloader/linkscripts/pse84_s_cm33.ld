@@ -127,26 +127,20 @@ CYMEM_CM33_0_S_m55_code_secondary_START = 0x26000000;
 CYMEM_CM33_0_S_m55_code_secondary_C_START = 0x06000000;
 CYMEM_CM33_0_S_m55_code_secondary_C_S_START = 0x16000000;
 CYMEM_CM33_0_S_m55_code_secondary_S_START = 0x36000000;
-CYMEM_CM33_0_S_m55_code_secondary_SIZE = 0x00060000;
+CYMEM_CM33_0_S_m55_code_secondary_SIZE = 0x00040000;
 CYMEM_CM33_0_S_m55_code_secondary_OFFSET = 0x00000000;
-CYMEM_CM33_0_S_m55_data_secondary_START = 0x26060000;
-CYMEM_CM33_0_S_m55_data_secondary_C_START = 0x06060000;
-CYMEM_CM33_0_S_m55_data_secondary_C_S_START = 0x16060000;
-CYMEM_CM33_0_S_m55_data_secondary_S_START = 0x36060000;
-CYMEM_CM33_0_S_m55_data_secondary_SIZE = 0x00160000;
-CYMEM_CM33_0_S_m55_data_secondary_OFFSET = 0x00060000;
-CYMEM_CM33_0_S_m33_m55_shared_START = 0x261C0000;
-CYMEM_CM33_0_S_m33_m55_shared_C_START = 0x061C0000;
-CYMEM_CM33_0_S_m33_m55_shared_C_S_START = 0x161C0000;
-CYMEM_CM33_0_S_m33_m55_shared_S_START = 0x361C0000;
+CYMEM_CM33_0_S_m55_data_secondary_START = 0x26040000;
+CYMEM_CM33_0_S_m55_data_secondary_C_START = 0x06040000;
+CYMEM_CM33_0_S_m55_data_secondary_C_S_START = 0x16040000;
+CYMEM_CM33_0_S_m55_data_secondary_S_START = 0x36040000;
+CYMEM_CM33_0_S_m55_data_secondary_SIZE = 0x00380000;
+CYMEM_CM33_0_S_m55_data_secondary_OFFSET = 0x00040000;
+CYMEM_CM33_0_S_m33_m55_shared_START = 0x263C0000;
+CYMEM_CM33_0_S_m33_m55_shared_C_START = 0x063C0000;
+CYMEM_CM33_0_S_m33_m55_shared_C_S_START = 0x163C0000;
+CYMEM_CM33_0_S_m33_m55_shared_S_START = 0x363C0000;
 CYMEM_CM33_0_S_m33_m55_shared_SIZE = 0x00040000;
-CYMEM_CM33_0_S_m33_m55_shared_OFFSET = 0x001C0000;
-CYMEM_CM33_0_S_gfx_mem_START = 0x26200000;
-CYMEM_CM33_0_S_gfx_mem_C_START = 0x06200000;
-CYMEM_CM33_0_S_gfx_mem_C_S_START = 0x16200000;
-CYMEM_CM33_0_S_gfx_mem_S_START = 0x36200000;
-CYMEM_CM33_0_S_gfx_mem_SIZE = 0x00300000;
-CYMEM_CM33_0_S_gfx_mem_OFFSET = 0x00200000;
+CYMEM_CM33_0_S_m33_m55_shared_OFFSET = 0x003C0000;
 CYMEM_CM33_0_S_m33s_shared_START = 0x24001000;
 CYMEM_CM33_0_S_m33s_shared_C_START = 0x04001000;
 CYMEM_CM33_0_S_m33s_shared_C_S_START = 0x14001000;
@@ -246,22 +240,18 @@ MEMORY
     m33_m55_shared_hyperram_C : ORIGIN = 0x0C400000, LENGTH = 0x00C00000
     m33_m55_shared_hyperram_C_S : ORIGIN = 0x1C400000, LENGTH = 0x00C00000
     m33_m55_shared_hyperram_S : ORIGIN = 0x74400000, LENGTH = 0x00C00000
-    m55_code_secondary : ORIGIN = 0x26000000, LENGTH = 0x00060000
-    m55_code_secondary_C : ORIGIN = 0x06000000, LENGTH = 0x00060000
-    m55_code_secondary_C_S : ORIGIN = 0x16000000, LENGTH = 0x00060000
-    m55_code_secondary_S : ORIGIN = 0x36000000, LENGTH = 0x00060000
-    m55_data_secondary : ORIGIN = 0x26060000, LENGTH = 0x00160000
-    m55_data_secondary_C : ORIGIN = 0x06060000, LENGTH = 0x00160000
-    m55_data_secondary_C_S : ORIGIN = 0x16060000, LENGTH = 0x00160000
-    m55_data_secondary_S : ORIGIN = 0x36060000, LENGTH = 0x00160000
-    m33_m55_shared : ORIGIN = 0x261C0000, LENGTH = 0x00040000
-    m33_m55_shared_C : ORIGIN = 0x061C0000, LENGTH = 0x00040000
-    m33_m55_shared_C_S : ORIGIN = 0x161C0000, LENGTH = 0x00040000
-    m33_m55_shared_S : ORIGIN = 0x361C0000, LENGTH = 0x00040000
-    gfx_mem : ORIGIN = 0x26200000, LENGTH = 0x00300000
-    gfx_mem_C : ORIGIN = 0x06200000, LENGTH = 0x00300000
-    gfx_mem_C_S : ORIGIN = 0x16200000, LENGTH = 0x00300000
-    gfx_mem_S : ORIGIN = 0x36200000, LENGTH = 0x00300000
+    m55_code_secondary : ORIGIN = 0x26000000, LENGTH = 0x00040000
+    m55_code_secondary_C : ORIGIN = 0x06000000, LENGTH = 0x00040000
+    m55_code_secondary_C_S : ORIGIN = 0x16000000, LENGTH = 0x00040000
+    m55_code_secondary_S : ORIGIN = 0x36000000, LENGTH = 0x00040000
+    m55_data_secondary : ORIGIN = 0x26040000, LENGTH = 0x00380000
+    m55_data_secondary_C : ORIGIN = 0x06040000, LENGTH = 0x00380000
+    m55_data_secondary_C_S : ORIGIN = 0x16040000, LENGTH = 0x00380000
+    m55_data_secondary_S : ORIGIN = 0x36040000, LENGTH = 0x00380000
+    m33_m55_shared : ORIGIN = 0x263C0000, LENGTH = 0x00040000
+    m33_m55_shared_C : ORIGIN = 0x063C0000, LENGTH = 0x00040000
+    m33_m55_shared_C_S : ORIGIN = 0x163C0000, LENGTH = 0x00040000
+    m33_m55_shared_S : ORIGIN = 0x363C0000, LENGTH = 0x00040000
     m33s_shared : ORIGIN = 0x24001000, LENGTH = 0x00001000
     m33s_shared_C : ORIGIN = 0x04001000, LENGTH = 0x00001000
     m33s_shared_C_S : ORIGIN = 0x14001000, LENGTH = 0x00001000
@@ -328,8 +318,6 @@ REGION_ALIAS("m55_data_secondary_sel", m55_data_secondary_C)
 REGION_ALIAS("m55_data_secondary_sel_S", m55_data_secondary_C_S)
 REGION_ALIAS("m33_m55_shared_sel", m33_m55_shared_C)
 REGION_ALIAS("m33_m55_shared_sel_S", m33_m55_shared_C_S)
-REGION_ALIAS("gfx_mem_sel", gfx_mem_C)
-REGION_ALIAS("gfx_mem_sel_S", gfx_mem_C_S)
 REGION_ALIAS("m33s_shared_sel", m33s_shared_C)
 REGION_ALIAS("m33s_shared_sel_S", m33s_shared_C_S)
 REGION_ALIAS("m33s_code_sel", m33s_code_C)
