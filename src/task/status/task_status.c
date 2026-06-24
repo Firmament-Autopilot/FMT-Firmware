@@ -83,6 +83,8 @@ static void send_home_position(void)
     mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
 }
 
+extern uint8_t err_motor_idx;
+
 static void update_fms_status(void)
 {
     /* set initial status/state to disarm to avoid mlog stop unintentionally */
@@ -105,6 +107,8 @@ static void update_fms_status(void)
                 if (PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 1 || PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 2) {
                     mlog_stop();
                 }
+
+                err_motor_idx = 0;
                 break;
 
             case VehicleStatus_Standby:
