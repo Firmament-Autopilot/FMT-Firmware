@@ -11,7 +11,7 @@
     (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
 #define HEATER_PIN                   GET_PIN(B, 9)
 
-#define V6C_HEATER_TARGET_TEMP_DEG_C 50.0f
+#define V6C_HEATER_TARGET_TEMP_DEG_C 55.0f
 #define V6C_HEATER_FF                0.03f
 #define V6C_HEATER_KP                0.8f
 #define V6C_HEATER_KI                0.02f
