@@ -113,6 +113,8 @@
  * RT-Thread Components
  *============================================================================*/
 
+#define RT_USING_CPLUSPLUS
+
 /* Device virtual file system */
 #define RT_USING_DFS
 #define DFS_USING_WORKDIR

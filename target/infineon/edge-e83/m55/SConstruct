@@ -141,6 +141,8 @@ objs.extend(SConscript('../libraries/async-transfer/SConscript', variant_dir='bu
 objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/device-utils/syspm/SConscript', variant_dir='build/libraries/components/mtb-device-support-pse8xxgp/device-utils/syspm', duplicate=0))
 objs.extend(SConscript('../libraries/serial-memory/SConscript', variant_dir='build/libraries/components/serial-memory', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_retarget-io-latest/SConscript', variant_dir='build/libraries/components/Infineon_retarget-io-latest', duplicate=0))
+objs.extend(SConscript('../libraries/ml-tflite-micro/SConscript', variant_dir='build/libraries/components/ml-tflite-micro', duplicate=0))
+objs.extend(SConscript('../libraries/ml-middleware/SConscript', variant_dir='build/libraries/components/ml-middleware', duplicate=0))
 objs.extend(SConscript('../libraries/SConscript', variant_dir='build/libraries/components', duplicate=0))
 objs.extend(SConscript('../libraries/mtb-srf/SConscript', variant_dir='build/libraries/components/mtb-srf', duplicate=0))
 objs.extend(SConscript('../libraries/mtb-ipc/SConscript', variant_dir='build/libraries/components/mtb-ipc', duplicate=0))
