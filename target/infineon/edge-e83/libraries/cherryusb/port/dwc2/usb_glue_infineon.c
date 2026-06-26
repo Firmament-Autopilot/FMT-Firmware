@@ -75,7 +75,9 @@ void dwc2_get_user_params(uint32_t reg_base, struct dwc2_user_params *params)
 
 void USBHS_DEVICE_IRQHandler(void)
 {
+    rt_interrupt_enter();
     USBD_IRQHandler(0);
+    rt_interrupt_leave();
 }
 
 void usb_dc_low_level_init(uint8_t busid)
