@@ -9,24 +9,24 @@
 #define __STM32_PORT(port) GPIO##port##_BASE
 #define GET_PIN(PORTx, PIN) \
     (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
-#define HEATER_PIN                   GET_PIN(B, 9)
+#define HEATER_PIN                  GET_PIN(A, 8)
 
-#define V6C_HEATER_TARGET_TEMP_DEG_C 55.0f
-#define V6C_HEATER_FF                0.03f
-#define V6C_HEATER_KP                0.8f
-#define V6C_HEATER_KI                0.02f
-#define V6C_HEATER_INTEGRAL_LIMIT    0.25f
-#define V6C_HEATER_CONTROL_PERIOD_MS 10U
-#define V6C_HEATER_STATUS_PERIOD_MS  1000U
+#define S1_HEATER_TARGET_TEMP_DEG_C 40.0f
+#define S1_HEATER_FF                0.03f
+#define S1_HEATER_KP                0.8f
+#define S1_HEATER_KI                0.02f
+#define S1_HEATER_INTEGRAL_LIMIT    0.25f
+#define S1_HEATER_CONTROL_PERIOD_MS 10U
+#define S1_HEATER_STATUS_PERIOD_MS  1000U
 
 typedef struct {
     rt_device_t imu_spi_dev;
     rt_device_t pin_dev;
     WorkQueue_t hp_wq;
     struct WorkItem heater_off_work;
-} v6c_heater_ctx_t;
+} s1_heater_ctx_t;
 
-static v6c_heater_ctx_t heater_ctx = { 0 };
+static s1_heater_ctx_t heater_ctx = { 0 };
 
 static void heater_set_output(rt_uint8_t status)
 {
@@ -41,9 +41,9 @@ static void heater_off_run(void* param)
     heater_set_output(PIN_LOW);
 }
 
-static fmt_err_t v6c_heater_read_temperature(float* temp_deg_C, void* user_data)
+static fmt_err_t s1_heater_read_temperature(float* temp_deg_C, void* user_data)
 {
-    v6c_heater_ctx_t* ctx = (v6c_heater_ctx_t*)user_data;
+    s1_heater_ctx_t* ctx = (s1_heater_ctx_t*)user_data;
 
     if (ctx == RT_NULL || temp_deg_C == RT_NULL) {
         return FMT_EINVAL;
@@ -52,9 +52,9 @@ static fmt_err_t v6c_heater_read_temperature(float* temp_deg_C, void* user_data)
     return icm42688p_read_temp_deg_C(ctx->imu_spi_dev, temp_deg_C) == RT_EOK ? FMT_EOK : FMT_ERROR;
 }
 
-static fmt_err_t v6c_heater_set_power(float power_ratio, uint32_t control_period_ms, void* user_data)
+static fmt_err_t s1_heater_set_power(float power_ratio, uint32_t control_period_ms, void* user_data)
 {
-    v6c_heater_ctx_t* ctx = (v6c_heater_ctx_t*)user_data;
+    s1_heater_ctx_t* ctx = (s1_heater_ctx_t*)user_data;
     uint32_t time_on_ms;
 
     if (ctx == RT_NULL || ctx->pin_dev == RT_NULL) {
@@ -105,16 +105,16 @@ rt_err_t drv_heater_init(const char* imu_spi_dev_name)
         .name = "heater",
         .workqueue_name = "wq:hp_work",
         .params = {
-            .target_temp_deg_C = V6C_HEATER_TARGET_TEMP_DEG_C,
-            .ff = V6C_HEATER_FF,
-            .kp = V6C_HEATER_KP,
-            .ki = V6C_HEATER_KI,
-            .integral_limit = V6C_HEATER_INTEGRAL_LIMIT,
-            .control_period_ms = V6C_HEATER_CONTROL_PERIOD_MS,
-            .status_period_ms = V6C_HEATER_STATUS_PERIOD_MS,
+            .target_temp_deg_C = S1_HEATER_TARGET_TEMP_DEG_C,
+            .ff = S1_HEATER_FF,
+            .kp = S1_HEATER_KP,
+            .ki = S1_HEATER_KI,
+            .integral_limit = S1_HEATER_INTEGRAL_LIMIT,
+            .control_period_ms = S1_HEATER_CONTROL_PERIOD_MS,
+            .status_period_ms = S1_HEATER_STATUS_PERIOD_MS,
         },
-        .read_temperature = v6c_heater_read_temperature,
-        .set_power = v6c_heater_set_power,
+        .read_temperature = s1_heater_read_temperature,
+        .set_power = s1_heater_set_power,
         .user_data = &heater_ctx,
     };
 
