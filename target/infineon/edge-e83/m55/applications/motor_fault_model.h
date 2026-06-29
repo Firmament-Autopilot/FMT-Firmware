@@ -30,6 +30,7 @@ typedef struct {
 } MotorFaultModelStatus;
 
 const char* motor_fault_class_name(int class_index);
+int motor_fault_detected_motor_number(int class_index);
 void motor_fault_model_get_status(MotorFaultModelStatus* status);
 
 #ifdef __cplusplus

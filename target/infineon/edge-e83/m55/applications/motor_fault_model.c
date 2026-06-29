@@ -8,6 +8,8 @@
 #error Motor fault model input count must match extracted feature count.
 #endif
 
+#define MOTOR_FAULT_CONFIRM_MS 1000U
+
 #ifdef MF_ENABLE_AI_MODEL
 int IMAI_compute(const float* restrict data_in, float* restrict data_out);
 void IMAI_finalize(void);
@@ -30,6 +32,10 @@ static MotorFaultModelStatus mf_model_state = {
     .output = { 0.0f },
 };
 
+static int mf_pending_motor_number;
+static uint32_t mf_pending_since_ms;
+static uint32_t mf_last_report_ms;
+
 static const char* const mf_class_names[MOTOR_FAULT_MODEL_OUTPUT_COUNT] = {
     "normal",
     "motor1_fault",
@@ -45,6 +51,43 @@ const char* motor_fault_class_name(int class_index)
     }
 
     return mf_class_names[class_index];
+}
+
+int motor_fault_detected_motor_number(int class_index)
+{
+    if (class_index < MOTOR_FAULT_CLASS_MOTOR1_FAULT ||
+        class_index > MOTOR_FAULT_CLASS_MOTOR4_FAULT) {
+        return 0;
+    }
+
+    return class_index;
+}
+
+static void mf_model_update_fault_report(int motor_number, uint32_t timestamp_ms)
+{
+    if (motor_number <= 0) {
+        mf_pending_motor_number = 0;
+        mf_pending_since_ms = 0U;
+        mf_last_report_ms = 0U;
+        return;
+    }
+
+    if (motor_number != mf_pending_motor_number) {
+        mf_pending_motor_number = motor_number;
+        mf_pending_since_ms = timestamp_ms;
+        mf_last_report_ms = 0U;
+        return;
+    }
+
+    if (((uint32_t)(timestamp_ms - mf_pending_since_ms) >= MOTOR_FAULT_CONFIRM_MS) &&
+        (mf_last_report_ms == 0U ||
+         (uint32_t)(timestamp_ms - mf_last_report_ms) >= MOTOR_FAULT_CONFIRM_MS)) {
+        rt_kprintf("\xE6\xA3\x80\xE6\xB5\x8B\xE5\x88\xB0%d"
+                   "\xE5\x8F\xB7\xE7\x94\xB5\xE6\x9C\xBA"
+                   "\xE5\xBC\x82\xE5\xB8\xB8\n",
+                   motor_number);
+        mf_last_report_ms = timestamp_ms;
+    }
 }
 
 void motor_fault_model_get_status(MotorFaultModelStatus* status)
@@ -114,6 +157,8 @@ void motor_fault_on_features(const float* features, unsigned feature_count, uint
         mf_model_state.predicted_class = mf_model_argmax(mf_model_state.output,
                                                           MOTOR_FAULT_MODEL_OUTPUT_COUNT);
         mf_model_state.has_result = 1U;
+        int motor_number = motor_fault_detected_motor_number(mf_model_state.predicted_class);
+        mf_model_update_fault_report(motor_number, timestamp_ms);
     }
 #else
     (void)features;
