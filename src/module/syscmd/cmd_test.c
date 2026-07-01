@@ -16,13 +16,9 @@
 
 #include <firmament.h>
 
-uint8_t err_motor_idx = 0;
-
 int cmd_test(int argc, char** argv)
 {
     /* add your test code here */
-    err_motor_idx = math_hex2dec(argv[1]);
-    printf("err_motor_idx:%x\n", err_motor_idx);
 
     return 0;
 }
