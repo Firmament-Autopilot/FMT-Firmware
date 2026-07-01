@@ -8,11 +8,11 @@
 #include "module/math/conversion.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/system/systime.h"
+#include "module/task_manager/task_manager.h"
 #include "motor_fault_features.h"
 
 #define MOTOR_FAULT_THREAD_STACK_SIZE 8192
 #define MOTOR_FAULT_THREAD_PRIORITY   24
-#define MOTOR_FAULT_THREAD_TICK       5
 #define MOTOR_FAULT_PWM_HIGH_DEFAULT  1250.0f
 #define MOTOR_FAULT_SOCMEM_DATA       __attribute__((section(".cy_socmem_data")))
 
@@ -21,9 +21,7 @@ MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(pilot_cmd);
 
-static rt_thread_t mf_thread;
 static volatile uint8_t mf_running;
-static volatile uint8_t mf_stop_request;
 
 static McnNode_t mf_control_node;
 static McnNode_t mf_ins_node;
@@ -149,11 +147,13 @@ static void mf_infer_once(uint32_t now_ms)
     mf_last_infer_ms = now_ms;
 }
 
-static void mf_thread_entry(void* parameter)
+static void task_motor_fault_entry(void* parameter)
 {
     (void)parameter;
 
-    while (!mf_stop_request) {
+    mf_running = 1U;
+
+    while (1) {
         uint32_t now_ms = systime_now_ms();
 
         if (now_ms - mf_last_sample_ms >= (1000U / MOTOR_FAULT_SAMPLE_HZ)) {
@@ -166,9 +166,6 @@ static void mf_thread_entry(void* parameter)
 
         sys_msleep(1);
     }
-
-    mf_running = 0U;
-    mf_stop_request = 0U;
 }
 
 static fmt_err_t mf_subscribe_topics(void)
@@ -205,39 +202,24 @@ static void mf_reset_state(void)
     mf_last_infer_ms = 0U;
 }
 
+static fmt_err_t task_motor_fault_init(void)
+{
+    if (mf_subscribe_topics() != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    mf_reset_state();
+    mf_running = 0U;
+
+    return FMT_EOK;
+}
+
 static void mf_start(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
 
-    if (mf_running) {
-        rt_kprintf("motor fault collector already running\n");
-        return;
-    }
-
-    if (mf_subscribe_topics() != FMT_EOK) {
-        rt_kprintf("motor fault collector failed to subscribe topics\n");
-        return;
-    }
-
-    mf_reset_state();
-    mf_stop_request = 0U;
-    mf_running = 1U;
-
-    mf_thread = rt_thread_create("mf_input",
-                                 mf_thread_entry,
-                                 RT_NULL,
-                                 MOTOR_FAULT_THREAD_STACK_SIZE,
-                                 MOTOR_FAULT_THREAD_PRIORITY,
-                                 MOTOR_FAULT_THREAD_TICK);
-    if (mf_thread == RT_NULL) {
-        mf_running = 0U;
-        rt_kprintf("motor fault collector failed to create thread\n");
-        return;
-    }
-
-    rt_thread_startup(mf_thread);
-    rt_kprintf("motor fault collector started: 100Hz sample, 500ms window, 100ms inference interval\n");
+    rt_kprintf("motor fault collector is managed by task manager as mf_model\n");
 }
 MSH_CMD_EXPORT(mf_start, start motor fault input collector);
 
@@ -246,13 +228,7 @@ static void mf_stop(int argc, char** argv)
     (void)argc;
     (void)argv;
 
-    if (!mf_running) {
-        rt_kprintf("motor fault collector is not running\n");
-        return;
-    }
-
-    mf_stop_request = 1U;
-    rt_kprintf("motor fault collector stop requested\n");
+    rt_kprintf("motor fault collector is an auto-start task; use task manager to suspend or kill mf_model\n");
 }
 MSH_CMD_EXPORT(mf_stop, stop motor fault input collector);
 
@@ -309,3 +285,14 @@ static void mf_dump(int argc, char** argv)
     }
 }
 MSH_CMD_EXPORT(mf_dump, dump motor fault input features);
+
+TASK_EXPORT __fmt_motor_fault_task_desc = {
+    .name = "mf_model",
+    .init = task_motor_fault_init,
+    .entry = task_motor_fault_entry,
+    .priority = MOTOR_FAULT_THREAD_PRIORITY,
+    .auto_start = true,
+    .stack_size = MOTOR_FAULT_THREAD_STACK_SIZE,
+    .param = NULL,
+    .dependency = NULL
+};
