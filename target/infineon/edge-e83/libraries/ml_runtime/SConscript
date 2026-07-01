@@ -1,0 +1,99 @@
+from building import *
+import os
+
+Import('SDK_LIB')
+
+cwd = GetCurrentDir()
+sdk_lib = os.path.abspath(os.path.join(cwd, '..'))
+
+ml_middleware = os.path.join(sdk_lib, 'ml-middleware')
+ml_tflm = os.path.join(sdk_lib, 'ml-tflite-micro', 'COMPONENT_ML_TFLM')
+u55_driver = os.path.join(sdk_lib, 'mtb-device-support-pse8xxgp', 'pdl', 'drivers', 'third_party', 'COMPONENT_U55')
+
+src = [
+    '../ml-middleware/source/mtb_ml.c',
+    '../ml-middleware/source/mtb_ml_utils.c',
+    '../ml-middleware/source/COMPONENT_U55/mtb_ml_ethosu.c',
+    '../ml-middleware/source/COMPONENT_ML_TFLM/mtb_ml_model.cpp',
+    '../mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_U55/src/ethosu_device_u55_u65.c',
+    '../mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_U55/src/ethosu_driver.c',
+    '../mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_U55/src/ethosu_pmu.c',
+]
+
+path = [
+    os.path.join(sdk_lib, 'Infineon_core-lib-latest', 'include'),
+    os.path.join(sdk_lib, 'Infineon_retarget-io-latest'),
+    os.path.join(sdk_lib, 'mtb-device-support-pse8xxgp', 'pdl', 'devices', 'include'),
+    os.path.join(sdk_lib, 'mtb-device-support-pse8xxgp', 'pdl', 'drivers', 'include'),
+    os.path.join(ml_middleware, 'include'),
+    os.path.join(ml_middleware, 'source'),
+    os.path.join(ml_middleware, 'source', 'COMPONENT_ML_TFLM'),
+    os.path.join(ml_tflm, 'include'),
+    os.path.join(ml_tflm, 'include', 'flatbuffers', 'include'),
+    os.path.join(ml_tflm, 'include', 'gemmlowp'),
+    os.path.join(ml_tflm, 'include', 'gemmlowp', 'fixedpoint'),
+    os.path.join(ml_tflm, 'include', 'gemmlowp', 'internal'),
+    os.path.join(ml_tflm, 'include', 'signal'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir', 'lite'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir', 'lite', 'core'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir', 'lite', 'core', 'api'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir', 'lite', 'core', 'c'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir', 'lite', 'kernels'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir', 'lite', 'kernels', 'internal'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'compiler', 'mlir', 'lite', 'schema'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'c'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'core'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'core', 'api'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'core', 'c'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'kernels'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'kernels', 'internal'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'kernels', 'internal', 'optimized'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'kernels', 'internal', 'reference'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'kernels', 'internal', 'reference', 'integer_ops'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'micro'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'micro', 'arena_allocator'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'micro', 'cortex_m_generic'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'micro', 'kernels'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'micro', 'kernels', 'cmsis_nn'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'micro', 'memory_planner'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'micro', 'tflite_bridge'),
+    os.path.join(ml_tflm, 'include', 'tensorflow', 'lite', 'schema'),
+    os.path.join(ml_tflm, 'include', 'ethos-u-core-driver'),
+    os.path.join(u55_driver, 'include'),
+    os.path.join(u55_driver, 'src'),
+    os.path.abspath(os.path.join(sdk_lib, '..', '..', '..', 'src')),
+]
+
+cppdefines = [
+    'ARM_MATH_AUTOVECTORIZE',
+    'ARM_MATH_DSP',
+    'ARM_MATH_HELIUM',
+    'COMPONENT_CMSIS_DSP',
+    'COMPONENT_HARDFP',
+    'COMPONENT_ML_FLOAT32',
+    'COMPONENT_ML_FLOAT',
+    'COMPONENT_ML_TFLM',
+    'COMPONENT_MW_ML_MIDDLEWARE',
+    'COMPONENT_MW_ML_TFLITE_MICRO',
+    'COMPONENT_U55',
+    'CY_ML_ARENA_MEM=.cy_socmem_data',
+    'CY_ML_MODEL_MEM=.cy_socmem_data',
+    'TF_LITE_STATIC_MEMORY',
+]
+
+libpath = [os.path.join(ml_tflm, 'COMPONENT_U55', 'TOOLCHAIN_GCC_ARM')]
+libs = ['tensorflow-microlite']
+
+group = DefineGroup('InfineonMLRuntime',
+                    src,
+                    depend=[''],
+                    CPPPATH=path,
+                    LOCAL_CPPPATH=path,
+                    CPPDEFINES=cppdefines,
+                    LIBS=libs,
+                    LIBPATH=libpath)
+
+Return('group')

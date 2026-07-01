@@ -1,0 +1,45 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+src = Glob('model.c')
+path = [
+    cwd,
+    os.path.abspath(os.path.join(cwd, '..', '..', '..', 'libraries', 'Infineon_retarget-io-latest')),
+]
+
+def has_header(root, header):
+    for dirpath, dirnames, filenames in os.walk(root):
+        if header in filenames:
+            return True
+    return False
+
+sdk_root = os.path.abspath(os.path.join(cwd, '..', '..', '..'))
+required_headers = [
+    'cy_retarget_io.h',
+    'mtb_ml_model.h',
+    'mtb_ml_utils.h',
+    'mtb_ml.h',
+]
+missing_headers = []
+for header in required_headers:
+    if not has_header(sdk_root, header):
+        missing_headers.append(header)
+
+if missing_headers:
+    print('MotorFaultAIModel disabled, missing: ' + ', '.join(missing_headers))
+    group = []
+else:
+    group = DefineGroup('MotorFaultAIModel',
+                        src,
+                        depend=[''],
+                        CPPPATH=path,
+                        CPPDEFINES=[
+                            'COMPONENT_ML_TFLM',
+                            'COMPONENT_ML_FLOAT32',
+                            'COMPONENT_ML_FLOAT',
+                            'COMPONENT_U55',
+                            'TF_LITE_STATIC_MEMORY',
+                        ])
+
+Return('group')
