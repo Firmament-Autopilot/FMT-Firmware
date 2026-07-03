@@ -39,6 +39,11 @@
 
 static rt_thread_t tid0;
 
+RT_WEAK bool get_device_uid(uint32_t uid[3])
+{
+    return false;
+}
+
 static void banner_item(const char* name, const char* content, char pad, uint32_t len)
 {
     int pad_len;
@@ -106,6 +111,7 @@ void bsp_show_information(void)
 {
 #define BANNER_ITEM_LEN 42
     char buffer[50];
+    uint32_t uid[3] = { 0 };
 
     console_printf("\n");
     console_println("   _____                               __ ");
@@ -119,6 +125,12 @@ void bsp_show_information(void)
     banner_item("Kernel", buffer, '.', BANNER_ITEM_LEN);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
     banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
+    if (get_device_uid(uid)) {
+        sprintf(buffer, "%08lx%08lx%08lx", uid[0], uid[1], uid[2]);
+    } else {
+        sprintf(buffer, "Unknown");
+    }
+    banner_item("UID", buffer, '.', BANNER_ITEM_LEN);
     banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
     banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
     banner_item("Airframe", STR(AIRFRAME), '.', BANNER_ITEM_LEN);

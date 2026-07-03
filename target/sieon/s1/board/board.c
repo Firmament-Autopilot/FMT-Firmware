@@ -21,6 +21,7 @@
 
 #include "board.h"
 #include "board_device.h"
+#include "bsp_header.h"
 #include "default_config.h"
 #include "drv_act.h"
 #include "drv_adc.h"
@@ -72,6 +73,15 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
+
+bool get_device_uid(uint32_t uid[3])
+{
+    uid[0] = LL_GetUID_Word0();
+    uid[1] = LL_GetUID_Word1();
+    uid[2] = LL_GetUID_Word2();
+
+    return true;
+}
 
 static void MPU_Config(void)
 {
