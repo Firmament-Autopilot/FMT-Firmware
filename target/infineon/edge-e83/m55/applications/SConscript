@@ -6,7 +6,31 @@ cwd  = GetCurrentDir()
 path = [cwd]
 src  = Glob('*.c')
 
-group = DefineGroup('Applications', src, depend = [''], CPPPATH = path)
+def has_header(root, header):
+    for dirpath, dirnames, filenames in os.walk(root):
+        if header in filenames:
+            return True
+    return False
+
+sdk_root = os.path.abspath(os.path.join(cwd, '..', '..'))
+required_ai_headers = [
+    'cy_retarget_io.h',
+    'mtb_ml_model.h',
+    'mtb_ml_utils.h',
+    'mtb_ml.h',
+]
+ai_model_ready = os.path.isfile(os.path.join(cwd, 'ai_model', 'model.c'))
+for header in required_ai_headers:
+    if not has_header(sdk_root, header):
+        ai_model_ready = False
+        break
+
+if ai_model_ready:
+    CPPDEFINES = ['MF_ENABLE_AI_MODEL']
+else:
+    CPPDEFINES = []
+
+group = DefineGroup('Applications', src, depend = [''], CPPPATH = path, CPPDEFINES = CPPDEFINES)
 
 list = os.listdir(cwd)
 for item in list:
