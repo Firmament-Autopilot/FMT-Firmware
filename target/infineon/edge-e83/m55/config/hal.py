@@ -20,6 +20,7 @@ HAL = [
     'can/*.c',
     'adc/*.c',
     'fmtio_dev/*.c',
+    'eth/*.c',
 ]
 
 HAL_CPPPATH = []

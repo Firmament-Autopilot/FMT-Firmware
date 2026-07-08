@@ -21,8 +21,8 @@
 #include "cycfg_peripherals.h"
 #include "hal/actuator/actuator.h"
 
-#define DRV_DBG(...)          console_printf(__VA_ARGS__)
-// #define DRV_DBG(...)
+// #define DRV_DBG(...)          console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
 #define PWM_FREQ_50HZ          (50U)
 #define PWM_FREQ_125HZ         (125U)

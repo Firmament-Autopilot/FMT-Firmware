@@ -68,10 +68,25 @@ target = "Edge-E83"
 [actuator]
     [[actuator.devices]]
     protocol = "pwm"
+    name = "main_out"
+    freq = 400                  # pwm frequency in Hz
+
+    [[actuator.devices]]
+    protocol = "pwm"
     name = "aux_out"
     freq = 400                  # pwm frequency in Hz
 
     [[actuator.mappings]]
     from = "control_out"
-    to = "aux_out"
+    to = "main_out"
     chan-map = [[1,2,3,4],[1,2,3,4]]
+
+# GNSS Configuration
+[gnss]
+    [[gnss.devices]]
+    id = 0
+    protocol = "ublox"  # ublox or nmea
+    type = "serial"
+    name = "serial10"
+    auto-config = true
+    baudrate = 0        # 0 means auto detect baudrate
