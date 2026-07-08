@@ -25,7 +25,7 @@
 // #define FMT_USING_SIH
 
 /* console device name */
-#define CONSOLE_DEVICE_NAME "serial2"
+// #define CONSOLE_DEVICE_NAME "serial2"
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
