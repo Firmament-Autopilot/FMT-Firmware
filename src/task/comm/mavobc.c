@@ -35,6 +35,7 @@ MCN_DECLARE(rc_channels);
 MCN_DECLARE(auto_cmd);
 MCN_DECLARE(external_pos);
 MCN_DECLARE(mission_data);
+MCN_DECLARE(control_output);
 
 typedef struct
 {
@@ -468,6 +469,23 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     mavlink_system_t mav_sys = mavproxy_get_system();
 
     switch (msg->msgid) {
+#if defined(FMT_PLANT_SIM)
+    /* In plant simulation mode, we receive control output from obc channel */
+    case MAVLINK_MSG_ID_HIL_ACTUATOR_CONTROLS: {
+        mavlink_hil_actuator_controls_t actuator_control;
+        Control_Out_Bus control_out = { 0 };
+
+        mavlink_msg_hil_actuator_controls_decode(msg, &actuator_control);
+
+        control_out.timestamp = systime_now_ms();
+        for (uint8_t i = 0; i < 16; i++) {
+            control_out.actuator_cmd[i] = (actuator_control.controls[i] + 3.0f) * 500;
+        }
+
+        mcn_publish(MCN_HUB(control_output), &control_out);
+    } break;
+#endif
+
     case MAVLINK_MSG_ID_HEARTBEAT:
         if (PARAM_GET_UINT8(SYSTEM, OBC_HEARTBEAT)) {
             /* send obc heartbeat to gcs */
@@ -927,11 +945,14 @@ fmt_err_t mavobc_init(void)
     FMT_TRY(mavproxy_register_channel(MAVPROXY_OBC_CHAN));
 
     /* register periodical mavlink msg */
+#if defined(FMT_PLANT_SIM)
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_SENSOR, 100, mavlink_msg_hil_sensor_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_GPS, 10, mavlink_msg_hil_gps_pack_func, true));
+#else
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_SYS_STATUS, 1, mavlink_msg_sys_status_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1, mavlink_msg_extended_sys_state_pack_func, true));
+#endif
 
     /* register obc mavlink handler */
     FMT_TRY(mavproxy_monitor_register_handler(MAVPROXY_OBC_CHAN, handle_mavlink_message));

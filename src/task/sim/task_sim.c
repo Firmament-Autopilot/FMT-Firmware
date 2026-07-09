@@ -105,6 +105,9 @@ static void send_hil_actuator_cmd(void* parameter)
     /* send command by mavlink */
     mav_sys = mavproxy_get_system();
 
+    if (mcn_copy_from_hub(MCN_HUB(control_output), &control_out) != FMT_EOK)
+        return;
+
     hil_actuator_ctrl.time_usec = systime_now_us();
     hil_actuator_ctrl.mode = MAV_MODE_FLAG_SAFETY_ARMED;
     hil_actuator_ctrl.flags = 0;

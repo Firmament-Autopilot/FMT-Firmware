@@ -71,6 +71,8 @@ void task_vehicle_entry(void* parameter)
                 /* run Plant model */
                 PERIOD_EXECUTE3(plant_step, plant_model_info.period, time_now, plant_interface_step(timestamp););
 #endif
+
+#if !defined(FMT_PLANT_SIM)
                 /* run INS model */
                 PERIOD_EXECUTE3(ins_step, ins_model_info.period, time_now, ins_interface_step(timestamp););
                 /* run FMS model */
@@ -80,6 +82,7 @@ void task_vehicle_entry(void* parameter)
 
                 /* send actuator command */
                 send_actuator_cmd();
+#endif
             }
         }
     }
