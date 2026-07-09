@@ -1,209 +1,251 @@
-/******************************************************************************
- * Copyright 2020-2026 The Firmament Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *****************************************************************************/
-
 #include <firmament.h>
 
 #include "hal/usb/usbd_cdc.h"
-#include "usbd_cdc.h"
-#include "usbd_cdc_acm.h"
-#include "usbd_core.h"
-#include "module/task_manager/task_manager.h"
+#include "USB.h"
+#include "USB_CDC.h"
+#include "usb_config.h"
 
-#define CDC_IN_EP          0x81
-#define CDC_OUT_EP         0x02
-#define CDC_INT_EP         0x83
+#define VENDOR_ID              0xFFFF
+#define PRODUCT_ID             0xFFFF
+#define USB_ENABLE_FLAG        0u
+#define USB_BULK_IN_INTERVAL   0u
+#define USB_BULK_OUT_INTERVAL  0u
+#define USB_INT_INTERVAL       16u
+#define USB_THREAD_STACK       3072u
+#define USB_THREAD_PRIO        8u
+#define USB_THREAD_TICK        10u
+#define USB_START_DELAY_MS     50u
+#define USB_RX_POLL_MS         2u
+#define USB_TX_READY_TIMEOUT   50u
+#define USB_TX_DONE_TIMEOUT    200u
+#define USB_DCACHE_ALIGN       __SCB_DCACHE_LINE_SIZE
+#define USB_TX_BUFFER_SIZE     1024u
 
-#define USBD_VID           0xFFFF
-#define USBD_PID           0xFFFF
-#define USBD_MAX_POWER     100
-#define USBD_LANGID_STRING 1033
-
-#define USB_CONFIG_SIZE    (9 + CDC_ACM_DESCRIPTOR_LEN)
-
-#ifdef CONFIG_USB_HS
-    #define CDC_MAX_MPS 512
-#else
-    #define CDC_MAX_MPS 64
-#endif
-
-static const uint8_t device_descriptor[] = {
-    USB_DEVICE_DESCRIPTOR_INIT(USB_2_0, 0xEF, 0x02, 0x01, USBD_VID, USBD_PID, 0x0100, 0x01)
-};
-
-static const uint8_t config_descriptor[] = {
-    USB_CONFIG_DESCRIPTOR_INIT(USB_CONFIG_SIZE, 0x02, 0x01, USB_CONFIG_BUS_POWERED, USBD_MAX_POWER),
-    CDC_ACM_DESCRIPTOR_INIT(0x00, CDC_INT_EP, CDC_OUT_EP, CDC_IN_EP, CDC_MAX_MPS, 0x02)
-};
-
-static const uint8_t device_quality_descriptor[] = {
-    0x0a,
-    USB_DESCRIPTOR_TYPE_DEVICE_QUALIFIER,
-    0x00,
-    0x02,
-    0x00,
-    0x00,
-    0x00,
-    0x40,
-    0x00,
-    0x00,
-};
-
-static const char* string_descriptors[] = {
-    (const char[]) { 0x09, 0x04 },
+static const USB_DEVICE_INFO usb_device_info = {
+    VENDOR_ID,
+    PRODUCT_ID,
     "Firmament",
     "Firmament CDC Device",
-    "2024010001",
+    "2024010001"
 };
-
-static const uint8_t* device_descriptor_callback(uint8_t speed)
-{
-    return device_descriptor;
-}
-
-static const uint8_t* config_descriptor_callback(uint8_t speed)
-{
-    return config_descriptor;
-}
-
-static const uint8_t* device_quality_descriptor_callback(uint8_t speed)
-{
-    return device_quality_descriptor;
-}
-
-static const char* string_descriptor_callback(uint8_t speed, uint8_t index)
-{
-    if (index > 3) {
-        return NULL;
-    }
-    return string_descriptors[index];
-}
-
-const struct usb_descriptor cdc_descriptor = {
-    .device_descriptor_callback = device_descriptor_callback,
-    .config_descriptor_callback = config_descriptor_callback,
-    .device_quality_descriptor_callback = device_quality_descriptor_callback,
-    .string_descriptor_callback = string_descriptor_callback
-};
-
-USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t usb_read_buffer[CDC_MAX_MPS];
-USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t usb_write_buffer[USBD_CDC_TX_BUFSIZE];
 
 static struct usbd_cdc_dev cdc_device;
-static volatile bool ep_tx_busy_flag = false;
-static uint8_t usb_busid = 0;
-static struct usbd_interface intf0;
-static struct usbd_interface intf1;
+static USB_CDC_HANDLE usb_cdc_handle;
+static volatile bool usb_configured = false;
+static volatile bool usb_stack_started = false;
+static rt_thread_t usb_thread = RT_NULL;
+static volatile bool usb_tx_pending = false;
+static volatile bool usb_tx_abort_pending = false;
+static volatile bool usb_tx_slot_busy = false;
+static rt_size_t usb_tx_size = 0u;
+static rt_sem_t usb_tx_sem = RT_NULL;
 
-static fmt_err_t task_init(void)
+USB_NOCACHE_RAM_SECTION
+CY_ALIGN(USB_DCACHE_ALIGN)
+static uint8_t read_buffer[USB_HS_BULK_MAX_PACKET_SIZE];
+
+USB_NOCACHE_RAM_SECTION
+CY_ALIGN(USB_DCACHE_ALIGN)
+static uint8_t write_buffer[USB_TX_BUFFER_SIZE];
+
+USB_NOCACHE_RAM_SECTION
+CY_ALIGN(USB_DCACHE_ALIGN)
+static U8 out_ep_buffer[USB_HS_BULK_MAX_PACKET_SIZE];
+
+static void usb_dcache_clean(const void* addr, rt_size_t size)
 {
-    return FMT_EOK;
+    (void)addr;
+    (void)size;
 }
 
-static void task_entry(void* parameter)
+static void usb_dcache_invalidate(const void* addr, rt_size_t size)
 {
-    extern void usbd_poll_connect_status(uint8_t busid);
-    while (1) {
-        usbd_poll_connect_status(0);
-        sys_msleep(500);
-    }
+    (void)addr;
+    (void)size;
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "usbd",
-    .init = task_init,
-    .entry = task_entry,
-    .priority = 24,
-    .auto_start = true,
-    .stack_size = 4096,
-    .param = NULL,
-    .dependency = NULL
-};
-
-void usbd_cdc_acm_bulk_out(uint8_t busid, uint8_t ep, uint32_t nbytes)
+static void usb_add_cdc(void)
 {
-    if (nbytes > 0) {
-        rt_size_t written = ringbuffer_put(cdc_device.rx_rb, usb_read_buffer, nbytes);
+    USB_CDC_INIT_DATA init_data;
+    USB_ADD_EP_INFO ep_bulk_in;
+    USB_ADD_EP_INFO ep_bulk_out;
+    USB_ADD_EP_INFO ep_int_in;
 
-        if (written > 0) {
-            hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_RX);
+    memset(&init_data, 0, sizeof(init_data));
+    memset(&ep_bulk_in, 0, sizeof(ep_bulk_in));
+    memset(&ep_bulk_out, 0, sizeof(ep_bulk_out));
+    memset(&ep_int_in, 0, sizeof(ep_int_in));
+
+    ep_bulk_in.Flags = USB_ENABLE_FLAG;
+    ep_bulk_in.InDir = USB_DIR_IN;
+    ep_bulk_in.Interval = USB_BULK_IN_INTERVAL;
+    ep_bulk_in.MaxPacketSize = USB_HS_BULK_MAX_PACKET_SIZE;
+    ep_bulk_in.TransferType = USB_TRANSFER_TYPE_BULK;
+    init_data.EPIn = USBD_AddEPEx(&ep_bulk_in, NULL, 0);
+
+    ep_bulk_out.Flags = USB_ENABLE_FLAG;
+    ep_bulk_out.InDir = USB_DIR_OUT;
+    ep_bulk_out.Interval = USB_BULK_OUT_INTERVAL;
+    ep_bulk_out.MaxPacketSize = USB_HS_BULK_MAX_PACKET_SIZE;
+    ep_bulk_out.TransferType = USB_TRANSFER_TYPE_BULK;
+    init_data.EPOut = USBD_AddEPEx(&ep_bulk_out, out_ep_buffer, sizeof(out_ep_buffer));
+
+    ep_int_in.Flags = USB_ENABLE_FLAG;
+    ep_int_in.InDir = USB_DIR_IN;
+    ep_int_in.Interval = USB_INT_INTERVAL;
+    ep_int_in.MaxPacketSize = USB_HS_INT_MAX_PACKET_SIZE;
+    ep_int_in.TransferType = USB_TRANSFER_TYPE_INT;
+    init_data.EPInt = USBD_AddEPEx(&ep_int_in, NULL, 0);
+
+    usb_cdc_handle = USBD_CDC_Add(&init_data);
+}
+
+static void usb_update_connection_state(void)
+{
+    uint32_t state;
+
+    state = USBD_GetState();
+
+    if (!usb_configured) {
+        if ((state & (USB_STAT_CONFIGURED | USB_STAT_SUSPENDED)) == USB_STAT_CONFIGURED) {
+            usb_configured = true;
+            hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_CONNECT);
+        }
+    } else if ((state & USB_STAT_CONFIGURED) == 0u) {
+        bool need_release = usb_tx_slot_busy;
+
+        usb_configured = false;
+        usb_tx_pending = false;
+        usb_tx_size = 0u;
+        usb_tx_abort_pending = true;
+        usb_tx_slot_busy = false;
+        if (need_release && usb_tx_sem) {
+            rt_sem_release(usb_tx_sem);
+        }
+        hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_DISCONNECT);
+        if (cdc_device.rx_rb) {
+            ringbuffer_flush(cdc_device.rx_rb);
         }
     }
-    usbd_ep_start_read(busid, CDC_OUT_EP, usb_read_buffer, CDC_MAX_MPS);
 }
 
-void usbd_cdc_acm_bulk_in(uint8_t busid, uint8_t ep, uint32_t nbytes)
+static void usb_cdc_process_tx(void)
 {
-    if ((nbytes % usbd_get_ep_mps(busid, ep)) == 0 && nbytes) {
-        usbd_ep_start_write(busid, CDC_IN_EP, NULL, 0);
-    } else {
-        ep_tx_busy_flag = false;
-        hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_TX_COMPLETE);
+    int ret;
+    int wait_ret;
+
+    if (usb_tx_abort_pending) {
+        usb_tx_abort_pending = false;
+        if (usb_tx_slot_busy) {
+            usb_tx_slot_busy = false;
+            if (usb_tx_sem) {
+                rt_sem_release(usb_tx_sem);
+            }
+        }
+        }
+
+    if (!usb_tx_pending) {
+        return;
     }
+
+    if (!usb_stack_started || !usb_configured || usb_tx_size == 0u) {
+        usb_tx_pending = false;
+        usb_tx_size = 0u;
+        if (usb_tx_slot_busy) {
+            usb_tx_slot_busy = false;
+            if (usb_tx_sem) {
+                rt_sem_release(usb_tx_sem);
+            }
+        }
+        return;
+    }
+
+    usb_dcache_clean(write_buffer, usb_tx_size);
+
+    ret = USBD_CDC_WaitForTXReady(usb_cdc_handle, USB_TX_READY_TIMEOUT);
+    if (ret < 0) {
+        usb_tx_pending = false;
+        usb_tx_size = 0u;
+        if (usb_tx_slot_busy) {
+            usb_tx_slot_busy = false;
+            if (usb_tx_sem) {
+                rt_sem_release(usb_tx_sem);
+            }
+        }
+        return;
+    }
+
+    ret = USBD_CDC_Write(usb_cdc_handle, write_buffer, (unsigned)usb_tx_size, 0);
+    if (ret < 0) {
+        usb_tx_pending = false;
+        usb_tx_size = 0u;
+        if (usb_tx_slot_busy) {
+            usb_tx_slot_busy = false;
+            if (usb_tx_sem) {
+                rt_sem_release(usb_tx_sem);
+            }
+        }
+        return;
+    }
+
+    wait_ret = USBD_CDC_WaitForTX(usb_cdc_handle, USB_TX_DONE_TIMEOUT);
+    if (wait_ret < 0) {
+        USBD_CDC_CancelWrite(usb_cdc_handle);
+        usb_tx_pending = false;
+        usb_tx_size = 0u;
+        if (usb_tx_slot_busy) {
+            usb_tx_slot_busy = false;
+            if (usb_tx_sem) {
+                rt_sem_release(usb_tx_sem);
+            }
+        }
+        return;
+    }
+
+    usb_tx_pending = false;
+    usb_tx_size = 0u;
+    if (usb_tx_slot_busy) {
+        usb_tx_slot_busy = false;
+        if (usb_tx_sem) {
+            rt_sem_release(usb_tx_sem);
+        }
+    }
+    hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_TX_COMPLETE);
 }
 
-struct usbd_endpoint cdc_out_ep = {
-    .ep_addr = CDC_OUT_EP,
-    .ep_cb = usbd_cdc_acm_bulk_out
-};
-
-struct usbd_endpoint cdc_in_ep = {
-    .ep_addr = CDC_IN_EP,
-    .ep_cb = usbd_cdc_acm_bulk_in
-};
-
-static void usbd_event_handler(uint8_t busid, uint8_t event)
+static void usb_cdc_thread_entry(void* parameter)
 {
-    switch (event) {
-    case USBD_EVENT_RESET:
-        rt_kprintf("USB device reset\n");
-        break;
+    int recv_len;
+    uint32_t pushed_len;
 
-    case USBD_EVENT_CONNECTED:
-        // rt_kprintf("USB device connected\n");
-        // hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_CONNECT);
-        break;
+    (void)parameter;
 
-    case USBD_EVENT_DISCONNECTED:
-        // rt_kprintf("USB device disconnected\n");
-        ep_tx_busy_flag = false;
-        hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_DISCONNECT);
-        break;
+    rt_thread_mdelay(USB_START_DELAY_MS);
 
-    case USBD_EVENT_RESUME:
-        // rt_kprintf("USB device resumed\n");
-        break;
+    USBD_Init();
+    usb_add_cdc();
+    USBD_SetDeviceInfo(&usb_device_info);
+    USBD_Start();
+    usb_stack_started = true;
 
-    case USBD_EVENT_SUSPEND:
-        break;
+    while (1) {
+        usb_update_connection_state();
 
-    case USBD_EVENT_CONFIGURED:
-        // rt_kprintf("USB device configured\n");
-        ep_tx_busy_flag = false;
-        usbd_ep_start_read(busid, CDC_OUT_EP, usb_read_buffer, CDC_MAX_MPS);
-        hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_CONNECT);
-        break;
+        if (!usb_configured) {
+            continue;
+        }
 
-    case USBD_EVENT_SET_REMOTE_WAKEUP:
-        break;
+        recv_len = USBD_CDC_Receive(usb_cdc_handle, read_buffer, sizeof(read_buffer), USB_RX_POLL_MS);
+        if (recv_len > 0) {
+            usb_dcache_invalidate(read_buffer, (rt_size_t)recv_len);
 
-    case USBD_EVENT_CLR_REMOTE_WAKEUP:
-        break;
+            pushed_len = ringbuffer_put(cdc_device.rx_rb, read_buffer, (uint32_t)recv_len);
+            if (pushed_len > 0u) {
+                hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_RX);
+            }
+        }
 
-    default:
-        break;
+        usb_cdc_process_tx();
     }
 }
 
@@ -211,78 +253,72 @@ static rt_err_t cdc_dev_init(usbd_cdc_dev_t dev)
 {
     (void)dev;
 
-    usbd_desc_register(usb_busid, &cdc_descriptor);
+    if (usb_thread != RT_NULL) {
+        return RT_EOK;
+    }
 
-    usbd_add_interface(usb_busid, usbd_cdc_acm_init_intf(usb_busid, &intf0));
-    usbd_add_interface(usb_busid, usbd_cdc_acm_init_intf(usb_busid, &intf1));
+    usb_tx_sem = rt_sem_create("usb_txq", 1, RT_IPC_FLAG_FIFO);
+    if (usb_tx_sem == RT_NULL) {
+        return RT_ENOMEM;
+    }
 
-    usbd_add_endpoint(usb_busid, &cdc_out_ep);
-    usbd_add_endpoint(usb_busid, &cdc_in_ep);
+    usb_thread = rt_thread_create("usb_cdc",
+                                  usb_cdc_thread_entry,
+                                  RT_NULL,
+                                  USB_THREAD_STACK,
+                                  USB_THREAD_PRIO,
+                                  USB_THREAD_TICK);
+    if (usb_thread == RT_NULL) {
+        return RT_ENOMEM;
+    }
 
-    usbd_initialize(usb_busid, USBHS_BASE, usbd_event_handler);
-
+    rt_thread_startup(usb_thread);
     return RT_EOK;
 }
 
 static rt_size_t cdc_dev_read(usbd_cdc_dev_t dev, rt_off_t pos, void* buf, rt_size_t size)
 {
-    rt_size_t read_len = 0;
+    (void)pos;
 
-    if (dev->rx_rb == NULL || buf == NULL || size == 0) {
-        return 0;
-    }
-
-    read_len = ringbuffer_get(dev->rx_rb, (uint8_t*)buf, size);
-
-    return read_len;
+    return ringbuffer_get(dev->rx_rb, buf, (uint32_t)size);
 }
 
 static rt_size_t cdc_dev_write(usbd_cdc_dev_t dev, rt_off_t pos, const void* buf, rt_size_t size)
 {
-    rt_size_t tx_size;
-    int ret;
-
     (void)dev;
     (void)pos;
 
-    if (buf == NULL || size == 0) {
-        return 0;
+    if (!usb_stack_started || !usb_configured || buf == RT_NULL || size == 0u) {
+        return 0u;
     }
 
-    if (ep_tx_busy_flag) {
-        return 0;
+    if (size > sizeof(write_buffer) || usb_tx_sem == RT_NULL) {
+        return 0u;
     }
 
-    tx_size = (size > USBD_CDC_TX_BUFSIZE) ? USBD_CDC_TX_BUFSIZE : size;
-    memcpy(usb_write_buffer, buf, tx_size);
-
-    ep_tx_busy_flag = true;
-    ret = usbd_ep_start_write(usb_busid, CDC_IN_EP, usb_write_buffer, tx_size);
-    if (ret < 0) {
-        ep_tx_busy_flag = false;
-        return 0;
+    if (rt_sem_take(usb_tx_sem, TICKS_FROM_MS(USB_TX_DONE_TIMEOUT)) != RT_EOK) {
+        return 0u;
     }
 
-    return tx_size;
+    if (!usb_stack_started || !usb_configured) {
+        rt_sem_release(usb_tx_sem);
+        return 0u;
+    }
+
+    memcpy(write_buffer, buf, size);
+    usb_tx_slot_busy = true;
+    usb_tx_size = size;
+    usb_tx_pending = true;
+
+    return size;
 }
 
 static rt_err_t cdc_dev_control(usbd_cdc_dev_t dev, int cmd, void* arg)
 {
-    rt_err_t ret = RT_EOK;
-
-    switch (cmd) {
-    case RT_DEVICE_CTRL_CLR_INT:
-        break;
-
-    case RT_DEVICE_CTRL_SET_INT:
-        break;
-
-    default:
-        ret = RT_ENOSYS;
-        break;
-    }
-
-    return ret;
+    (void)dev;
+    (void)cmd;
+    (void)arg;
+    return RT_EOK;
 }
 
 static struct usbd_cdc_ops cdc_ops = {
@@ -294,19 +330,16 @@ static struct usbd_cdc_ops cdc_ops = {
 
 rt_err_t drv_usb_cdc_init(void)
 {
-    rt_err_t ret = RT_EOK;
-
-    cdc_out_ep.ep_addr = CDC_OUT_EP;
-    cdc_out_ep.ep_cb = usbd_cdc_acm_bulk_out;
-
-    cdc_in_ep.ep_addr = CDC_IN_EP;
-    cdc_in_ep.ep_cb = usbd_cdc_acm_bulk_in;
+    rt_err_t ret;
 
     memset(&cdc_device, 0, sizeof(cdc_device));
     cdc_device.ops = &cdc_ops;
     cdc_device.status = USBD_STATUS_DISCONNECT;
 
-    ret = hal_usbd_cdc_register(&cdc_device, "usbd_cdc", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, NULL);
+    ret = hal_usbd_cdc_register(&cdc_device,
+                                "usbd_cdc",
+                                RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
+                                NULL);
     if (ret != RT_EOK) {
         return ret;
     }
@@ -316,5 +349,5 @@ rt_err_t drv_usb_cdc_init(void)
         return ret;
     }
 
-    return ret;
+    return RT_EOK;
 }

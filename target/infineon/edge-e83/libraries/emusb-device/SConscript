@@ -8,15 +8,35 @@ src = []
 path = []
 LIBS = []
 LIBPATH = []
+CPPDEFINES = []
 
 if GetDepend(['BSP_USING_USB']):
     LIBS+= ['usbd']
-    LIBPATH += [cwd + '/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release/COMPONENT_CM33/COMPONENT_SOFTFP/TOOLCHAIN_GCC_ARM']
+    # Keep EMUSB in non-RTOS mode for the RT-Thread based M55 build.
+    # We provide USB_OS_GetTickCnt() from a small RT-Thread shim instead of
+    # enabling the ModusToolbox cyabs_rtos abstraction across the whole build.
+    CPPDEFINES += [('USBD_NORTOS_TICKCNT_ENABLE', 0)]
+    CPPDEFINES += ['USBD_USE_RTTHREAD_SHIM']
+    # Use the PSE84 DMA-capable EMUSB backend. On CM55 this avoids the slow
+    # CPU copy path and enables the stack's cache-maintenance hooks.
+    CPPDEFINES += [('USBD_ENABLE_DMA', 1)]
+    if GetDepend(['KIT_PROCE84_EVK_M55']):
+        if rtconfig.PLATFORM in ['armclang']:
+            LIBPATH += [cwd + '/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release/COMPONENT_CM55/COMPONENT_HARDFP/TOOLCHAIN_ARM']
+        else:
+            LIBPATH += [cwd + '/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release/COMPONENT_CM55/COMPONENT_HARDFP/TOOLCHAIN_GCC_ARM']
+    else:
+        if rtconfig.PLATFORM in ['armclang']:
+            LIBPATH += [cwd + '/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release/COMPONENT_CM33/COMPONENT_SOFTFP/TOOLCHAIN_ARM']
+        else:
+            LIBPATH += [cwd + '/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release/COMPONENT_CM33/COMPONENT_SOFTFP/TOOLCHAIN_GCC_ARM']
     src += ['export/Config/usbd_config_io.c']
     src += ['export/Config/COMPONENT_PSE84/usbd_config.c']
     src += ['OS/usbd_os_abs_rtos.c']
+    src += ['OS/usbd_os_rtt.c']
+    path += [cwd + '/../Infineon_retarget-io-latest']
     path += [cwd + '/USBD']
     path += [cwd + '/USBD/COMPONENT_PSE84']
     path += [cwd + '/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release']
-group = DefineGroup('Libraries', src, depend=[''], LIBS = LIBS, LIBPATH=LIBPATH, CPPPATH=path)
+group = DefineGroup('Libraries', src, depend=[''], LIBS = LIBS, LIBPATH=LIBPATH, CPPPATH=path, CPPDEFINES=CPPDEFINES)
 Return('group')

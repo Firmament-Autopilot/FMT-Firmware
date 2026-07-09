@@ -118,6 +118,10 @@ Purpose     : OS Layer for the emUSB-Device. RTOS_AWARE component must be define
 #include "cyabs_rtos.h"
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 
+#if defined (USBD_USE_RTTHREAD_SHIM)
+#include <rtthread.h>
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
+
 
 /*********************************************************************
 *
@@ -144,6 +148,18 @@ static uint32_t mutex_num = 0U;
 #else /* Non-RTOS environment */
 
 static volatile bool usbd_event_transact_flag[USBD_NUM_ALL_EVENTS];
+
+#if defined (USBD_USE_RTTHREAD_SHIM)
+#define TRANSACT_CNT_EVENT_BITS_MASK            (0x1U)
+
+static struct rt_mutex critical_section_mutex;
+static struct rt_event usbd_event[USBD_NUM_ALL_EVENTS];
+
+#if USB_NUM_MUTEXES > 0
+static struct rt_mutex mutex_list[USB_NUM_MUTEXES];
+static uint32_t mutex_num = 0U;
+#endif
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
 
 #if (USBD_NORTOS_TICKCNT_ENABLE == 1U)
 #if defined (COMPONENT_CAT3) || defined (COMPONENT_PSE84)
@@ -178,10 +194,24 @@ void USB_OS_Init(void)
 
     (void)result;  /* To avoid the compiler warning in Release mode */
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    rt_err_t rt_err;
+
+    for (uint32_t i = 0U; i < USBD_NUM_ALL_EVENTS; i++)
+    {
+        usbd_event_transact_flag[i] = false;
+        rt_err = rt_event_init(&usbd_event[i], "usb_evt", RT_IPC_FLAG_FIFO);
+        RT_ASSERT(rt_err == RT_EOK);
+    }
+
+    rt_err = rt_mutex_init(&critical_section_mutex, "usb_cs", RT_IPC_FLAG_FIFO);
+    RT_ASSERT(rt_err == RT_EOK);
+#else
     for (uint32_t i = 0U; i < USBD_NUM_ALL_EVENTS; i++)
     {
         usbd_event_transact_flag[i] = false;
     }
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
 #if (USBD_NORTOS_TICKCNT_ENABLE == 1U)
     usbd_timer_config();
 #endif /* #if (USBD_NORTOS_TICKCNT_ENABLE == 1U) */
@@ -212,6 +242,21 @@ void USB_OS_DeInit(void)
 
     (void)result;  /* To avoid the compiler warning in Release mode */
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    for (uint32_t i = 0U; i < USBD_NUM_ALL_EVENTS; i++)
+    {
+        (void)rt_event_detach(&usbd_event[i]);
+    }
+    (void)rt_mutex_detach(&critical_section_mutex);
+
+#if USB_NUM_MUTEXES > 0
+    for (uint32_t i = 0U; i < mutex_num; i++)
+    {
+        (void)rt_mutex_detach(&mutex_list[i]);
+    }
+    mutex_num = 0U;
+#endif
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
 #if (USBD_NORTOS_TICKCNT_ENABLE == 1U)
 
 #if defined (COMPONENT_CAT1A) || defined (COMPONENT_PSE84)
@@ -244,6 +289,9 @@ void USB_OS_Delay(int ms)
     CY_ASSERT(CY_RSLT_SUCCESS == result);
     (void)result;  /* To avoid the compiler warning in Release mode */
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    rt_thread_mdelay((rt_int32_t)ms);
+#else
 #if defined (COMPONENT_CAT1A) || defined (COMPONENT_PSE84)
 #if (USBD_USE_PDL == 0U)
     cy_rslt_t result = mtb_hal_system_delay_ms((uint32_t)ms);
@@ -255,6 +303,7 @@ void USB_OS_Delay(int ms)
 #elif defined (COMPONENT_CAT3)
     XMC_Delay((uint32_t)ms);
 #endif /* #if defined (COMPONENT_CAT1A) || defined (COMPONENT_PSE84) */
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
@@ -291,6 +340,10 @@ void USB_OS_DecRI(void)
     /* If called from an interrupt, it need not do anything. */
     if (0U == __get_IPSR())
     {
+#if defined (USBD_USE_RTTHREAD_SHIM) && !defined (COMPONENT_RTOS_AWARE)
+        rt_err_t rt_err = rt_mutex_take(&critical_section_mutex, RT_WAITING_FOREVER);
+        RT_ASSERT(rt_err == RT_EOK);
+#endif
     /* Use mutex to allow/block critical_section_count variable incrementing
     * for other tasks
     */
@@ -308,6 +361,11 @@ void USB_OS_DecRI(void)
         {
             USBD_X_EnableInterrupt();
         }
+
+#if defined (USBD_USE_RTTHREAD_SHIM) && !defined (COMPONENT_RTOS_AWARE)
+        rt_err = rt_mutex_release(&critical_section_mutex);
+        RT_ASSERT(rt_err == RT_EOK);
+#endif
 
     /* Use mutex to allow/block critical_section_count variable incrementing
     * for other tasks
@@ -352,6 +410,10 @@ void USB_OS_IncDI(void)
     /* If called from an interrupt, it need not do anything. */
     if (0U == __get_IPSR())
     {
+#if defined (USBD_USE_RTTHREAD_SHIM) && !defined (COMPONENT_RTOS_AWARE)
+        rt_err_t rt_err = rt_mutex_take(&critical_section_mutex, RT_WAITING_FOREVER);
+        RT_ASSERT(rt_err == RT_EOK);
+#endif
     /* Use mutex to allow/block critical_section_count variable decrementing
     * for other tasks
     */
@@ -366,6 +428,11 @@ void USB_OS_IncDI(void)
             USBD_X_DisableInterrupt();
         }
         critical_section_count++;
+
+#if defined (USBD_USE_RTTHREAD_SHIM) && !defined (COMPONENT_RTOS_AWARE)
+        rt_err = rt_mutex_release(&critical_section_mutex);
+        RT_ASSERT(rt_err == RT_EOK);
+#endif
 
     /* Use mutex to allow/block critical_section_count variable decrementing
     * for other tasks
@@ -418,6 +485,9 @@ void USB_OS_Signal(unsigned EPIndex, unsigned TransactCnt)
 #else /* Non-RTOS environment */
     usbd_event_transact_cnt[EPIndex] = TransactCnt;
     usbd_event_transact_flag[EPIndex] = true;
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    (void)rt_event_send(&usbd_event[EPIndex], TRANSACT_CNT_EVENT_BITS_MASK);
+#endif
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
@@ -459,6 +529,32 @@ void USB_OS_Wait(unsigned EPIndex, unsigned TransactCnt)
         }
     }
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    while (true)
+    {
+        rt_uint32_t recv_set;
+        rt_err_t rt_err;
+
+        if (usbd_event_transact_flag[EPIndex] && (usbd_event_transact_cnt[EPIndex] == TransactCnt))
+        {
+            usbd_event_transact_flag[EPIndex] = false;
+            break;
+        }
+
+        rt_err = rt_event_recv(&usbd_event[EPIndex],
+                               TRANSACT_CNT_EVENT_BITS_MASK,
+                               RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
+                               RT_WAITING_FOREVER,
+                               &recv_set);
+        RT_ASSERT(rt_err == RT_EOK);
+
+        if (usbd_event_transact_cnt[EPIndex] == TransactCnt)
+        {
+            usbd_event_transact_flag[EPIndex] = false;
+            break;
+        }
+    }
+#else
     while (true)
     {
         if (usbd_event_transact_flag[EPIndex])
@@ -474,6 +570,7 @@ void USB_OS_Wait(unsigned EPIndex, unsigned TransactCnt)
             }
         }
     }
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
@@ -546,6 +643,43 @@ int USB_OS_WaitTimed(unsigned EPIndex, unsigned ms, unsigned TransactCnt)
     return status;
 
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    rt_int32_t timeout;
+    rt_uint32_t recv_set;
+    rt_err_t rt_err;
+
+    if (usbd_event_transact_flag[EPIndex] && (usbd_event_transact_cnt[EPIndex] == TransactCnt))
+    {
+        usbd_event_transact_flag[EPIndex] = false;
+        return 0;
+    }
+
+    timeout = (ms == 0U) ? 0 : rt_tick_from_millisecond(ms);
+
+    while (true)
+    {
+        rt_err = rt_event_recv(&usbd_event[EPIndex],
+                               TRANSACT_CNT_EVENT_BITS_MASK,
+                               RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
+                               timeout,
+                               &recv_set);
+        if (rt_err != RT_EOK)
+        {
+            return 1;
+        }
+
+        if (usbd_event_transact_cnt[EPIndex] == TransactCnt)
+        {
+            usbd_event_transact_flag[EPIndex] = false;
+            return 0;
+        }
+
+        if (ms == 0U)
+        {
+            return 1;
+        }
+    }
+#else
     U32 current_tick = USB_OS_GetTickCnt();
     U32 tick_count_to_wait = current_tick + (U32) ms;
     while (tick_count_to_wait >= current_tick)
@@ -576,6 +710,7 @@ int USB_OS_WaitTimed(unsigned EPIndex, unsigned ms, unsigned TransactCnt)
         current_tick = USB_OS_GetTickCnt();
     }
     return ((tick_count_to_wait < current_tick) ? 1 : 0);
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
@@ -673,7 +808,24 @@ int USB_OS_MutexAlloc(void)
     }
     return status;
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    int status;
+
+    if (mutex_num < USB_NUM_MUTEXES)
+    {
+        rt_err_t rt_err = rt_mutex_init(&mutex_list[mutex_num], "usb_mtx", RT_IPC_FLAG_FIFO);
+        RT_ASSERT(rt_err == RT_EOK);
+        status = (int)mutex_num;
+        mutex_num++;
+    }
+    else
+    {
+        status = -1;
+    }
+    return status;
+#else
     return -1;
+#endif /* #if defined (USBD_USE_RTTHREAD_SHIM) */
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
@@ -695,6 +847,13 @@ void USB_OS_MutexFree(void)
     }
     mutex_num = 0U;
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    for (uint32_t i = 0U; i < mutex_num; i++)
+    {
+        (void)rt_mutex_detach(&mutex_list[i]);
+    }
+    mutex_num = 0U;
+#endif
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
@@ -715,7 +874,12 @@ void USB_OS_MutexLock(int Idx)
     CY_ASSERT(CY_RSLT_SUCCESS == result);
     (void)result;  /* To avoid the compiler warning in Release mode */
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    rt_err_t rt_err = rt_mutex_take(&mutex_list[Idx], RT_WAITING_FOREVER);
+    RT_ASSERT(rt_err == RT_EOK);
+#else
     (void)Idx;
+#endif
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
@@ -736,7 +900,12 @@ void USB_OS_MutexUnlock(int Idx)
     CY_ASSERT(CY_RSLT_SUCCESS == result);
     (void)result;  /* To avoid the compiler warning in Release mode */
 #else /* Non-RTOS environment */
+#if defined (USBD_USE_RTTHREAD_SHIM)
+    rt_err_t rt_err = rt_mutex_release(&mutex_list[Idx]);
+    RT_ASSERT(rt_err == RT_EOK);
+#else
     (void)Idx;
+#endif
 #endif /* #if defined (COMPONENT_RTOS_AWARE) */
 }
 
