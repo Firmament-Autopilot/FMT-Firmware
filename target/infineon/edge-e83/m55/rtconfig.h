@@ -113,6 +113,8 @@
  * RT-Thread Components
  *============================================================================*/
 
+#define RT_USING_CPLUSPLUS
+
 /* Device virtual file system */
 #define RT_USING_DFS
 #define DFS_USING_WORKDIR
@@ -144,6 +146,7 @@
 
 /* POSIX layer and C standard library */
 #define RT_USING_LIBC
+#define RT_USING_CPLUSPLUS
 
 /*============================================================================
  * Network
@@ -227,9 +230,11 @@
 
 /* On-chip Peripheral Drivers */
 #define BSP_USING_CMSIS_DSP
+#define BSP_USING_DEEPCRAFT_AI
 #define BSP_USING_GPIO
 #define BSP_USING_UART
 #define BSP_USING_UART1
+#define BSP_USING_UART2
 #define BSP_USING_UART4
 #define BSP_USING_UART9
 #define BSP_USING_UART10

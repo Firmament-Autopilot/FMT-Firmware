@@ -23,7 +23,7 @@ target = "Edge-E83"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n
-	name = "serial4"\n
+	name = "serial0"\n
 	baudrate = 57600\n
 	auto-switch = true\n
 	[[console.devices]]\n

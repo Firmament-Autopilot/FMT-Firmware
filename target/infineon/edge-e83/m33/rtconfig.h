@@ -132,7 +132,7 @@
 /* On-chip Peripheral Drivers */
 #define BSP_USING_GPIO
 #define BSP_USING_UART
-#define BSP_USING_UART2
+// #define BSP_USING_UART2
 #define BSP_USING_PWM
 #define BSP_USING_ADC
 #define BSP_USING_ADC0

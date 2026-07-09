@@ -27,6 +27,7 @@
 #include "drv_eth.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
+#include "drv_heater.h"
 #include "drv_i2c.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
@@ -349,6 +350,9 @@ void bsp_initialize(void)
             printf("airspeed sensor init failed!\n");
         }
     }
+
+    /* heater driver init */
+    RT_CHECK(drv_heater_init("spi4_dev3"));
 #endif
 
     /* init finsh */

@@ -92,20 +92,18 @@ MLOG_BUS_DEFINE(States_Init, States_Init_Elems);
 static McnNode_t control_out_nod;
 static McnNode_t environment_info_nod;
 static McnNode_t states_init_nod;
-static uint32_t imu_timestamp = 0xFFFF;
-static uint32_t mag_timestamp = 0xFFFF;
-static uint32_t baro_timestamp = 0xFFFF;
-static uint32_t gps_timestamp = 0xFFFF;
-static uint8_t environment_info_updated;
-static uint8_t states_init_updated;
+static uint32_t  imu_timestamp  = 0xFFFF;
+static uint32_t  mag_timestamp  = 0xFFFF;
+static uint32_t  baro_timestamp = 0xFFFF;
+static uint32_t  gps_timestamp  = 0xFFFF;
+static uint8_t   environment_info_updated;
+static uint8_t   states_init_updated;
 
 static int Plant_States_ID;
 static int Environment_Info_ID;
 static int States_Init_ID;
 
 fmt_model_info_t plant_model_info;
-
-extern uint8_t err_motor_idx;
 
 static int plant_states_echo(void* param)
 {
@@ -137,13 +135,13 @@ static void publish_sensor_data(uint32_t timestamp)
     if (Plant_Y.IMU.timestamp != imu_timestamp) {
         imu_data_t imu_report;
 
-        imu_report.timestamp_ms = timestamp;
+        imu_report.timestamp_ms   = timestamp;
         imu_report.gyr_B_radDs[0] = Plant_Y.IMU.gyr_x;
         imu_report.gyr_B_radDs[1] = Plant_Y.IMU.gyr_y;
         imu_report.gyr_B_radDs[2] = Plant_Y.IMU.gyr_z;
-        imu_report.acc_B_mDs2[0] = Plant_Y.IMU.acc_x;
-        imu_report.acc_B_mDs2[1] = Plant_Y.IMU.acc_y;
-        imu_report.acc_B_mDs2[2] = Plant_Y.IMU.acc_z;
+        imu_report.acc_B_mDs2[0]  = Plant_Y.IMU.acc_x;
+        imu_report.acc_B_mDs2[1]  = Plant_Y.IMU.acc_y;
+        imu_report.acc_B_mDs2[2]  = Plant_Y.IMU.acc_z;
         // publish sensor_imu data
         mcn_publish(MCN_HUB(sensor_imu0), &imu_report);
 
@@ -153,7 +151,7 @@ static void publish_sensor_data(uint32_t timestamp)
     if (Plant_Y.MAG.timestamp != mag_timestamp) {
         mag_data_t mag_report;
 
-        mag_report.timestamp_ms = timestamp;
+        mag_report.timestamp_ms   = timestamp;
         mag_report.mag_B_gauss[0] = Plant_Y.MAG.mag_x;
         mag_report.mag_B_gauss[1] = Plant_Y.MAG.mag_y;
         mag_report.mag_B_gauss[2] = Plant_Y.MAG.mag_z;
@@ -166,15 +164,15 @@ static void publish_sensor_data(uint32_t timestamp)
     if (Plant_Y.Barometer.timestamp != baro_timestamp) {
         baro_data_t baro_report;
 
-        baro_report.timestamp_ms = timestamp;
+        baro_report.timestamp_ms    = timestamp;
         baro_report.temperature_deg = Plant_Y.Barometer.temperature;
-        baro_report.pressure_pa = Plant_Y.Barometer.pressure;
+        baro_report.pressure_pa     = Plant_Y.Barometer.pressure;
 
         /* tropospheric properties (0-11km) for standard atmosphere */
         const double T1 = 15.0 + 273.15; /* temperature at base height in Kelvin, [K] = [°C] + 273.15 */
-        const double a = -6.5 / 1000;    /* temperature gradient in degrees per metre */
-        const double g = 9.80665;        /* gravity constant in m/s/s */
-        const double R = 287.05;         /* ideal gas constant in J/kg/K */
+        const double a  = -6.5 / 1000;    /* temperature gradient in degrees per metre */
+        const double g  = 9.80665;        /* gravity constant in m/s/s */
+        const double R  = 287.05;         /* ideal gas constant in J/kg/K */
         /* current pressure at MSL in kPa */
         double p1 = 101325.0 / 1000.0;
         /* measured pressure in kPa */
@@ -201,17 +199,17 @@ static void publish_sensor_data(uint32_t timestamp)
         gps_data_t gps_report;
 
         gps_report.timestamp_ms = timestamp;
-        gps_report.fixType = Plant_Y.GPS.fixType;
-        gps_report.numSV = Plant_Y.GPS.numSV;
-        gps_report.lon = Plant_Y.GPS.lon;
-        gps_report.lat = Plant_Y.GPS.lat;
-        gps_report.height = Plant_Y.GPS.height;
-        gps_report.hAcc = (float)Plant_Y.GPS.hAcc * 1e-3;
-        gps_report.vAcc = (float)Plant_Y.GPS.vAcc * 1e-3;
-        gps_report.velN = (float)Plant_Y.GPS.velN * 1e-3;
-        gps_report.velE = (float)Plant_Y.GPS.velE * 1e-3;
-        gps_report.velD = (float)Plant_Y.GPS.velD * 1e-3;
-        gps_report.sAcc = (float)Plant_Y.GPS.sAcc * 1e-3;
+        gps_report.fixType      = Plant_Y.GPS.fixType;
+        gps_report.numSV        = Plant_Y.GPS.numSV;
+        gps_report.lon          = Plant_Y.GPS.lon;
+        gps_report.lat          = Plant_Y.GPS.lat;
+        gps_report.height       = Plant_Y.GPS.height;
+        gps_report.hAcc         = (float)Plant_Y.GPS.hAcc * 1e-3;
+        gps_report.vAcc         = (float)Plant_Y.GPS.vAcc * 1e-3;
+        gps_report.velN         = (float)Plant_Y.GPS.velN * 1e-3;
+        gps_report.velE         = (float)Plant_Y.GPS.velE * 1e-3;
+        gps_report.velD         = (float)Plant_Y.GPS.velD * 1e-3;
+        gps_report.sAcc         = (float)Plant_Y.GPS.sAcc * 1e-3;
         // publish sensor_gps data
         mcn_publish(MCN_HUB(sensor_gps), &gps_report);
 
@@ -230,12 +228,6 @@ void plant_interface_step(uint32_t timestamp)
 {
     if (mcn_poll(control_out_nod)) {
         mcn_copy(MCN_HUB(control_output), control_out_nod, &Plant_U.Control_Out);
-
-        for (uint8_t i = 0; i < 4; i++) {
-            if (err_motor_idx & (1 << i)) {
-                Plant_U.Control_Out.actuator_cmd[i] = 1000;
-            }
-        }
     }
 
     if (mcn_poll(environment_info_nod)) {
@@ -279,6 +271,7 @@ void plant_interface_step(uint32_t timestamp)
         mlog_push_msg((uint8_t*)&Plant_U.States_Init, States_Init_ID, sizeof(Plant_U.States_Init));
     }
 
+
     /* publish sensor model's data */
     publish_sensor_data(timestamp);
 }
@@ -286,11 +279,11 @@ void plant_interface_step(uint32_t timestamp)
 void plant_interface_init(void)
 {
     plant_model_info.period = PLANT_EXPORT.period;
-    plant_model_info.info = (char*)PLANT_EXPORT.model_info;
+    plant_model_info.info   = (char*)PLANT_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(plant_states), plant_states_echo);
 
-    control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL);
+    control_out_nod      = mcn_subscribe(MCN_HUB(control_output), NULL);
     environment_info_nod = mcn_subscribe(MCN_HUB(environment_info), NULL);
     states_init_nod = mcn_subscribe(MCN_HUB(states_init), NULL);
 

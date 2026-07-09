@@ -222,7 +222,7 @@ void uart2_dma_tx_isr_callback(void);
     #ifndef UART4_CONFIG
         #define UART4_CONFIG                                           \
             {                                                          \
-                .name = "serial4",                                     \
+                .name = "serial0",                                     \
                 .usart_x = SCB4,                                       \
                 .intrSrc = scb_4_interrupt_IRQn,                       \
                 .uart_config = &CYBSP_DEBUG_UART_config,               \
@@ -336,7 +336,7 @@ void uart6_dma_tx_isr_callback(void);
     #ifndef UART9_CONFIG
         #define UART9_CONFIG                                      \
             {                                                     \
-                .name = "serial9",                               \
+                .name = "serial3",                               \
                 .usart_x = SCB9,                                  \
                 .intrSrc = scb_9_interrupt_IRQn,                  \
                 .uart_config = &CYBSP_UART9_config,               \
@@ -375,7 +375,7 @@ void uart9_dma_tx_isr_callback(void);
     #ifndef UART10_CONFIG
         #define UART10_CONFIG                                      \
             {                                                      \
-                .name = "serial10",                               \
+                .name = "serial4",                               \
                 .usart_x = SCB10,                                  \
                 .intrSrc = scb_10_interrupt_IRQn,                  \
                 .uart_config = &CYBSP_UART10_config,               \

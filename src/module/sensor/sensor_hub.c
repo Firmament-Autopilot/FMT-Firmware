@@ -680,11 +680,10 @@ fmt_err_t register_sensor_airspeed(const char* dev_name)
  * @brief Collect sensor data
  * @note Should be invoked periodically. e.g, at 1KHz
  */
-void sensor_collect(void)
+void sensor_collect_high_freq(void)
 {
     float temp[3];
     enum Rotation board_rot = PARAM_GET_UINT8(CALIB, SENS_BOARD_ROT);
-    enum Rotation mag0_rot = PARAM_GET_UINT8(CALIB, CAL_MAG0_ROT);
 
     /*
      * Collect imu data
@@ -755,6 +754,13 @@ void sensor_collect(void)
             }
         }
     }
+}
+
+void sensor_collect_low_freq(void)
+{
+    float temp[3];
+    enum Rotation board_rot = PARAM_GET_UINT8(CALIB, SENS_BOARD_ROT);
+    enum Rotation mag0_rot = PARAM_GET_UINT8(CALIB, CAL_MAG0_ROT);
 
     /*
      * Collect magnetometer data
@@ -845,4 +851,10 @@ void sensor_collect(void)
             }
         }
     }
+}
+
+void sensor_collect_all(void)
+{
+    sensor_collect_high_freq();
+    sensor_collect_low_freq();
 }

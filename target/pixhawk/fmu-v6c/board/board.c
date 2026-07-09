@@ -481,9 +481,7 @@ void bsp_initialize(void)
     }
 
     /* heater driver init */
-    if (drv_heater_init("spi1_dev3") != RT_EOK) {
-        console_println("Warning: heater init failed");
-    }
+    RT_CHECK(drv_heater_init("spi1_dev3"));
 #endif
 
     /* init finsh */

@@ -95,7 +95,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_usart_init());
 
     /* init console to enable console output */
-    FMT_CHECK(console_init());
+    // FMT_CHECK(console_init());
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
@@ -120,10 +120,10 @@ void bsp_initialize(void)
 
     RT_CHECK(drv_ipc_dev_init());
     
-    /* init finsh */
-    finsh_system_init();
-    /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_input());
+    // /* init finsh */
+    // finsh_system_init();
+    // /* Mount finsh to console after finsh system init */
+    // FMT_CHECK(console_enable_input());
 
 }
 
