@@ -7,7 +7,7 @@ target = "Edge-E83"
 [console]
     [[console.devices]]
     type = "serial"
-    name = "serial4"
+    name = "serial0"
     baudrate = 57600
     auto-switch = true
 
@@ -87,6 +87,6 @@ target = "Edge-E83"
     id = 0
     protocol = "ublox"  # ublox or nmea
     type = "serial"
-    name = "serial10"
+    name = "serial4"
     auto-config = true
     baudrate = 0        # 0 means auto detect baudrate
