@@ -93,7 +93,7 @@ Purpose     : emUSB-Device configuration file for PSE84 device
  * USBD_AssignMemory() description in emUSB-Device User Guide &
  * Reference Manual.
  */
-#define EP_BUFFER_SIZE                          (4096U)
+#define EP_BUFFER_SIZE                          (16384U)
 
 #if (USBD_NORTOS_TICKCNT_ENABLE == 1U)
 #define TIMER_IRQ_PRIORITY  (7U)
