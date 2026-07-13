@@ -33,6 +33,7 @@ if GetDepend('BSP_USING_SDCARD'):
 
 if GetDepend('BSP_USING_USB'):
     src += ['drv_usbd_cdc.c']
+    src += ['drv_usbd_cdc_rb.c']
     path += [cwd + '/../libraries/emusb-device/USBD']
     path += [cwd + '/../libraries/emusb-device/USBD/COMPONENT_PSE84']
     path += [cwd + '/../libraries/emusb-device/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release']

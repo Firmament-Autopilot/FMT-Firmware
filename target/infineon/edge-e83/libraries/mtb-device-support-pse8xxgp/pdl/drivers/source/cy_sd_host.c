@@ -64,6 +64,26 @@ CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 18.1', 11, \
                                                       * of the command and a start bit of the next command.
                                                       */
 #define CY_SD_HOST_NCC_MIN_US               ((1000U * CY_SD_HOST_NCC_MIN_CYCLES) / CY_SD_HOST_INIT_CLK_FREQUENCY_KHZ)
+#define CY_SD_HOST_DCACHE_LINE_SIZE         (32UL)
+
+#if (((CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)) || CY_CPU_CORTEX_M55)
+static void Cy_SD_Host_CleanDCacheAligned(const volatile void *addr, uint32_t size)
+{
+    uintptr_t begin;
+    uintptr_t end;
+
+    if ((addr == NULL) || (size == 0UL))
+    {
+        return;
+    }
+
+    begin = ((uintptr_t)addr) & ~((uintptr_t)CY_SD_HOST_DCACHE_LINE_SIZE - 1UL);
+    end = (((uintptr_t)addr) + size + CY_SD_HOST_DCACHE_LINE_SIZE - 1UL) &
+          ~((uintptr_t)CY_SD_HOST_DCACHE_LINE_SIZE - 1UL);
+
+    SCB_CleanDCache_by_Addr((volatile void *)begin, (int32_t)(end - begin));
+}
+#endif
 
 /* Commands codes. */
 #define CY_SD_HOST_SD_CMD0                  (0UL)
@@ -981,7 +1001,7 @@ cy_en_sd_host_status_t Cy_SD_Host_Read(SDHC_Type *base,
 
 #if (((CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)) || CY_CPU_CORTEX_M55)
                 /* Ensure DMA descriptor table is written to memory */
-                SCB_CleanDCache_by_Addr((volatile void *)aDmaDescriptTbl, sizeof(aDmaDescriptTbl));
+                Cy_SD_Host_CleanDCacheAligned((volatile void *)aDmaDescriptTbl, sizeof(aDmaDescriptTbl));
 #endif
             }
             else
@@ -1133,9 +1153,9 @@ cy_en_sd_host_status_t Cy_SD_Host_Write(SDHC_Type *base,
 
 #if (((CY_CPU_CORTEX_M7) && defined (ENABLE_CM7_DATA_CACHE)) || CY_CPU_CORTEX_M55)
                 /* For write operations, clean data buffer to ensure data is written to memory */
-                SCB_CleanDCache_by_Addr((volatile void *)config->data, length);
+                Cy_SD_Host_CleanDCacheAligned((volatile void *)config->data, length);
                 /* Ensure DMA descriptor table is written to memory */
-                SCB_CleanDCache_by_Addr((volatile void *)aDmaDescriptTbl, sizeof(aDmaDescriptTbl));
+                Cy_SD_Host_CleanDCacheAligned((volatile void *)aDmaDescriptTbl, sizeof(aDmaDescriptTbl));
 #endif
             }
             else
@@ -1157,7 +1177,8 @@ cy_en_sd_host_status_t Cy_SD_Host_Write(SDHC_Type *base,
                 if (dataConfig.enableDma)
                 {
                     /* For write operations with SDMA, clean data buffer to ensure data is written to memory */
-                    SCB_CleanDCache_by_Addr((volatile void *)config->data, CY_SD_HOST_BLOCK_SIZE * config->numberOfBlocks);
+                    Cy_SD_Host_CleanDCacheAligned((volatile void *)config->data,
+                                                  CY_SD_HOST_BLOCK_SIZE * config->numberOfBlocks);
                 }
 #endif
             }
