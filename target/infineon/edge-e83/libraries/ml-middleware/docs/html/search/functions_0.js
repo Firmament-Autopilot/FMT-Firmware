@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['mtb_5fml_5fmodel_5fdeinit_92',['mtb_ml_model_deinit',['../group__Model__API.html#ga10acddae09fd2643123f403384bb7ecc',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fget_5finference_5fobject_93',['mtb_ml_model_get_inference_object',['../group__Model__API.html#ga72b028986ca9e631b52dd71cc1cc6f2f',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fget_5finput_5fdetail_94',['mtb_ml_model_get_input_detail',['../group__Model__API.html#ga46d7b983105d1b85980094ee718a2924',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fget_5finput_5fsize_95',['mtb_ml_model_get_input_size',['../group__Model__API.html#gaa3573aa84ae7b6df1ddd9848f80a3d52',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fget_5foutput_96',['mtb_ml_model_get_output',['../group__Model__API.html#ga6bbd085fed18120775b1acce2a47e0e2',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fget_5foutput_5fdetail_97',['mtb_ml_model_get_output_detail',['../group__Model__API.html#ga140aa87bc0faf92e7dc76a330bfa8206',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fget_5foutput_5ftensor_98',['mtb_ml_model_get_output_tensor',['../group__Model__API.html#gaf7edc911b182a8dcaa6fc0453d7aa582',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5finit_99',['mtb_ml_model_init',['../group__Model__API.html#gaa082f86e4e11c6e1b74211fc24f60589',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5finputs_100',['mtb_ml_model_inputs',['../group__Model__API.html#gaaacd49ae3abb7c3118620efd84c78700',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5finvoke_101',['mtb_ml_model_invoke',['../group__Model__API.html#ga3a2fed81bffebc5a08ba605a11496eb1',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fload_5foutput_102',['mtb_ml_model_load_output',['../group__Model__API.html#gaf89ea2b1a433185bb3e7ecdae8b68d56',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fprofile_5fconfig_103',['mtb_ml_model_profile_config',['../group__Model__API.html#ga554f6e3b60450c1914523d6522beecb2',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fprofile_5fget_5ftsc_104',['mtb_ml_model_profile_get_tsc',['../group__Model__API.html#gaabecdd51e45cb27c66fcef74690918d2',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5fprofile_5flog_105',['mtb_ml_model_profile_log',['../group__Model__API.html#ga3e9031281ef07dbc39fddf4a2c11e7be',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5frnn_5freset_5fall_5fparameters_106',['mtb_ml_model_rnn_reset_all_parameters',['../group__Model__API.html#ga5e0db44fc0870fe02de8fc2aa2a07334',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5fmodel_5frun_107',['mtb_ml_model_run',['../group__Model__API.html#gab7f6de335b403cb622564368747d9c93',1,'mtb_ml_model.h']]],
+  ['mtb_5fml_5futils_5ffind_5fmax_108',['mtb_ml_utils_find_max',['../group__Utils__API.html#ga6daea933527d7f7ce1ae23b2551a62ec',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5ffind_5fmax_5fflt_109',['mtb_ml_utils_find_max_flt',['../group__Utils__API.html#ga8eb35266feb77a089b3e08e4d0305968',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5ffind_5fmax_5fint16_110',['mtb_ml_utils_find_max_int16',['../group__Utils__API.html#gaaf0813f60cd6d835bb2cba7f46330a0e',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5ffind_5fmax_5fint8_111',['mtb_ml_utils_find_max_int8',['../group__Utils__API.html#ga5ed52d5f401557dde46d1faa57d4a694',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5fmodel_5fdequantize_112',['mtb_ml_utils_model_dequantize',['../group__Utils__API.html#gaa578b3b484071af8d181c6b5d33403fa',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5fmodel_5fdequantize_5ftensor_113',['mtb_ml_utils_model_dequantize_tensor',['../group__Utils__API.html#ga324a600784f3f753b791d624fc01f74c',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5fmodel_5fquantize_114',['mtb_ml_utils_model_quantize',['../group__Utils__API.html#ga7866c9a14538c1c789a5bfa0058a5e79',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5fmodel_5fquantize_5ftensor_115',['mtb_ml_utils_model_quantize_tensor',['../group__Utils__API.html#gad04b2ffda4da26e252ed983252ac5098',1,'mtb_ml_utils.h']]],
+  ['mtb_5fml_5futils_5fprint_5fmodel_5finfo_116',['mtb_ml_utils_print_model_info',['../group__Utils__API.html#ga51ac92aa83247e29a918033e53bddd26',1,'mtb_ml_utils.h']]]
+];
