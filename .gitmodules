@@ -11,9 +11,3 @@
 [submodule "src/lib/dronecan/libcanard"]
 	path = src/lib/dronecan/libcanard
 	url = https://github.com/dronecan/libcanard.git
-[submodule "target/infineon/edge-e83/libraries/ml-middleware"]
-	path = target/infineon/edge-e83/libraries/ml-middleware
-	url = https://github.com/Infineon/ml-middleware.git
-[submodule "target/infineon/edge-e83/libraries/ml-tflite-micro"]
-	path = target/infineon/edge-e83/libraries/ml-tflite-micro
-	url = https://github.com/Infineon/ml-tflite-micro.git
