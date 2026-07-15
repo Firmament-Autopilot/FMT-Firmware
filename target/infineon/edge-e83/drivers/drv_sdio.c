@@ -22,6 +22,10 @@
 #include "mtb_hal_gpio.h"
 #include "mtb_hal_sdhc.h"
 
+#ifdef RT_USING_FINSH
+    #include <finsh.h>
+#endif
+
 #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
     #define CY_SDIO_DCACHE_CLEAN(addr, size) \
         SCB_CleanDCache_by_Addr((void*)(addr), (int32_t)(size))
@@ -43,6 +47,7 @@
 #define CY_SDIO_ADMA_MAX_LEN  (64U * 1024U)
 #define IFX_SD_LOCK_TIMEOUT_MS (2000U)
 #define IFX_SD_XFER_TIMEOUT_MS (5000U)
+#define IFX_SD_BUS_FREQ_HZ    (50U * 1000U * 1000U)
 
 #define IFX_SD_ERROR_MASK (CY_SD_HOST_CMD_TOUT_ERR | CY_SD_HOST_CMD_CRC_ERR | \
                            CY_SD_HOST_CMD_END_BIT_ERR | CY_SD_HOST_CMD_IDX_ERR | \
@@ -59,11 +64,89 @@ struct ifx_sdio {
     rt_size_t bounce_size;
 };
 
+struct ifx_sd_stats {
+    rt_uint32_t read_direct_ops;
+    rt_uint32_t read_bounce_ops;
+    rt_uint32_t write_direct_ops;
+    rt_uint32_t write_bounce_ops;
+    rt_uint32_t read_single_ops;
+    rt_uint32_t read_multi_ops;
+    rt_uint32_t write_single_ops;
+    rt_uint32_t write_multi_ops;
+    rt_uint32_t read_sectors;
+    rt_uint32_t write_sectors;
+    rt_uint32_t read_max_blocks;
+    rt_uint32_t write_max_blocks;
+};
+
 static struct sd_device ifx_sd_dev;
 static struct rt_mutex ifx_sd_lock;
 static cy_stc_sd_host_context_t ifx_sd_ctx;
 static mtb_hal_sdhc_t ifx_sdhc_obj;
 static struct ifx_sdio ifx_sdio_ctx;
+static struct ifx_sd_stats ifx_sd_stats;
+
+static void ifx_sd_cache_range(const void* addr,
+                               rt_size_t size,
+                               uintptr_t* start,
+                               rt_size_t* len)
+{
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    uintptr_t begin = (uintptr_t)addr;
+    uintptr_t aligned = begin & ~((uintptr_t)CY_SDIO_BOUNCE_ALIGN - 1U);
+    uintptr_t end = (begin + size + CY_SDIO_BOUNCE_ALIGN - 1U) & ~((uintptr_t)CY_SDIO_BOUNCE_ALIGN - 1U);
+
+    *start = aligned;
+    *len = (rt_size_t)(end - aligned);
+#else
+    CY_UNUSED_PARAMETER(addr);
+    *start = 0U;
+    *len = 0U;
+#endif
+}
+
+static bool ifx_sd_is_cacheline_aligned(const void* buf)
+{
+    uintptr_t addr = (uintptr_t)buf;
+
+    return ((addr & (CY_SDIO_BOUNCE_ALIGN - 1U)) == 0U);
+}
+
+static bool ifx_sd_can_dma_direct_read(const void* buf, rt_size_t size)
+{
+    return ifx_sd_is_cacheline_aligned(buf) && (size <= CY_SDIO_ADMA_MAX_LEN);
+}
+
+static bool ifx_sd_can_dma_direct_write(const void* buf, rt_size_t size)
+{
+    uintptr_t addr = (uintptr_t)buf;
+
+    return ((addr & 0x3U) == 0U) && (size <= CY_SDIO_ADMA_MAX_LEN);
+}
+
+static void ifx_sd_update_stats(rt_uint32_t* single_ops,
+                                rt_uint32_t* multi_ops,
+                                rt_uint32_t* sectors,
+                                rt_uint32_t* max_blocks,
+                                rt_uint32_t count)
+{
+    *sectors += count;
+
+    if (count > *max_blocks) {
+        *max_blocks = count;
+    }
+
+    if (count > 1U) {
+        (*multi_ops)++;
+    } else {
+        (*single_ops)++;
+    }
+}
+
+static void ifx_sd_reset_stats(void)
+{
+    rt_memset(&ifx_sd_stats, 0, sizeof(ifx_sd_stats));
+}
 
 bool Cy_SD_Host_IsCardConnected(SDHC_Type const* base)
 {
@@ -163,6 +246,8 @@ static rt_err_t ifx_sd_read(sd_dev_t dev,
     cy_en_sd_host_status_t sd_status;
     rt_size_t total;
     rt_uint8_t* dma_buf;
+    uintptr_t cache_addr;
+    rt_size_t cache_size;
     rt_uint32_t evt;
     rt_err_t err = RT_EOK;
 
@@ -175,11 +260,25 @@ static rt_err_t ifx_sd_read(sd_dev_t dev,
         return -RT_ETIMEOUT;
     }
 
-    err = ifx_sd_get_bounce(sdio, total, &dma_buf);
-    if (err != RT_EOK)
-        goto exit;
+    if (ifx_sd_can_dma_direct_read(buf, total)) {
+        dma_buf = buf;
+        ifx_sd_stats.read_direct_ops++;
+    } else {
+        err = ifx_sd_get_bounce(sdio, total, &dma_buf);
+        if (err != RT_EOK)
+            goto exit;
 
-    CY_SDIO_DCACHE_INVALIDATE(dma_buf, total);
+        ifx_sd_stats.read_bounce_ops++;
+    }
+
+    ifx_sd_update_stats(&ifx_sd_stats.read_single_ops,
+                        &ifx_sd_stats.read_multi_ops,
+                        &ifx_sd_stats.read_sectors,
+                        &ifx_sd_stats.read_max_blocks,
+                        count);
+
+    ifx_sd_cache_range(dma_buf, total, &cache_addr, &cache_size);
+    CY_SDIO_DCACHE_INVALIDATE(cache_addr, cache_size);
 
     cfg.address = sector;
     cfg.numberOfBlocks = count;
@@ -214,8 +313,10 @@ static rt_err_t ifx_sd_read(sd_dev_t dev,
         goto exit;
     }
 
-    CY_SDIO_DCACHE_INVALIDATE(dma_buf, total);
-    rt_memcpy(buf, dma_buf, total);
+    CY_SDIO_DCACHE_INVALIDATE(cache_addr, cache_size);
+    if (dma_buf != buf) {
+        rt_memcpy(buf, dma_buf, total);
+    }
 
 exit:
     rt_mutex_release(&ifx_sd_lock);
@@ -232,6 +333,8 @@ static rt_err_t ifx_sd_write(sd_dev_t dev,
     cy_en_sd_host_status_t sd_status;
     rt_size_t total;
     rt_uint8_t* dma_buf;
+    uintptr_t cache_addr;
+    rt_size_t cache_size;
     rt_uint32_t evt;
     rt_err_t err = RT_EOK;
 
@@ -244,12 +347,26 @@ static rt_err_t ifx_sd_write(sd_dev_t dev,
         return -RT_ETIMEOUT;
     }
 
-    err = ifx_sd_get_bounce(sdio, total, &dma_buf);
-    if (err != RT_EOK)
-        goto exit;
+    if (ifx_sd_can_dma_direct_write(buf, total)) {
+        dma_buf = buf;
+        ifx_sd_stats.write_direct_ops++;
+    } else {
+        err = ifx_sd_get_bounce(sdio, total, &dma_buf);
+        if (err != RT_EOK)
+            goto exit;
 
-    rt_memcpy(dma_buf, buf, total);
-    CY_SDIO_DCACHE_CLEAN(dma_buf, total);
+        ifx_sd_stats.write_bounce_ops++;
+        rt_memcpy(dma_buf, buf, total);
+    }
+
+    ifx_sd_update_stats(&ifx_sd_stats.write_single_ops,
+                        &ifx_sd_stats.write_multi_ops,
+                        &ifx_sd_stats.write_sectors,
+                        &ifx_sd_stats.write_max_blocks,
+                        count);
+
+    ifx_sd_cache_range(dma_buf, total, &cache_addr, &cache_size);
+    CY_SDIO_DCACHE_CLEAN(cache_addr, cache_size);
 
     cfg.address = sector;
     cfg.numberOfBlocks = count;
@@ -327,6 +444,10 @@ rt_err_t ifx_sd_hw_init(sd_dev_t dev)
         != CY_SD_HOST_SUCCESS)
         return RT_ERROR;
 
+    if (mtb_hal_sdhc_set_frequency(&ifx_sdhc_obj, IFX_SD_BUS_FREQ_HZ, true) != CY_RSLT_SUCCESS) {
+        rt_kprintf("SD set frequency to 50MHz failed, keeping negotiated default\n");
+    }
+
     const cy_stc_sysint_t intr_cfg = {
         .intrSrc = CYBSP_SDHC_1_IRQ,
         .intrPriority = IFX_SDHC_IRQ_PRIORITY,
@@ -351,11 +472,12 @@ rt_err_t ifx_sd_hw_init(sd_dev_t dev)
 
     uint32_t capacity_gib = (uint32_t)(ifx_sd_ctx.maxSectorNum * 512ULL / (1024ULL * 1024ULL * 1024ULL));
 
-    rt_kprintf("SD init success | type: %d | max sectors: %lu | capacity: %lu GiB | bus: %d-bit\n",
+    rt_kprintf("SD init success | type: %d | max sectors: %lu | capacity: %lu GiB | bus: %d-bit | target clk: %lu Hz\n",
                ifx_sd_ctx.cardType,
                ifx_sd_ctx.maxSectorNum,
                capacity_gib,
-               (ifx_sd_ctx.busWidth == CY_SD_HOST_BUS_WIDTH_4_BIT) ? 4 : 1);
+               (ifx_sd_ctx.busWidth == CY_SD_HOST_BUS_WIDTH_4_BIT) ? 4 : 1,
+               (unsigned long)IFX_SD_BUS_FREQ_HZ);
 
     return RT_EOK;
 }
@@ -381,3 +503,47 @@ rt_err_t drv_sdio_init(void)
                            RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_REMOVABLE,
                            RT_NULL);
 }
+
+#ifdef RT_USING_FINSH
+static int sd_stat(int argc, char** argv)
+{
+    (void)argc;
+    (void)argv;
+
+    rt_kprintf("sd dmaType=%u bus=%u-bit maxSector=%lu bounce=%luB target_clk=%luHz\n",
+               (unsigned int)ifx_sd_ctx.dmaType,
+               (unsigned int)((ifx_sd_ctx.busWidth == CY_SD_HOST_BUS_WIDTH_4_BIT) ? 4U : 1U),
+               (unsigned long)ifx_sd_ctx.maxSectorNum,
+               (unsigned long)ifx_sdio_ctx.bounce_size,
+               (unsigned long)IFX_SD_BUS_FREQ_HZ);
+    rt_kprintf("read direct=%lu bounce=%lu single=%lu multi=%lu sectors=%lu max_blocks=%lu\n",
+               (unsigned long)ifx_sd_stats.read_direct_ops,
+               (unsigned long)ifx_sd_stats.read_bounce_ops,
+               (unsigned long)ifx_sd_stats.read_single_ops,
+               (unsigned long)ifx_sd_stats.read_multi_ops,
+               (unsigned long)ifx_sd_stats.read_sectors,
+               (unsigned long)ifx_sd_stats.read_max_blocks);
+    rt_kprintf("write direct=%lu bounce=%lu single=%lu multi=%lu sectors=%lu max_blocks=%lu\n",
+               (unsigned long)ifx_sd_stats.write_direct_ops,
+               (unsigned long)ifx_sd_stats.write_bounce_ops,
+               (unsigned long)ifx_sd_stats.write_single_ops,
+               (unsigned long)ifx_sd_stats.write_multi_ops,
+               (unsigned long)ifx_sd_stats.write_sectors,
+               (unsigned long)ifx_sd_stats.write_max_blocks);
+
+    return 0;
+}
+MSH_CMD_EXPORT(sd_stat, show SDIO DMA and bounce usage counters);
+
+static int sd_stat_reset(int argc, char** argv)
+{
+    (void)argc;
+    (void)argv;
+
+    ifx_sd_reset_stats();
+    rt_kprintf("sd stats reset\n");
+
+    return 0;
+}
+MSH_CMD_EXPORT(sd_stat_reset, reset SDIO DMA and bounce usage counters);
+#endif
