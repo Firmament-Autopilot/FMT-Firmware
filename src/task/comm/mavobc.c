@@ -914,7 +914,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         break;
 
     default:
-        LOG_W("unsupported mavlink msg:%d", msg->msgid);
+        // LOG_W("unsupported mavlink msg:%d", msg->msgid);
         break;
     }
 
