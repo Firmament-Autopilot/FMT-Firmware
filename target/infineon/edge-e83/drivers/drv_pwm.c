@@ -565,10 +565,10 @@ rt_err_t drv_pwm_init(void)
     pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group);
 
 #if PWM_USE_MAIN_OUT
-    RT_TRY(hal_actuator_register(&main_act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
+    RT_TRY(hal_actuator_register(&main_act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL));
 #endif
 #if PWM_USE_AUX_OUT
-    RT_TRY(hal_actuator_register(&aux_act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL));
+    RT_TRY(hal_actuator_register(&aux_act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
 #endif
 
     DRV_DBG("E83 PWM driver initialized (register main:%u aux:%u)\n", PWM_USE_MAIN_OUT, PWM_USE_AUX_OUT);
