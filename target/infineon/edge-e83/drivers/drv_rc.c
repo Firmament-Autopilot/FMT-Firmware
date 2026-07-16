@@ -50,13 +50,24 @@
 static struct rt_semaphore sbus_rx_sem;
 static ppm_decoder_t ppm_decoder;
 static sbus_decoder_t sbus_decoder;
+static rt_thread_t sbus_thread = RT_NULL;
+static rt_device_t sbus_serial = RT_NULL;
+static rt_bool_t sbus_sem_inited = RT_FALSE;
+static volatile rt_bool_t sbus_running = RT_FALSE;
+static rt_bool_t sbus_decoder_inited = RT_FALSE;
+static rt_bool_t ppm_inited = RT_FALSE;
+
+rt_err_t ppm_lowlevel_init(void);
+rt_err_t ppm_lowlevel_deinit(void);
 
 /* SBUS发送缓冲区 */
 static uint16_t _rc_values[RC_INPUT_CHANNELS];
 
 static rt_err_t sbus_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    rt_sem_release(&sbus_rx_sem);
+    if (sbus_sem_inited) {
+        rt_sem_release(&sbus_rx_sem);
+    }
     return RT_EOK;
 }
 
@@ -100,7 +111,161 @@ static void sbus_rx_thread_entry(void* parameter)
     }
 }
 
+static void rc_sbus_thread_entry(void* parameter)
+{
+    struct serial_configure config = SERIAL_DEFAULT_CONFIG;
+    rt_size_t read_length;
+    rt_uint8_t rx_buf[64];
+
+    sbus_serial = rt_device_find(SBUS_DEVICE_NAME);
+    if (sbus_serial == RT_NULL) {
+        rt_kprintf("[UART11] device not found: %s\n", SBUS_DEVICE_NAME);
+        sbus_running = RT_FALSE;
+        sbus_thread = RT_NULL;
+        return;
+    }
+
+    if (!sbus_sem_inited) {
+        if (rt_sem_init(&sbus_rx_sem, "sbus_rx", 0, RT_IPC_FLAG_FIFO) != RT_EOK) {
+            rt_kprintf("[SBUS] rx semaphore init failed\n");
+            sbus_running = RT_FALSE;
+            sbus_thread = RT_NULL;
+            return;
+        }
+        sbus_sem_inited = RT_TRUE;
+    }
+
+    if (rt_device_open(sbus_serial, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
+        rt_kprintf("[UART11] open failed\n");
+        sbus_running = RT_FALSE;
+        sbus_serial = RT_NULL;
+        sbus_thread = RT_NULL;
+        return;
+    }
+
+    config.baud_rate = 100000;
+    config.data_bits = 8;
+    config.parity = 2;
+    config.stop_bits = 2;
+    config.bufsz = 256;
+    rt_device_control(sbus_serial, RT_DEVICE_CTRL_CONFIG, &config);
+    rt_device_set_rx_indicate(sbus_serial, sbus_rx_ind);
+
+    while (sbus_running) {
+        if (rt_sem_take(&sbus_rx_sem, RT_TICK_PER_SECOND / 100) != RT_EOK) {
+            continue;
+        }
+
+        while (sbus_running) {
+            read_length = rt_device_read(sbus_serial, 0, rx_buf, sizeof(rx_buf));
+            if (read_length == 0) {
+                break;
+            }
+
+            sbus_input(&sbus_decoder, rx_buf, read_length);
+            if (!sbus_islock(&sbus_decoder)) {
+                sbus_update(&sbus_decoder);
+            }
+        }
+    }
+
+    rt_device_set_rx_indicate(sbus_serial, RT_NULL);
+    rt_device_close(sbus_serial);
+    sbus_serial = RT_NULL;
+    sbus_thread = RT_NULL;
+}
+
+rt_err_t rc_sbus_init(void)
+{
+    rt_err_t ret;
+
+    if (sbus_running) {
+        return RT_EOK;
+    }
+
+    if (!sbus_decoder_inited) {
+        ret = sbus_decoder_init(&sbus_decoder);
+        if (ret != RT_EOK) {
+            rt_kprintf("[SBUS] decoder init failed\n");
+            return ret;
+        }
+        sbus_decoder_inited = RT_TRUE;
+    } else if (sbus_decoder.sbus_rb != RT_NULL) {
+        ringbuffer_flush(sbus_decoder.sbus_rb);
+    }
+
+    sbus_decoder.sbus_data_ready = false;
+    sbus_decoder.sbus_failsafe = false;
+    sbus_decoder.sbus_frame_drop = false;
+    sbus_decoder.sbus_decode_state = SBUS_DECODE_STATE_DESYNC;
+    sbus_decoder.partial_frame_count = 0;
+
+    sbus_running = RT_TRUE;
+    sbus_thread = rt_thread_create("sbus_rx",
+                                  rc_sbus_thread_entry,
+                                  RT_NULL,
+                                  SBUS_THREAD_STACK,
+                                  SBUS_THREAD_PRIORITY,
+                                  SBUS_THREAD_TIMESLICE);
+    if (sbus_thread == RT_NULL) {
+        sbus_running = RT_FALSE;
+        rt_kprintf("[SBUS] create rx thread failed\n");
+        return -RT_ERROR;
+    }
+
+    rt_thread_startup(sbus_thread);
+
+    return RT_EOK;
+}
+
+rt_err_t rc_sbus_deinit(void)
+{
+    if (!sbus_running && sbus_thread == RT_NULL) {
+        return RT_EOK;
+    }
+
+    sbus_running = RT_FALSE;
+
+    if (sbus_sem_inited) {
+        rt_sem_release(&sbus_rx_sem);
+    }
+
+    for (int i = 0; sbus_thread != RT_NULL && i < 50; i++) {
+        rt_thread_mdelay(10);
+    }
+
+    if (sbus_serial != RT_NULL) {
+        rt_device_set_rx_indicate(sbus_serial, RT_NULL);
+        rt_device_close(sbus_serial);
+        sbus_serial = RT_NULL;
+    }
+
+    if (sbus_sem_inited) {
+        rt_sem_detach(&sbus_rx_sem);
+        sbus_sem_inited = RT_FALSE;
+    }
+
+    if (sbus_decoder_inited && sbus_decoder.sbus_rb != RT_NULL) {
+        ringbuffer_flush(sbus_decoder.sbus_rb);
+    }
+    sbus_decoder.sbus_data_ready = false;
+    sbus_decoder.sbus_failsafe = false;
+    sbus_decoder.sbus_frame_drop = false;
+
+    return RT_EOK;
+}
+
 rt_err_t sbus_lowlevel_init(void)
+{
+    return rc_sbus_init();
+}
+
+rt_err_t sbus_lowlevel_deinit(void)
+{
+    return rc_sbus_deinit();
+}
+
+static rt_err_t __attribute__((unused)) sbus_lowlevel_init_legacy(void)
 {
     rt_thread_t tid;
     rt_err_t ret;
@@ -230,6 +395,15 @@ static ppm_encoder_t ppm_param;
 
 rt_err_t rc_init(void)
 {
+    return ppm_lowlevel_init();
+}
+
+rt_err_t ppm_lowlevel_init(void)
+{
+
+    if (ppm_inited) {
+        return RT_EOK;
+    }
 
     RT_TRY(ppm_decoder_init(&ppm_decoder, rc_get_timer_freq_hz()));
 
@@ -258,6 +432,8 @@ rt_err_t rc_init(void)
         return RT_ERROR;
     }
     NVIC_EnableIRQ((IRQn_Type)RC_TIMER_IRQ);
+
+    ppm_inited = RT_TRUE;
 
     return RT_EOK;
 }
@@ -339,7 +515,6 @@ static struct rc_device rc_dev = {
 
 rt_err_t drv_rc_init(void)
 {
-    RT_TRY(rc_init());
     RT_TRY(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, NULL));
 
     return RT_EOK;
@@ -412,6 +587,8 @@ void drv_rc_start_capture(void)
 
 rt_err_t drv_rc_thread_start(void)
 {
+    RT_TRY(ppm_lowlevel_init());
+
     if (rc_running) {
         return RT_EOK;  // 已经在运行
     }
@@ -433,6 +610,10 @@ rt_err_t drv_rc_thread_start(void)
 
 uint8_t drv_rc_send_ppm(void)
 {
+    if (!ppm_inited) {
+        return 0;
+    }
+
     if (!_ppm_recv) {
         return 0;
     }
@@ -452,6 +633,10 @@ uint8_t send_sbus_value(void)
     uint16_t rc_count = 0;
     bool sbus_failsafe = false;
     bool sbus_frame_drop = false;
+
+    if (!sbus_running) {
+        return 1;
+    }
 
     if (sbus_data_ready(&sbus_decoder)) {
         sbus_lock(&sbus_decoder);
@@ -539,10 +724,12 @@ void drv_rc_print_raw_gaps(void)
     mtb_hal_system_critical_section_exit(saved_intr_status);
 }
 
-rt_err_t drv_rc_deinit(void)
+rt_err_t ppm_lowlevel_deinit(void)
 {
     if (!rc_running && rc_thread == RT_NULL) {
-        return RT_EOK; 
+        if (!ppm_inited) {
+            return RT_EOK;
+        }
     }
     rc_running = 0;
     if (rc_thread != RT_NULL) {
@@ -573,6 +760,12 @@ rt_err_t drv_rc_deinit(void)
     cc0_capture = 0;
     _ppm_recv = 0;
     _ppm_sending = 0;
+    ppm_inited = RT_FALSE;
 
     return RT_EOK;
+}
+
+rt_err_t drv_rc_deinit(void)
+{
+    return ppm_lowlevel_deinit();
 }

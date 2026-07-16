@@ -31,7 +31,7 @@ static void task_entry(void* parameter)
 
     // RT_CHECK(drv_rc_init());
 
-    sbus_lowlevel_init();
+    rc_sbus_init();
 
     // drv_rc_thread_start();
 
