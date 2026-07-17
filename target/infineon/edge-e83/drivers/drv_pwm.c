@@ -38,11 +38,11 @@
 #define PWM_DEFAULT_FREQUENCY  PWM_FREQ_50HZ
 
 #if defined(COMPONENT_CM55) || defined(CORE_NAME_CM55_0)
-#define PWM_USE_MAIN_OUT       (0U)
-#define PWM_USE_AUX_OUT        (1U)
-#elif defined(COMPONENT_CM33) || defined(CORE_NAME_CM33_0)
 #define PWM_USE_MAIN_OUT       (1U)
 #define PWM_USE_AUX_OUT        (0U)
+#elif defined(COMPONENT_CM33) || defined(CORE_NAME_CM33_0)
+#define PWM_USE_MAIN_OUT       (0U)
+#define PWM_USE_AUX_OUT        (1U)
 #else
 #define PWM_USE_MAIN_OUT       (1U)
 #define PWM_USE_AUX_OUT        (1U)
@@ -565,10 +565,10 @@ rt_err_t drv_pwm_init(void)
     pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group);
 
 #if PWM_USE_MAIN_OUT
-    RT_TRY(hal_actuator_register(&main_act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
+    RT_TRY(hal_actuator_register(&main_act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL));
 #endif
 #if PWM_USE_AUX_OUT
-    RT_TRY(hal_actuator_register(&aux_act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL));
+    RT_TRY(hal_actuator_register(&aux_act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
 #endif
 
     DRV_DBG("E83 PWM driver initialized (register main:%u aux:%u)\n", PWM_USE_MAIN_OUT, PWM_USE_AUX_OUT);
