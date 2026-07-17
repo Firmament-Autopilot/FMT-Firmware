@@ -331,20 +331,27 @@ fmt_err_t handle_rx_packet(struct IOPacket* pkt)
             break;
         }
         IO_RCConfig new_config = *((IO_RCConfig*)pkt->data);
-        if (new_config.protocol && new_config.protocol != rc_config.protocol) {
-            if (new_config.protocol == 1) {
-                // drv_rc_deinit();
-                // sbus_lowlevel_init();
-            } else if (new_config.protocol == 2) {
-                // sbus_deinit();
-                // rc_init();
-                // drv_rc_thread_start();
-                // drv_rc_init();
-                // drv_rc_thread_start();
-            } else {
-                debug("invalid rc protocol:%d\n", new_config.protocol);
-                return FMT_EINVAL;
+        if (new_config.protocol == 1) {
+            if (rc_config.protocol != new_config.protocol && ppm_lowlevel_deinit() != RT_EOK) {
+                ret = FMT_ERROR;
+                break;
             }
+            if (rc_sbus_init() != RT_EOK) {
+                ret = FMT_ERROR;
+                break;
+            }
+        } else if (new_config.protocol == 2) {
+            if (rc_config.protocol != new_config.protocol && rc_sbus_deinit() != RT_EOK) {
+                ret = FMT_ERROR;
+                break;
+            }
+            if (drv_rc_thread_start() != RT_EOK) {
+                ret = FMT_ERROR;
+                break;
+            }
+        } else {
+            debug("invalid rc protocol:%d\n", new_config.protocol);
+            return FMT_EINVAL;
         }
 
         rc_config = new_config;
