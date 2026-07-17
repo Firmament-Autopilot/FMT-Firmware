@@ -29,6 +29,11 @@ rt_err_t rc_init(void);
 void drv_rc_start_capture(void);
 uint8_t drv_rc_send_ppm(void);
 rt_err_t sbus_lowlevel_init(void);
+rt_err_t sbus_lowlevel_deinit(void);
+rt_err_t rc_sbus_init(void);
+rt_err_t rc_sbus_deinit(void);
+rt_err_t ppm_lowlevel_init(void);
+rt_err_t ppm_lowlevel_deinit(void);
 uint8_t send_sbus_value(void);
 #define RC_CAPTURE_BUF_SIZE 32
 #define PPM_CHANNEL_COUNT 9

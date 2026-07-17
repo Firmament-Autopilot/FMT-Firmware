@@ -37,6 +37,9 @@
 #define USB_THREAD_PRIO        8u
 #define USB_THREAD_TICK        10u
 #define USB_START_DELAY_MS     50u
+#define USB_ATTACH_PROBE_INTERVAL_MS 500u
+#define USB_ATTACH_PROBE_WINDOW_MS   1500u
+#define USB_DISCONNECT_DRAIN_TIMEOUT_MS 100u
 #define USB_RX_POLL_MS         2u
 #define USB_TX_READY_TIMEOUT   50u
 #define USB_TX_DONE_TIMEOUT    200u
@@ -77,7 +80,10 @@ static const USB_DEVICE_INFO usb_device_info = {
 static struct usbd_cdc_dev cdc_device;
 static USB_CDC_HANDLE usb_cdc_handle;
 static volatile bool usb_configured = false;
+static volatile bool usb_stack_initialized = false;
 static volatile bool usb_stack_started = false;
+static volatile uint32_t usb_stack_start_ms = 0u;
+static volatile uint32_t usb_last_probe_ms = 0u;
 static rt_thread_t usb_thread = RT_NULL;
 static volatile bool usb_tx_pending = false;
 static volatile bool usb_tx_abort_pending = false;
@@ -625,9 +631,72 @@ static void usb_ftp_write_thread_entry(void* parameter)
     }
 }
 
+static void usb_disconnect_cleanup(bool notify)
+{
+    bool need_release = usb_tx_slot_busy;
+
+    usb_configured = false;
+    usb_tx_pending = false;
+    usb_tx_size = 0u;
+    usb_tx_abort_pending = true;
+    usb_tx_slot_busy = false;
+    if (need_release && usb_tx_sem) {
+        rt_sem_release(usb_tx_sem);
+    }
+
+    if (notify) {
+        hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_DISCONNECT);
+    }
+    drv_usbd_cdc_rb_flush(&usb_rx_rb);
+    usb_mavlink_fastpath_reset();
+    (void)usb_ftp_wait_write_queue_idle(USB_DISCONNECT_DRAIN_TIMEOUT_MS);
+    (void)usb_ftp_upload_close();
+}
+
+static void usb_stack_init_once(void)
+{
+    if (usb_stack_initialized) {
+        return;
+    }
+
+    USBD_Init();
+    usb_add_cdc();
+    USBD_SetDeviceInfo(&usb_device_info);
+    usb_stack_initialized = true;
+}
+
+static void usb_stack_start_probe(void)
+{
+    if (usb_stack_started) {
+        return;
+    }
+
+    usb_stack_init_once();
+    USBD_Start();
+    usb_stack_started = true;
+    usb_stack_start_ms = systime_now_ms();
+    usb_last_probe_ms = usb_stack_start_ms;
+}
+
+static void usb_stack_stop(void)
+{
+    if (!usb_stack_started) {
+        return;
+    }
+
+    USBD_Stop();
+    usb_stack_started = false;
+    usb_last_probe_ms = systime_now_ms();
+    usb_disconnect_cleanup(usb_configured);
+}
+
 static void usb_update_connection_state(void)
 {
     uint32_t state;
+
+    if (!usb_stack_started) {
+        return;
+    }
 
     state = USBD_GetState();
 
@@ -635,23 +704,11 @@ static void usb_update_connection_state(void)
         if ((state & (USB_STAT_CONFIGURED | USB_STAT_SUSPENDED)) == USB_STAT_CONFIGURED) {
             usb_configured = true;
             hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_CONNECT);
+        } else if ((systime_now_ms() - usb_stack_start_ms) >= USB_ATTACH_PROBE_WINDOW_MS) {
+            usb_stack_stop();
         }
     } else if ((state & USB_STAT_CONFIGURED) == 0u) {
-        bool need_release = usb_tx_slot_busy;
-
-        usb_configured = false;
-        usb_tx_pending = false;
-        usb_tx_size = 0u;
-        usb_tx_abort_pending = true;
-        usb_tx_slot_busy = false;
-        if (need_release && usb_tx_sem) {
-            rt_sem_release(usb_tx_sem);
-        }
-        hal_usbd_cdc_notify_status(&cdc_device, USBD_STATUS_DISCONNECT);
-        drv_usbd_cdc_rb_flush(&usb_rx_rb);
-        usb_mavlink_fastpath_reset();
-        (void)usb_ftp_wait_write_queue_idle(30000u);
-        (void)usb_ftp_upload_close();
+        usb_stack_stop();
     }
 }
 
@@ -1009,16 +1066,22 @@ static void usb_cdc_thread_entry(void* parameter)
 
     rt_thread_mdelay(USB_START_DELAY_MS);
 
-    USBD_Init();
-    usb_add_cdc();
-    USBD_SetDeviceInfo(&usb_device_info);
-    USBD_Start();
-    usb_stack_started = true;
-
     while (1) {
+        if (!usb_stack_started) {
+            uint32_t now_ms = systime_now_ms();
+
+            if ((now_ms - usb_last_probe_ms) >= USB_ATTACH_PROBE_INTERVAL_MS) {
+                usb_stack_start_probe();
+            } else {
+                rt_thread_mdelay(USB_RX_POLL_MS);
+            }
+            continue;
+        }
+
         usb_update_connection_state();
 
         if (!usb_configured) {
+            rt_thread_mdelay(USB_RX_POLL_MS);
             continue;
         }
 
@@ -1245,9 +1308,10 @@ static int usb_cdc_stat(int argc, char** argv)
         return 0;
     }
 
-    rt_kprintf("usb configured=%u stack_started=%u rx_rb_len=%lu frame_len=%u tx_pending=%u tx_size=%lu\n",
-               usb_configured ? 1u : 0u,
+    rt_kprintf("usb initialized=%u stack_started=%u configured=%u rx_rb_len=%lu frame_len=%u tx_pending=%u tx_size=%lu\n",
+               usb_stack_initialized ? 1u : 0u,
                usb_stack_started ? 1u : 0u,
+               usb_configured ? 1u : 0u,
                (unsigned long)drv_usbd_cdc_rb_len(&usb_rx_rb),
                (unsigned int)usb_mavlink_frame_len,
                usb_tx_pending ? 1u : 0u,

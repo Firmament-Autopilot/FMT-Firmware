@@ -181,7 +181,7 @@
             "type": "cortex-debug",
             "request": "launch",
             "cwd": "${workspaceFolder}/target/infineon/edge-e83",
-            "executable": "${workspaceFolder}/target/infineon/edge-e83/m55/rt-thread.elf",
+            "executable": "${workspaceFolder}/target/infineon/edge-e83/m55/build/fmt_e83-m55.hex",
             "servertype": "openocd",
             "serverpath": "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/bin/openocd.exe",
             "searchDir": [
