@@ -92,8 +92,8 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
             /* set rc configure */
             rc->config = *pconfig;
 
-            /* if device is opened before, re-configure it */
-            if (rc->parent.flag & RT_DEVICE_FLAG_ACTIVATED && rc->ops->rc_config) {
+            /* re-configure rc */
+            if (rc->ops->rc_config) {
                 rc->ops->rc_config(rc, pconfig);
             }
         }

@@ -15,9 +15,10 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include "drv_rc.h"
 #include "interface.h"
 #include "module/task_manager/task_manager.h"
-#include "drv_rc.h"
+
 
 static fmt_err_t task_init(void)
 {
@@ -29,11 +30,11 @@ static void task_entry(void* parameter)
 {
     printf("main task started.\n");
 
-    // RT_CHECK(drv_rc_init());
-
-    rc_sbus_init();
-
-    // drv_rc_thread_start();
+    if (rc_config.protocol == 1) {
+        rc_sbus_init();
+    } else if (rc_config.protocol == 2) {
+        drv_rc_thread_start();
+    }
 
     while (1) {
         interface_listen();
