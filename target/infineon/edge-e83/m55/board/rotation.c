@@ -21,3 +21,13 @@ void qmc5883l_rotate_to_frd(float* data, uint8_t dev_id)
     rotation(ROTATION_YAW_90, data, data + 1, data + 2);
 }
 
+void bmm150_rotate_to_frd(float* data, uint8_t dev_id)
+{
+    (void)dev_id;
+
+    float temp = data[0];
+    data[0] = data[1];
+    data[1] = temp;
+    data[2] = -data[2];
+}
+
