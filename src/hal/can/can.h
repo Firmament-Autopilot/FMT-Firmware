@@ -21,6 +21,7 @@ extern "C" {
 #define CAN_OPEN_DEVICE       1000
 #define CAN_CLOSE_DEVICE      1001
 #define CAN_SET_RX_FILTER     1002
+#define CAN_SET_BAUDRATE      1003
 
 /* serial isr event */
 #define CAN_EVENT_RX_IND      0x01 /* Rx indication */

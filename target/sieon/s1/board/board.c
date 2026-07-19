@@ -46,6 +46,7 @@
 #include "driver/mag/qmc5883l.h"
 #include "driver/mtd/gd25qxx.h"
 #include "driver/range_finder/tofsense.h"
+#include "driver/range_finder/nraxx.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
@@ -346,6 +347,7 @@ void bsp_initialize(void)
     // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     // RT_CHECK(drv_tofsense_init("serial5"));
+    // RT_CHECK(drv_nraxx_init("can1"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));

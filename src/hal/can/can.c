@@ -168,6 +168,14 @@ static rt_err_t hal_can_control(rt_device_t dev, int cmd, void* args)
         }
         break;
 
+    case CAN_SET_BAUDRATE:
+        if (args == NULL)
+            return RT_EINVAL;
+
+        /* baudrate should be set before device open, so new baud_rate can be configured correctly */
+        can_dev->config.baud_rate = (uint32_t)args;
+        break;
+
     default:
         /* invoke driver control function to handle command */
         if (can_dev->ops->control) {
