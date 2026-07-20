@@ -31,8 +31,9 @@ MCN_DECLARE(mission_data);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(control_output);
 
-/* FMS output topic */
+/* FMS topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
+MCN_DEFINE(terrain_info, sizeof(Terrain_Info_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
@@ -134,6 +135,12 @@ static mlog_elem_t Mission_Data_Elems[] = {
 };
 MLOG_BUS_DEFINE(Mission_Data, Mission_Data_Elems);
 
+static mlog_elem_t Terrain_Info_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(range_m, MLOG_FLOAT),
+};
+MLOG_BUS_DEFINE(Terrain_Info, Terrain_Info_Elems);
+
 static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
     MLOG_ELEMENT(p_cmd, MLOG_FLOAT),
@@ -168,17 +175,20 @@ static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
 static McnNode_t auto_cmd_nod;
 static McnNode_t mission_data_nod;
+static McnNode_t terrain_info_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
 static uint8_t pilot_cmd_updated;
 static uint8_t gcs_cmd_updated;
 static uint8_t auto_cmd_updated;
 static uint8_t mission_data_updated;
+static uint8_t terrain_info_updated;
 
 static int Pilot_Cmd_ID;
 static int GCS_Cmd_ID;
 static int Auto_Cmd_ID;
 static int Mission_Data_ID;
+static int Terrain_Info_ID;
 static int FMS_Out_ID;
 
 static char* fms_status[] = {
@@ -200,6 +210,7 @@ static char* fms_state[] = {
     "Stabilize",
     "Altitude",
     "Position",
+    "TerrainTrack",
     "InvalidAssistMode",
     "Manual",
     "InValidManualMode",
@@ -228,6 +239,7 @@ static char* fms_mode[] = {
     "Position",
     "Mission",
     "Offboard",
+    "Terrain",
 };
 
 fmt_model_info_t fms_model_info;
@@ -254,12 +266,24 @@ static int fms_output_echo(void* param)
     return 0;
 }
 
+static int terrain_info_echo(void* param)
+{
+    Terrain_Info_Bus terrain_info;
+
+    mcn_copy_from_hub((McnHub*)param, &terrain_info);
+
+    printf("timestamp:%u range:%f\n", terrain_info.timestamp, terrain_info.range_m);
+
+    return 0;
+}
+
 static void mlog_start_cb(void)
 {
     pilot_cmd_updated = 1;
     gcs_cmd_updated = 1;
     auto_cmd_updated = 1;
     mission_data_updated = 1;
+    terrain_info_updated = 1;
 }
 
 static void init_parameter(void)
@@ -319,6 +343,13 @@ void fms_interface_step(uint32_t timestamp)
         mission_data_updated = 1;
     }
 
+    if (mcn_poll(terrain_info_nod)) {
+        mcn_copy(MCN_HUB(terrain_info), terrain_info_nod, &FMS_U.Terrain_Info);
+
+        FMS_U.Terrain_Info.timestamp = timestamp;
+        terrain_info_updated = 1;
+    }
+
     if (mcn_poll(ins_out_nod)) {
         mcn_copy(MCN_HUB(ins_output), ins_out_nod, &FMS_U.INS_Out);
     }
@@ -355,6 +386,12 @@ void fms_interface_step(uint32_t timestamp)
         mlog_push_msg((uint8_t*)&FMS_U.Mission_Data, Mission_Data_ID, sizeof(Mission_Data_Bus));
     }
 
+    if (terrain_info_updated) {
+        terrain_info_updated = 0;
+        /* Log mission data */
+        mlog_push_msg((uint8_t*)&FMS_U.Terrain_Info, Terrain_Info_ID, sizeof(Terrain_Info_Bus));
+    }
+
     /* Log FMS output bus data */
     DEFINE_TIMETAG(fms_output, 100);
     if (check_timetag(TIMETAG(fms_output))) {
@@ -369,11 +406,13 @@ void fms_interface_init(void)
     fms_model_info.info = (char*)FMS_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(fms_output), fms_output_echo);
+    mcn_advertise(MCN_HUB(terrain_info), terrain_info_echo);
 
     pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
     gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL);
     auto_cmd_nod = mcn_subscribe(MCN_HUB(auto_cmd), NULL);
     mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL);
+    terrain_info_nod = mcn_subscribe(MCN_HUB(terrain_info), NULL);
     ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL);
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL);
 
@@ -381,11 +420,13 @@ void fms_interface_init(void)
     GCS_Cmd_ID = mlog_get_bus_id("GCS_Cmd");
     Auto_Cmd_ID = mlog_get_bus_id("Auto_Cmd");
     Mission_Data_ID = mlog_get_bus_id("Mission_Data");
+    Terrain_Info_ID = mlog_get_bus_id("Terrain_Info");
     FMS_Out_ID = mlog_get_bus_id("FMS_Out");
     FMT_ASSERT(Pilot_Cmd_ID >= 0);
     FMT_ASSERT(GCS_Cmd_ID >= 0);
     FMT_ASSERT(Auto_Cmd_ID >= 0);
     FMT_ASSERT(Mission_Data_ID >= 0);
+    FMT_ASSERT(Terrain_Info_ID >= 0);
     FMT_ASSERT(FMS_Out_ID >= 0);
 
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);

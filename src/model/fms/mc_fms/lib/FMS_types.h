@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2293
+ * Model version                  : 1.2338
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun 26 18:32:08 2026
+ * C/C++ source code generated on : Mon Jul 20 15:54:09 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,8 +110,9 @@ typedef struct {
 
   /* Coordinate Frame:
      0:FRAME_GLOBAL_NED
-     1:FRAME_LOCAL_FRD
-     2:FRAME_BODY_FRD */
+     1:FRAME_LOCAL_NED
+     2:FRAME_LOCAL_FRD
+     3:FRAME_BODY_FRD */
   uint8_T frame;
   uint8_T reserved;
 
@@ -164,6 +165,17 @@ typedef struct {
   int32_T y[8];
   real32_T z[8];
 } Mission_Data_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Terrain_Info_Bus_
+#define DEFINED_TYPEDEF_FOR_Terrain_Info_Bus_
+
+/* Terrain information for terrain track flight */
+typedef struct {
+  uint32_T timestamp;
+  real32_T range_m;
+} Terrain_Info_Bus;
 
 #endif
 
@@ -245,7 +257,8 @@ typedef enum {
   PilotMode_Altitude,
   PilotMode_Position,
   PilotMode_Mission,
-  PilotMode_Offboard
+  PilotMode_Offboard,
+  PilotMode_Terrain
 } PilotMode;
 
 #endif
@@ -419,6 +432,7 @@ typedef enum {
   VehicleState_Stabilize,
   VehicleState_Altitude,
   VehicleState_Position,
+  VehicleState_TerrainTrack,
   VehicleState_InvalidAssistMode,
   VehicleState_Manual,
   VehicleState_InValidManualMode,
@@ -466,7 +480,8 @@ typedef enum {
 typedef enum {
   MotionState_Hold = 0,                /* Default value */
   MotionState_Brake,
-  MotionState_Move
+  MotionState_Move,
+  MotionState_TerrainTrack
 } MotionState;
 
 #endif

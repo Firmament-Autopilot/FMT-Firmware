@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2293
+ * Model version                  : 1.2338
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun 26 18:32:08 2026
+ * C/C++ source code generated on : Mon Jul 20 15:54:09 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -126,6 +126,20 @@ extern void FMS_MotionStatus_o_Init(DW_MotionStatus_FMS_a_T *localDW);
 extern void FMS_MotionStatus_n_Reset(DW_MotionStatus_FMS_a_T *localDW);
 extern void FMS_MotionStatus_b(boolean_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionStatus_FMS_a_T *localDW);
+extern void FMS_HoldControl_n_Init(DW_HoldControl_FMS_a_T *localDW);
+extern void FMS_HoldControl_g_Reset(DW_HoldControl_FMS_a_T *localDW);
+extern void FMS_HoldControl_a(real32_T rtu_FMS_In, real32_T rtu_FMS_In_g,
+  real32_T rtu_FMS_In_a, real32_T rty_uv_cmd_mPs[2], const
+  ConstB_HoldControl_FMS_i_T *localC, DW_HoldControl_FMS_a_T *localDW);
+extern void FMS_MoveControl_n_Init(DW_MoveControl_FMS_j_T *localDW);
+extern void FMS_MoveControl_lh_Reset(DW_MoveControl_FMS_j_T *localDW);
+extern void FMS_MoveControl_k(real32_T rtu_FMS_In, real32_T rtu_FMS_In_j,
+  real32_T rty_uv_cmd_mPs[2], const ConstB_MoveControl_FMS_b_T *localC,
+  DW_MoveControl_FMS_j_T *localDW);
+extern void FMS_MotionState_b_Init(DW_MotionState_FMS_c_T *localDW);
+extern void FMS_MotionState_jr_Reset(DW_MotionState_FMS_c_T *localDW);
+extern void FMS_MotionState_a(boolean_T rtu_motion_req, real32_T rtu_speed,
+  MotionState *rty_state, DW_MotionState_FMS_c_T *localDW);
 extern void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const
   real_T rtu_llo[2], real_T rtu_href, real_T rtu_psio, real32_T rty_pos[3],
   const ConstB_VehicleArmAutoMissionL_T *localC);

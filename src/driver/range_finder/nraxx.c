@@ -14,6 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
+#include "FMS.h"
+
 #include "nraxx.h"
 #include "hal/can/can.h"
 #include "module/sensor/sensor_hub.h"
@@ -21,25 +23,25 @@
 #define NRAXX_TARGET_STATUS_ID 0x70B
 #define NRAXX_TARGET_INFO_ID   0x70C
 
-MCN_DECLARE(sensor_rangefinder);
+MCN_DECLARE(terrain_info);
 
 static rt_device_t can_dev;
 static rt_thread_t thread;
 
 static void thread_entry(void* args)
 {
-    rf_data_t rf_report;
+    Terrain_Info_Bus terrain_info;
     can_msg msg;
 
     while (1) {
         while (rt_device_read(can_dev, 0, &msg, 1) > 0) {
             if (msg.std_id == NRAXX_TARGET_INFO_ID) {
                 uint16_t range = (msg.data[2] << 8) | msg.data[3];
-                rf_report.distance_m = (float)range * 0.01f;
-                rf_report.timestamp_ms = systime_now_ms();
+                terrain_info.range_m = (float)range * 0.01f;
+                terrain_info.timestamp = systime_now_ms();
 
-                if (rf_report.distance_m > 0.0f) {
-                    mcn_publish(MCN_HUB(sensor_rangefinder), &rf_report);
+                if (terrain_info.range_m > 0.0f) {
+                    mcn_publish(MCN_HUB(terrain_info), &terrain_info);
                 }
             }
         }
