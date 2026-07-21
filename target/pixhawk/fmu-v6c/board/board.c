@@ -65,7 +65,7 @@
 #include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_ubx.h"
-#include "driver/imu/bmi055.h"
+#include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/ist8310.h"
 #include "driver/mtd/ramtron.h"
@@ -361,7 +361,7 @@ void bsp_initialize(void)
        HAL SPI internals in board code. */
     drv_spi_warmup_device("spi1_dev3", 0x75);
     RT_CHECK(drv_icm42688_init("spi1_dev3", "gyro0", "accel0", 0));
-    RT_CHECK(drv_bmi055_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1));
+    RT_CHECK(drv_bmi088_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1));
     RT_CHECK(drv_ms5611_init("i2c4_dev2", "barometer"));
     RT_CHECK(drv_ist8310_init("i2c4_dev1", "mag0", 0));
     // RT_CHECK(drv_mtf_01_init("serial4"));
