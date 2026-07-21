@@ -561,8 +561,12 @@ rt_err_t drv_pwm_init(void)
     (void)&aux_act_dev;
 #endif
 
+#if PWM_USE_MAIN_OUT
     pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &main_pwm_group);
+#endif
+#if PWM_USE_AUX_OUT
     pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group);
+#endif
 
 #if PWM_USE_MAIN_OUT
     RT_TRY(hal_actuator_register(&main_act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL));
