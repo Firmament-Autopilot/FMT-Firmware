@@ -17,8 +17,6 @@
 #ifndef FMTCONFIG_H__
 #define FMTCONFIG_H__
 
-#define USING_X7_PLUS_PRO
-
 // #define FMT_USING_CHECKED
 
 /* Mavlink */

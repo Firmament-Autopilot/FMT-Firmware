@@ -31,6 +31,7 @@
 #include "driver/mag/rm3100.h"
 #include "driver/mtd/ramtron.h"
 #include "drv_adc.h"
+#include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -40,8 +41,8 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
-#include "drv_fdcan.h"
 #include "led.h"
+
 
 #include "default_config.h"
 #include "module/file_manager/file_manager.h"
@@ -336,13 +337,14 @@ void bsp_initialize(void)
 #else
 
     /* init onboard sensors */
-    #ifdef USING_X7_PLUS_PRO
-    RT_CHECK(drv_adis16470_init("spi1_dev2", "gyro0", "accel0"));
-    RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro1", "accel1", 0));
-    #else
-    RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
-    RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1", 0));
-    #endif
+    if (drv_adis16470_init("spi1_dev2", "gyro0", "accel0") == RT_EOK) {
+        RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro1", "accel1", 0));
+        printf("Board Type:X7+ Pro\n");
+    } else {
+        RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
+        RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1", 0));
+        printf("Board Type:X7+\n");
+    }
     RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
     // RT_CHECKdrv_ist8310_init("i2c1_dev1", "mag0")
     RT_CHECK(drv_ms5611_init("spi4_dev2", "barometer"));
