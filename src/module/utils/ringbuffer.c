@@ -112,9 +112,6 @@ uint8_t ringbuffer_getc(ringbuffer* rb, uint8_t* c)
         return 0;
     }
 
-    if (rb == NULL)
-        return 0;
-
     OS_ENTER_CRITICAL;
     *c = rb->buff[rb->tail];
     rb->tail = (rb->tail + 1) % rb->size;
