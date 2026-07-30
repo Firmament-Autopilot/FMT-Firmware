@@ -37,6 +37,7 @@ extern "C" {
 
 #define CAN_FILTER_TYPE_MASK  ((uint32_t)0x00000001)
 #define CAN_FILTER_TYPE_RANGE ((uint32_t)0x00000002)
+#define CAN_FILTER_TYPE_DUAL  ((uint32_t)0x00000003)
 
 /* Default config for serial_configure structure */
 #define CAN_DEFAULT_CONFIG                       \
@@ -56,8 +57,8 @@ typedef struct
                        This parameter can be a value of @ref CAN_remote_transmission_request */
     uint32_t data_len;   /*!< Specifies the length of the frame that will be transmitted.
                          This parameter must be a number between Min_Data = 0 and Max_Data = 8 */
-    uint8_t data[8];     /*!< Contains the data to be transmitted.
-                              This parameter must be a number between Min_Data = 0 and Max_Data = 0xFF */
+    uint8_t data[64];    /*!< Contains the data to be transmitted.
+                             This parameter must be a number between Min_Data = 0 and Max_Data = 0xFF */
 } can_msg, *can_msg_t;
 
 struct can_configure {

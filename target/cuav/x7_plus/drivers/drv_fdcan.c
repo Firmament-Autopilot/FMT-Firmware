@@ -26,6 +26,8 @@ static rt_err_t can_control(can_dev_t can, int cmd, void* arg);
 static int send_canmsg(can_dev_t can, const can_msg_t msg);
 static int recv_canmsg(can_dev_t can, can_msg_t msg);
 
+static const uint8_t DLCtoBytes[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 20, 24, 32, 48, 64 };
+
 const static struct can_ops can_dev_ops = {
     .configure = can_configure,
     .control = can_control,
@@ -42,6 +44,33 @@ static can_device can2_dev = {
     .ops = &can_dev_ops,
     .config = CAN_DEFAULT_CONFIG,
 };
+
+static uint32_t BytesToDLC(uint32_t bytes)
+{
+    uint32_t dlc;
+
+    if (bytes <= 8) {
+        dlc = bytes;
+    } else if (bytes == 12) {
+        dlc = 9;
+    } else if (bytes == 16) {
+        dlc = 10;
+    } else if (bytes == 20) {
+        dlc = 11;
+    } else if (bytes == 24) {
+        dlc = 12;
+    } else if (bytes == 32) {
+        dlc = 13;
+    } else if (bytes == 48) {
+        dlc = 14;
+    } else if (bytes == 64) {
+        dlc = 15;
+    } else {
+        dlc = 0; /* invalid number of bytes */
+    }
+
+    return dlc;
+}
 
 void FDCAN1_IT0_IRQHandler(void)
 {
@@ -76,7 +105,7 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan)
         /* USER CODE BEGIN FDCAN1_MspInit 0 */
 
         /* USER CODE END FDCAN1_MspInit 0 */
-        LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL1Q);
+        LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL2Q);
 
         /* Peripheral clock enable */
         HAL_RCC_FDCAN_CLK_ENABLED++;
@@ -107,7 +136,7 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan)
 
         /* USER CODE END FDCAN2_MspInit 0 */
 
-        LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL1Q);
+        LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL2Q);
 
         /* Peripheral clock enable */
         HAL_RCC_FDCAN_CLK_ENABLED++;
@@ -182,7 +211,7 @@ void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef* hfdcan)
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
 {
     FDCAN_RxHeaderTypeDef RxHeader;
-    uint8_t RxData[16];
+    uint8_t RxData[64];
 
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
         /* Retrieve Rx messages from RX FIFO0 */
@@ -196,7 +225,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
                 msg.id_type = CAN_ID_STANDARD;
             }
             msg.frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
-            msg.data_len = RxHeader.DataLength;
+            msg.data_len = DLCtoBytes[RxHeader.DataLength];
             memcpy(msg.data, RxData, msg.data_len);
 
             if (hfdcan == &hfdcan1)
@@ -236,33 +265,33 @@ static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
     uint32_t scaler = CAN_BAUD_RATE_1000K / (cfg->baud_rate > CAN_BAUD_RATE_1000K ? CAN_BAUD_RATE_1000K : cfg->baud_rate);
 
     hfdcan->Instance = can == &can1_dev ? FDCAN1 : FDCAN2;
-    hfdcan->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+    hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
     hfdcan->Init.Mode = FDCAN_MODE_NORMAL;
     hfdcan->Init.AutoRetransmission = DISABLE;
     hfdcan->Init.TransmitPause = DISABLE;
     hfdcan->Init.ProtocolException = DISABLE;
-    hfdcan->Init.NominalPrescaler = 6 * scaler;
-    hfdcan->Init.NominalSyncJumpWidth = 1;
-    hfdcan->Init.NominalTimeSeg1 = 5;
-    hfdcan->Init.NominalTimeSeg2 = 2;
+    hfdcan->Init.NominalPrescaler = 2 * scaler;
+    hfdcan->Init.NominalSyncJumpWidth = 4;
+    hfdcan->Init.NominalTimeSeg1 = 32;
+    hfdcan->Init.NominalTimeSeg2 = 7;
     hfdcan->Init.DataPrescaler = 1;
-    hfdcan->Init.DataSyncJumpWidth = 1;
-    hfdcan->Init.DataTimeSeg1 = 1;
-    hfdcan->Init.DataTimeSeg2 = 1;
+    hfdcan->Init.DataSyncJumpWidth = 3;
+    hfdcan->Init.DataTimeSeg1 = 16;
+    hfdcan->Init.DataTimeSeg2 = 3;
     hfdcan->Init.MessageRAMOffset = (can == &can1_dev) ? 0 : 1280;
     hfdcan->Init.StdFiltersNbr = 1;
     hfdcan->Init.ExtFiltersNbr = 1;
     hfdcan->Init.RxFifo0ElmtsNbr = 32;
-    hfdcan->Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
+    hfdcan->Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_64;
     hfdcan->Init.RxFifo1ElmtsNbr = 0;
-    hfdcan->Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
+    hfdcan->Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_64;
     hfdcan->Init.RxBuffersNbr = 0;
-    hfdcan->Init.RxBufferSize = FDCAN_DATA_BYTES_8;
+    hfdcan->Init.RxBufferSize = FDCAN_DATA_BYTES_64;
     hfdcan->Init.TxEventsNbr = 0;
     hfdcan->Init.TxBuffersNbr = 0;
-    hfdcan->Init.TxFifoQueueElmtsNbr = 10;
+    hfdcan->Init.TxFifoQueueElmtsNbr = 16;
     hfdcan->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
-    hfdcan->Init.TxElmtSize = FDCAN_DATA_BYTES_8;
+    hfdcan->Init.TxElmtSize = FDCAN_DATA_BYTES_64;
     if (HAL_FDCAN_Init(hfdcan) != HAL_OK) {
         return RT_ERROR;
     }
@@ -345,6 +374,8 @@ static rt_err_t can_control(can_dev_t can, int cmd, void* arg)
             sFilterConfig.FilterType = FDCAN_FILTER_MASK;
         } else if (filter->filter_type == CAN_FILTER_TYPE_RANGE) {
             sFilterConfig.FilterType = FDCAN_FILTER_RANGE;
+        } else if (filter->filter_type == CAN_FILTER_TYPE_DUAL) {
+            sFilterConfig.FilterType = FDCAN_FILTER_DUAL;
         } else {
             return RT_EINVAL;
         }
@@ -377,10 +408,10 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
     TxHeader.Identifier = (msg->id_type == CAN_ID_EXTENDED) ? msg->ext_id : msg->std_id;
     TxHeader.IdType = (msg->id_type == CAN_ID_EXTENDED) ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
     TxHeader.TxFrameType = msg->frame_type == CAN_FRAME_REMOTE ? FDCAN_REMOTE_FRAME : FDCAN_DATA_FRAME;
-    TxHeader.DataLength = msg->data_len;
+    TxHeader.DataLength = BytesToDLC(msg->data_len);
     TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
-    TxHeader.BitRateSwitch = DISABLE;
-    TxHeader.FDFormat = DISABLE;
+    TxHeader.BitRateSwitch = FDCAN_BRS_ON;
+    TxHeader.FDFormat = TxHeader.DataLength > 8 ? FDCAN_FD_CAN : FDCAN_CLASSIC_CAN;
 
     TxHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
     TxHeader.MessageMarker = 0;
@@ -399,7 +430,7 @@ static int recv_canmsg(can_dev_t can, can_msg_t msg)
 {
     FDCAN_HandleTypeDef* hfdcan = (FDCAN_HandleTypeDef*)can->parent.user_data;
     FDCAN_RxHeaderTypeDef RxHeader;
-    uint8_t RxData[16];
+    uint8_t RxData[64];
 
     /* Retrieve Rx messages from RX FIFO0 */
     if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
@@ -413,7 +444,7 @@ static int recv_canmsg(can_dev_t can, can_msg_t msg)
             msg->id_type = CAN_ID_STANDARD;
         }
         msg->frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
-        msg->data_len = RxHeader.DataLength;
+        msg->data_len = DLCtoBytes[RxHeader.DataLength];
         memcpy(msg->data, RxData, msg->data_len);
 
         return 1;
