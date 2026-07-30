@@ -9,7 +9,7 @@ target = "Edge-E83"
     type = "serial"
     name = "serial0"
     baudrate = 57600
-    auto-switch = true
+    auto-switch = false
 
     [[console.devices]]
     type = "mavlink"
@@ -21,8 +21,9 @@ target = "Edge-E83"
     [[mavproxy.devices]]
     chan = 0
     type = "serial"
-    name = "serial1"
+    name = "serial2"
     baudrate = 57600
+    auto-switch = true
 
     [[mavproxy.devices]]
     chan = 0
@@ -38,7 +39,7 @@ target = "Edge-E83"
     [pilot-cmd.device]
     type = "rc"
     name = "rc"
-    protocol = "sbus"           # sbus/ppm
+    protocol = "ppm"           # sbus/ppm
     channel-num = 8             # max supported channel: sbus:16, ppm:8
     sample-time = 0.05          # sample time in second (-1 for inherit)
     range = [1000,2000]
@@ -78,7 +79,7 @@ target = "Edge-E83"
 
     [[actuator.mappings]]
     from = "control_out"
-    to = "main_out"
+    to = "aux_out"
     chan-map = [[1,2,3,4],[1,2,3,4]]
 
 # GNSS Configuration

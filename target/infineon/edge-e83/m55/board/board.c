@@ -23,11 +23,11 @@
 #include "board.h"
 #include "default_config.h"
 #include "driver/barometer/dps368.h"
-#include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mag/ist8310.h"
 #include "driver/mag/qmc5883l.h"
+#include "driver/vision_flow/mtf_01.h"
 #include "drv_adc.h"
 #include "drv_can.h"
 #include "drv_eth.h"
@@ -100,6 +100,9 @@ void _start(void)
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 #define SYS_INIT_SCRIPT "/sys/init.sh"
+
+extern void bsp_show_information(void);
+extern fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab);
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
@@ -341,16 +344,14 @@ void bsp_initialize(void)
     // RT_CHECK(drv_qmc5883l_init("i2c5_dev2", "mag0", EXTERNAL_DEV | 0));
     RT_CHECK(drv_bmm150_init("spi3_dev3", "mag0", 0));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-    // RT_CHECK(gps_ubx_init("serial10", "gps"));
-    // // RT_CHECK(gps_nmea_init("serial3", "gps"));
-    // // RT_CHECK(drv_tofsense_init("serial5"));
+    RT_CHECK(drv_mtf_01_init("serial1"));
     RT_CHECK(drv_dps368_init("spi8_dev1", "barometer"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
-    // FMT_CHECK(advertise_sensor_optflow(0));
-    // FMT_CHECK(advertise_sensor_rangefinder(0));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
 
     RT_CHECK(drv_ipc_dev_init());

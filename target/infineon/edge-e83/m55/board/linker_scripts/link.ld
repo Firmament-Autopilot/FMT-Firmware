@@ -283,6 +283,9 @@ SECTIONS
         LONG(__bss_start__)                       /* Start of the zero-initialized data section */
         LONG((__bss_end__ - __bss_start__)/4)     /* Size of the zero-initialized data section in words */
 
+        LONG(__cy_socmem_bss_start__)                       /* Start of the zero-initialized SoCMEM data section */
+        LONG((__cy_socmem_bss_end__ - __cy_socmem_bss_start__)/4)     /* Size of the zero-initialized SoCMEM data section in words */
+
         __zero_table_end__ = .;
     } > m55_nvm_sel
 
@@ -405,6 +408,19 @@ SECTIONS
 
         __noinit_end__ = .;
     } > m55_data_INTERNAL
+
+    /* SIH plant model state is too large for DTCM when combined with RTOS/LwIP/log buffers. */
+    .cy_socmem_bss(NOLOAD) :
+    {
+        . = ALIGN(4);
+        __cy_socmem_bss_start__ = .;
+
+        *plant_interface.*(.bss*)
+        *Plant.*(.bss*)
+
+        . = ALIGN(4);
+        __cy_socmem_bss_end__ = .;
+    } > m55_data_secondary
 
     /* A section for non-initialized data memory */
     .bss(NOLOAD) :
