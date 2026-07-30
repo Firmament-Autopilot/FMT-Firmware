@@ -26,7 +26,7 @@ void task_local_entry(void* parameter)
 {
     /* main loop */
     while (1) {
-        printf("Hello FMT");
+        LL_GPIO_TogglePin(GPIOI, LL_GPIO_PIN_6);
         sys_msleep(1000);
     }
 }
@@ -36,8 +36,8 @@ void task_local_entry(void* parameter)
 //     .init = task_local_init,
 //     .entry = task_local_entry,
 //     .priority = 25,
-//     .auto_start = false,
-//     .stack_size = 1024,
+//     .auto_start = true,
+//     .stack_size = 4096,
 //     .param = NULL,
 //     .dependency = NULL
 // };

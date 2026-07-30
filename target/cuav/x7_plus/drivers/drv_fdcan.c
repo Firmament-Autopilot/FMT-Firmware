@@ -217,13 +217,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
         /* Retrieve Rx messages from RX FIFO0 */
         if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
             can_msg msg = { 0 };
-            if (RxHeader.IdType == FDCAN_EXTENDED_ID) {
-                msg.ext_id = RxHeader.Identifier;
-                msg.id_type = CAN_ID_EXTENDED;
-            } else {
-                msg.std_id = RxHeader.Identifier;
-                msg.id_type = CAN_ID_STANDARD;
-            }
+
+            msg.msg_id = RxHeader.Identifier;
+            msg.id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
             msg.frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
             msg.data_len = DLCtoBytes[RxHeader.DataLength];
             memcpy(msg.data, RxData, msg.data_len);
@@ -405,7 +401,7 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
     FDCAN_TxHeaderTypeDef TxHeader;
 
     /* Prepare Tx Header */
-    TxHeader.Identifier = (msg->id_type == CAN_ID_EXTENDED) ? msg->ext_id : msg->std_id;
+    TxHeader.Identifier = msg->msg_id;
     TxHeader.IdType = (msg->id_type == CAN_ID_EXTENDED) ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
     TxHeader.TxFrameType = msg->frame_type == CAN_FRAME_REMOTE ? FDCAN_REMOTE_FRAME : FDCAN_DATA_FRAME;
     TxHeader.DataLength = BytesToDLC(msg->data_len);
@@ -434,15 +430,8 @@ static int recv_canmsg(can_dev_t can, can_msg_t msg)
 
     /* Retrieve Rx messages from RX FIFO0 */
     if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
-        if (RxHeader.IdType == FDCAN_EXTENDED_ID) {
-            msg->std_id = 0;
-            msg->ext_id = RxHeader.Identifier;
-            msg->id_type = CAN_ID_EXTENDED;
-        } else {
-            msg->std_id = RxHeader.Identifier;
-            msg->ext_id = 0;
-            msg->id_type = CAN_ID_STANDARD;
-        }
+        msg->msg_id = RxHeader.Identifier;
+        msg->id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
         msg->frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
         msg->data_len = DLCtoBytes[RxHeader.DataLength];
         memcpy(msg->data, RxData, msg->data_len);

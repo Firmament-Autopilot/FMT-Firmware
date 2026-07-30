@@ -47,10 +47,8 @@ extern "C" {
 
 typedef struct
 {
-    uint32_t std_id;     /*!< Specifies the standard identifier.
-                             This parameter must be a number between Min_Data = 0 and Max_Data = 0x7FF */
-    uint32_t ext_id;     /*!< Specifies the extended identifier.
-                             This parameter must be a number between Min_Data = 0 and Max_Data = 0x1FFFFFFF */
+    uint32_t msg_id;     /*!< Specifies the message identifier (standard/extended).
+                             This parameter must be a number between Min_Data = 0 and Max_Data = 0x7FF (0x1FFFFFFF for extended) */
     uint32_t id_type;    /*!< Specifies the type of identifier for the message that will be transmitted.
                           This parameter can be a value of @ref CAN_Identifier_Type */
     uint32_t frame_type; /*!< Specifies the type of frame for the message that will be transmitted.
