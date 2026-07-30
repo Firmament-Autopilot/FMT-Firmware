@@ -56,7 +56,7 @@ typedef struct
     uint32_t frame_type; /*!< Specifies the type of frame for the message that will be transmitted.
                        This parameter can be a value of @ref CAN_remote_transmission_request */
     uint32_t data_len;   /*!< Specifies the length of the frame that will be transmitted.
-                         This parameter must be a number between Min_Data = 0 and Max_Data = 8 */
+                         This parameter must be a number between Min_Data = 0 and Max_Data = 8 (64 for FDCAN) */
     uint8_t data[64];    /*!< Contains the data to be transmitted.
                              This parameter must be a number between Min_Data = 0 and Max_Data = 0xFF */
 } can_msg, *can_msg_t;
