@@ -118,7 +118,7 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
             }
 
             if (updated == 0) {
-                /* not protocol availbale, change to auto and try next time */
+                /* no protocol availbale, change to auto and try next time */
                 rc->config.protocol = RC_PROTOCOL_AUTO;
             }
 
