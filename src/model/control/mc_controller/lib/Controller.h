@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1001
+ * Model version                  : 1.1023
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Apr 23 10:33:17 2026
+ * C/C++ source code generated on : Fri Jul 31 19:58:00 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,7 +37,7 @@
 
 /* Block signals (default storage) */
 typedef struct {
-  real32_T Saturation;                 /* '<S114>/Saturation' */
+  real32_T Saturation;                 /* '<S116>/Saturation' */
   real32_T Saturation_c[2];            /* '<S95>/Saturation' */
 } B_Controller_T;
 
@@ -46,29 +46,29 @@ typedef struct {
   real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S75>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator_DSTATE[3];/* '<S78>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S80>/Discrete-Time Integrator1' */
-  real32_T Integrator1_DSTATE;         /* '<S119>/Integrator1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_m;/* '<S123>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_h;/* '<S125>/Discrete-Time Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S119>/Integrator' */
-  real32_T Integrator1_DSTATE_g[2];    /* '<S101>/Integrator1' */
-  real32_T Integrator_DSTATE_o[2];     /* '<S101>/Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTAT_mi[2];/* '<S106>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_m[2];/* '<S108>/Discrete-Time Integrator1' */
+  real32_T Integrator1_DSTATE;         /* '<S121>/Integrator1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_m;/* '<S125>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_h;/* '<S127>/Discrete-Time Integrator1' */
+  real32_T Integrator_DSTATE;          /* '<S121>/Integrator' */
+  real32_T Integrator1_DSTATE_g[2];    /* '<S103>/Integrator1' */
+  real32_T Integrator_DSTATE_o[2];     /* '<S103>/Integrator' */
+  real32_T DiscreteTimeIntegrator_DSTAT_mi[2];/* '<S108>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_m[2];/* '<S110>/Discrete-Time Integrator1' */
   uint32_T DiscreteTimeIntegrator_DSTATE_n;/* '<S3>/Discrete-Time Integrator' */
   uint8_T Delay_DSTATE;                /* '<S6>/Delay' */
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S78>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S80>/Discrete-Time Integrator1' */
-  int8_T DiscreteTimeIntegrator_PrevRe_m;/* '<S123>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator1_PrevR_i;/* '<S125>/Discrete-Time Integrator1' */
-  int8_T DiscreteTimeIntegrator_PrevRe_e;/* '<S106>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator1_PrevR_a;/* '<S108>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator_PrevRe_m;/* '<S125>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator1_PrevR_i;/* '<S127>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator_PrevRe_e;/* '<S108>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator1_PrevR_a;/* '<S110>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S75>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S80>/Discrete-Time Integrator1' */
-  uint8_T Integrator1_IC_LOADING;      /* '<S119>/Integrator1' */
-  uint8_T DiscreteTimeIntegrator_IC_LOADI;/* '<S123>/Discrete-Time Integrator' */
-  uint8_T DiscreteTimeIntegrator1_IC_LO_k;/* '<S125>/Discrete-Time Integrator1' */
-  uint8_T Integrator1_IC_LOADING_e;    /* '<S101>/Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_LO_b;/* '<S108>/Discrete-Time Integrator1' */
+  uint8_T Integrator1_IC_LOADING;      /* '<S121>/Integrator1' */
+  uint8_T DiscreteTimeIntegrator_IC_LOADI;/* '<S125>/Discrete-Time Integrator' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_k;/* '<S127>/Discrete-Time Integrator1' */
+  uint8_T Integrator1_IC_LOADING_e;    /* '<S103>/Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_b;/* '<S110>/Discrete-Time Integrator1' */
   boolean_T Veloxity_Z_Controller_MODE;/* '<S6>/Veloxity_Z_Controller' */
   boolean_T Velocity_Controller_MODE;  /* '<S5>/Velocity_Controller' */
 } DW_Controller_T;
@@ -77,14 +77,14 @@ typedef struct {
 typedef struct {
   const real32_T Gain;                 /* '<S90>/Gain' */
   const real32_T Constant[3];          /* '<S78>/Constant' */
-  const real32_T Square;               /* '<S120>/Square' */
-  const real32_T d;                    /* '<S120>/Multiply' */
-  const real32_T Gain4;                /* '<S120>/Gain4' */
-  const real32_T VectorConcatenate3[3];/* '<S103>/Vector Concatenate3' */
-  const real32_T Square_d;             /* '<S104>/Square' */
-  const real32_T d_e;                  /* '<S104>/Multiply' */
-  const real32_T Gain4_d;              /* '<S104>/Gain4' */
-  const real32_T Constant_g;           /* '<S106>/Constant' */
+  const real32_T Square;               /* '<S122>/Square' */
+  const real32_T d;                    /* '<S122>/Multiply' */
+  const real32_T Gain4;                /* '<S122>/Gain4' */
+  const real32_T VectorConcatenate3[3];/* '<S105>/Vector Concatenate3' */
+  const real32_T Square_d;             /* '<S106>/Square' */
+  const real32_T d_e;                  /* '<S106>/Multiply' */
+  const real32_T Gain4_d;              /* '<S106>/Gain4' */
+  const real32_T Constant_g;           /* '<S108>/Constant' */
 } ConstB_Controller_T;
 
 /* Constant parameters (default storage) */
@@ -225,8 +225,8 @@ extern real32_T att_cmd_B_rad[2];      /* '<S86>/Switch' */
 extern real32_T att_est_B_rad[2];      /* '<S89>/Signal Copy' */
 extern real32_T rate_cmd_B_radPs[3];   /* '<S70>/Switch' */
 extern real32_T rate_est_B_radPs[3];   /* '<S74>/Signal Copy' */
-extern real32_T w_cmd_C_mPs;           /* '<S119>/Integrator1' */
-extern real32_T w_est_C_mPs;           /* '<S116>/Signal Copy1' */
+extern real32_T w_cmd_C_mPs;           /* '<S121>/Integrator1' */
+extern real32_T w_est_C_mPs;           /* '<S118>/Signal Copy1' */
 
 /*
  * Exported Global Parameters
@@ -249,17 +249,17 @@ extern struct_mpij009ZVm6ibM4r7FnhHH CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S95>/Saturation'
                                                     *   '<S69>/Saturation'
                                                     *   '<S69>/Saturation1'
-                                                    *   '<S105>/kd'
-                                                    *   '<S105>/Saturation'
-                                                    *   '<S106>/ki'
-                                                    *   '<S106>/Discrete-Time Integrator'
-                                                    *   '<S107>/kp'
-                                                    *   '<S122>/kd'
-                                                    *   '<S122>/Saturation'
-                                                    *   '<S123>/Constant'
-                                                    *   '<S123>/ki'
-                                                    *   '<S123>/Discrete-Time Integrator'
-                                                    *   '<S124>/kp'
+                                                    *   '<S107>/kd'
+                                                    *   '<S107>/Saturation'
+                                                    *   '<S108>/ki'
+                                                    *   '<S108>/Discrete-Time Integrator'
+                                                    *   '<S109>/kp'
+                                                    *   '<S124>/kd'
+                                                    *   '<S124>/Saturation'
+                                                    *   '<S125>/Constant'
+                                                    *   '<S125>/ki'
+                                                    *   '<S125>/Discrete-Time Integrator'
+                                                    *   '<S126>/kp'
                                                     *   '<S72>/Gain'
                                                     *   '<S72>/Gain1'
                                                     *   '<S72>/Gain2'
@@ -408,36 +408,38 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S93>'  : 'Controller/Controller/Horizontal_Control/Attitude_Controller/Outter_Loop/Signal_Select/Compare To Constant1'
  * '<S94>'  : 'Controller/Controller/Horizontal_Control/Attitude_Controller/Outter_Loop/Signal_Select/Offboard_Signal_Select'
  * '<S95>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Accel_to_Attitude_CMD'
- * '<S96>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error'
- * '<S97>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller'
- * '<S98>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select'
- * '<S99>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Bus_Select'
- * '<S100>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Compare To Zero'
- * '<S101>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/TD'
- * '<S102>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Bus_Select/Psi To DCM'
- * '<S103>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
- * '<S104>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/TD/fhan '
- * '<S105>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/D_Control'
- * '<S106>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/I_Control'
- * '<S107>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/P_Control'
- * '<S108>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/D_Control/DT Filter'
- * '<S109>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard'
- * '<S110>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard_Signal_Select'
- * '<S111>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard_Signal_Select/Compare To Zero'
- * '<S112>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard_Signal_Select/Compare To Zero2'
- * '<S113>' : 'Controller/Controller/Vertical_Control/Compare To Constant'
- * '<S114>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller'
- * '<S115>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Boosted_Throttle'
- * '<S116>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error'
- * '<S117>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller'
- * '<S118>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error/Compare To Zero'
- * '<S119>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error/TD'
- * '<S120>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error/TD/fhan '
- * '<S121>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/Compare To Constant'
- * '<S122>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/D_Control'
- * '<S123>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/I_Control'
- * '<S124>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/P_Control'
- * '<S125>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/D_Control/DT Filter'
+ * '<S96>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Accel_to_Attitude_CMD1'
+ * '<S97>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error'
+ * '<S98>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller'
+ * '<S99>'  : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select'
+ * '<S100>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Accel_to_Attitude_CMD/Vector Modulus'
+ * '<S101>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Bus_Select'
+ * '<S102>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Compare To Zero'
+ * '<S103>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/TD'
+ * '<S104>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Bus_Select/Psi To DCM'
+ * '<S105>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
+ * '<S106>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Error/TD/fhan '
+ * '<S107>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/D_Control'
+ * '<S108>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/I_Control'
+ * '<S109>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/P_Control'
+ * '<S110>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/PID_Controller/D_Control/DT Filter'
+ * '<S111>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard'
+ * '<S112>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard_Signal_Select'
+ * '<S113>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard_Signal_Select/Compare To Zero'
+ * '<S114>' : 'Controller/Controller/Horizontal_Control/Velocity_Controller/Signal_Select/Offboard_Signal_Select/Compare To Zero2'
+ * '<S115>' : 'Controller/Controller/Vertical_Control/Compare To Constant'
+ * '<S116>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller'
+ * '<S117>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Boosted_Throttle'
+ * '<S118>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error'
+ * '<S119>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller'
+ * '<S120>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error/Compare To Zero'
+ * '<S121>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error/TD'
+ * '<S122>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/Error/TD/fhan '
+ * '<S123>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/Compare To Constant'
+ * '<S124>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/D_Control'
+ * '<S125>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/I_Control'
+ * '<S126>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/P_Control'
+ * '<S127>' : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/D_Control/DT Filter'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 

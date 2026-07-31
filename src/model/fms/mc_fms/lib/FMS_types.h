@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2293
+ * Model version                  : 1.2325
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun 26 18:32:08 2026
+ * C/C++ source code generated on : Fri Jul 31 19:45:37 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,8 +110,9 @@ typedef struct {
 
   /* Coordinate Frame:
      0:FRAME_GLOBAL_NED
-     1:FRAME_LOCAL_FRD
-     2:FRAME_BODY_FRD */
+     1:FRAME_LOCAL_NED
+     2:FRAME_LOCAL_FRD
+     3:FRAME_BODY_FRD */
   uint8_T frame;
   uint8_T reserved;
 
@@ -505,8 +506,8 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_xXeuwAPh0ajaUfdgPpGaUB_
-#define DEFINED_TYPEDEF_FOR_struct_xXeuwAPh0ajaUfdgPpGaUB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_5TTS1Nsavpy7t3kKdfSkeF_
+#define DEFINED_TYPEDEF_FOR_struct_5TTS1Nsavpy7t3kKdfSkeF_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -520,7 +521,7 @@ typedef struct {
   real32_T YAW_P;
   real32_T YAW_RATE_LIM;
   real32_T ROLL_PITCH_LIM;
-  real32_T L1;
+  real32_T L1_GAIN;
   real32_T CRUISE_SPEED;
   real32_T CRUISE_ACC;
   real32_T TAKEOFF_H;
@@ -532,7 +533,7 @@ typedef struct {
   uint8_T LOST_RETURN_EN;
   uint16_T LAND_LOCK_THRO;
   real32_T STICK_SENS;
-} struct_xXeuwAPh0ajaUfdgPpGaUB;
+} struct_5TTS1Nsavpy7t3kKdfSkeF;
 
 #endif
 
