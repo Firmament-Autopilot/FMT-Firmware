@@ -17,9 +17,12 @@
 #include "board.h"
 #include <firmament.h>
 
-#include <msh.h>
-#include <shell.h>
 #include <string.h>
+
+#ifdef RT_USING_FINSH
+    #include <msh.h>
+    #include <shell.h>
+#endif
 
 #include "drv_adc.h"
 #include "drv_eth.h"

@@ -85,6 +85,10 @@ cppdefines = [
 ]
 
 libpath = [os.path.join(ml_tflm, 'COMPONENT_U55', 'TOOLCHAIN_GCC_ARM')]
+deepcraft_ml_tflm = os.path.join(sdk_lib, 'deepcraft_ai', 'third_party', 'ml-tflite-micro', 'COMPONENT_ML_TFLM')
+deepcraft_libpath = os.path.join(deepcraft_ml_tflm, 'COMPONENT_U55', 'TOOLCHAIN_GCC_ARM')
+if os.path.exists(os.path.join(deepcraft_libpath, 'libtensorflow-microlite.a')):
+    libpath.append(deepcraft_libpath)
 libs = ['tensorflow-microlite']
 
 group = DefineGroup('InfineonMLRuntime',

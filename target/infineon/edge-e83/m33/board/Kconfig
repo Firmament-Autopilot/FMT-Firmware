@@ -25,7 +25,7 @@ menu "Onboard Peripheral Drivers"
         bool "Enable USB TO UART (uart2)"
         select BSP_USING_UART
         select BSP_USING_UART2
-        default y
+        default n
 
     menuconfig BSP_USING_AUDIO
         bool "Enable Audio Device"
@@ -143,7 +143,7 @@ menu "On-chip Peripheral Drivers"
                 
             config BSP_USING_UART2
                 bool "Enable UART2"
-                default y
+                default n
                 
             config BSP_USING_UART5
                 bool "Enable UART5"
