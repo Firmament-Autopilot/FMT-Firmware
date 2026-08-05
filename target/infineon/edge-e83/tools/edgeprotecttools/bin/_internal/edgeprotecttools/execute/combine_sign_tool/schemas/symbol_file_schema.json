@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Symbol Information File Schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": ["integer", "string"],
+      "description": "Version of the symbol file format."
+    },
+    "symbolInformation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^\\w+$",
+            "description": "Variable name (alphanumeric and underscores only)."
+          },
+          "value": {
+            "type": "string",
+            "description": "Value to interpolate."
+          }
+        },
+        "required": ["name", "value"],
+        "additionalProperties": false
+      },
+      "description": "List of symbol variable definitions."
+    }
+  },
+  "required": ["symbolInformation"],
+  "additionalProperties": false
+}

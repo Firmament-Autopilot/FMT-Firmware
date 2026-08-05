@@ -1,0 +1,89 @@
+        // When using 'attach', make sure your program is running on the board and that your
+        // executable matches the image in the chip exactly, or else strange things can happen
+        // with breakpoints, variables, etc.
+        {
+            "name": "Attach RAM PSOCE84 &&_MTB_RECIPE__TARGET_PROCESSOR_NAME&& (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "openocd",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set BOARD psvp",
+                "set ENABLE_ACQUIRE 0"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial FEE1DEAD01237400" // Serial number of a probe that is connected to the CM33/CM55 debug port
+            ],
+            "overrideAttachCommands": [
+                "set mem inaccessible-by-default off",
+                "-enable-pretty-printing",
+                "set remotetimeout 60",
+                "monitor halt"
+            ],
+            "overrideRestartCommands": [
+            ],
+            "numberOfProcessors": 2,
+            "targetProcessor": &&_MTB_RECIPE__TARGET_PROCESSOR_NUMBER&&,
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
+            "name": "Program RAM (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "openocd",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set DEVICE m0sec; set BOARD psvp"
+            ],
+            "configFiles": [
+                "interface/kitprog3.cfg",
+                "target/infineon/pse84xgxs2.cfg"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial DEADBEEF01237400; init; reset init" // Serial number of a probe that is connected to the CM0SEC debug port
+            ],
+            "overrideLaunchCommands": [
+                "set {int}0x52401240=0x80000000",
+                "set {int}0x52401244=0x80000000",
+                "set {int}0x52401248=0x80000000",
+                "set {int}0x52410070=0x00000010",
+                "set {int}0x54004090=0x00000002",
+                "set {int}0x54640008=0x0000001f",
+                "set {int}0x52413000=0x108",
+                "set {int}0x54100000=0x108",
+                "set {int}0x54101000=0x01010108",
+                "set {int}0x54004110=0x00000001",
+                "load &&_MTB_RECIPE__HEX_FILE&&",
+                "load &&_MTB_RECIPE__PREBUILT_CM0_IMAGE&&",
+                "detach"
+            ],
+            "postStartSessionCommands": [
+                "monitor poll off",
+                "monitor cmsis-dap cmd 0x03",
+                "quit"
+            ],
+            "preLaunchTask": "Build",    // Set this to run a task from tasks.json
+                                                                // before device programming
+            "showDevDebugOutput": "none"
+        }

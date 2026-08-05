@@ -1,0 +1,14 @@
+{
+    "core": {
+        "id": "046994DF-044D-4049-8B62-8C67ECA1B39F",
+        "name": "ml-tflite-micro"
+    },
+    "opt" : {
+        "stop-at" : [
+            "COMPONENT_ML_TFLM/include/flatbuffers/include",
+            "COMPONENT_ML_TFLM_LESS/include/flatbuffers/include",
+            "COMPONENT_ML_TFLM/include/signal",
+            "COMPONENT_ML_TFLM_LESS/include/signal"
+        ]
+    }
+}

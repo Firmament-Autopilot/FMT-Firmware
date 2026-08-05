@@ -1,0 +1,56 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd = GetCurrentDir()
+
+src = []
+path = [cwd]
+path += [cwd + '/config']
+
+if GetDepend('BSP_USING_GPIO'):
+    src += ['drv_gpio.c']
+
+if GetDepend('BSP_USING_UART'):
+    src += ['drv_uart.c']
+
+src += ['drv_systick.c']
+
+if GetDepend('BSP_USING_HW_I2C'):
+    src += ['drv_i2c.c']
+
+if GetDepend('BSP_USING_SPI'):
+    src += ['drv_spi.c']
+
+if GetDepend('BSP_USING_PWM'):
+    src += ['drv_pwm.c']
+
+if GetDepend('BSP_USING_ADC'):
+    src += ['drv_adc.c']
+
+if GetDepend('BSP_USING_SDCARD'):
+    src += ['drv_sdio.c']
+
+if GetDepend('BSP_USING_USB'):
+    src += ['drv_usbd_cdc.c']
+    src += ['drv_usbd_cdc_rb.c']
+    path += [cwd + '/../libraries/emusb-device/USBD']
+    path += [cwd + '/../libraries/emusb-device/USBD/COMPONENT_PSE84']
+    path += [cwd + '/../libraries/emusb-device/USBD/COMPONENT_USBD_BASE/COMPONENT_PSE84/CONFIG_Release']
+
+if GetDepend('BSP_USING_ETH'):
+    src += ['drv_eth.c']
+
+if GetDepend('BSP_USING_IPC'):
+    src += ['drv_ipc.c']
+    src += ['drv_ipc_dev.c']
+
+if GetDepend('BSP_USING_RC'):
+    src += ['drv_rc.c']
+
+if GetDepend('BSP_USING_CAN'):
+    src += ['drv_can.c']
+
+group = DefineGroup('Drivers', src, depend = [''], CPPPATH = path, LOCAL_CPPPATH = path)
+
+Return('group')

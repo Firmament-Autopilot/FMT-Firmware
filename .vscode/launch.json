@@ -138,19 +138,126 @@
             "runToMain": true
         },
         {
-            "name": "CUAV X7+ Debug J-Link",
+            "name": "EDGE-E83 M33 Debug (DAPLink)",
             "type": "cortex-debug",
             "request": "launch",
-            "cwd": "${workspaceRoot}",
-            "executable": "target/cuav/x7_plus/build/fmt_cuav-x7+.elf",
-            "serverpath": "${env:JLINK_SERVER}",
-            "servertype": "jlink",
-            "device": "STM32H743II",
-            "interface": "swd",
+            "cwd": "${workspaceFolder}/target/infineon/edge-e83",
+            "executable": "${workspaceFolder}/target/infineon/edge-e83/m33/rt-thread.elf",
+            "servertype": "openocd",
+            "serverpath": "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/bin/openocd.exe",
+            "searchDir": [
+              "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/openocd/scripts",
+              "${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource",
+              "${workspaceFolder}/target/infineon/edge-e83/tools",
+              "${workspaceFolder}/target/infineon/edge-e83/m33/build"
+            ],
+            "configFiles": [
+              "interface/cmsis-dap.cfg",
+              "target/infineon/pse84xgxs2.cfg"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+              "set QSPI_FLASHLOADER [find PSE84_SMIF.FLM]"
+            ],
+            "openOCDLaunchCommands": [
+              "cat1d.cm33 configure -rtos auto -rtos-wipe-on-reset-halt 1",
+              "gdb_breakpoint_override hard"
+            ],
+            "overrideLaunchCommands": [
+              "set mem inaccessible-by-default off",
+              "-enable-pretty-printing",
+              "set remotetimeout 500",
+              "monitor reset init",
+              "monitor program [find rtthread.hex]",
+              "monitor reset_halt cm33_ns"
+            ],
+            "overrideRestartCommands": [
+              "monitor reset_halt cm33_ns"
+            ],
             "armToolchainPath": "${env:RTT_EXEC_PATH}",
-            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
-            "svdFile": "target/cuav/x7_plus/STM32H7x3.svd",
-            "runToMain": true
-        }
+            "svdFile": "target/infineon/edge-e83/libraries/mtb-device-support-pse8xxgp/pdl/svd/pse84.svd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+          },
+          {
+            "name": "EDGE-E83 M55 Debug (DAPLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/target/infineon/edge-e83",
+            "executable": "${workspaceFolder}/target/infineon/edge-e83/m55/build/fmt_e83-m55.elf",
+            "servertype": "openocd",
+            "serverpath": "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/bin/openocd.exe",
+            "searchDir": [
+              "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/openocd/scripts",
+              "${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource"
+            ],
+            "configFiles": [
+              "interface/cmsis-dap.cfg",
+              "target/infineon/pse84xgxs2.cfg"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+              "set QSPI_FLASHLOADER ${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource/PSE84_SMIF.FLM",
+              "set ENABLE_CM55 1"
+            ],
+            "openOCDLaunchCommands": [
+              "cat1d.cm55 configure -rtos auto -rtos-wipe-on-reset-halt 1",
+              "gdb_breakpoint_override hard"
+            ],
+            "numberOfProcessors": 2,
+            "targetProcessor": 1,
+            "overrideLaunchCommands": [
+              "set mem inaccessible-by-default off",
+              "-enable-pretty-printing",
+              "set remotetimeout 90",
+              "monitor reset init",
+              "monitor reset_halt cm55"
+            ],
+            "overrideRestartCommands": [
+              "monitor reset_halt cm55"
+            ],
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "svdFile": "libraries/mtb-device-support-pse8xxgp/pdl/svd/pse84.svd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+          },
+          {
+            "name": "EDGE-E83 M55 Program (DAPLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/target/infineon/edge-e83",
+            "executable": "${workspaceFolder}/target/infineon/edge-e83/m33/rt-thread.elf",
+            "servertype": "openocd",
+            "serverpath": "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/bin/openocd.exe",
+            "searchDir": [
+              "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/openocd/scripts",
+              "${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource",
+              "${workspaceFolder}/target/infineon/edge-e83/tools",
+              "${workspaceFolder}/target/infineon/edge-e83/m55/build"
+            ],
+            "configFiles": [
+              "interface/cmsis-dap.cfg",
+              "target/infineon/pse84xgxs2.cfg"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+              "set QSPI_FLASHLOADER [find PSE84_SMIF.FLM]"
+            ],
+            "openOCDLaunchCommands": [
+              "cat1d.cm33 configure -rtos auto -rtos-wipe-on-reset-halt 1",
+              "gdb_breakpoint_override hard"
+            ],
+            "numberOfProcessors": 2,
+            "targetProcessor": 0,
+            "overrideLaunchCommands": [
+              "set mem inaccessible-by-default off",
+              "-enable-pretty-printing",
+              "set remotetimeout 500",
+              "monitor reset halt",
+              "monitor program [find fmt_e83-m55.hex] reset exit"
+            ],
+            "overrideRestartCommands": [
+            ],
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "svdFile": "target/infineon/edge-e83/libraries/mtb-device-support-pse8xxgp/pdl/svd/pse84.svd",
+            "showDevDebugOutput": "none"
+          }
     ]
 }

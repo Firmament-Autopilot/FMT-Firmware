@@ -1,0 +1,385 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file sd_host.cypersonality
+* \version 1.0
+*
+* \brief
+* SD Host Controller personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2018-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id='mxs40sdhost' name='SD Host Controller' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v7'>
+  <Dependencies>
+    <IpBlock name='mxsdhc' />
+    <Resource name='sdhc' />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sd__host.html' linkText='Open SD Host Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <!-- Internal -->
+    <ParamString id='ip_version' name='version number' group='Internal' default='`${getVersion()}`' visible='false' editable='false' desc='' />
+
+    <!-- Timing -->
+    <ParamSignal port='clk_hf[0]' name='Clock' group='Timing' visible='true' desc='Input clock source of the SDHC block.' canBeEmpty='false' />
+    <ParamString id='sourceClock' name='sourceClock' group='General' default='`${getBlockFromSignal("clk_hf[0]")}`' visible='false' editable='false' desc='' />
+    <ParamRange id='sourceFreq' name='sourceFreq' group='General' default='`${isBlockUsed(sourceClock) ? getExposedMember(sourceClock, "frequency") : 0}`' min='0' max='400000000' resolution='1' visible='false' editable='false' desc='' />
+    <ParamRange  id='sdhcClk' name='Input Clock Frequency (kHz)' group='Timing' default='`${sourceFreq / 1000}`' min='0' max='400000000' resolution='0.001' visible='true' editable='false' desc='Shows the actual input clock frequency of the SDHC block.' />
+
+    <!-- General -->
+    <ParamChoice id='cardType' name='Card Type' group='General' default='emmc' visible='true' editable='true' desc='Defines if the card is eMMC.' >
+      <Entry name='eMMC' value='emmc' visible='true' />
+      <Entry name='SD/SDIO' value='nonEmmc' visible='true' />
+    </ParamChoice>
+    <ParamChoice id='dmaType' name='DMA Type' group='General' default='CY_SD_HOST_DMA_SDMA' visible='true' editable='true' desc='Selects the DMA type to be used.' >
+      <Entry name='SDMA' value='CY_SD_HOST_DMA_SDMA' visible='true' />
+      <Entry name='ADMA2' value='CY_SD_HOST_DMA_ADMA2' visible='true' />
+      <Entry name='ADMA2-ADMA3' value='CY_SD_HOST_DMA_ADMA2_ADMA3' visible='true' />
+    </ParamChoice>
+    <ParamRange id='InstNumber' name='Instance Number' group='General' default='`${getInstNumber("sdhc")}`' min='0' max='1' resolution='1' visible='false' editable='false' desc='This parameter specifies Instance Number.' />
+    <ParamBool id='enableLedControl' name='LED Control' group='General' default='false' visible='`${(InstNumber eq 1)}`' editable='true' desc='If enabled the SD clock controls one IO which is used to indicate when card is being accessed.' />
+    <ParamChoice id='busWidth' name='Bus Width' group='General' default='CY_SD_HOST_BUS_WIDTH_4_BIT' visible='true' editable='true' desc='The desired bus width.' >
+      <Entry name='1-bit' value='CY_SD_HOST_BUS_WIDTH_1_BIT' visible='true' />
+      <Entry name='4-bit' value='CY_SD_HOST_BUS_WIDTH_4_BIT' visible='true' />
+      <Entry name='8-bit' value='CY_SD_HOST_BUS_WIDTH_8_BIT' visible='`${(cardType eq emmc) &amp;&amp; (InstNumber eq 1)}`' />
+    </ParamChoice>
+    <ParamBool id='lowVoltageSignaling' name='Enable Low Voltage Signaling' group='General' default='false' visible='`${hasVisibleOption("io_volt_sel[0]")}`' editable='true' desc='If enabled then the host supports the 1.8V signaling.' />
+
+    <!--Inputs/Outputs-->
+    <ParamSignal port='clk_card[0]' name='CLK' group='Inputs' visible='true' desc='The card clock pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='clkPin' name='clkPin' group='Internal' default='`${getBlockFromSignal("clk_card[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_cmd[0]' name='CMD' group='Inputs' visible='true' desc='The command/response pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='cmdPin' name='cmdPin' group='Internal' default='`${getBlockFromSignal("card_cmd[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_3to0[0]' name='DAT0' group='Inputs' visible='true' desc='The Data line [Bit 0] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data0Pin' name='data0Pin' group='Internal' default='`${getBlockFromSignal("card_dat_3to0[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_3to0[1]' name='DAT1' group='Inputs' visible='`${(busWidth ne CY_SD_HOST_BUS_WIDTH_1_BIT)}`' desc='The Data line [Bit 1] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data1Pin' name='data1Pin' group='Internal' default='`${getBlockFromSignal("card_dat_3to0[1]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_3to0[2]' name='DAT2' group='Inputs' visible='`${(busWidth ne CY_SD_HOST_BUS_WIDTH_1_BIT)}`' desc='The Data line [Bit 2] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data2Pin' name='data2Pin' group='Internal' default='`${getBlockFromSignal("card_dat_3to0[2]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_3to0[3]' name='DAT3' group='Inputs' visible='`${(busWidth ne CY_SD_HOST_BUS_WIDTH_1_BIT)}`' desc='The Data line [Bit 3] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data3Pin' name='data3Pin' group='Internal' default='`${getBlockFromSignal("card_dat_3to0[3]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_7to4[0]' name='DAT4' group='Inputs' visible='`${(cardType eq emmc) &amp;&amp; (InstNumber eq 1) &amp;&amp; (busWidth eq CY_SD_HOST_BUS_WIDTH_8_BIT)}`' desc='The Data line [Bit 4] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data4Pin' name='data4Pin' group='Internal' default='`${getBlockFromSignal("card_dat_7to4[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_7to4[1]' name='DAT5' group='Inputs' visible='`${(cardType eq emmc) &amp;&amp; (InstNumber eq 1) &amp;&amp; (busWidth eq CY_SD_HOST_BUS_WIDTH_8_BIT)}`' desc='The Data line [Bit 5] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data5Pin' name='data5Pin' group='Internal' default='`${getBlockFromSignal("card_dat_7to4[1]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_7to4[2]' name='DAT6' group='Inputs' visible='`${(cardType eq emmc) &amp;&amp; (InstNumber eq 1) &amp;&amp; (busWidth eq CY_SD_HOST_BUS_WIDTH_8_BIT)}`' desc='The Data line [Bit 6] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data6Pin' name='data6Pin' group='Internal' default='`${getBlockFromSignal("card_dat_7to4[2]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_dat_7to4[3]' name='DAT7' group='Inputs' visible='`${(cardType eq emmc) &amp;&amp; (InstNumber eq 1) &amp;&amp; (busWidth eq CY_SD_HOST_BUS_WIDTH_8_BIT)}`' desc='The Data line [Bit 7] pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data7Pin' name='data7Pin' group='Internal' default='`${getBlockFromSignal("card_dat_7to4[3]")}`' visible='false' editable='false' desc='' />
+
+    <ParamSignal port='card_detect_n[0]' name='Card Detect' group='Inputs' visible='`${hasVisibleOption("card_detect_n[0]")}`' desc='The card detect pin. Note: You can use any GPIO custom pin for Card Detect. Add the SD Host driver Cy_SD_Host_IsCardConnected() function with the __WEAK type to your code. This function could read the value from any GPIO pin and return true when the card is connected. For more information see the Cy_SD_Host_IsCardConnected() function description.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_HIGHZ' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_HIGHZ' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='cardDetectPin' name='cardDetectPin' group='Internal' default='`${getBlockFromSignal("card_detect_n[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_emmc_reset_n[0]' name='eMMC Reset' group='Inputs' visible='`${(cardType eq emmc) &amp;&amp; (InstNumber eq 1)}`' desc='The eMMC reset pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='emmcRstPin' name='emmcRstPin' group='Internal' default='`${getBlockFromSignal("card_emmc_reset_n[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='led_ctrl[0]' name='Led Control' group='Inputs' visible='`${enableLedControl}`' desc='The LED control pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='ledCtrlPin' name='ledCtrlPin' group='Internal' default='`${getBlockFromSignal("led_ctrl[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_mech_write_prot[0]' name='Card Mechanical Write Protect' group='Inputs' visible='`${hasVisibleOption("card_mech_write_prot[0]")}`' desc='The card mechanical write protect pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_HIGHZ' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_HIGHZ' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='cardMechWriteProtPin' name='cardMechWriteProtPin' group='Internal' default='`${getBlockFromSignal("card_mech_write_prot[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='card_if_pwr_en[0]' name='Card if Power Enabled' group='Inputs' visible='`${hasVisibleOption("card_if_pwr_en[0]")}`' desc='The card if power enabled pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='cardPwrEnPin' name='cardPwrEnPin' group='Internal' default='`${getBlockFromSignal("card_if_pwr_en[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='io_volt_sel[0]' name='IO Volt Select' group='Inputs' visible='`${hasVisibleOption("io_volt_sel[0]")}`' desc='The io volt select pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='ioVolSelPin' name='ioVolSelPin' group='Internal' default='`${getBlockFromSignal("io_volt_sel[0]")}`' visible='false' editable='false' desc='' />
+
+    <ParamBool id='inFlash' name='Store Config in Flash' group='Advanced' default='true' visible='true' editable='true' desc='Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false).' />
+  </Parameters>
+
+  <DRCs>
+    <!--Timing DRCs-->
+    <DRC type='INFO' text='To correctly set the bus speed, CLK_HF must be set to 100 MHz if the compatibility with the Capabilities register is required.' condition='`${sourceFreq ne 100000000}`' />
+
+    <!--busWidth DRCs-->
+    <DRC type='ERROR' text='Only eMMC supports 8 bits bus width.' condition='`${(cardType ne emmc) &amp;&amp; (busWidth eq CY_SD_HOST_BUS_WIDTH_8_BIT) ? true : false}`' />
+
+    <!-- ACLK Divider -->
+        <DRC type='ERROR' text='To achieve 50 percent duty cycle a minimum of divide by 2 of assigned divider is required.' condition='`${hasExposedMember(sourceClock, "divider") &amp;&amp; getExposedMember(sourceClock, "divider") == 1}`' />
+
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' include='true' />
+    <ConfigInclude value='cy_sd_host.h' include='true' />
+    <ConfigInclude value='mtb_hal.h' include='true' guard='defined (COMPONENT_MTB_HAL)' />
+    <ConfigInclude value='cycfg_peripheral_clocks.h' include='true' guard='defined (COMPONENT_MTB_HAL)' />
+    <ConfigInclude value='mtb_hal_hw_types.h' include='true' guard='defined (COMPONENT_MTB_HAL)' />
+    <ConfigInclude value='mtb_hal_clock.h' include='true' guard='defined (COMPONENT_MTB_HAL)' />
+
+    <ConfigDefine name='`${INST_NAME . "_HW"}`' value='SDHC`${InstNumber}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_IRQ' value='sdhc_`${InstNumber}`_interrupt_general_IRQn' public='true' include='true' />
+    <ConfigVariable name='`${INST_NAME . "_cardCapacity"}`' type='cy_en_sd_host_card_capacity_t' const='false' value='CY_SD_HOST_SDSC' public='true' include='true'  />
+    <ConfigVariable name='`${INST_NAME . "_cardType"}`' type='cy_en_sd_host_card_type_t' const='false' value='`${(cardType eq emmc) ? "CY_SD_HOST_EMMC" : "CY_SD_HOST_NOT_EMMC"}`' public='true' include='true'  />
+    <ConfigVariable name='`${INST_NAME . "_rca"}`' type='uint32_t' const='false' value='0u' public='true' include='true'  />
+
+    <ConfigStruct name='`${INST_NAME . "_config"}`' type='cy_stc_sd_host_init_config_t' const='`${inFlash}`' public='true' include='true' >
+      <Member name='emmc' value='`${(cardType eq emmc) ? "true" : "false"}`' />
+      <Member name='dmaType' value='`${dmaType}`' />
+      <Member name='enableLedControl' value='`${enableLedControl ? "true" : "false"}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME . "_card_cfg"}`' type='cy_stc_sd_host_sd_card_config_t' const='false' public='true' include='true' >
+      <Member name='lowVoltageSignaling' value='`${lowVoltageSignaling ? "true" : "false"}`' />
+      <Member name='busWidth' value='`${busWidth}`' />
+      <Member name='cardType' value='&amp;`${INST_NAME . "_cardType"}`' />
+      <Member name='rca' value='&amp;`${INST_NAME . "_rca"}`' />
+      <Member name='cardCapacity' value='&amp;`${INST_NAME . "_cardCapacity"}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_clock_ref' type='mtb_hal_peri_div_t' const='`${inFlash}`' public='true' include='`${!hasExposedMember(sourceClock, "clockInst")}`' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_SDHC)'>
+      <Member name='clk_dst' value='(en_clk_dst_t)`${toUpper(getExposedMember(sourceClock, "instName"))}`_GRP_NUM' />
+      <Member name='div_type' value='`${getExposedMember(sourceClock, "instName")}`_HW' />
+      <Member name='div_num' value='`${getExposedMember(sourceClock, "instName")}`_NUM' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_clock_ref' type='mtb_hal_hf_clock_t' const='`${inFlash}`' public='true' include='`${hasExposedMember(sourceClock, "clockInst")}`' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_SDHC)'>
+        <Member name='inst_num' value='`${getExposedMember(sourceClock, "clockInst")}`U' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_hal_clock' type='mtb_hal_clock_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_SDHC)'>
+      <Member name='clock_ref' value='&amp;`${INST_NAME}`_clock_ref' />
+      <Member name='interface' value='&amp;mtb_hal_clock_peri_interface' include='`${!hasExposedMember(sourceClock, "clockInst")}`' />
+      <Member name='interface' value='&amp;mtb_hal_clock_hf_interface' include='`${hasExposedMember(sourceClock, "clockInst")}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_sdhc_hal_config' type='mtb_hal_sdhc_configurator_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_SDHC)'>
+      <Member name='base' value='`${INST_NAME}`_HW' />
+      <Member name='host_config' value='&amp;`${INST_NAME}`_config' />
+      <Member name='card_config' value='&amp;`${INST_NAME}`_card_cfg' />
+      <Member name='clock' value='&amp;`${INST_NAME}`_hal_clock' />
+      <Member name='gpios' value='{.clk = { .pin_num = `${clkPin &amp;&amp; hasExposedMember(clkPin, "pinNum") ? getExposedMember(clkPin, "pinNum") : "NC"}`, .port_num = `${clkPin &amp;&amp; hasExposedMember(clkPin, "portNum") ? getExposedMember(clkPin, "portNum") : "NC"}`},
+.cmd = { .pin_num = `${cmdPin &amp;&amp; hasExposedMember(cmdPin, "pinNum") ? getExposedMember(cmdPin, "pinNum") : "NC"}`, .port_num = `${cmdPin &amp;&amp; hasExposedMember(cmdPin, "portNum") ? getExposedMember(cmdPin, "portNum") : "NC"}`},
+.data = {{ .pin_num = `${data0Pin &amp;&amp; hasExposedMember(data0Pin, "pinNum") ? getExposedMember(data0Pin, "pinNum") : "NC"}`, .port_num = `${data0Pin &amp;&amp; hasExposedMember(data0Pin, "portNum") ? getExposedMember(data0Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data1Pin &amp;&amp; hasExposedMember(data1Pin, "pinNum") ? getExposedMember(data1Pin, "pinNum") : "NC"}`, .port_num = `${data1Pin &amp;&amp; hasExposedMember(data1Pin, "portNum") ? getExposedMember(data1Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data2Pin &amp;&amp; hasExposedMember(data2Pin, "pinNum") ? getExposedMember(data2Pin, "pinNum") : "NC"}`, .port_num = `${data2Pin &amp;&amp; hasExposedMember(data2Pin, "portNum") ? getExposedMember(data2Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data3Pin &amp;&amp; hasExposedMember(data3Pin, "pinNum") ? getExposedMember(data3Pin, "pinNum") : "NC"}`, .port_num = `${data3Pin &amp;&amp; hasExposedMember(data3Pin, "portNum") ? getExposedMember(data3Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data4Pin &amp;&amp; hasExposedMember(data4Pin, "pinNum") ? getExposedMember(data4Pin, "pinNum") : "NC"}`, .port_num = `${data4Pin &amp;&amp; hasExposedMember(data4Pin, "portNum") ? getExposedMember(data4Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data5Pin &amp;&amp; hasExposedMember(data5Pin, "pinNum") ? getExposedMember(data5Pin, "pinNum") : "NC"}`, .port_num = `${data5Pin &amp;&amp; hasExposedMember(data5Pin, "portNum") ? getExposedMember(data5Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data6Pin &amp;&amp; hasExposedMember(data6Pin, "pinNum") ? getExposedMember(data6Pin, "pinNum") : "NC"}`, .port_num = `${data6Pin &amp;&amp; hasExposedMember(data6Pin, "portNum") ? getExposedMember(data6Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data7Pin &amp;&amp; hasExposedMember(data7Pin, "pinNum") ? getExposedMember(data7Pin, "pinNum") : "NC"}`, .port_num = `${data7Pin &amp;&amp; hasExposedMember(data7Pin, "portNum") ? getExposedMember(data7Pin, "portNum") : "NC"}`}}}' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_sdio_hal_config' type='mtb_hal_sdio_configurator_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_SDIO)'>
+      <Member name='base' value='`${INST_NAME}`_HW' />
+      <Member name='host_config' value='&amp;`${INST_NAME}`_config' />
+      <Member name='clock' value='&amp;`${INST_NAME}`_hal_clock' />
+      <Member name='gpios' value='{.clk = { .pin_num = `${clkPin &amp;&amp; hasExposedMember(clkPin, "pinNum") ? getExposedMember(clkPin, "pinNum") : "NC"}`, .port_num = `${clkPin &amp;&amp; hasExposedMember(clkPin, "portNum") ? getExposedMember(clkPin, "portNum") : "NC"}`},
+.cmd = { .pin_num = `${cmdPin &amp;&amp; hasExposedMember(cmdPin, "pinNum") ? getExposedMember(cmdPin, "pinNum") : "NC"}`, .port_num = `${cmdPin &amp;&amp; hasExposedMember(cmdPin, "portNum") ? getExposedMember(cmdPin, "portNum") : "NC"}`},
+.data = {{ .pin_num = `${data0Pin &amp;&amp; hasExposedMember(data0Pin, "pinNum") ? getExposedMember(data0Pin, "pinNum") : "NC"}`, .port_num = `${data0Pin &amp;&amp; hasExposedMember(data0Pin, "portNum") ? getExposedMember(data0Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data1Pin &amp;&amp; hasExposedMember(data1Pin, "pinNum") ? getExposedMember(data1Pin, "pinNum") : "NC"}`, .port_num = `${data1Pin &amp;&amp; hasExposedMember(data1Pin, "portNum") ? getExposedMember(data1Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data2Pin &amp;&amp; hasExposedMember(data2Pin, "pinNum") ? getExposedMember(data2Pin, "pinNum") : "NC"}`, .port_num = `${data2Pin &amp;&amp; hasExposedMember(data2Pin, "portNum") ? getExposedMember(data2Pin, "portNum") : "NC"}`},
+{ .pin_num = `${data3Pin &amp;&amp; hasExposedMember(data3Pin, "pinNum") ? getExposedMember(data3Pin, "pinNum") : "NC"}`, .port_num = `${data3Pin &amp;&amp; hasExposedMember(data3Pin, "portNum") ? getExposedMember(data3Pin, "portNum") : "NC"}`}}}' />
+    </ConfigStruct>
+
+    <ConfigInstruction value='Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SDHC`${InstNumber}`_PERI_NR, CY_MMIO_SDHC`${InstNumber}`_GROUP_NR, CY_MMIO_SDHC`${InstNumber}`_SLAVE_NR, CY_MMIO_SDHC`${InstNumber}`_CLK_HF_NR);' include='true' guard='defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)' />
+    <ConfigInstruction purpose='INITIALIZE' value='Cy_SysClk_PeriPclkAssignDivider(PCLK_SDHC`${InstNumber}`_CLK_HF, `${getExposedMember(sourceClock, "clockSel")}`);' include='`${(ip_version &gt; 1)}`'  />
+  </ConfigFirmware>
+</Personality>

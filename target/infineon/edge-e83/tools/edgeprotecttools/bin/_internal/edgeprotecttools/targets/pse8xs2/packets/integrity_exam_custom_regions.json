@@ -1,0 +1,70 @@
+{
+  "regions": [
+    {
+      "description": "CM33_L1_BOOT_POLICY",
+      "region": [["0x12001000", "256"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "MAIN_NVM available for the user. Its base address and size is dynamic and depends on device secure category and CM33_L1_BOOT version programmed.",
+      "label": "USER_NVM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "SECURE_HASH_LIST",
+      "region": [["0x1382D144", "128"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "Backup Production REPROVISIONING_POLICY",
+      "region": [["0x1382D2F0", "128"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "Development OEM_ROT_KEY",
+      "region": [["0x1382D390", "69"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "OEM_POLICY",
+      "region": [["0x1382D3D5", "88"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "Development REPROVISIONING_POLICY",
+      "region": [["0x1382D42D", "36"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "OEM_User_Certificate",
+      "region": [["0x13C2BBCB", "5120"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "Production OEM_ROT_KEY0, Production OEM_ROT_KEY1",
+      "region": [["0x50100334", "156"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "Production REPROVISIONING_POLICY",
+      "region": [["0x501006D0", "36"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    },
+    {
+      "description": "GENERAL_OTP",
+      "region": [["0x52204000", "5632"]],
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "enabled": true
+    }
+  ]
+}

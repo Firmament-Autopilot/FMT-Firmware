@@ -1,0 +1,63 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Protected FW Policy Schema",
+    "type": "object",
+    "required": [
+        "policy",
+        "interface",
+        "iv"
+    ],
+    "properties": {
+        "policy": {
+            "type": "object",
+            "required": [
+                "platform",
+                "version",
+                "type"
+            ],
+            "properties": {
+                "platform": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "number",
+                    "minimum": 1.0,
+                    "maximum": 99.99
+                },
+                "type": {
+                    "type": "string",
+                    "const": "prot_fw_dfu"
+                }
+            }
+        },
+        "interface": {
+            "type":"object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "enum": [
+                        "uart",
+                        "i2c",
+                        "spi"
+                    ]
+                }
+            }
+        },
+        "iv": {
+            "type":"object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                }
+            }
+        }
+    }
+}

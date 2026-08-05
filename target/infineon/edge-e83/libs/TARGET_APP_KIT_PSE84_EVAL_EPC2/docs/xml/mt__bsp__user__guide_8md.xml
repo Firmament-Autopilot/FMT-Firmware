@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="mt__bsp__user__guide_8md" kind="file" language="Markdown">
+    <compoundname>mt_bsp_user_guide.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>ModusToolbox™<sp/>Board<sp/>Support<sp/>Package<sp/>(BSP)<sp/>Overview</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Introduction</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">A<sp/>Board<sp/>Support<sp/>Package<sp/>(BSP)<sp/>provides<sp/>a<sp/>standard<sp/>interface<sp/>to<sp/>a<sp/>board&apos;s<sp/>features<sp/>and<sp/>capabilities.<sp/>The<sp/>API<sp/>is</highlight></codeline>
+<codeline><highlight class="normal">consistent<sp/>across<sp/>kits.<sp/>Other<sp/>software<sp/>(such<sp/>as<sp/>middleware<sp/>or<sp/>the<sp/>user<sp/>application)<sp/>can<sp/>use<sp/>the<sp/>BSP<sp/>to<sp/>configure</highlight></codeline>
+<codeline><highlight class="normal">and<sp/>control<sp/>the<sp/>hardware.<sp/>BSPs<sp/>have<sp/>the<sp/>following<sp/>characteristics:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">-<sp/>BSPs<sp/>initialize<sp/>device<sp/>resources,<sp/>such<sp/>as<sp/>clocks<sp/>and<sp/>power<sp/>supplies<sp/>to<sp/>set<sp/>up<sp/>the</highlight></codeline>
+<codeline><highlight class="normal">device<sp/>to<sp/>run<sp/>firmware.</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>BSPs<sp/>contain<sp/>linker<sp/>scripts<sp/>and<sp/>startup<sp/>code<sp/>so<sp/>you<sp/>can<sp/>customize<sp/>them<sp/>for<sp/>your<sp/>board.</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>BSPs<sp/>contain<sp/>the<sp/>hardware<sp/>configuration<sp/>(structures<sp/>and<sp/>macros)<sp/>for<sp/>both<sp/>device</highlight></codeline>
+<codeline><highlight class="normal">peripherals<sp/>and<sp/>board<sp/>peripherals.</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>BSPs<sp/>provide<sp/>abstraction<sp/>to<sp/>the<sp/>board<sp/>by<sp/>providing<sp/>common<sp/>aliases<sp/>or<sp/>names<sp/>to<sp/>refer</highlight></codeline>
+<codeline><highlight class="normal">to<sp/>the<sp/>board<sp/>peripherals,<sp/>such<sp/>as<sp/>buttons<sp/>and<sp/>LEDs.</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>BSPs<sp/>include<sp/>the<sp/>libraries<sp/>for<sp/>the<sp/>default<sp/>capabilities<sp/>on<sp/>the<sp/>board.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">For<sp/>a<sp/>complete<sp/>description<sp/>of<sp/>what<sp/>the<sp/>BSP<sp/>provides<sp/>and<sp/>how<sp/>it<sp/>is<sp/>used<sp/>within<sp/>ModusToolbox™,<sp/>see<sp/>the</highlight></codeline>
+<codeline><highlight class="normal">[ModusToolbox™<sp/>User<sp/>Guide](https://documentation.infineon.com/modustoolbox/docs/zhf1731521206417)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Quick<sp/>Start<sp/>with<sp/>BSPs</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">This<sp/>section<sp/>provides<sp/>a<sp/>high-level<sp/>view<sp/>for<sp/>using<sp/>BSPs.<sp/>You<sp/>should<sp/>be<sp/>familiar<sp/>with<sp/>creating<sp/>an<sp/>application<sp/>using<sp/>the</highlight></codeline>
+<codeline><highlight class="normal">ModusToolbox™<sp/>Project<sp/>Creator<sp/>tool.<sp/>To<sp/>use<sp/>a<sp/>BSP<sp/>for<sp/>a<sp/>kit<sp/>you<sp/>need<sp/>to<sp/>perform<sp/>the<sp/>following<sp/>steps:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">1.<sp/>Get<sp/>a<sp/>BSP<sp/>using<sp/>one<sp/>of<sp/>the<sp/>following<sp/>methods:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>-<sp/>Create<sp/>an<sp/>application<sp/>with<sp/>the<sp/>Project<sp/>Creation<sp/>tool<sp/>included<sp/>with<sp/>the<sp/>ModusToolbox™<sp/>software<sp/>installer</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>(`&lt;<sp/>ModusToolbox™<sp/>install&gt;/tools_x.y/project-creator`).<sp/>This<sp/>tool<sp/>can<sp/>also<sp/>be<sp/>launched<sp/>from<sp/>the<sp/>Eclipse<sp/>IDE</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>for<sp/>ModusToolbox™.<sp/>The<sp/>tool<sp/>fetches<sp/>the<sp/>BSP<sp/>for<sp/>the<sp/>kit<sp/>that<sp/>you<sp/>selected,<sp/>and<sp/>places<sp/>it<sp/>in<sp/>the<sp/>`bsps`directory.<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>-<sp/>In<sp/>an<sp/>existing<sp/>application,<sp/>use<sp/>the<sp/>Library<sp/>Manager<sp/>tool<sp/>to<sp/>fetch<sp/>the<sp/>required<sp/>BSP.<sp/>This<sp/>tool<sp/>is<sp/>located<sp/>in</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>`&lt;<sp/>ModusToolbox™<sp/>install<sp/>&gt;/tools_x.y/library-manager`.<sp/>You<sp/>can<sp/>also<sp/>launch<sp/>it<sp/>from<sp/>within<sp/>the<sp/>Eclipse<sp/>IDE<sp/>for</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>ModusToolbox™.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">2.<sp/>Add<sp/>`#include<sp/>&quot;cybsp.h&quot;`<sp/>to<sp/>your<sp/>*main.c*<sp/>file.</highlight></codeline>
+<codeline><highlight class="normal">3.<sp/>Add<sp/>`cybsp_init()`<sp/>at<sp/>the<sp/>start<sp/>of<sp/>`main()`.</highlight></codeline>
+<codeline><highlight class="normal">4.<sp/>Refer<sp/>to<sp/>the<sp/>API<sp/>documentation<sp/>available<sp/>inside<sp/>that<sp/>BSP<sp/>`docs`<sp/>directory<sp/>to<sp/>learn<sp/>more.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>References</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">-<sp/>[ModusToolbox™<sp/>Software](https://www.infineon.com/cms/en/design-support/tools/sdk/modustoolbox-software/)</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>[ModusToolbox™<sp/>User<sp/>Guide](https://documentation.infineon.com/modustoolbox/docs/zhf1731521206417)</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>[Cypress<sp/>Semiconductor,<sp/>an<sp/>Infineon<sp/>Technologies<sp/>Company](http://www.cypress.com)</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>[Infineon<sp/>GitHub](https://github.com/Infineon)</highlight></codeline>
+    </programlisting>
+    <location file="ci/src/docs/mt_bsp_user_guide.md"/>
+  </compounddef>
+</doxygen>

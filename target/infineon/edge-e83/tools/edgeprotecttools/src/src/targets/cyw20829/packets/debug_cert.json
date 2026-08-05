@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0.0",
+  "device_id": {
+    "silicon_id": "0xEB4C",
+    "family_id": "0x110",
+    "revision_id": "0x22"
+  },
+  "control_word": {
+    "cm33_ap": "Enable",
+    "cm33_dbg": "Enable",
+    "cm33_nid": "Enable",
+    "sys_ap": "Enable",
+    "rma": "Enable"
+  },
+  "die_id": {
+    "max": {
+      "day": 255,
+      "lot": 16777215,
+      "month": 255,
+      "wafer": 255,
+      "xpos": 255,
+      "year": 255,
+      "ypos": 255,
+      "sort": 255
+    },
+    "min": {
+      "day": 0,
+      "lot": 0,
+      "month": 0,
+      "wafer": 0,
+      "xpos": 0,
+      "year": 0,
+      "ypos": 0,
+      "sort": 0
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "hash command example",
+            "description": "Calculates hash of a file",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hash",
+                    "inputs": [
+                        {
+                            "description": "Calculate hash of binary file",
+                            "file": "output.bin",
+                            "algorithm": "SHA256"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "Output binary or text file",
+                            "file": "hash.txt",
+                            "format": "txt"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns="http://cypress.com/xsd/cystudioview_v1">
+  <Parameters>
+    <Param name="PERFORM_CODEGEN_IN_EVAL_ORDER" value="" />
+  </Parameters>
+  <ExposedParameterKeys>
+    <ExposedParamKey id="CPU_MAX_MHZ" param_name="Speed_MHz" />
+    <ExposedParamKey id="POWER_MODES" param_name="Power_Modes" />
+    <ExposedParamKey id="SAR_SAMPLE_RATE" param_name="SAR12Sample_ksps" />
+    <ExposedParamKey id="VDD_MIN" param_name="Vddmin_volts" />
+    <ExposedParamKey id="VDD_MAX" param_name="Vddmax_volts" />
+    <ExposedParamKey id="SECURITY" param_name="Security" />
+  </ExposedParameterKeys>
+  <Connectivity location="connectivity" />
+  <Wounding location="chipresourcewoundings.xml" />
+  <PinResourceType value="ioss[0].port[%1$d].pin[%2$d]" />
+  <TrigMuxConnectTemplate value="Cy_TrigMux_Connect(${CyMarkIn}, ${CyMarkOut}, false, ${CyMarkType});" />
+  <TrigMuxSelectTemplate value="Cy_TrigMux_Select(${CyMarkOut}, false, ${CyMarkType});" />
+  <Profiles>
+    <Profile displayName="Software" fileName="software" description="Software configuration" evalPriority="0" displayPriority="10" resources="features\[\d+\].*" />
+    <Profile purpose="MEMORY" displayName="Memory" fileName="memory" description="Memory configuration" evalPriority="1" displayPriority="8" resources="vres\[\d+\]\.memory_region_data\[\d+\].*" />
+    <Profile diagramType="CLOCKS" displayName="Clocks" fileName="clocks" description="Clock configuration" evalPriority="2" displayPriority="6" resources="srss\[\d+\]\.(clock|rtc)\[\d+\].*|wco\[\d+\].*|exco\[\d+\].*|(cpuss|m33syscpuss|m55appcpuss|m0seccpuss)\[\d+\]\.systick.*" />
+    <Profile diagramType="CLOCKS" displayName="Clocks" fileName="peripheral_clocks" description="Peripheral clock divider configuration" evalPriority="3" displayPriority="6" resources="peri\[\d+\].+" />
+    <Profile displayName="System" fileName="system" description="System configuration" evalPriority="4" displayPriority="7" resources="power\[\d+\].*|srss\[\d+\]\.(power|pd|eeprom)\[\d+\].*|(cpuss|m33syscpuss)\[\d+\]\.dap\[\d+\].*|debug600\[\d+\].*" />
+    <Profile displayName="System" fileName="system" description="System configuration" evalPriority="9" displayPriority="7" resources="vres\[\d+\]\.(security|protection)\[\d+\].*" />
+    <Profile displayName="System" fileName="system" description="System configuration" evalPriority="13" displayPriority="7" resources=".*\.(cm33|cm55|sau|mpu_s|mpu_ns)\[\d+\]|.*\.mpc\[\d+\]|peri\[\d+\]" />
+    <Profile displayName="DMA" fileName="dmas" description="DMA configuration" evalPriority="5" displayPriority="9" resources=".*(dw|dmac|axidmac|axi_dmac|mxdw|mxahbdmac)\d?\[\d+\].*" />
+    <Profile2 purpose="ANALOG" displayName="Analog" diagramType="ANALOG" fileName="peripherals" description="Analog configuration" evalPriority="6" displayPriority="3" resources="(pass|lppass|msc|msclp|csd|lpcomp|pmu|vadc|dac)\[\d+\].*">
+      <Diagrams>
+        <Diagram type="Component-CTB-0" resources="pass\[\d+\]\.ctb\[0\]" />
+        <Diagram type="Component-CTB-1" resources="pass\[\d+\]\.ctb\[1\]" />
+        <Diagram type="Component-OA-0-0" resources="pass\[\d+\]\.ctb\[0]\.oa\[0]" />
+        <Diagram type="Component-OA-0-0-DynamicConfig" resources="pass\[\d+\]\.ctb\[0]\.oa\[0\]\.ctb_dynamic\[\d+\]" />
+        <Diagram type="Component-OA-0-1" resources="pass\[\d+\]\.ctb\[0\]\.oa\[1\]" />
+        <Diagram type="Component-OA-0-1-DynamicConfig" resources="pass\[\d+\]\.ctb\[0]\.oa\[1\]\.ctb_dynamic\[\d+\]" />
+        <Diagram type="Component-OA-1-0" resources="pass\[\d+\]\.ctb\[1\]\.oa\[0\]" />
+        <Diagram type="Component-OA-1-0-DynamicConfig" resources="pass\[\d+\]\.ctb\[1]\.oa\[0\]\.ctb_dynamic\[\d+\]" />
+        <Diagram type="Component-OA-1-1" resources="pass\[\d+\]\.ctb\[1\]\.oa\[1\]" />
+        <Diagram type="Component-OA-1-1-DynamicConfig" resources="pass\[\d+\]\.ctb\[1]\.oa\[1\]\.ctb_dynamic\[\d+\]" />
+        <Diagram type="Component-DAC-0" resources="pass\[\d+\]\.dac\[0\].*" />
+        <Diagram type="Component-DAC-1" resources="pass\[\d+\]\.dac\[1\].*" />
+        <Diagram type="Component-PTCOMP" resources="pass\[\d+\]\.ptc\[\d+\].*" />
+        <Diagram type="Component-PTCOMP-DynamicConfig" resources="pass\[\d+\]\.ptc\[\d+\]\.ptc_dynamic\[\d+\]" />
+        <Diagram type="Component-SARADC" resources="pass\[\d+\]\.sar\[\d+\].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-0" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[0].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-1" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[1].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-2" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[2].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-3" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[3].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-4" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[4].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-5" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[5].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-6" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[6].*" />
+        <Diagram type="Component-SARADC-GPIO-Channel-7" resources="pass\[\d+\]\.sar\[\d+\]\.gpiochan\[7].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-0" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[0].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-1" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[1].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-2" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[2].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-3" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[3].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-4" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[4].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-5" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[5].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-6" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[6].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-7" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[7].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-8" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[8].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-9" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[9].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-10" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[10].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-11" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[11].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-12" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[12].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-13" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[13].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-14" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[14].*" />
+        <Diagram type="Component-SARADC-MUX-Channel-15" resources="pass\[\d+\]\.sar\[\d+\]\.muxchan\[15].*" />
+        <Diagram type="Component-STT" resources="pass\[\d+\]\.ac\[\d+\]\.state\[\d+\].*" />
+        <Diagram type="Component-PRB" resources="pass\[\d+\]\.prb\[\d+\].*" />
+      </Diagrams>
+    </Profile2>
+    <Profile diagramType="PACKAGE" displayName="Pins" fileName="pins" description="Pin configuration" evalPriority="8" displayPriority="4" resources="(ioss|iocl)\[\d+\].*" />
+    <Profile displayName="Connectivity" fileName="connectivity_wifi" description="Connectivity Wi-Fi configuration" evalPriority="11" displayPriority="5" resources="wifi(\[\d+\]).*" />
+    <Profile displayName="Connectivity" fileName="connectivity_bt" description="Connectivity BT configuration" evalPriority="11" displayPriority="5" resources="bt(\[\d+\]).*" />
+    <Profile displayName="Connectivity" fileName="connectivity_coex" description="Connectivity Coex configuration" evalPriority="11" displayPriority="5" resources="coex(\[\d+\]).*" />
+    <Profile purpose="MEMORY" displayName="Memory" fileName="memory" description="Memory configuration" evalPriority="12" displayPriority="8" resources="vres\[\d+\]\.(reserved_memory_region|memory)\[\d+\].*" />
+    <Profile displayName="Solutions" fileName="solutions" description="Solution configuration" evalPriority="10" displayPriority="1" resources="vres\[\d+\].*" />
+    <Profile displayName="Peripherals" fileName="peripherals" description="Peripheral Hardware Block configuration" evalPriority="7" displayPriority="2" resources=".*" />
+    <Profile purpose="ROUTING" diagramType="ANALOG" displayName="Analog-Routing" fileName="routing" description="Establishes all necessary connections between hardware elements." evalPriority="6" displayPriority="3" resources="NONE">
+      <Includes>
+        <Include value="cy_trigmux.h" public="false" />
+        <Include value="stdbool.h" public="false" />
+        <Include value="cy_device_headers.h" public="false" />
+      </Includes>
+    </Profile>
+  </Profiles>
+</View>

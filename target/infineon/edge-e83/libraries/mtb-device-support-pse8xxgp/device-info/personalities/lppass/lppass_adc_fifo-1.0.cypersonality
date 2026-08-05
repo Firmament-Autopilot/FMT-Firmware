@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_adc_fifo-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* SAR ADC FIFO personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_adc_fifo' name='SAR ADC FIFO' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.sar\.fifo'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='numFifos'                paramId='numFifos'/>
+    <ExposedMember key='numberOfFifosChoice'     paramId='numberOfFifosChoice'/>
+    <ExposedMember key='fifo$idxLevelDetect'     paramId='fifo$idxLevelDetect'    repeatCount='8'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "]"}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamChoice id='numberOfFifosChoice'
+                 name='Number of FIFOs'
+                 group='FIFO Configuration'
+                 visible='true'
+                 editable='true'
+                 desc='Number of FIFOs'
+                                       default='CY_AUTANALOG_FIFO_SPLIT2'>
+      <Entry name='One (512-Entry)'  value='CY_AUTANALOG_FIFO_SPLIT1' visible='true'/>
+      <Entry name='Two (256-Entry)'  value='CY_AUTANALOG_FIFO_SPLIT2' visible='true'/>
+      <Entry name='Four (128-Entry)' value='CY_AUTANALOG_FIFO_SPLIT4' visible='true'/>
+      <Entry name='Eight (64-Entry)' value='CY_AUTANALOG_FIFO_SPLIT8' visible='true'/>
+    </ParamChoice>
+
+    <ParamRange id='numFifos'
+                name='Internal Num Fifos'
+                group='Internal'
+                min='1'
+                max='8'
+                resolution='1'
+                visible='`${debug}`'
+                editable='false'
+                desc=''
+                default='`${(numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT1 ? 1 :
+                         (numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT2 ? 2 :
+                         (numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT4 ? 4 : 8)))}`'/>
+
+    <ParamRange id='fifoLevelDetectSplit1'
+                name='FIFO Level Detect'
+                group='FIFO Configuration'
+                min='1'
+                max='512'
+                resolution='1'
+                visible='`${numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT1}`'
+                editable='true'
+                desc='Generates a trigger/interrupt when FIFO usage exceeds this value. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                default='512'/>
+
+    <Repeat count='2'>
+      <ParamRange id='fifo$idxLevelDetectSplit2'
+                  name='FIFO$idx Level Detect'
+                  group='FIFO Configuration'
+                  min='1'
+                  max='256'
+                  resolution='1'
+                  visible='`${numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT2}`'
+                  editable='true'
+                  desc='Generates a trigger/interrupt when FIFO usage exceeds this value. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                  default='256'/>
+    </Repeat>
+
+    <Repeat count='4'>
+      <ParamRange id='fifo$idxLevelDetectSplit4'
+                  name='FIFO$idx Level Detect'
+                  group='FIFO Configuration'
+                  min='1'
+                  max='128'
+                  resolution='1'
+                  visible='`${numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT4}`'
+                  editable='true'
+                  desc='Generates a trigger/interrupt when FIFO usage exceeds this value. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                  default='128'/>
+    </Repeat>
+
+    <Repeat count='8'>
+      <ParamRange id='fifo$idxLevelDetectSplit8'
+                  name='FIFO$idx Level Detect'
+                  group='FIFO Configuration'
+                  min='1'
+                  max='64'
+                  resolution='1'
+                  visible='`${numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT8}`'
+                  editable='true'
+                  desc='Generates a trigger/interrupt when FIFO usage exceeds this value. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                  default='64'/>
+    </Repeat>
+
+    <Repeat count='8'>
+      <ParamRange id='fifo$idxLevelDetect'
+                  name='FIFO$idx Level Detect'
+                  group='FIFO Configuration'
+                  min='1'
+                  max='512'
+                  resolution='1'
+                  visible='false'
+                  editable='false'
+                  desc='Generates a trigger/interrupt when FIFO usage exceeds this value. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                  default='`${($idx &lt; numFifos) ? ((numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT1) ? fifoLevelDetectSplit1 : ((numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT2) ? fifo$idxLevelDetectSplit2 : ((numberOfFifosChoice eq CY_AUTANALOG_FIFO_SPLIT4) ? fifo$idxLevelDetectSplit4 : fifo$idxLevelDetectSplit8))) : 1}`'/>
+    </Repeat>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure a parent resource for ADC FIFO buffer.' condition='`${!isBlockUsed(resource_sar)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_sar}`' value='lppass_adc-1.0' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware/>
+
+</PersonalityTemplate>

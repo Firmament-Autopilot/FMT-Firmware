@@ -1,0 +1,93 @@
+from building import *
+import rtconfig
+Import('RTT_ROOT')
+
+# get current directory
+cwd = GetCurrentDir()
+src = []
+path = []
+
+# The set of source files associated with this SConscript file.
+src = Split('''
+            drivers/source/cy_sysclk_v2.c
+            drivers/source/cy_systick_v2.c
+            drivers/source/cy_gpio.c
+            drivers/source/cy_sysint_v2.c
+            drivers/source/cy_syslib.c
+            drivers/source/cy_syspm_v4.c
+            drivers/source/cy_ipc_pipe.c
+            drivers/source/cy_ipc_sema.c
+            drivers/source/cy_ipc_drv.c
+            drivers/source/cy_scb_common.c
+            drivers/source/cy_dma.c
+            drivers/source/cy_trigmux.c
+            drivers/source/cy_sysfault.c
+            ''')
+
+# Add toolchain-specific assembly files
+if rtconfig.PLATFORM in ['gcc']:
+    src += ['drivers/source/TOOLCHAIN_GCC_ARM/cy_syslib_ext.S']
+elif rtconfig.PLATFORM in ['armclang']:
+    src += ['drivers/source/TOOLCHAIN_ARM/cy_syslib_ext.S']
+
+path = [cwd + '/drivers/include', cwd + '/drivers/third_party/ethernet/include']
+
+# SOC series specific files
+if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
+    src += ['drivers/source/cy_syspm_ppu.c']
+    src += ['drivers/source/cy_syspm_pdcm.c']
+    src += ['drivers/source/cy_axidmac.c']
+    src += ['drivers/source/ppu_v1.c']
+    src += ['devices/source/cy_device.c']
+    path += [cwd + '/devices/include']
+    path += [cwd + '/devices/include/ip']
+
+# Ethernet driver
+if GetDepend('BSP_USING_ETH'):
+    src += ['drivers/source/cy_ethif.c']
+    src += ['drivers/source/cy_ephy.c']
+    src += ['drivers/third_party/ethernet/src/edd.c']
+    src += ['drivers/third_party/ethernet/src/edd_rx.c']
+    src += ['drivers/third_party/ethernet/src/edd_tx.c']
+
+# UART driver
+if GetDepend(['BSP_USING_UART']):
+    src += ['drivers/source/cy_scb_uart.c']
+
+# SPI driver
+if GetDepend('BSP_USING_SPI'):
+    src += ['drivers/source/cy_scb_spi.c']
+
+# I2C driver
+if GetDepend('BSP_USING_HW_I2C'):
+    src += ['drivers/source/cy_scb_i2c.c']
+
+# PWM driver
+if GetDepend(['BSP_USING_PWM']):
+    src += ['drivers/source/cy_tcpwm_pwm.c']
+
+# CAN driver
+if GetDepend(['BSP_USING_CAN']):
+    src += ['drivers/source/cy_canfd.c']
+
+# ADC driver
+if GetDepend('BSP_USING_ADC'):
+    src += ['drivers/source/cy_autanalog_sar.c']
+    src += ['drivers/source/cy_autanalog_ac.c']
+    src += ['drivers/source/cy_autanalog.c']
+    src += ['drivers/source/cy_autanalog_ctb.c']
+    src += ['drivers/source/cy_autanalog_dac.c']
+    src += ['drivers/source/cy_autanalog_ptc.c']
+    src += ['drivers/source/cy_systrimm.c']
+    src += ['drivers/source/cy_rram.c']
+
+# SD card driver
+if GetDepend('BSP_USING_SDCARD'):
+    src += ['drivers/source/cy_sd_host.c']
+
+# RC driver
+if GetDepend('BSP_USING_RC'):
+    src += ['drivers/source/cy_tcpwm_counter.c']
+
+group = DefineGroup('Libraries', src, depend=[''], CPPPATH=path)
+Return('group')

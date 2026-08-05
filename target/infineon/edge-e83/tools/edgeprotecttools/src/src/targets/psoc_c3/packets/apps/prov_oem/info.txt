@@ -1,0 +1,4 @@
+name: cyapp_prov_oem
+description: The application injects OEM assets and advances the device LCS from NORMAL_PROVISIONED to SECURE. The valid device LCS to launch this application is NORMAL_PROVISIONED. It is required to emulate device manufacturing flow on PSVP.
+type: Firmware application
+version: 1.0.0.4508

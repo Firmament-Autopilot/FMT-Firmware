@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<PersonalityTemplate id='protection_domain' name='Protection Domain' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <Constants>
+    <Const id='MAX_PC' value='8' />
+    <Const id='MAX_CORES' value='4' />
+    <Const id="TC_BUS_MASTER_TYPE" value="TC" />
+    <Const id="INVALID_BUS_MASTER_ID" value="-1" />
+  </Constants>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='VirtualResource' />
+      <Resource name='vres\.protection\.domain' />
+      <OperatingMode value='MCU' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='protection_domain_v1'>
+      <ExposedMember key='domainId' paramId='domainId' />
+      <ExposedMember key='displayName' paramId='displayName' />
+      <ExposedMember key='cmseAttribute' paramId='cmseAttribute' />
+      <ExposedMember key='pc$idxread' paramId='pc$idxread' repeatCount='$MAX_PC' />
+      <ExposedMember key='pc$idxwrite' paramId='pc$idxwrite' repeatCount='$MAX_PC' />
+      <ExposedMember key='pc$idxns' paramId='pc$idxns' repeatCount='$MAX_PC' />
+      <ExposedMember key='pc$idx' paramId='pc$idx' repeatCount='$MAX_PC' />
+      <!-- The PPC hardware only physically supports one "unprivileged access" bit, which it will fetch from either the secure or non-secure register based on the
+            PPC's access type setting. Both types are specified in the behavior to future-proof the interface against future more flexible hardware -->
+      <ExposedMember key='secureUnprivileged' paramId='unprivilegedAccess' />
+      <ExposedMember key='nonSecureUnprivileged' paramId='unprivilegedAccess' />
+      <ExposedMember key='coreIsAccessible$idx' paramId='coreIsAccessible$idx' repeatCount='$MAX_CORES' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+
+    <ParamDoc id='doc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/page_prot_person.html#Domain_personality' linkText='Open Domain Documentation' visible='true' desc='Open Security Documentation' />
+    <!-- Allow extra string to describe the Domain, not used internally -->
+    <ParamString id='domainDescription' name='Domain Description' default='' visible='true' editable='true' desc='Optional: Provide a detailed description of this protection domain.' />
+
+    <ParamString id='domainId' default='`${INST_ID}`' />
+    <ParamString id='displayName' default='`${INST_NAME}`' />
+
+    <ParamChoice id='cmseAttribute' name='Access' group='Top level Protection' default='NON_SECURE' visible='true' desc='Should access to this be restricted?'>
+      <Entry name='Secure' value='SECURE' visible='true' />
+      <Entry name='Non-Secure Callable' value='NON_SECURE_CALLABLE' visible='true' />
+      <Entry name='Non-Secure' value='NON_SECURE' visible='true' />
+    </ParamChoice>
+
+    <ParamBool id='unprivilegedAccess' name='Allow peripheral access in unprivileged mode' group='Peripheral Protection' default='true' visible='true' desc='Is this peripheral accessible to unprivileged callers?' />
+
+    <Repeat count='$MAX_PC'>
+      <ParamString id='pc$idxname' default='`${getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx . "\"]/@name"), "")}`' />
+      <ParamString id='pc$idxBusMaster' default='`${getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx . "\"]/@bus_master_ids"), "$INVALID_BUS_MASTER_ID")}`' />
+      <ParamBool id='pc$idx' name='PC $idx: `${pc$idxname}`' group='Peripheral Protection/Accessible by:' default='false' visible='`${(pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' desc='Can this context access peripherals in the domain?' />
+      <ParamBool id='pc$idxread' name='Allow reads' group='Memory Protection/PC $idx: `${pc$idxname}`' default='true' visible='`${pc$idx &amp;&amp; (pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' desc='Can memory in this domain be read?' />
+      <ParamBool id='pc$idxwrite' name='Allow writes' group='Memory Protection/PC $idx: `${pc$idxname}`' default='true' visible='`${pc$idx &amp;&amp; (pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' desc='Can memory in this domain be written?' />
+      <ParamBool id='pc$idxaccess' name='Secure?' group='Memory Protection/PC $idx: `${pc$idxname}`' default='`${!(cmseAttribute eq "NON_SECURE")}`' visible='`${pc$idx &amp;&amp; (pc$idxBusMaster != $INVALID_BUS_MASTER_ID)}`' editable='`${!(cmseAttribute eq "SECURE")}`' desc='Is memory in this domain secure? True indicates secure.' />
+      <ParamBool id='pc$idxns' group='Memory Protection/PC $idx: `${pc$idxname}`' default='`${pc$idxaccess eq false}`' />
+    </Repeat>
+
+    <ParamString id='read_perm' default='`${
+        (pc0read ? 1 : 0) |
+        ((pc1read ? 1 : 0) &lt;&lt; 1u) |
+        ((pc2read ? 1 : 0) &lt;&lt; 2u) |
+        ((pc3read ? 1 : 0) &lt;&lt; 3u) |
+        ((pc4read ? 1 : 0) &lt;&lt; 4u) |
+        ((pc5read ? 1 : 0) &lt;&lt; 5u) |
+        ((pc6read ? 1 : 0) &lt;&lt; 6u) |
+        ((pc7read ? 1 : 0) &lt;&lt; 7u) }`' />
+    <ParamString id='write_perm' default='`${
+        (pc0write ? 1 : 0) |
+        ((pc1write ? 1 : 0) &lt;&lt; 1u) |
+        ((pc2write ? 1 : 0) &lt;&lt; 2u) |
+        ((pc3write ? 1 : 0) &lt;&lt; 3u) |
+        ((pc4write ? 1 : 0) &lt;&lt; 4u) |
+        ((pc5write ? 1 : 0) &lt;&lt; 5u) |
+        ((pc6write ? 1 : 0) &lt;&lt; 6u) |
+        ((pc7write ? 1 : 0) &lt;&lt; 7u) }`' />
+    <ParamString id='ns_perm' default='`${
+        (pc0ns ? 1 : 0) |
+        ((pc1ns ? 1 : 0) &lt;&lt; 1u) |
+        ((pc2ns ? 1 : 0) &lt;&lt; 2u) |
+        ((pc3ns ? 1 : 0) &lt;&lt; 3u) |
+        ((pc4ns ? 1 : 0) &lt;&lt; 4u) |
+        ((pc5ns ? 1 : 0) &lt;&lt; 5u) |
+        ((pc6ns ? 1 : 0) &lt;&lt; 6u) |
+        ((pc7ns ? 1 : 0) &lt;&lt; 7u) }`' />
+
+    <Repeat count='$MAX_PC' repeatId='pcIndex' >
+      <ParamString id='pc$idx{pcIndex}busMasterValid' default='`${(pc$idx &amp;&amp;(((read_perm &amp; (0x1 &lt;&lt; $idx{pcIndex})) &gt; 0) || ((write_perm &amp; (0x1 &lt;&lt; $idx{pcIndex})) &gt; 0))) ? getOrDefault(getCustomData("/ProtectionContext[@key=\"" . $idx{pcIndex} . "\"]/@bus_master_ids"), "$INVALID_BUS_MASTER_ID") : "$INVALID_BUS_MASTER_ID"}`' />
+        <ParamString id='pc$idx{pcIndex}core' default='`${(pc$idx{pcIndex}busMasterValid != $INVALID_BUS_MASTER_ID) ? getOrDefault(getCustomData("/BusMaster[@key=\"" . pc$idx{pcIndex}busMasterValid . "\"]/@core"), getOrDefault(getCustomData("/BusMaster[@key=\"" . pc$idx{pcIndex}busMasterValid . "\"]/@type"), "NA")) : "NA"}`' />
+        <ParamString id='pc$idx{pcIndex}coreType' default='`${(pc$idx{pcIndex}core ne "NA" &amp;&amp; pc$idx{pcIndex}core ne "$TC_BUS_MASTER_TYPE") ? getCoreType(pc$idx{pcIndex}core) : "NA"}`' />
+    </Repeat>
+
+    <ParamString id='vcore_count' default='`${getVirtualCoreCount()}`' />
+    <ParamString id='vcore_names' default='`${getVirtualCoreDefineNames()}`' />
+    <Repeat count='$MAX_CORES'>
+      <ParamString id='vcoretype$idx' default='`${$idx &lt; vcore_count ? getCoreType(splitAt(vcore_names, $idx)) : ""}`' />
+        <ParamBool id='isCoreAssociated$idx' default='`${(pc0coreType eq vcoretype$idx) || (pc1coreType eq vcoretype$idx) || (pc2coreType eq vcoretype$idx) || (pc3coreType eq vcoretype$idx) || (pc4coreType eq vcoretype$idx) || (pc5coreType eq vcoretype$idx) || (pc6coreType eq vcoretype$idx) || (pc7coreType eq vcoretype$idx)}`' />
+        <ParamBool id='coreIsAccessible$idx' default='`${$idx &lt; vcore_count &amp;&amp; (isCoreAssociated$idx)}`' />
+    </Repeat>
+  </Parameters>
+</PersonalityTemplate>

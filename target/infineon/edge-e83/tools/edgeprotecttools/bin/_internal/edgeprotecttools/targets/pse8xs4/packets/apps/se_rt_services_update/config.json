@@ -1,0 +1,25 @@
+{
+  "image": {
+    "path": "cyapp_se_rts_update_signed_0.bin",
+    "address": "0x34008000"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "",
+    "optional": true
+  },
+  "dlm": {
+    "path": "cyapp_se_rts_update_dlm.hex"
+  },
+  "out_results": {
+    "path": "output.bin",
+    "offset": "0x2f000"
+  },
+  "dfu_commands": {
+    "path": "se_rts_update.mtbdfu"
+  },
+  "allowed_lcs": [
+    "NORMAL_PROVISIONED",
+    "SECURE"
+  ]
+}

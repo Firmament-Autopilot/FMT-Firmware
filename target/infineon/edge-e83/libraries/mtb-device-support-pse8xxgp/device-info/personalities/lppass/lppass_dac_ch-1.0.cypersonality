@@ -1,0 +1,479 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_dac_ch-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* CT DAC channel personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_dac_ch' name='CT DAC Channel' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <PhysicalResource ipblock='mxs22lppass' version='1'>
+    <PhysicalResource type='dac'>
+      <VirtualResourceDefinition type='dacchan'
+                                 display_name='Channel $idx'
+                                 display_path='$display_path{1}/$display_name{1}/Channels'
+                                 display_mode='DYNAMIC'
+                                 count='15'>
+        <DependentBlock type='pass.dac'/>
+      </VirtualResourceDefinition>
+    </PhysicalResource>
+  </PhysicalResource>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.dac\.dacchan'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='runMode'               paramId='runMode'/>
+    <ExposedMember key='waveformData'          paramId='waveformData'/>
+    <ExposedMember key='numberOfSamplesStored' paramId='numberOfSamplesStored'/>
+    <ExposedMember key='dataStartAddress'      paramId='dataStartAddress'/>
+    <ExposedMember key='dataEndAddress'        paramId='dataEndAddress'/>
+    <ExposedMember key='dataAddress'           paramId='dataAddress'/>
+    <ExposedMember key='dataOperMode'          paramId='dataOperMode'/>
+    <ExposedMember key='sampleAndHold'         paramId='sampleAndHold'/>
+    <ExposedMember key='dataStepSize'          paramId='dataStepSize'/>
+    <ExposedMember key='addressStepSize'       paramId='addressStepSize'/>
+    <ExposedMember key='dataLimitDetection'    paramId='dataLimitDetection'/>
+    <ExposedMember key='addressRangeDetection' paramId='addressRangeDetection'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool id='debug' name='debug' group='Internal' default='false' visible='false' editable='true' desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='Instance Number'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_dac'
+                 name='inst_dac'
+                 group='Internal'
+                 default='`${getInstNumber("dac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_dac'
+                 name='resource_dac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].dac[" . inst_dac . "]"}`'/>
+
+    <Repeat count='15'>
+      <ParamString id='resource_chan_$idx'
+                   name='resource_chan_$idx'
+                   group='Internal'
+                   visible='`${debug}`'
+                   desc=''
+                   editable='false'
+                   default='`${"pass[" . inst_pass . "].dac[" . inst_dac . "].dacchan[" . $idx . "]"}`'/>
+
+      <ParamBool id='dacChan_$idx_enabled'
+                 name='dacChan_$idx_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${(isBlockUsed(resource_chan_$idx))}`'/>
+    </Repeat>
+
+<!-- LPPASS external variables -->
+    <ParamString id='opMode' name='opMode' group='Internal' visible='false' desc='' editable='false' default='`${(getExposedMember(resource_ac, "opMode"))}`'/>
+
+    <ParamString id='sampleAndHoldEnable' name='sampleAndHoldEnable' group='Internal' visible='false' desc='' editable='false' default='`${(getExposedMember(resource_dac, "dac_sampleAndHoldEnable"))}`'/>
+    <ParamString id='sampleTimeLP' name='sampleTimeLP' group='Internal' visible='false' desc='' editable='false' default='`${(getExposedMember(resource_dac, "dac_sampleTimeLP"))}`'/>
+    <ParamString id='holdTimeLP' name='holdTimeLP' group='Internal' visible='false' desc='' editable='false' default='`${(getExposedMember(resource_dac, "dac_holdTimeLP"))}`'/>
+
+    <ParamString id='enableStepValues' name='enableStepValues' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_dac, "dac_enableStepValues")}`'/>
+    <Repeat count='3'>
+      <ParamString id='stepValue$idx' name='stepValue$idx' group='Internal' visible='false' desc='' editable='false' default='`${enableStepValues ? (getExposedMember(resource_dac, "dac_stepValue$idx")) : 1}`'/>
+    </Repeat>
+    <ParamString id='rangeDetection' name='rangeDetection' group='Internal' visible='false' desc='' editable='false' default='`${(getExposedMember(resource_dac, "dac_rangeDetection"))}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false'
+                 default='Common DAC Channel Settings'/>
+
+    <ParamBool id='sampleAndHold'
+               name='Sample and Hold'
+               group='`${rootGroupName}`'
+               visible='`${(opMode eq "LowPower") &amp;&amp; (sampleAndHoldEnable)}`'
+               editable='true'
+               desc='Enable sample and hold.'
+               default='false'/>
+
+    <ParamString id='sampleAndHoldInfo'
+                 name='Sample and Hold'
+                 group='`${rootGroupName}`'
+                 visible='`${(opMode eq "LowPower") &amp;&amp; (sampleAndHoldEnable) &amp;&amp; (sampleAndHold)}`'
+                 editable='false'
+                 desc='Sample and hold timings'
+                 default='Sample Time = `${sampleTimeLP}`, Hold Time = `${holdTimeLP}`'/>
+
+    <ParamChoice id='runMode'
+                 name='Run Mode'
+                 group='`${rootGroupName}`'
+                 visible='true'
+                 editable='true'
+                 desc='The DAC mode for the channel'
+                 default='0'>
+      <Entry name='Automatic, Single-shot' value='0' visible='true'/>
+      <Entry name='Automatic, Continuous' value='1' visible='true'/>
+      <Entry name='STT-Controls Address' value='2' visible='true'/>
+      <Entry name='STT-Controls Data' value='3' visible='true'/>
+    </ParamChoice>
+
+<!-- Hidden as not yet supported
+    <ParamString id='startingData'
+                 name='Starting Data'
+                 group='`${rootGroupName}`'
+                 visible='`${(runMode == 3)}`'
+                 editable='true'
+                 desc='Data to output at the start'
+                 default='0x000'/> -->
+
+    <ParamRange id='dataAddress'
+                name='Data Address'
+                group='`${rootGroupName}`'
+                min='0'
+                max='511'
+                resolution='1'
+                visible='`${ (runMode == 3) }`'
+                editable='true'
+                desc='Location of the data in the DAC&apos;s 512-entry memory'
+                default='0'/>
+
+    <ParamChoice id='dataStepSize'
+                 name='Data Step Size'
+                 group='`${rootGroupName}`'
+                 visible='`${ (runMode == 3) &amp;&amp; (enableStepValues) }`'
+                 editable='true'
+                 desc='DAC data is incremented/decremented by this step size, default value is 1'
+                 default='CY_AUTANALOG_DAC_STEP_SEL_DISABLED'>
+      <Entry name='Default step size' value='CY_AUTANALOG_DAC_STEP_SEL_DISABLED' visible='true'/>
+      <Entry name='`${stepValue0}`' value='CY_AUTANALOG_DAC_STEP_SEL_0' visible='true'/>
+      <Entry name='`${stepValue1}`' value='CY_AUTANALOG_DAC_STEP_SEL_1' visible='true'/>
+      <Entry name='`${stepValue2}`' value='CY_AUTANALOG_DAC_STEP_SEL_2' visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='dataLimitDetection'
+                 name='Data Limit Detection'
+                 group='`${rootGroupName}`'
+                 visible='`${ ((runMode == 3) &amp;&amp; (rangeDetection)) }`'
+                 editable='true'
+                 desc='Select the data limit condition and thresholds to generate trigger/interrupt. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                 default='CY_AUTANALOG_DAC_STATUS_SEL_DISABLED'>
+      <Entry name='Disabled'       value='CY_AUTANALOG_DAC_STATUS_SEL_DISABLED' visible='true'/>
+      <Entry name='Limit Detect 0' value='CY_AUTANALOG_DAC_STATUS_SEL_0' visible='true'/>
+      <Entry name='Limit Detect 1' value='CY_AUTANALOG_DAC_STATUS_SEL_1' visible='true'/>
+      <Entry name='Limit Detect 2' value='CY_AUTANALOG_DAC_STATUS_SEL_2' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='dataLimitDetectionChoice'
+                 name='dataLimitDetectionChoice'
+                 group='Internal'
+                 desc='Index of chosen Limit Detect'
+                 visible='false'
+                 editable='false'
+                 default='`${dataLimitDetection eq CY_AUTANALOG_DAC_STATUS_SEL_0 ? 0 :
+                            dataLimitDetection eq CY_AUTANALOG_DAC_STATUS_SEL_1 ? 1 :
+                            dataLimitDetection eq CY_AUTANALOG_DAC_STATUS_SEL_2 ? 2 : -1}`'/>
+
+    <ParamString id='dataLimitDetectionRangeCondition'
+                 name='dataLimitDetectionRangeCondition'
+                 group='Internal'
+                 visible='false'
+                 editable='false'
+                 desc='Limit Condition mode'
+                 default='`${getExposedMember(resource_dac, "dac_rangeCondition" . dataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='dataLimitDetectionLowerThreshold'
+                name='dataLimitDetectionLowerThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc='Low Threshold for Limit Detect'
+                default='`${getExposedMember(resource_dac, "dac_lowerThreshold" . dataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='dataLimitDetectionUpperThreshold'
+            name='dataLimitDetectionUpperThreshold'
+            group='Internal'
+            visible='false'
+            editable='false'
+            desc='Upper Threshold for Limit Detect'
+            default='`${getExposedMember(resource_dac, "dac_upperThreshold" . dataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='dataLimitDetectionRangeCondition_Info'
+                 name='Limit Condition'
+                 group='`${rootGroupName}`'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${(runMode == 3) &amp;&amp; rangeDetection &amp;&amp; dataLimitDetection ne CY_AUTANALOG_DAC_STATUS_SEL_DISABLED}`'
+                 editable='false'
+                 default='`${(dataLimitDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_BELOW") ? "DAC Data &lt; " . dataLimitDetectionLowerThreshold . "" :
+                             (dataLimitDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_ABOVE") ? "DAC Data &gt; " . dataLimitDetectionUpperThreshold . "" :
+                             (dataLimitDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_INSIDE") ? "" . dataLimitDetectionLowerThreshold . " &lt;= DAC Data &lt; " . dataLimitDetectionUpperThreshold . "" :
+                             (dataLimitDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_OUTSIDE") ? "DAC Data &lt; " . dataLimitDetectionLowerThreshold . " or DAC Data &gt;= " . dataLimitDetectionUpperThreshold . "" :
+                             "N/A"}`'/>
+
+    <ParamChoice id='waveformData'
+                 name='Waveform Data'
+                 group='`${rootGroupName}`'
+                 visible='`${ (runMode != 3) }`'
+                 editable='true'
+                 desc='The data set of the DAC output waveform'
+                 default='2'>
+<!--       <Entry name='Generate using configurator' value='0' visible='true'/> -->
+      <Entry name='Use another channel&apos;s data'  value='1' visible='`${0 ne getInstNumber("dacchan")}`'/>
+      <Entry name='User-generated'              value='2' visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='reuseDataFrom'
+                 name='Re-use data from'
+                 group='`${rootGroupName}`'
+                 visible='`${ ((runMode != 3) &amp;&amp; (waveformData == 1)) }`'
+                 editable='true'
+                 desc='Reuse already defined data set for waveform'
+                 default='`${(0 eq getInstNumber("dacchan")) ? (dacChan_1_enabled ? 1 : 0) : 0}`'>
+      <Entry name='Channel $idx' value='$idx' visible='`${(dacChan_$idx_enabled &amp;&amp; ($idx &lt; getInstNumber("dacchan"))) || ((0 eq getInstNumber("dacchan")) &amp;&amp; !(dacChan_1_enabled) &amp;&amp; ($idx eq 0)) || (waveformData ne 1)}`' repeatCount='15'/>
+    </ParamChoice>
+
+    <ParamChoice id='addressStepSize'
+                 name='Address Step Size'
+                 group='`${rootGroupName}`'
+                 visible='`${ (runMode != 3) &amp;&amp; (waveformData == 1 || waveformData == 2) &amp;&amp; (enableStepValues) }`'
+                 editable='true'
+                 desc='DAC address is incremented/decremented by this step size, default value is 1'
+                 default='CY_AUTANALOG_DAC_STEP_SEL_DISABLED'>
+      <Entry name='Default step size' value='CY_AUTANALOG_DAC_STEP_SEL_DISABLED' visible='true'/>
+      <Entry name='`${stepValue0}`'   value='CY_AUTANALOG_DAC_STEP_SEL_0' visible='true'/>
+      <Entry name='`${stepValue1}`'   value='CY_AUTANALOG_DAC_STEP_SEL_1' visible='true'/>
+      <Entry name='`${stepValue2}`'   value='CY_AUTANALOG_DAC_STEP_SEL_2' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='addressStepSizeVal'
+                 name='addressStepSizeVal'
+                 group='Internal'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc=''
+                 default='`${(runMode != 3) &amp;&amp; (waveformData == 1 || waveformData == 2) &amp;&amp; (enableStepValues) ?
+                 (addressStepSize eq CY_AUTANALOG_DAC_STEP_SEL_0 ? stepValue0 :
+                  addressStepSize eq CY_AUTANALOG_DAC_STEP_SEL_1 ? stepValue1 :
+                  addressStepSize eq CY_AUTANALOG_DAC_STEP_SEL_2 ? stepValue2 : 1) : 1}`'/>
+
+    <ParamChoice id='waveformStorageMode'
+                 name='Waveform Storage Mode'
+                 group='`${rootGroupName}`'
+                 visible='`${ !((runMode == 2) || (runMode == 3)) }`'
+                 editable='`${ !((runMode == 2) || (runMode == 3)) }`'
+                 desc='The DAC mode for storing and constructing waveforms'
+                 default='0'>
+      <Entry name='One-Quadrant'  value='0' visible='true'/>
+      <Entry name='Two-Quadrant'  value='1' visible='true'/>
+      <Entry name='Four-Quadrant' value='2' visible='true'/>
+    </ParamChoice>
+
+    <ParamRange id='dataStartAddress'
+                name='Data Start Address'
+                group='`${rootGroupName}`'
+                min='0'
+                max='510'
+                resolution='1'
+                visible='`${ (runMode != 3) }`'
+                editable='`${waveformData ne 1}`'
+                desc='Starting Address of the waveform data in the DAC&apos;s 512-entry memory'
+                default='`${(waveformData ne 1) ? 0 : getExposedMember(resource_dac . ".dacchan[" . reuseDataFrom . "]", "dataStartAddress")}`'/>
+
+    <ParamRange id='numberOfSamplesStored'
+                name='Number of Samples Stored'
+                group='`${rootGroupName}`'
+                min='1'
+                max='`${511 - dataStartAddress}`'
+                resolution='1'
+                visible='`${ (runMode != 3) }`'
+                editable='`${waveformData ne 1}`'
+                desc='Number of samples in the waveform stored in the DAC&apos;s 512-entry memory'
+                default='`${(waveformData ne 1) ? 1 : getExposedMember(resource_dac . ".dacchan[" . reuseDataFrom . "]", "numberOfSamplesStored")}`'/>
+
+    <ParamString id='dataEndAddress'
+                 name='Data End Address'
+                 group='`${rootGroupName}`'
+                 visible='`${ (runMode != 3) }`'
+                 editable='false'
+                 desc='Ending Address of the waveform data in the DAC&apos;s 512-entry memory'
+                 default='`${(dataStartAddress + numberOfSamplesStored - 1)}`'/>
+
+    <ParamString id='effectiveNumberOfSamples'
+                 name='Effective Number of Samples'
+                 group='`${rootGroupName}`'
+                 visible='`${ (runMode != 3) }`'
+                 editable='false'
+                 desc='Actual number of samples used to construct waveform'
+                 default='`${(waveformStorageMode == 0) ? (numberOfSamplesStored) : (waveformStorageMode == 1) ? ((numberOfSamplesStored * 2) - 1 ) : (waveformStorageMode == 2) ? ((numberOfSamplesStored * 4) - 3) : 0}`'/>
+
+    <ParamString id='waveformTimePeriodValue'
+                 name='Waveform Time Period Value'
+                 group='Internal'
+                 visible='`${debug &amp;&amp; (runMode != 3)}`'
+                 editable='false'
+                 desc='Unformatted Time Period of Waveform'
+                 default='`${(effectiveNumberOfSamples * ((opMode eq "HighSpeed") ? getExposedMember(resource_dac, "dac_refreshTimeValueHS") : getExposedMember(resource_dac, "dac_refreshTimeValueLP"))) / addressStepSizeVal}`'/>
+
+    <ParamString id='waveformTimePeriod'
+                 name='Waveform Time Period'
+                 group='`${rootGroupName}`'
+                 visible='`${ (runMode != 3) }`'
+                 editable='false'
+                 desc='Actual Time Period of Waveform'
+                 default='`${waveformTimePeriodValue gt 0.001 ? waveformTimePeriodValue * 1000 :
+                            waveformTimePeriodValue gt 0.000001 ? waveformTimePeriodValue * 1000000 :
+                            waveformTimePeriodValue gt 0.000000001 ? waveformTimePeriodValue * 1000000000 :
+                            waveformTimePeriodValue * 1000000000000}` `${
+                            waveformTimePeriodValue gt 0.001 ? "ms" :
+                            waveformTimePeriodValue gt 0.000001 ? "us" :
+                            waveformTimePeriodValue gt 0.000000001 ? "ns" :
+                            "ps"}`'/>
+
+    <ParamString id='waveformFrequency'
+                 name='Waveform Frequency'
+                 group='`${rootGroupName}`'
+                 visible='`${ (runMode == 1) }`'
+                 editable='false'
+                 desc='Actual Frequency of Waveform'
+                 default='`${formatFrequency(1 / waveformTimePeriodValue)}`'/>
+
+    <ParamChoice id='addressRangeDetection'
+                 name='Data Limit Detection'
+                 group='`${rootGroupName}`'
+                 visible='`${ (rangeDetection) &amp;&amp; (runMode == 2) }`'
+                 editable='true'
+                 desc='Select the data limit condition and thresholds to generate trigger/interrupt. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                 default='CY_AUTANALOG_DAC_STATUS_SEL_DISABLED'>
+      <Entry name='Disabled'       value='CY_AUTANALOG_DAC_STATUS_SEL_DISABLED' visible='true'/>
+      <Entry name='Limit Detect 0' value='CY_AUTANALOG_DAC_STATUS_SEL_0' visible='true'/>
+      <Entry name='Limit Detect 1' value='CY_AUTANALOG_DAC_STATUS_SEL_1' visible='true'/>
+      <Entry name='Limit Detect 2' value='CY_AUTANALOG_DAC_STATUS_SEL_2' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='addressRangeDetectionChoice'
+                 name='addressRangeDetectionChoice'
+                 group='Internal'
+                 desc='Index of chosen Limit Detect'
+                 visible='false'
+                 editable='false'
+                 default='`${addressRangeDetection eq CY_AUTANALOG_DAC_STATUS_SEL_0 ? 0 :
+                            addressRangeDetection eq CY_AUTANALOG_DAC_STATUS_SEL_1 ? 1 :
+                            addressRangeDetection eq CY_AUTANALOG_DAC_STATUS_SEL_2 ? 2 : -1}`'/>
+
+    <ParamString id='addressRangeDetectionRangeCondition'
+                 name='addressRangeDetectionRangeCondition'
+                 group='Internal'
+                 visible='false'
+                 editable='false'
+                 desc='Limit Condition mode'
+                 default='`${getExposedMember(resource_dac, "dac_rangeCondition" . addressRangeDetectionChoice . "")}`'/>
+
+    <ParamString id='addressRangeDetectionLowerThreshold'
+                name='addressRangeDetectionLowerThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc='Low Threshold for Limit Detect'
+                default='`${getExposedMember(resource_dac, "dac_lowerThreshold" . addressRangeDetectionChoice . "")}`'/>
+
+    <ParamString id='addressRangeDetectionUpperThreshold'
+            name='addressRangeDetectionUpperThreshold'
+            group='Internal'
+            visible='false'
+            editable='false'
+            desc='Upper Threshold for Limit Detect'
+            default='`${getExposedMember(resource_dac, "dac_upperThreshold" . addressRangeDetectionChoice . "")}`'/>
+
+    <ParamString id='addressRangeDetectionRangeCondition_Info'
+                 name='Limit Condition'
+                 group='`${rootGroupName}`'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${(runMode == 2) &amp;&amp; rangeDetection &amp;&amp; addressRangeDetection ne CY_AUTANALOG_DAC_STATUS_SEL_DISABLED}`'
+                 editable='false'
+                 default='`${(addressRangeDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_BELOW") ? "DAC Data &lt; " . addressRangeDetectionLowerThreshold . "" :
+                             (addressRangeDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_ABOVE") ? "DAC Data &gt; " . addressRangeDetectionUpperThreshold . "" :
+                             (addressRangeDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_INSIDE") ? "" . addressRangeDetectionLowerThreshold . " &lt;= DAC Data &lt; " . addressRangeDetectionUpperThreshold . "" :
+                             (addressRangeDetectionRangeCondition eq "CY_AUTANALOG_DAC_CH_LIMIT_OUTSIDE") ? "DAC Data &lt; " . addressRangeDetectionLowerThreshold . " or DAC Data &gt;= " . addressRangeDetectionUpperThreshold . "" :
+                             "N/A"}`'/>
+
+    <ParamString id='dataOperMode'
+                 name='dataOperMode'
+                 group='Internal'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc=''
+                 default='`${(runMode == 3) ? "CY_AUTANALOG_DAC_WAVEFORM_MODE_DATA" :
+                             (runMode == 2) ? "CY_AUTANALOG_DAC_WAVEFORM_MODE_ADDR" :
+                             (runMode == 1) &amp;&amp; (waveformStorageMode == 2) ? "CY_AUTANALOG_DAC_LUT_CONT_FOUR_QUAD" :
+                             (runMode == 1) &amp;&amp; (waveformStorageMode == 1) ? "CY_AUTANALOG_DAC_LUT_CONT_TWO_QUAD" :
+                             (runMode == 1) &amp;&amp; (waveformStorageMode == 0) ? "CY_AUTANALOG_DAC_LUT_CONT_ONE_QUAD" :
+                             (runMode == 0) &amp;&amp; (waveformStorageMode == 2) ? "CY_AUTANALOG_DAC_LUT_OS_FOUR_QUAD" :
+                             (runMode == 0) &amp;&amp; (waveformStorageMode == 1) ? "CY_AUTANALOG_DAC_LUT_OS_TWO_QUAD" :
+                             (runMode == 0) &amp;&amp; (waveformStorageMode == 0) ? "CY_AUTANALOG_DAC_LUT_OS_ONE_QUAD" :
+                              "CY_AUTANALOG_DAC_LUT_OS_ONE_QUAD"}`'/>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure a parent resource for DAC Channel.' condition='`${!isBlockUsed(resource_dac)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_dac}`' value='lppass_dac-1.0' valid='true' />
+    </DRC>
+    <DRC type='ERROR'
+         text='The DAC `${inst_dac}` channel `${getInstNumber("dacchan")}` waveform with selected step size can&apos;t be used.' repeatCount='3'
+         condition='`${(runMode != 3) &amp;&amp; (waveformData == 1 || waveformData == 2) &amp;&amp;
+                       (enableStepValues) &amp;&amp; (waveformStorageMode == 0 ?
+                       (addressStepSize eq "CY_AUTANALOG_DAC_STEP_SEL_" . $idx ? ((isBlockUsed(resource_dac) ? getExposedMember("pass[" . inst_pass . "].dac[" . inst_dac . "]", "dac_stepValue" . $idx) : "1") &gt; (dataEndAddress - dataStartAddress + 1)) : (false)) :
+                       (addressStepSize eq "CY_AUTANALOG_DAC_STEP_SEL_" . $idx ? ((isBlockUsed(resource_dac) ? getExposedMember("pass[" . inst_pass . "].dac[" . inst_dac . "]", "dac_stepValue" . $idx) : "1") &gt; (dataEndAddress - dataStartAddress)) : (false)))}`'/>
+  </DRCs>
+
+  <ConfigFirmware/>
+
+</PersonalityTemplate>

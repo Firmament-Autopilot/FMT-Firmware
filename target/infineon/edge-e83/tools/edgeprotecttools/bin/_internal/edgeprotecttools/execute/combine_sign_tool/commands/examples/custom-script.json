@@ -1,0 +1,22 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "custom-script command example",
+            "description": "Test template for the custom-script command",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "custom-script",
+                    "inputs": [
+                        {
+                            "description": "List detailed information about files and directories in the current directory",
+                            "command-line": "ls -la",
+                            "shell": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

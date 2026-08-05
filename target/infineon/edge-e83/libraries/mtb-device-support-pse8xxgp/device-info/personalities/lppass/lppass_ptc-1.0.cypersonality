@@ -1,0 +1,438 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_ptc-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* PTComp personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2024-2025 Cypress Semiconductor Corporation (an Infineon company)
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_ptc' name='PTComp' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.ptc'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='INST_NAME_ptc'                    paramId='INST_NAME_ptc'/>
+    <ExposedMember key='ptc_sta_comp$idxPower'            paramId='staConfigComp$idxPower'        repeatCount='2'/>
+    <ExposedMember key='ptc_sta_comp$idxEdgeDetect'       paramId='staConfigComp$idxEdgeDetect'   repeatCount='2'/>
+    <ExposedMember key='ptc_sta_postProcessingIsEnabled'  paramId='postProcessingIsEnabled'/>
+    <ExposedMember key='ptc_sta_dynCfgCnt'                paramId='dynCfgCnt'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool id='debug' name='debug' group='Internal' default='false' visible='false' editable='true' desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='passInstNum' name='PASS Instance Number' group='Internal' default='`${getInstNumber("pass")}`' visible='`${debug}`' editable='false' desc='' />
+    <ParamString id='ptcInstNum' name='PTC Instance Number' group='Internal' default='`${getInstNumber("ptc")}`' visible='`${debug}`' editable='false' desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${passInstNum}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ptc'
+                 name='resource_ptc'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . passInstNum . "].ptc[" . 0 . "]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='inFlash' name='inFlash' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_pass, "inFlash")}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='INST_NAME_ptc' name='INST_NAME_ptc' group='Internal' default='`${INST_NAME}`' visible='`${debug}`' editable='false' desc='' />
+
+    <Repeat count='2'>
+
+      <ParamChoice id='staConfigComp$idxPower'
+                   name='Power'
+                   group='Static Configuration / Comparator $idx'
+                   visible='true'
+                   editable='true'
+                   desc='Controls power consumption and response time'
+                   default='CY_AUTANALOG_PTCOMP_COMP_PWR_OFF'>
+        <Entry name='Off' value='CY_AUTANALOG_PTCOMP_COMP_PWR_OFF' visible='true'/>
+        <Entry name='Ultra-low' value='CY_AUTANALOG_PTCOMP_COMP_PWR_ULP' visible='true'/>
+        <Entry name='Low' value='CY_AUTANALOG_PTCOMP_COMP_PWR_LP' visible='true'/>
+        <Entry name='Normal' value='CY_AUTANALOG_PTCOMP_COMP_PWR_NORMAL' visible='true'/>
+      </ParamChoice>
+
+      <ParamString id='staConfigComp$idxQuiscentCurrent'
+            name='Current'
+            group='Static Configuration / Comparator $idx'
+            visible='`${(staConfigComp$idxPower ne CY_AUTANALOG_PTCOMP_COMP_PWR_OFF)}`'
+            editable='false'
+            desc='Power consumption'
+            default='`${staConfigComp$idxPower eq CY_AUTANALOG_PTCOMP_COMP_PWR_ULP ? "300 n" :
+                        staConfigComp$idxPower eq CY_AUTANALOG_PTCOMP_COMP_PWR_LP ? "10 u" :
+                        staConfigComp$idxPower eq CY_AUTANALOG_PTCOMP_COMP_PWR_NORMAL ? "150 u" : ""}`A'/>
+
+      <ParamString id='staConfigComp$idxResponseTime'
+            name='Response Time'
+            group='Static Configuration / Comparator $idx'
+            visible='`${(staConfigComp$idxPower ne CY_AUTANALOG_PTCOMP_COMP_PWR_OFF)}`'
+            editable='false'
+            desc='Response Time to 100 mV overdrive'
+            default='`${staConfigComp$idxPower eq CY_AUTANALOG_PTCOMP_COMP_PWR_ULP ? "7" :
+                        staConfigComp$idxPower eq CY_AUTANALOG_PTCOMP_COMP_PWR_LP ? "1" :
+                        staConfigComp$idxPower eq CY_AUTANALOG_PTCOMP_COMP_PWR_NORMAL ? "0.1" : ""}` us'/>
+
+      <ParamBool id='staConfigComp$idxHysteresisEnabled'
+                 name='Hysteresis Enable'
+                 group='Static Configuration / Comparator $idx'
+                 visible='`${(staConfigComp$idxPower ne CY_AUTANALOG_PTCOMP_COMP_PWR_OFF)}`'
+                 editable='`${(staConfigComp$idxPower ne CY_AUTANALOG_PTCOMP_COMP_PWR_OFF)}`'
+                 desc='Add a 30 mV Hysteresis'
+                 default='false'/>
+
+      <ParamChoice id='staConfigComp$idxEdgeDetect'
+                   name='Edge Detect'
+                   group='Static Configuration / Comparator $idx'
+                   visible='`${(staConfigComp$idxPower ne CY_AUTANALOG_PTCOMP_COMP_PWR_OFF)}`'
+                   editable='`${(staConfigComp$idxPower ne CY_AUTANALOG_PTCOMP_COMP_PWR_OFF)}`'
+                   desc='Edge detection for interrupts and triggers. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                   default='CY_AUTANALOG_PTCOMP_COMP_INT_DISABLED'>
+        <Entry name='Disabled' value='CY_AUTANALOG_PTCOMP_COMP_INT_DISABLED' visible='true'/>
+        <Entry name='Rising Edge' value='CY_AUTANALOG_PTCOMP_COMP_INT_EDGE_RISING' visible='true'/>
+        <Entry name='Falling Edge' value='CY_AUTANALOG_PTCOMP_COMP_INT_EDGE_FALLING' visible='true'/>
+        <Entry name='Rising and Falling Edges' value='CY_AUTANALOG_PTCOMP_COMP_INT_EDGE_BOTH' visible='true'/>
+      </ParamChoice>
+
+    </Repeat>
+
+    <ParamString id='resource_root'      name='resource_root'    group='Internal' desc='' visible='false' editable='false' default='`${"pass[0].ac[0]"}`'/>
+    <ParamString id='opMode'             name='opMode'           group='Internal' desc='' visible='false' editable='false' default='`${(getExposedMember(resource_root, "opMode"))}`'/>
+    <ParamString id='clockPtc'           name='clockPtc'         group='Internal' desc='' visible='false' editable='false' default='`${getExposedMember("pass[0]", "clockPtc")}`'/>
+    <ParamString id='clockSource'        name='clockSource'      group='Internal' desc='' visible='false' editable='false' default='`${findBlockFromSignalValue(clockPtc, "peri.group.div_")}`'/>
+    <ParamString id='isClockEnabled'     name='isClockEnabled'   group='Internal' desc='' visible='false' editable='false' default='`${clockPtc ne ""}`'/>
+    <ParamString id='errorMessage'       name='errorMessage'     group='Internal' desc='' visible='false' editable='false' default='PTC Clock Divider is not reserved'/>
+    <ParamString id='dividerValue'       name='divider'          group='Internal' desc='' visible='false' editable='false' default='`${isClockEnabled ? getExposedMember(clockSource, "divider") : 0}`' />
+    <ParamString id='accuracy'           name='accuracy'         group='Internal' desc='' visible='false' editable='false' default='`${isClockEnabled ? getExposedMember(clockSource, "accuracy") : 0}`' />
+    <ParamString id='frequencyValue'     name='frequency'        group='Internal' desc='' visible='false' editable='false' default='`${isClockEnabled ? getExposedMember(clockSource, "frequency") : 0}`' />
+
+    <ParamBool id='postProcessingIsEnabled'
+            name='Enable Post Processing'
+            group='Post Processing'
+            visible='true'
+            editable='true'
+            desc='Set post processing enabled'
+            default='false'/>
+
+    <ParamRange id='lpClockDivider'
+                name='Clock Divider'
+                group='Post Processing'
+                min='1'
+                max='1024'
+                resolution='1'
+                visible='`${opMode eq "LowPower" &amp;&amp; postProcessingIsEnabled}`'
+                editable='`${opMode eq "LowPower" &amp;&amp; postProcessingIsEnabled}`'
+                desc='The divider for internal clock'
+                default='1'/>
+
+    <ParamString id='lpClockValue'
+                 name='Clock Value'
+                 group='Post Processing'
+                 desc='Actual Clock Value = 4.096 MHz / Clock Divider'
+                 visible='`${opMode eq "LowPower" &amp;&amp; postProcessingIsEnabled}`'
+                 editable='false'
+                 default='`${formatFrequency(4096000.0/lpClockDivider, accuracy)}`'/>
+
+    <ParamString id='hsClockDivider'
+                 name='Clock Divider'
+                 group='Post Processing'
+                 visible='`${opMode eq "HighSpeed" &amp;&amp; postProcessingIsEnabled}`'
+                 editable='false'
+                 desc='The Peri Clock connected to PTComp divider value'
+                 default='`${isClockEnabled ? cast(int64, dividerValue) : errorMessage}`'/>
+
+    <ParamString id='hsClockValue'
+                 name='Clock Value'
+                 group='Post Processing'
+                 desc='Actual Clock Value = The Peri Clock connected to PTComp frequency value'
+                 visible='`${opMode eq "HighSpeed" &amp;&amp; postProcessingIsEnabled}`'
+                 editable='false'
+                 default='`${isClockEnabled ? formatFrequency(frequencyValue, accuracy) : errorMessage}`'/>
+
+    <ParamString id='actualClockValue' name='actualClockValue' group='Internal' desc='' visible='false' editable='false' default='`${opMode eq "LowPower" ? 4096000.0/lpClockDivider : frequencyValue}`' />
+
+    <Repeat count='2'>
+      <ParamChoice id='postProcess$idxInput'
+                   name='Input'
+                   group='Post Process $idx'
+                   visible='`${postProcessingIsEnabled}`'
+                   editable='`${postProcessingIsEnabled}`'
+                   desc='The post-processor input source.'
+                   default='CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED'>
+        <Entry name='Disabled' value='CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED' visible='true'/>
+        <Entry name='Comparator 0' value='CY_AUTANALOG_PTCOMP_PP_IN_SRC_COMP0' visible='true'/>
+        <Entry name='Comparator 1' value='CY_AUTANALOG_PTCOMP_PP_IN_SRC_COMP1' visible='true'/>
+      </ParamChoice>
+
+      <ParamChoice id='postProcess$idxInputType'
+                   name='Input Type'
+                   group='Post Process $idx'
+                   visible='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   editable='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   desc='The post-processor edge-detect mode.'
+                   default='CY_AUTANALOG_PTCOMP_PP_IN_TYPE_LEVEL'>
+        <Entry name='Level' value='CY_AUTANALOG_PTCOMP_PP_IN_TYPE_LEVEL' visible='true'/>
+        <Entry name='Rising Edge' value='CY_AUTANALOG_PTCOMP_PP_IN_TYPE_EDGE_RISING' visible='true'/>
+        <Entry name='Falling Edge' value='CY_AUTANALOG_PTCOMP_PP_IN_TYPE_EDGE_FALLING' visible='true'/>
+        <Entry name='Rising and Falling Edges' value='CY_AUTANALOG_PTCOMP_PP_IN_TYPE_EDGE_BOTH' visible='true'/>
+      </ParamChoice>
+
+      <ParamChoice id='postProcess$idxCounterMode'
+                   name='Counter Mode'
+                   group='Post Process $idx'
+                   visible='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   editable='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   desc='The post-processor operation mode.'
+                   default='CY_AUTANALOG_PTCOMP_PP_CNT_MODE_DIRECT'>
+        <Entry name='Direct' value='CY_AUTANALOG_PTCOMP_PP_CNT_MODE_DIRECT' visible='true'/>
+        <Entry name='Frame' value='CY_AUTANALOG_PTCOMP_PP_CNT_MODE_FRAME' visible='true'/>
+        <Entry name='Window' value='CY_AUTANALOG_PTCOMP_PP_CNT_MODE_WINDOW' visible='true'/>
+      </ParamChoice>
+
+      <ParamRange id='postProcess$idxPeriod'
+                  name='Period'
+                  group='Post Process $idx'
+                  min='1'
+                  max='4096'
+                  resolution='1'
+                  visible='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxCounterMode eq "CY_AUTANALOG_PTCOMP_PP_CNT_MODE_FRAME"))}`'
+                  editable='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxCounterMode eq "CY_AUTANALOG_PTCOMP_PP_CNT_MODE_FRAME"))}`'
+                  desc='Actual period = Period / Actual clock value'
+                  default='1'/>
+
+    <ParamString id='postProcess$idxActualPeriodValue' name='postProcess$idxActualPeriodValue' group='Internal' desc='' visible='false' editable='false'
+                 default='`${opMode eq "HighSpeed" ? (isClockEnabled ? postProcess$idxPeriod / actualClockValue : errorMessage) : cast(float, postProcess$idxPeriod) / actualClockValue}`'/>
+
+      <ParamString id='postProcess$idxActualPeriod'
+                 name='Actual Period'
+                 group='Post Process $idx'
+                 desc='Actual Period = Period / Actual Clock Value'
+                 visible='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxCounterMode eq "CY_AUTANALOG_PTCOMP_PP_CNT_MODE_FRAME"))}`'
+                 editable='false'
+                 default='`${opMode eq "LowPower" || isClockEnabled ? (
+                            postProcess$idxActualPeriodValue gt 0.001 ? postProcess$idxActualPeriodValue * 1000 :
+                            postProcess$idxActualPeriodValue gt 0.000001 ? postProcess$idxActualPeriodValue * 1000000 :
+                            postProcess$idxActualPeriodValue gt 0.000000001 ? postProcess$idxActualPeriodValue * 1000000000 :
+                            postProcess$idxActualPeriodValue * 1000000000000) : postProcess$idxActualPeriodValue}` `${opMode eq "LowPower" || isClockEnabled ? (
+                            postProcess$idxActualPeriodValue gt 0.001 ? " ms" :
+                            postProcess$idxActualPeriodValue gt 0.000001 ? " us" :
+                            postProcess$idxActualPeriodValue gt 0.000000001 ? " ns" :
+                            "ps") : ""}`'/>
+
+      <ParamChoice id='postProcess$idxWindowSize'
+                   name='Window Size'
+                   group='Post Process $idx'
+                  visible='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxCounterMode eq "CY_AUTANALOG_PTCOMP_PP_CNT_MODE_WINDOW"))}`'
+                   editable='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxCounterMode eq "CY_AUTANALOG_PTCOMP_PP_CNT_MODE_WINDOW"))}`'
+                   desc='Actual period = Period / Actual clock value'
+                   default='CY_AUTANALOG_PTCOMP_PP_WINDOW_TWO'>
+        <Entry name='2' value='CY_AUTANALOG_PTCOMP_PP_WINDOW_TWO' visible='true'/>
+        <Entry name='4' value='CY_AUTANALOG_PTCOMP_PP_WINDOW_FOUR' visible='true'/>
+        <Entry name='8' value='CY_AUTANALOG_PTCOMP_PP_WINDOW_EIGHT' visible='true'/>
+        <Entry name='16' value='CY_AUTANALOG_PTCOMP_PP_WINDOW_SIXTEEN' visible='true'/>
+        <Entry name='32' value='CY_AUTANALOG_PTCOMP_PP_WINDOW_THIRTY_TWO' visible='true'/>
+        <Entry name='64' value='CY_AUTANALOG_PTCOMP_PP_WINDOW_SIXTY_FOUR' visible='true'/>
+        <Entry name='128' value='CY_AUTANALOG_PTCOMP_PP_WINDOW_ONE_TWENTY_EIGHT' visible='true'/>
+      </ParamChoice>
+
+      <ParamChoice id='postProcess$idxLimitCondition'
+                   name='Limit Condition'
+                   group='Post Process $idx'
+                   visible='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   editable='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   desc='The post-processor counter limit condition.'
+                   default='CY_AUTANALOG_PTCOMP_PP_COND_BELOW'>
+        <Entry name='Below the Threshold' value='CY_AUTANALOG_PTCOMP_PP_COND_BELOW' visible='true'/>
+        <Entry name='Above the Threshold' value='CY_AUTANALOG_PTCOMP_PP_COND_ABOVE' visible='true'/>
+        <Entry name='Inside the Window' value='CY_AUTANALOG_PTCOMP_PP_COND_INSIDE' visible='true'/>
+        <Entry name='Outside the Window' value='CY_AUTANALOG_PTCOMP_PP_COND_OUTSIDE' visible='true'/>
+      </ParamChoice>
+
+    <ParamString id='postProcessLimitCondition$idx_Info'
+                 name='Limit Condition Equation'
+                 group='Post Process $idx'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                 editable='false'
+                 default='`${(postProcess$idxLimitCondition eq CY_AUTANALOG_PTCOMP_PP_COND_BELOW) ? "Post Processing Data &lt; Lower Threshold" : (postProcess$idxLimitCondition eq CY_AUTANALOG_PTCOMP_PP_COND_ABOVE) ? "Post Processing Data &gt; Upper Threshold" : (postProcess$idxLimitCondition eq CY_AUTANALOG_PTCOMP_PP_COND_INSIDE) ? "Lower Threshold &lt;= Post Processing Data &lt; Upper Threshold" : (postProcess$idxLimitCondition eq CY_AUTANALOG_PTCOMP_PP_COND_OUTSIDE) ? "Post Processing Data &lt; Lower Threshold or Post Processing Data &gt;= Upper Threshold" : "N/A"}`'/>
+
+      <ParamRange id='postProcess$idxLowerThreshold'
+                  name='Lower Threshold'
+                  group='Post Process $idx'
+                  min='0'
+                  max='4095'
+                  resolution='1'
+                  visible='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxLimitCondition ne "CY_AUTANALOG_PTCOMP_PP_COND_ABOVE"))}`'
+                  editable='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxLimitCondition ne "CY_AUTANALOG_PTCOMP_PP_COND_ABOVE"))}`'
+                  desc='Low threshold for post-processing counter.'
+                  default='0'/>
+
+      <ParamRange id='postProcess$idxUpperThreshold'
+                  name='Upper Threshold'
+                  group='Post Process $idx'
+                  min='0'
+                  max='4095'
+                  resolution='1'
+                  visible='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxLimitCondition ne "CY_AUTANALOG_PTCOMP_PP_COND_BELOW"))}`'
+                  editable='`${((postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") &amp;&amp; (postProcess$idxLimitCondition ne "CY_AUTANALOG_PTCOMP_PP_COND_BELOW"))}`'
+                  desc='High threshold for post-processing counter.'
+                  default='0'/>
+
+      <ParamChoice id='postProcess$idxDataFunction'
+                   name='Data Function'
+                   group='Post Process $idx'
+                   visible='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   editable='`${(postProcess$idxInput ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED")}`'
+                   desc='The post-processor LUT function.'
+                   default='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A'>
+        <Entry name='PP0' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A' visible='true'/>
+        <Entry name='(PP0)&apos; AND PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_BAR_AND_B' visible='true'/>
+        <Entry name='PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_B' visible='true'/>
+        <Entry name='PP0 AND PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_AND_B' visible='true'/>
+        <Entry name='PP0 AND (PP1)&apos;' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_AND_B_BAR' visible='true'/>
+        <Entry name='PP0 XOR PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_XOR_B' visible='true'/>
+        <Entry name='PP0 OR PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_OR_B' visible='true'/>
+        <Entry name='PP0 NOR PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_NOR_B' visible='true'/>
+        <Entry name='PP0 XNOR PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_XNOR_B' visible='true'/>
+        <Entry name='(PP1)&apos;' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_B_BAR' visible='true'/>
+        <Entry name='(PP0) OR (PP1)&apos;' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_OR_B_BAR' visible='true'/>
+        <Entry name='(PP0)&apos;' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_BAR' visible='true'/>
+        <Entry name='(PP0)&apos; OR PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_BAR_OR_B' visible='true'/>
+        <Entry name='PP0 NAND PP1' value='CY_AUTANALOG_PTCOMP_PP_DATA_FUNC_A_NAND_B' visible='true'/>
+      </ParamChoice>
+
+    </Repeat>
+
+    <ParamRange id='ppCfgCnt' name='ppCfgCnt' group='Internal'
+     default='`${((postProcess0Input ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") ? 1 : 0) +
+                 ((postProcess1Input ne "CY_AUTANALOG_PTCOMP_PP_IN_SRC_DISABLED") ? 1 : 0)}`'
+     min='0' max='8' resolution='1' visible='`${debug}`' editable='false' desc='Post Process Configuration Count' />
+
+    <ParamRange id='dynCfgCnt' name='dynCfgCnt' group='Internal'
+      default='`${((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[0]"))  ? 1 : 0) +
+                  ((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[1]"))  ? 1 : 0) +
+                  ((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[2]"))  ? 1 : 0) +
+                  ((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[3]"))  ? 1 : 0) +
+                  ((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[4]"))  ? 1 : 0) +
+                  ((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[5]"))  ? 1 : 0) +
+                  ((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[6]"))  ? 1 : 0) +
+                  ((isBlockUsed("pass[" . passInstNum . "].ptc[" . ptcInstNum . "].ptc_dynamic[7]"))  ? 1 : 0)}`'
+      min='0' max='8' resolution='1' visible='`${debug}`' editable='false' desc='Dynamic Configuration Count' />
+
+    <Repeat count='8'>
+      <ParamString id='ptcDyn$idx' name='ptcDyn$idx' group='Internal' default='pass[`${passInstNum}`].ptc[`${ptcInstNum}`].ptc_dynamic[$idx]' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure Autonomous Analog.' condition='`${!isBlockUsed(resource_pass)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_pass}`' value='lppass-1.0' valid='true' />
+    </DRC>
+      <DRC type='ERROR' text='The PTComp shall have at least one dynamic configuration.' condition='`${dynCfgCnt eq 0}`' />
+    <DRC type='ERROR' text='Lower Threshold is greater than or equal to Upper Threshold in Post Process $idx of PTComp Subsystem of Autonomous Analog.' repeatCount='2'
+         condition='`${(postProcess$idxUpperThreshold &lt; postProcess$idxLowerThreshold) &amp;&amp; (postProcess$idxLimitCondition eq CY_AUTANALOG_PTCOMP_PP_COND_INSIDE || postProcess$idxLimitCondition eq CY_AUTANALOG_PTCOMP_PP_COND_OUTSIDE)}`' />
+
+    <DRC type='ERROR' text='Threshold shall be lower than Period in Post Process $idx of PTComp Subsystem of Autonomous Analog.'  repeatCount='2'
+         condition='`${(postProcess$idxLowerThreshold &gt; postProcess$idxPeriod || postProcess$idxUpperThreshold &gt; postProcess$idxPeriod) &amp;&amp; (postProcess$idxCounterMode eq CY_AUTANALOG_PTCOMP_PP_CNT_MODE_FRAME)}`'/>
+
+    <DRC type='ERROR' text='Threshold shall be lower than Window Size in Post Process $idx of PTComp Subsystem of Autonomous Analog.'  repeatCount='2'
+         condition='`${(postProcess$idxLowerThreshold &gt; getParamValueDisplay("postProcess$idxWindowSize") || postProcess$idxUpperThreshold &gt; getParamValueDisplay("postProcess$idxWindowSize")) &amp;&amp; (postProcess$idxCounterMode eq CY_AUTANALOG_PTCOMP_PP_CNT_MODE_WINDOW)}`'/>
+
+    <DRC type='ERROR' text='Enable and configure at least one comparator in PTComp.' condition='`${staConfigComp0Power eq CY_AUTANALOG_PTCOMP_COMP_PWR_OFF &amp;&amp; staConfigComp1Power eq CY_AUTANALOG_PTCOMP_COMP_PWR_OFF}`' />
+
+    <DRC type='ERROR' text='Enable and configure the used Comparator $idx in PTComp.' repeatCount='2'
+         condition='`${staConfigComp$idxPower eq CY_AUTANALOG_PTCOMP_COMP_PWR_OFF &amp;&amp; (postProcess0Input eq CY_AUTANALOG_PTCOMP_PP_IN_SRC_COMP$idx || postProcess1Input eq CY_AUTANALOG_PTCOMP_PP_IN_SRC_COMP$idx)}`' />
+  </DRCs>
+
+  <ConfigFirmware>
+
+    <ConfigInclude value='cy_autanalog.h' include='true' />
+
+    <!-- The PTComp State Transition Table structure -->
+    <ConfigArray name='`${INST_NAME_ptc . "_stt"}`' type='cy_stc_autanalog_stt_ptcomp_t' const='`${inFlash}`' public='true' include='true' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='64' include='`${isBlockUsed("pass[" . passInstNum . "].ac[0].state[" . $idx{0} . "]")}`'>
+        <Member name='unlock' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ptcUnlock")}`'/>
+        <Member name='enableComp0' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ptc0Enable")}`'/>
+        <Member name='dynCfgIdxComp0' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ptc0DynCfg")}`U'/>
+        <Member name='enableComp1' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ptc1Enable")}`'/>
+        <Member name='dynCfgIdxComp1' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ptc1DynCfg")}`U'/>
+      </ConfigStruct>
+    </ConfigArray>
+
+    <ConfigArray name='`${INST_NAME_ptc . "_pp_cfg"}`' type='cy_stc_autanalog_ptcomp_comp_pp_t' const='`${inFlash}`' public='true' include='`${(ppCfgCnt &gt; 0)}`'>
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='2' include='`${(ppCfgCnt &gt; $idx{0})}`'>
+        <Member name='inpSrc' value='`${postProcess$idx{1}Input}`' include='true' />
+        <Member name='inputType' value='`${postProcess$idx{1}InputType}`' include='true'/>
+        <Member name='cntMode' value='`${postProcess$idx{1}CounterMode}`' include='true'/>
+        <Member name='windowSize' value='`${postProcess$idx{1}WindowSize}`' include='true'/>
+        <Member name='period' value='`${postProcess$idx{1}Period - 1}`U' include='true'/>
+        <Member name='dataFunction' value='`${postProcess$idx{1}DataFunction}`' include='true'/>
+        <Member name='limitCondition' value='`${postProcess$idx{1}LimitCondition}`' include='true'/>
+        <Member name='thresholdLow' value='`${postProcess$idx{1}LowerThreshold}`U' include='true'/>
+        <Member name='thresholdHigh' value='`${postProcess$idx{1}UpperThreshold}`U' include='true'/>
+      </ConfigStruct>
+    </ConfigArray>
+
+    <!-- Hysteresis Enable: use enum values from driver code  -->
+    <ConfigStruct name='`${INST_NAME_ptc . "_sta_cfg"}`' type='cy_stc_autanalog_ptcomp_comp_sta_t' const='`${inFlash}`' public='true' include='true' >
+      <Member name='lpDivPtcomp' value='`${(opMode eq "LowPower") ? cast(int64, lpClockDivider - 1) : 0}`U'/>
+      <Member name='powerModeComp$idx{0}' value='`${staConfigComp$idx{0}Power}`' count='2'/>
+      <Member name='compHystComp$idx{0}' value='`${(staConfigComp$idx{0}HysteresisEnabled) ? "CY_AUTANALOG_PTCOMP_COMP_HYST_ON" : "CY_AUTANALOG_PTCOMP_COMP_HYST_OFF"}`' count='2'/>
+      <Member name='compEdgeComp$idx{0}' value='`${staConfigComp$idx{0}EdgeDetect}`' count='2'/>
+      <Member name='compPpCfgNum' value='`${ppCfgCnt}`U'/>
+      <Member name='compPpCfgArr' value='`${ppCfgCnt &gt; 0 ? INST_NAME_ptc . "_pp_cfg" : "NULL"}`'/>
+    </ConfigStruct>
+
+    <ConfigArray name='`${INST_NAME_ptc . "_dyn_cfg"}`' type='cy_stc_autanalog_ptcomp_comp_dyn_t' const='`${inFlash}`' public='true' include='true'>
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='8' include='`${(dynCfgCnt &gt; $idx{0})}`'>
+        <Member name='ninvInpMux' value='`${getExposedMember(ptcDyn$idx{1}, "ptc_dyn_compNonInvInpMux")}`' include='`${isBlockUsed(ptcDyn$idx{1})}`' />
+        <Member name='invInpMux' value='`${getExposedMember(ptcDyn$idx{1}, "ptc_dyn_compInvInpMux")}`' include='`${isBlockUsed(ptcDyn$idx{1})}`'/>
+      </ConfigStruct>
+    </ConfigArray>
+
+    <ConfigStruct name='`${INST_NAME_ptc . "_cfg"}`' type='cy_stc_autanalog_ptcomp_t' const='`${inFlash}`' public='true' include='true' >
+      <Member name='ptcompStaCfg' value='&amp;`${INST_NAME_ptc . "_sta_cfg"}`'/>
+      <Member name='ptcompDynCfgNum' value='`${dynCfgCnt}`U'/>
+      <Member name='ptcompDynCfgArr' value='`${INST_NAME_ptc . "_dyn_cfg"}`'/>
+    </ConfigStruct>
+
+  </ConfigFirmware>
+
+</PersonalityTemplate>

@@ -27,5 +27,7 @@
         "editor.defaultFormatter": "xaver.clang-format"
     },
     "cortex-debug.variableUseNaturalFormat": true,
+    "cortex-debug.openocdPath": "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/bin/openocd.exe",
+    "debug.toolBarLocation": "docked",
     // "clang-format.executable": "/bin/clang-format-16",
 }

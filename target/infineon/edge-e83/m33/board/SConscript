@@ -1,0 +1,79 @@
+import os
+import rtconfig
+from building import *
+
+Import("SDK_LIB")
+
+objs = []
+cwd = GetCurrentDir()
+list = os.listdir(cwd)
+
+# add general drivers
+src = Glob('*.c')
+
+path = [cwd]
+
+startup_path_prefix = SDK_LIB
+Tool_path = None
+index = "mtb-device-support-pse8xxgp"
+
+for filename in os.listdir(startup_path_prefix):
+    if index in filename:
+        Tool_path = os.path.join(startup_path_prefix, filename)
+
+
+
+CPPDEFINES = [
+    "BLHS_SUPPORT",
+    "COMPONENT_55500",
+    "COMPONENT_55500A1",
+    "COMPONENT_APP_KIT_PSE84_EVAL_EPC2",
+    "COMPONENT_CM33",
+    "COMPONENT_CM33_0",
+    "COMPONENT_CYW55513_MOD_PSE84_SOM",
+    "COMPONENT_Debug",
+    "COMPONENT_GCC_ARM",
+    "COMPONENT_GFXSS",
+    "COMPONENT_HCI_UART",
+    "COMPONENT_MTB_DEVICE_SUPPORT",
+    "COMPONENT_MTB_HAL",
+    "COMPONENT_MW_ASYNC_TRANSFER",
+    "COMPONENT_MW_BT_FW_IFX_CYW55500A1",
+    "COMPONENT_MW_CMSIS",
+    "COMPONENT_MW_CORE_LIB",
+    "COMPONENT_MW_CORE_MAKE",
+    "COMPONENT_MW_MTB_DSL_PSE8XXGP",
+    "COMPONENT_MW_MTB_IPC",
+    "COMPONENT_MW_MTB_SRF",
+    "COMPONENT_MW_SE_RT_SERVICES_UTILS",
+    "COMPONENT_NON_SECURE_DEVICE",
+    "COMPONENT_PSE84",
+    "COMPONENT_SM",
+    "COMPONENT_SOFTFP",
+    "COMPONENT_WIFI_INTERFACE_SDIO",
+    "COMPONENT_wlbga_iPA_sLNA_ANT0_LHL_XTAL_IN",
+    "CORE_NAME_CM33_0=1",
+    "CY_APPNAME_proj_cm33_ns",
+    "CYBSP_MCUBOOT_HEADER_SIZE=0x400",
+    "CYBSP_WIFI_WL_HOSTWAKE_DRIVE_MODE=MTB_HAL_GPIO_DRIVE_OPENDRAINDRIVESLOW",
+    "CYBSP_WIFI_WL_HOSTWAKE_INIT_STATE=WHD_TRUE",
+    "CY_PDL_FLASH_BOOT",
+    "CY_RETARGET_IO_CONVERT_LF_TO_CRLF",
+    "CY_SUPPORTS_DEVICE_VALIDATION",
+    "CY_TARGET_BOARD=APP_KIT_PSE84_EVAL_EPC2",
+    "CY_WIFI_COUNTRY=WHD_COUNTRY_UNITED_STATES",
+    "DEBUG",
+    "FLASH_BOOT",
+    "PSE846GPS2DBZC4A",
+    "TARGET_APP_KIT_PSE84_EVAL_EPC2",
+    "TRXV5",
+]
+
+
+group = DefineGroup("Drivers", src, depend=[""], CPPPATH=path, CPPDEFINES=CPPDEFINES)
+
+list = os.listdir(cwd)
+for item in list:
+    if os.path.isfile(os.path.join(cwd, item, 'SConscript')):
+        group = group + SConscript(os.path.join(item, 'SConscript'))
+Return("group")

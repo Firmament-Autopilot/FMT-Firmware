@@ -1,0 +1,405 @@
+{
+  "regions": [
+    {
+      "description": "UPGRADE_FLAGS",
+      "region": [["0x12000000", "32"]],
+      "operation": "return"
+    },
+    {
+      "description": "CM33_L1_BOOT_POLICY",
+      "region": [["0x12001000", "256"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "IAK_LITE_PUBLIC_KEY",
+      "region": [["0x120012EC", "69"]],
+      "operation": "return"
+    },
+    {
+      "description": "CM33_L1_BOOT",
+      "label": "CM33_L1_BOOT",
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"description": "serial", "value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"},
+        {"description": "serial", "value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "MAIN_NVM available for the user. Its base address and size is dynamic and depends on device secure category and CM33_L1_BOOT version programmed.",
+      "label": "USER_NVM",
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "SE_RT_SERVICES_EDC",
+      "region": [["0x13802000", "32768"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"},
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "SE_RT_SERVICES",
+      "region": [["0x1380A000", "131072"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"},
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "ASSET_HASH_LIST, FACTORY_HASH_LIST, TOC2",
+      "region": [["0x1382D000", "324"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "SECURE_HASH_LIST",
+      "region": [["0x1382D144", "128"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "Backup IFX_FW_INTEGRITY_KEY_REVOCATION",
+      "region": [["0x1382D1C4", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX_FW_ENCRYPTION_KEY_REVOCATION",
+      "region": [["0x1382D210", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX SE_RT_SERVICES NV Counter",
+      "region": [["0x1382D250", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup UDS NV Counter",
+      "region": [["0x1382D290", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "RMA_Trial_Counter",
+      "region": [["0x1382D2D0", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup Production REPROVISIONING_POLICY",
+      "region": [["0x1382D2F0", "128"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "Development CM33_L1_BOOT_HASH",
+      "region": [["0x1382D370", "32"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"description": "serial", "value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"},
+        {"description": "no-serial", "value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "Development OEM_ROT_KEY",
+      "region": [["0x1382D390", "69"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "OEM_POLICY",
+      "region": [["0x1382D3D5", "88"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "Development REPROVISIONING_POLICY",
+      "region": [["0x1382D42D", "36"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "SECURE_HASH",
+      "region": [["0x1382D451", "32"]],
+      "operation": "return"
+    },
+    {
+      "description": "SE_RT_SERVICES_HASH",
+      "region": [["0x1382D471", "32"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "PE_TE_SCRATCHPAD",
+      "region": [["0x1382D53A", "1024"]],
+      "operation": "return"
+    },
+    {
+      "description": "SE_RT_SERVICES_BASE_EDC",
+      "region": [["0x1382E000", "8192"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "SE_RT_SERVICES_BASE",
+      "region": [["0x13830000", "32768"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "RRAM_SE_BOOT_EDC",
+      "region": [["0x13838000", "6144"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "RRAM_SE_BOOT",
+      "region": [["0x13839800", "24576"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "FULL_TRIMS",
+      "region": [["0x1383F800", "800"]],
+      "operation": "return"
+    },
+    {
+      "description": "BASIC_TRIMS",
+      "region": [["0x1383FC04", "88"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX_ROT_KEY_REVOCATION",
+      "region": [["0x1383FC60", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX_RMA_MASTER_KEY_REVOCATION",
+      "region": [["0x1383FCA0", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup OEM_ROT_KEY_REVOCATION",
+      "region": [["0x1383FCE0", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "Backup DLM (RAM Application) NV Counter",
+      "region": [["0x1383FD20", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "TOC1, BOOT_DEVICE_CFG",
+      "region": [["0x1383FD60", "100"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "DIE_ID",
+      "region": [["0x13C2B000", "14"]],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_ID_TO",
+      "region": [["0x13C2B00E", "7"]],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_ID_MPN",
+      "region": [["0x13C2B015", "6"]],
+      "operation": "return"
+    },
+    {
+      "description": "L0_VERSION",
+      "region": [["0x13C2B01B", "20"]],
+      "operation": "return"
+    },
+    {
+      "description": "L1_VERSION",
+      "region": [["0x13C2B02F", "28"]],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_RT_CFG_PUBLIC",
+      "region": [["0x13C2B04B", "28"]],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_RT_CFG_PUBLIC_2",
+      "region": [["0x13C2B067", "512"]],
+      "operation": "return"
+    },
+    {
+      "description": "OEM_Chain_of_Trust",
+      "region": [["0x13C2BBCB", "5120"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "NVM reserved and padding area",
+      "region": [["0x1383FC5C", "4"], ["0x1383FDC4", "572"], ["0x1383FB20", "224"], ["0x1382D204", "12"],
+                 ["0x1382D53A", "1734"], ["0x1382AC00", "1024"], ["0x13C2B4CB", "1280"], ["0x13C2CFCB", "53"],
+                 ["0x12000020", "4064"], ["0x12001100", "423"], ["0x13C2B37B", "336"], ["0x13C2B4CB", "1280"],
+                 ["0x13C2BAEB", "224"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "DEV_DEVICE, IFX_ROT_KEY0, IFX_ROT_KEY1, IFX_RMA_MASTER_KEY0, IFX_RMA_MASTER_KEY1",
+      "region": [["0x50100200", "308"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "Production OEM_ROT_KEY0, Production OEM_ROT_KEY1",
+      "region": [["0x50100334", "156"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "IFX_ROT KEY_REVOCATION",
+      "region": [["0x501003D0", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_RMA_MASTER_KEY_REVOCATION",
+      "region": [["0x501003E0", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "OEM_ROT_KEY_REVOCATION",
+      "region": [["0x501003F0", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "DLM (RAM Application) NV Counter",
+      "region": [["0x50100400", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "PPROTECTED_NVM_LOCKABLE",
+      "region": [["0x50100410", "8"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "ASSET_HASH",
+      "region": [["0x50100418", "32"]],
+      "operation": "return"
+    },
+    {
+      "description": "SE_RT_SERVICES_BASE_HASH",
+      "region": [["0x50100438", "32"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "FACTORY_HASH",
+      "region": [["0x50100458", "32"]],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_POLICY",
+      "region": [["0x50100478", "16"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "IFX_REVOCATION_KEY, IFX_FW_INTEGRITY_KEY0, IFX_FW_INTEGRITY_KEY1",
+      "region": [["0x501004D0", "216"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "IFX_FW_INTEGRITY_KEY_REVOCATION",
+      "region": [["0x50100670", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_FW_ENCRYPTION_KEY_REVOCATION",
+      "region": [["0x50100680", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_SE_RT_SERVICES NV Counter",
+      "region": [["0x50100690", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "UDS NV Counter",
+      "region": [["0x501006A0", "16"]],
+      "operation": "return"
+    },
+    {
+      "description": "Production CM33_L1_BOOT_HASH",
+      "region": [["0x501006B0", "32"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {"description": "serial", "value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"},
+        {"description": "no-serial", "value": "1.0.0.0000", "hash": "0000000000000000000000000000000000000000000000000000000000000000"}
+      ]
+    },
+    {
+      "description": "Production REPROVISIONING_POLICY",
+      "region": [["0x501006D0", "36"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "OEM NV Counter",
+      "region": [["0x50101000", "64"]],
+      "operation": "return"
+    },
+    {
+      "description": "OTP reserved and padding area",
+      "region": [["0x501001FC", "4"], ["0x501004CD", "3"], ["0x501006F4", "2316"], ["0x50101040", "4032"]],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "description": "GENERAL_OTP",
+      "region": [["0x52204000", "5632"]],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "image": {
+    "path": "cyapp_prov_oem_signed_0.bin",
+    "address": "0x34008000"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "",
+    "optional": true
+  },
+  "dlm": {
+    "path": "cyapp_prov_oem_dlm.hex"
+  },
+  "out_results": {
+    "path": "output.bin",
+    "offset": "0x1c000"
+  },
+  "dfu_commands": {
+    "path": "prov_oem.mtbdfu"
+  },
+  "allowed_lcs": [
+    "NORMAL_PROVISIONED",
+    "SECURE"
+  ]
+}

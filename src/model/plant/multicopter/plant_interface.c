@@ -170,9 +170,9 @@ static void publish_sensor_data(uint32_t timestamp)
 
         /* tropospheric properties (0-11km) for standard atmosphere */
         const double T1 = 15.0 + 273.15; /* temperature at base height in Kelvin, [K] = [°C] + 273.15 */
-        const double a  = -6.5 / 1000;   /* temperature gradient in degrees per metre */
-        const double g  = 9.80665;       /* gravity constant in m/s/s */
-        const double R  = 287.05;        /* ideal gas constant in J/kg/K */
+        const double a  = -6.5 / 1000;    /* temperature gradient in degrees per metre */
+        const double g  = 9.80665;        /* gravity constant in m/s/s */
+        const double R  = 287.05;         /* ideal gas constant in J/kg/K */
         /* current pressure at MSL in kPa */
         double p1 = 101325.0 / 1000.0;
         /* measured pressure in kPa */

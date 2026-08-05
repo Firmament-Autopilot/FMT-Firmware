@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!--****************************************************************************
+* \file tdm_v2.cypersonality
+* \version 1.0
+*
+* \brief
+* TDM personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2023-24), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id="tdm" name="TDM" version="1.0" xmlns="http://cypress.com/xsd/cyhwpersonality_v8">
+  <Dependencies>
+    <IpBlock name="mxtdm">
+      <Version major="3" />
+      <Param name="GENERATED.STRUCTURES_MODELED" value="1" />
+    </IpBlock>
+    <Resource name="tdm\.tdm" />
+    <OperatingMode value="MCU"/>
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id="pdlDoc" name="Configuration Help" group="Overview" default="file:///`${cy_libs_path()}`/docs/html/group__group__tdm.html" linkText="Open TDM Documentation" visible="true" desc="Opens the Peripheral Driver Library Documentation" />
+
+    <!-- TX -->
+    <ParamBool id="txEnabled" name="Enable" group="TX" default="true" visible="true" editable="true" desc="Enables the transmitter" />
+    <ParamChoice id="txMode" name="Mode" group="TX" default="CY_TDM_DEVICE_MASTER" visible="`${txEnabled}`" editable="true" desc="Sets mode to master or slave">
+      <Entry name="Slave" value="CY_TDM_DEVICE_SLAVE" visible="true" />
+      <Entry name="Master" value="CY_TDM_DEVICE_MASTER" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="txclockselect" name="Clock Select" group="TX" default="CY_TDM_SEL_SRSS_CLK" visible="`${txEnabled}`" editable="true" desc="Set interface source clock: SRSS, MCLK_IN">
+      <Entry name="Interface Clock" value="CY_TDM_SEL_SRSS_CLK" visible="true" />
+      <Entry name="Interface Clock MCLK" value="CY_TDM_SEL_MCLK_IN" visible="true" />
+    </ParamChoice>
+    <ParamRange id="txclockDiv" name="Clock Divider" group="TX" default="16" min="1" max="256" resolution="1" visible="`${txEnabled}`" editable="true" desc="Sets the input Clock Divider. Set to an even value ({2, 4, 6, ..., 256}), to ensure a 50/50% duty cycle  clock." />
+
+    <ParamChoice id="txInterfaceMode" name="Interface Mode" group="TX" default="true" visible="true" editable="true" desc="Set interface transfer mode: I2S mode, TDM mode">
+      <Entry name="I2S mode" value="true" visible="true" />
+      <Entry name="TDM mode" value="false" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="txAlignment" name="Alignment Format" group="TX" default="CY_TDM_LEFT_DELAYED" visible="`${txEnabled}`" editable="true" desc="Set Alignment format: CY_TDM_LEFT_DELAYED, CY_TDM_LEFT, CY_TDM_RIGHT_DELAYED, CY_TDM_RIGHT">
+      <Entry name="Left-aligned delayed" value="CY_TDM_LEFT_DELAYED" visible="true" />
+      <Entry name="Left-aligned" value="CY_TDM_LEFT" visible="true" />
+      <Entry name="Right-aligned delayed" value="CY_TDM_RIGHT_DELAYED" visible="true" />
+      <Entry name="Right-aligned" value="CY_TDM_RIGHT" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="txsyncformat" name="Frame Sync" group="TX" default="CY_TDM_BIT_PERIOD" visible="`${txEnabled}`" editable="true" desc="Set interface transfer mode: CY_TDM_BIT_PERIOD, CY_TDM_CH_PERIOD">
+      <Entry name="Single Bit" value="CY_TDM_BIT_PERIOD" visible="true" />
+      <Entry name="Channel Length" value="CY_TDM_CH_PERIOD" visible="true" />
+    </ParamChoice>
+
+    <ParamRange id="txChannels" name="Channels" group="TX" default="2" min="1" max="8" resolution="1" visible="`${txEnabled}`" editable="true" desc="Number of channels per frame (2 is the only valid value for Left Justified and I2S modes)" />
+
+    <ParamChoice id="txChannelsEnabled" name="Channels Enabled" group="TX" default="0x3" visible="`${!txInterfaceMode &amp;&amp; txEnabled}`" editable="true" desc="Set channels enabled (Total 8 Channels can be enabled)">
+      <Entry name="1" value="0x1"  visible="true" />
+      <Entry name="2" value="0x3"  visible="true" />
+      <Entry name="3" value="0x7"  visible="true" />
+      <Entry name="4" value="0xF"  visible="true" />
+      <Entry name="5" value="0x1F" visible="true" />
+      <Entry name="6" value="0x3F" visible="true" />
+      <Entry name="7" value="0x7F" visible="true" />
+      <Entry name="8" value="0xFF" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="txChannelLength" name="Channel Size" group="TX" default="16" visible="`${!txInterfaceMode &amp;&amp; txEnabled}`" editable="true" desc="Set channel length in bits (32 bit is the only valid value for TDM modes)">
+      <Entry name="8" value="8" visible="true" />
+      <Entry name="16" value="16" visible="true" />
+      <Entry name="18" value="18" visible="true" />
+      <Entry name="20" value="20" visible="true" />
+      <Entry name="24" value="24" visible="true" />
+      <Entry name="32" value="32" visible="true" />
+    </ParamChoice>
+    <ParamChoice id="txWordLength" name="Word Size" group="TX" default="16" visible="`${!txInterfaceMode &amp;&amp; txEnabled}`" editable="true" desc="Set word length (in bits)">
+      <Entry name="8" value="8" visible="true" />
+      <Entry name="16" value="16" visible="true" />
+      <Entry name="18" value="18" visible="true" />
+      <Entry name="20" value="20" visible="true" />
+      <Entry name="24" value="24" visible="true" />
+      <Entry name="32" value="32" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="txsignalInput" name="Signal Input" group="TX" default="0" visible="false" editable="true" desc="Controls routing to the TX slave signalling inputs (FSYNC/SCK):'0': TX slave signaling independent from RX signaling: '1': TX slave signalling inputs driven by RX Slave: '2': TX slave signalling inputs driven by RX Master:">
+      <Entry name="0" value="0" visible="true" />
+      <Entry name="1" value="1" visible="true" />
+      <Entry name="2" value="2" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="txsyncFormatPolarity" name="Sync Format Polarity" group="TX" default="CY_TDM_SIGN" visible="`${txEnabled}`" editable="true" desc="Channel synchronization polarity">
+      <Entry name="Normal" value="CY_TDM_SIGN" visible="true" />
+      <Entry name="Inverted" value="CY_TDM_SIGN_INVERTED" visible="true" />
+    </ParamChoice>
+    <ParamChoice id="txSckoPolarity" name="Output Serial Clock Polarity" group="TX" default="CY_TDM_CLK" visible="`${txEnabled}`" editable="true" desc="Polarity of the output SCK signal (available only in master mode)">
+      <Entry name="Normal" value="CY_TDM_CLK" visible="true" />
+      <Entry name="Inverted" value="CY_TDM_CLK_INVERTED" visible="true" />
+    </ParamChoice>
+    <ParamRange id="txFifoTriggerLevel" name="FIFO Trigger Level" group="TX" default="0" min="0" max="255" resolution="1" visible="`${txEnabled}`" editable="true" desc="Set FIFO level to trigger an event (interrupt or DMA request)." />
+    <ParamBool id="txDmaTrigger" name="DMA Trigger" group="TX" default="false" visible="`${txEnabled}`" editable="true" desc="Enables DMA trigger" />
+
+    <!-- RX -->
+    <ParamBool id="rxEnabled" name="Enable" group="RX" default="true" visible="true" editable="true" desc="Enables the receiver" />
+    <ParamChoice id="rxMode" name="Mode" group="RX" default="CY_TDM_DEVICE_SLAVE" visible="`${rxEnabled}`" editable="true" desc="Sets mode to master or slave">
+      <Entry name="Slave" value="CY_TDM_DEVICE_SLAVE" visible="true" />
+      <Entry name="Master" value="CY_TDM_DEVICE_MASTER" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxclockselect" name="Clock Select" group="RX" default="CY_TDM_SEL_SRSS_CLK" visible="`${rxEnabled}`" editable="true" desc="Set interface source clock: SRSS, MCLK_IN">
+      <Entry name="Interface Clock" value="CY_TDM_SEL_SRSS_CLK" visible="true" />
+      <Entry name="Interface Clock MCLK" value="CY_TDM_SEL_MCLK_IN" visible="true" />
+    </ParamChoice>
+    <ParamRange id="rxclockDiv" name="Clock Divider" group="RX" default="16" min="1" max="256" resolution="1" visible="`${rxEnabled}`" editable="true" desc="Sets the input Clock Divider. Set to an even value ({2, 4, 6, ..., 256}), to ensure a 50/50% duty cycle  clock." />
+
+    <ParamChoice id="rxInterfaceMode" name="Interface Mode" group="RX" default="true" visible="false" editable="false" desc="Set interface transfer mode: I2S mode, TDM mode">
+      <Entry name="I2S mode" value="true" visible="true" />
+      <Entry name="TDM mode" value="false" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxAlignment" name="Alignment Format" group="RX" default="CY_TDM_LEFT_DELAYED" visible="`${rxEnabled}`" editable="true" desc="Set Alignment format: CY_TDM_LEFT_DELAYED, CY_TDM_LEFT, CY_TDM_RIGHT_DELAYED, CY_TDM_RIGHT">
+      <Entry name="Left-aligned delayed" value="CY_TDM_LEFT_DELAYED" visible="true" />
+      <Entry name="Left-aligned" value="CY_TDM_LEFT" visible="true" />
+      <Entry name="Right-aligned delayed" value="CY_TDM_RIGHT_DELAYED" visible="true" />
+      <Entry name="Right-aligned" value="CY_TDM_RIGHT" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxsyncformat" name="Frame Sync" group="RX" default="CY_TDM_BIT_PERIOD" visible="`${rxEnabled}`" editable="true" desc="Set interface transfer mode: CY_TDM_BIT_PERIOD, CY_TDM_CH_PERIOD">
+      <Entry name="Single Bit" value="CY_TDM_BIT_PERIOD" visible="true" />
+      <Entry name="Channel Length" value="CY_TDM_CH_PERIOD" visible="true" />
+    </ParamChoice>
+
+    <ParamRange id="rxChannels" name="Channels" group="RX" default="2" min="1" max="8" resolution="1" visible="`${rxEnabled}`" editable="true" desc="Number of channels per frame (2 is the only valid value for Left Justified and I2S modes)" />
+
+    <ParamChoice id="rxChannelsEnabled" name="Channels Enabled" group="RX" default="0x3" visible="`${!rxInterfaceMode &amp;&amp; rxEnabled}`" editable="true" desc="Set channels enabled (Total 8 Channels can be enabled)">
+      <Entry name="1" value="0x1"  visible="true" />
+      <Entry name="2" value="0x3"  visible="true" />
+      <Entry name="3" value="0x7"  visible="true" />
+      <Entry name="4" value="0xF"  visible="true" />
+      <Entry name="5" value="0x1F" visible="true" />
+      <Entry name="6" value="0x3F" visible="true" />
+      <Entry name="7" value="0x7F" visible="true" />
+      <Entry name="8" value="0xFF" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxChannelLength" name="Channel Size" group="RX" default="16" visible="`${!rxInterfaceMode &amp;&amp; rxEnabled}`" editable="true" desc="Set channel length in bits (32 bit is the only valid value for TDM modes)">
+      <Entry name="8" value="8" visible="true" />
+      <Entry name="16" value="16" visible="true" />
+      <Entry name="18" value="18" visible="true" />
+      <Entry name="20" value="20" visible="true" />
+      <Entry name="24" value="24" visible="true" />
+      <Entry name="32" value="32" visible="true" />
+    </ParamChoice>
+    <ParamChoice id="rxWordLength" name="Word Size" group="RX" default="16" visible="`${!rxInterfaceMode &amp;&amp; rxEnabled}`" editable="true" desc="Set word length (in bits)">
+      <Entry name="8" value="8" visible="true" />
+      <Entry name="16" value="16" visible="true" />
+      <Entry name="18" value="18" visible="true" />
+      <Entry name="20" value="20" visible="true" />
+      <Entry name="24" value="24" visible="true" />
+      <Entry name="32" value="32" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxsignalInput" name="Signal Input" group="RX" default="0" visible="false" editable="true" desc="Controls routing to the RX slave signalling inputs (FSYNC/SCK):'0': RX slave signaling independent from TX signaling: '1': RX slave signalling inputs driven by TX Slave: '2': RX slave signalling inputs driven by TX Master:">
+      <Entry name="0" value="0" visible="true" />
+      <Entry name="1" value="1" visible="true" />
+      <Entry name="2" value="2" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxsignExtended" name="Word Extension" group="RX" default="CY_ZERO_EXTEND" visible="`${rxEnabled}`" editable="true" desc="Set Word Extension mode: ZERO EXTEND, SIGN EXTEND">
+      <Entry name="ZERO EXTEND" value="CY_ZERO_EXTEND" visible="true" />
+      <Entry name="SIGN EXTEND" value="CY_SIGN_EXTEND" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxlateSample" name="Sample On" group="RX" default="false" visible="`${rxEnabled}`" editable="true" desc="Sample PCM bit value on rising edge or falling edge of receiver.">
+      <Entry name="Sample on Rising Edge" value="false" visible="true" />
+      <Entry name="Sample on Falling Edge" value="true" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="rxsyncFormatPolarity" name="Sync Format Polarity" group="RX" default="CY_TDM_SIGN" visible="`${rxEnabled}`" editable="true" desc="Channel synchronization polarity">
+      <Entry name="Normal" value="CY_TDM_SIGN" visible="true" />
+      <Entry name="Inverted" value="CY_TDM_SIGN_INVERTED" visible="true" />
+    </ParamChoice>
+    <ParamChoice id="rxSckoPolarity" name="Output Serial Clock Polarity" group="RX" default="CY_TDM_CLK" visible="`${rxEnabled}`" editable="true" desc="Polarity of the output SCK signal (available only in master mode)">
+      <Entry name="Normal" value="CY_TDM_CLK" visible="true" />
+      <Entry name="Inverted" value="CY_TDM_CLK_INVERTED" visible="true" />
+    </ParamChoice>
+    <ParamRange id="rxFifoTriggerLevel" name="FIFO Trigger Level" group="RX" default="0" min="0" max="`${255 - rxChannels}`" resolution="1" visible="`${rxEnabled}`" editable="true" desc="Set FIFO level to trigger an event (interrupt or DMA request). Should not be greater than [255 - (number of channels)]." />
+    <ParamBool id="rxDmaTrigger" name="DMA Trigger" group="RX" default="false" visible="`${rxEnabled}`" editable="true" desc="Enables DMA trigger" />
+
+    <!-- Connections -->
+
+    <ParamSignal port="tdm_tx_sck[0]" name="Tx Serial Clock" group="`${(txMode eq CY_TDM_DEVICE_MASTER) ? &quot;Outputs&quot; : &quot;Inputs&quot;}`" visible="`${txEnabled}`" desc="Tx serial clock (visible when Tx is enabled)." canBeEmpty="`${(txMode eq CY_TDM_DEVICE_MASTER) || !txEnabled}`" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="`${(txMode eq CY_TDM_DEVICE_MASTER) ? &quot;CY_GPIO_DM_STRONG_IN_OFF&quot; : &quot;CY_GPIO_DM_HIGHZ&quot;}`" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tdm_tx_fsync[0]" name="Tx Word Select"  group="`${(txMode eq CY_TDM_DEVICE_MASTER) ? &quot;Outputs&quot; : &quot;Inputs&quot;}`" visible="`${txEnabled}`" desc="Tx word select (visible when Tx is enabled)." canBeEmpty="`${(txMode eq CY_TDM_DEVICE_MASTER) || !txEnabled}`" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="`${(txMode eq CY_TDM_DEVICE_MASTER) ? &quot;CY_GPIO_DM_STRONG_IN_OFF&quot; : &quot;CY_GPIO_DM_HIGHZ&quot;}`" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tdm_tx_sd[0]" name="Tx Serial Data"   group="Outputs" visible="`${txEnabled}`" desc="Tx serial data output (visible when Tx is enabled)." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tdm_tx_mck[0]" name="Master Interface clock" group="`${(txMode eq CY_TDM_DEVICE_MASTER) ? &quot;Outputs&quot; : &quot;Inputs&quot;}`" visible="`${txEnabled}`" desc="Tx master interface clock (visible when Tx is enabled)." canBeEmpty="`${(txMode eq CY_TDM_DEVICE_MASTER) || !txEnabled}`" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="`${(txMode eq CY_TDM_DEVICE_MASTER) ? &quot;CY_GPIO_DM_STRONG_IN_OFF&quot; : &quot;CY_GPIO_DM_HIGHZ&quot;}`" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tdm_rx_sck[0]" name="Rx Serial Clock" group="`${(rxMode eq CY_TDM_DEVICE_MASTER) ? &quot;Outputs&quot; : &quot;Inputs&quot;}`" visible="`${rxEnabled}`" desc="Rx serial clock (visible when Rx is enabled)." canBeEmpty="`${(rxMode eq CY_TDM_DEVICE_MASTER) || !rxEnabled}`" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="`${(rxMode eq CY_TDM_DEVICE_MASTER) ? &quot;CY_GPIO_DM_STRONG_IN_OFF&quot; : &quot;CY_GPIO_DM_HIGHZ&quot;}`" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tdm_rx_fsync[0]" name="Rx Word Select"  group="`${(rxMode eq CY_TDM_DEVICE_MASTER) ? &quot;Outputs&quot; : &quot;Inputs&quot;}`" visible="`${rxEnabled}`" desc="Rx word select (visible when Rx is enabled)." canBeEmpty="`${(rxMode eq CY_TDM_DEVICE_MASTER) || !rxEnabled}`" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="`${(rxMode eq CY_TDM_DEVICE_MASTER) ? &quot;CY_GPIO_DM_STRONG_IN_OFF&quot; : &quot;CY_GPIO_DM_HIGHZ&quot;}`" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tdm_rx_sd[0]" name="Rx Serial Data"   group="Inputs"  visible="`${rxEnabled}`" desc="Rx serial data input (visible when Rx is enabled)." canBeEmpty="`${!rxEnabled}`" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="CY_GPIO_DM_HIGHZ" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tr_tx_req[0]" name="Tx DMA Transfer Request Signal" group="Outputs" visible="`${txDmaTrigger &amp;&amp; txEnabled}`" desc="Tx DMA transfer request signal (Available when Tx DMA trigger is enabled)." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="tr_rx_req[0]" name="Rx DMA Transfer Request Signal" group="Outputs" visible="`${rxDmaTrigger &amp;&amp; rxEnabled}`" desc="Rx DMA transfer request signal (Available when Rx DMA trigger is enabled)." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="ERROR" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+
+    <ParamSignal port="clk_if_srss[0]" name="Interface Clock" group="Inputs" visible="true" desc="Clock Input signal for TDM interface." canBeEmpty="false" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+
+    <ParamString id="sourceClock" name="sourceClock" group="Internal" default="`${getBlockFromSignal(&quot;clk_if_srss[0]&quot;)}`" visible="false" editable="false" desc="Source Clock Resource" />
+
+    <ParamBool id="inFlash" name="Store Config in Flash" group="Advanced" default="true" visible="true" editable="true" desc="Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false)." />
+
+    <!-- TDM instance number -->
+    <ParamString id="InstNumber" name="Instance Number" group="Internal" default="`${getInstNumber(&quot;tdm&quot;, 1)}`" visible="false" editable="false" desc="TDM Instance number." />
+    <ParamBool id="hasTDM1" name="hasTDM1" group="Internal" default="`${hasBlock(&quot;tdm[1]&quot;)}`" visible="false" editable="false" desc="Check whether device has more than one TDM instance" />
+
+    <!-- Peripheral clock divider connection -->
+    <ParamBool id="pclkOk" name="PCLK Valid" group="Internal" default="`${hasConnection(&quot;clk_if_srss&quot;, 0) &amp;&amp; isBlockUsed(sourceClock)}`" visible="false" editable="false" desc="Checks whether there is a PCLK connected and enabled." />
+    <ParamString id="pclkDst" name="PCLK Destination" group="Internal" default="PCLK_TDM0_CLK_IF_SRSS`${InstNumber}`" visible="false" editable="false" desc="Generates PCLK connection define." />
+
+  </Parameters>
+
+  <DRCs>
+    <!-- RX direction -->
+    <DRC type="ERROR" text="RX Word Length value must be less than or equal RX Channel Length." condition="`${rxEnabled &amp;&amp; rxWordLength &gt; rxChannelLength}`" />
+    <DRC type="ERROR" text="I2S mode, No of Channels should not exceed 2." condition="`${rxInterfaceMode &amp;&amp; rxChannels &gt; &#50;}`" />
+
+    <!-- TX direction -->
+    <DRC type="ERROR" text="TX Word Length value must be less than or equal TX Channel Length." condition="`${txEnabled &amp;&amp; txWordLength &gt; txChannelLength}`" />
+    <DRC type="ERROR" text="I2S mode, No of Channels should not exceed 2." condition="`${txInterfaceMode &amp;&amp; txChannels &gt; &#50;}`" />
+
+    <!-- ACLK Divider -->
+    <DRC type="ERROR" text="To achieve 50 percent duty cycle a minimum of divide by 2 of assigned divider is required." condition="`${getExposedMember(sourceClock, &quot;divider&quot;) == 1}`" />
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value="cy_tdm.h" include="true" />
+    <ConfigInclude value="cy_sysclk.h" include="`${pclkOk}`" />
+
+    <ConfigDefine name="`${INST_NAME}`_HW" value="TDM_STRUCT`${InstNumber}`" public="true" include="true" />
+    <ConfigDefine name="`${INST_NAME}`_TX_HW" value="TDM_STRUCT`${InstNumber}`_TX" public="true" include="true" />
+    <ConfigDefine name="`${INST_NAME}`_RX_HW" value="TDM_STRUCT`${InstNumber}`_RX" public="true" include="true" />
+    <ConfigDefine name="`${INST_NAME}`_TX_IRQ" value="tdm_0_interrupts_tx_`${InstNumber}`_IRQn" public="true" include="true" />
+    <ConfigDefine name="`${INST_NAME}`_RX_IRQ" value="tdm_0_interrupts_rx_`${InstNumber}`_IRQn" public="true" include="true" />
+
+    <ConfigStruct name="`${INST_NAME . &quot;_tx_config&quot;}`" type="cy_stc_tdm_config_tx_t" const="false" public="true" include="true" >
+      <Member name="enable"                value="`${txEnabled}`" />
+      <Member name="masterMode"            value="`${txMode}`" />
+      <Member name="wordSize"              value="CY_TDM_SIZE_`${txWordLength}`" />
+      <Member name="format"                value="`${txAlignment}`" />
+      <Member name="clkDiv"                value="`${txclockDiv}`" />
+      <Member name="clkSel"                value="`${(txclockselect eq CY_TDM_SEL_MCLK_IN) ? txclockselect : txclockselect . InstNumber}`" />
+      <Member name="sckPolarity"           value="`${txSckoPolarity}`" />
+      <Member name="fsyncPolarity"         value="`${txsyncFormatPolarity}`" />
+      <Member name="fsyncFormat"           value="`${txsyncformat}`" />
+      <Member name="channelNum"            value="`${txChannels}`" />
+      <Member name="channelSize"           value="`${txChannelLength}`" />
+      <Member name="fifoTriggerLevel"      value="`${txFifoTriggerLevel}`" />
+      <Member name="chEn"                  value="`${txChannelsEnabled}`" />
+      <Member name="signalInput"           value="`${txsignalInput}`" />
+      <Member name="i2sMode"               value="`${txInterfaceMode}`" />
+
+
+    </ConfigStruct>
+
+    <ConfigStruct name="`${INST_NAME . &quot;_rx_config&quot;}`" type="cy_stc_tdm_config_rx_t" const="false" public="true" include="true" >
+      <Member name="enable"                value="`${rxEnabled}`" />
+      <Member name="masterMode"            value="`${rxMode}`" />
+      <Member name="wordSize"              value="CY_TDM_SIZE_`${rxWordLength}`" />
+      <Member name="signExtend"            value="`${rxsignExtended}`" />
+      <Member name="format"                value="`${rxAlignment}`" />
+      <Member name="clkDiv"                value="`${rxclockDiv}`" />
+      <Member name="clkSel"                value="`${(rxclockselect eq CY_TDM_SEL_MCLK_IN) ? rxclockselect : rxclockselect . InstNumber}`" />
+      <Member name="sckPolarity"           value="`${rxSckoPolarity}`" />
+      <Member name="fsyncPolarity"         value="`${rxsyncFormatPolarity}`" />
+      <Member name="lateSample"            value="`${rxlateSample}`" />
+      <Member name="fsyncFormat"           value="`${rxsyncformat}`" />
+      <Member name="channelNum"            value="`${rxChannels}`" />
+      <Member name="channelSize"           value="`${rxChannelLength}`" />
+      <Member name="fifoTriggerLevel"      value="`${rxFifoTriggerLevel}`" />
+      <Member name="chEn"                  value="`${rxChannelsEnabled}`" />
+      <Member name="signalInput"           value="`${rxsignalInput}`" />
+      <Member name="i2sMode"               value="`${rxInterfaceMode}`" />
+
+    </ConfigStruct>
+
+    <ConfigStruct name="`${INST_NAME}`_config" type="cy_stc_tdm_config_t" const="true" public="true" include="true"  >
+      <Member name="tx_config" value="&amp;`${INST_NAME . &quot;_tx_config&quot;}`" />
+      <Member name="rx_config" value="&amp;`${INST_NAME . &quot;_rx_config&quot;}`" />
+    </ConfigStruct>
+
+    <ConfigInstruction purpose="INITIALIZE" value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_TDM0_PERI_NR, CY_MMIO_TDM0_GROUP_NR, CY_MMIO_TDM0_SLAVE_NR, CY_MMIO_TDM0_CLK_HF_NR);" include="true" guard="defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)" />
+    <ConfigInstruction purpose="INITIALIZE" value="Cy_SysClk_PeriPclkAssignDivider(`${pclkDst}`, `${getExposedMember(sourceClock, &quot;clockSel&quot;)}`);" include="`${pclkOk}`"  />
+
+  </ConfigFirmware>
+
+</Personality>

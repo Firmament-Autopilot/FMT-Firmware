@@ -1,0 +1,133 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "OEM Provisioning Schema",
+    "type": "object",
+    "required": [
+        "policy",
+        "oem_public_key",
+        "provisioning_key",
+        "code_encryption_key",
+        "nv_counter"
+    ],
+    "properties": {
+        "policy": {
+            "type": "object",
+            "required": [
+                "platform",
+                "version",
+                "type"
+            ],
+            "properties": {
+                "platform": {
+                    "type": "string",
+                    "const": "cyw559xx"
+                },
+                "version": {
+                    "type": "number"
+                },
+                "type": {
+                    "type": "string",
+                    "const": "oem_provisioning"
+                }
+            }
+        },
+        "oem_public_key": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "provisioning_key": {
+            "type": "object",
+            "required": [
+                "type",
+                "data"
+            ],
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "enum": [
+                                "ASSET_NO_KEY",
+                                "ASSET_PLAIN_KEY"
+                            ]
+                        }
+                    }
+                },
+                "data": {
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "code_encryption_key": {
+            "type": "object",
+            "required": [
+                "type",
+                "data"
+            ],
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "enum": [
+                                "ASSET_NO_KEY",
+                                "ASSET_PLAIN_KEY"
+                            ]
+                        }
+                    }
+                },
+                "data": {
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "nv_counter": {
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

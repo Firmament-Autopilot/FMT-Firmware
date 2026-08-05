@@ -1,0 +1,291 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_adc_gpio-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* SAR ADC GPIO channels personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_adc_gpio_channel' name='SAR ADC GPIO Channel' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <PhysicalResource ipblock='mxs22lppass' version='1'>
+    <PhysicalResource type='sar'>
+      <VirtualResourceDefinition type='gpiochan'
+                                 display_name='GPIO Channel $idx'
+                                 display_path='$display_path{1}/$display_name{1}/GPIO Channels'
+                                 display_mode='DYNAMIC'
+                                 count='8'/>
+    </PhysicalResource>
+  </PhysicalResource>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.sar\.gpiochan'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='sar_gpio_nonInvPin'                    paramId='sar_gpio_nonInvPin' />
+    <ExposedMember key='sar_gpio_invPin'                       paramId='sar_gpio_invPin' />
+    <ExposedMember key='sar_gpio_pseudoDiffMode'               paramId='pseudoDifferentialEnable' />
+    <ExposedMember key='sar_gpio_resultFormat'                 paramId='sar_gpio_resultFormat' />
+    <ExposedMember key='sar_gpio_nonInvertingInputCoefficient' paramId='sar_gpio_nonInvertingInputCoefficient' />
+    <ExposedMember key='sar_gpio_accumulationShift'            paramId='sar_gpio_accumulationShift' />
+    <ExposedMember key='sar_gpio_invertingInputCoefficient'    paramId='sar_gpio_invertingInputCoefficient' />
+    <ExposedMember key='sar_gpio_limitDetectionSelect'         paramId='sar_gpio_limitDetectionSelect' />
+    <ExposedMember key='sar_gpio_fifoSelect'                   paramId='sar_gpio_fifoSelect' />
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_ac'
+                 name='inst_ac'
+                 group='Internal'
+                 default='`${getInstNumber("ac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "]"}`'/>
+
+    <ParamString id='resource_fifo'
+                 name='resource_fifo'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].fifo[0]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='operatingMode' name='operatingMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_ac, "opMode")}`'/>
+    <ParamString id='accMode' name='accMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_accumulationMode")}`'/>
+    <ParamString id='accShiftMode' name='accShiftMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_accumulationShiftMode")}`'/>
+    <ParamString id='limitDetection' name='limitDetection' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_limitDetection")}`'/>
+    <ParamString id='offsetAndGainCorrection' name='offsetAndGainCorrection' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_offsetAndGainCorrection")}`'/>
+    <ParamString id='fifoCount' name='fifoCount' group='Internal' visible='false' desc='' editable='false' default='`${(isBlockUsed(resource_fifo) ? getExposedMember(resource_fifo, "numFifos") : 0)}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false'
+                 default='GPIO Channel Configuration'/>
+
+    <ParamBool id='pseudoDifferentialEnable'
+               name='Pseudo-Differential Enable'
+               group='`${rootGroupName}`'
+               visible='`${(operatingMode eq "HighSpeed")}`'
+               editable='true'
+               desc='Enable Pseudo-Differential Conversions'
+               default='false'/>
+
+    <ParamChoice id='sar_gpio_nonInvPin'
+                 name='Non-Inverting Pin Input'
+                 group='`${rootGroupName}`'
+                 visible='`${(operatingMode eq "HighSpeed")}`'
+                 editable='true'
+                 desc='Non-Inverting Input (direct pin connection, one sampler per pin, unbuffered). Reserve and configure the corresponding pin in Autonomous Analog tab.'
+                 default='CY_AUTANALOG_SAR_PIN_GPIO0'>
+      <Entry name='SAR / PTComp Pin $idx' value='CY_AUTANALOG_SAR_PIN_GPIO$idx' visible='`${getExposedMember("pass[0]", "ptc_pin$idx")}`' repeatCount='8' />
+    </ParamChoice>
+
+    <ParamChoice id='sar_gpio_invPin'
+                 name='Inverting Pin Input'
+                 group='`${rootGroupName}`'
+                 visible='`${(operatingMode eq "HighSpeed") &amp;&amp; (pseudoDifferentialEnable)}`'
+                 editable='true'
+                 desc='Inverting Input (direct pin connection, one sampler per pin, unbuffered). Reserve and configure the corresponding pin in Autonomous Analog tab.'
+                 default='CY_AUTANALOG_SAR_PIN_GPIO0'>
+      <Entry name='SAR / PTComp Pin $idx' value='CY_AUTANALOG_SAR_PIN_GPIO$idx' visible='`${getExposedMember("pass[0]", "ptc_pin$idx")}`' repeatCount='8' />
+    </ParamChoice>
+
+    <ParamChoice id='sar_gpio_resultFormat'
+                 name='Result Format'
+                 group='`${rootGroupName}`'
+                 visible='`${(operatingMode eq "HighSpeed")}`'
+                 editable='true'
+                 desc='Unsigned or two&apos;s complement (signed) mode'
+                 default='false'>
+      <Entry name='Unsigned' value='false' visible='true'/>
+      <Entry name='Signed'   value='true'  visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='sar_gpio_accumulationShift'
+               name='Accumulation Shift'
+               group='`${rootGroupName}`'
+               visible='`${(operatingMode eq "HighSpeed") &amp;&amp; (accMode ne "CY_AUTANALOG_SAR_ACC_DISABLED")}`'
+               editable='true'
+               desc='Enable shifting the accumulated result to `${(accShiftMode) ? "16" : "12"}`-bit resolution.'
+               default='false'/>
+
+    <ParamChoice id='sar_gpio_limitDetectionSelect'
+                 name='Limit Detection Select'
+                 group='`${rootGroupName}`'
+                 visible='`${(operatingMode eq "HighSpeed") &amp;&amp; (limitDetection)}`'
+                 editable='true'
+                 desc='Select the limit condition and thresholds to generate trigger/interrupt'
+                                    default='CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED'>
+      <Entry name='Disabled'          value='CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED' visible='true'/>
+      <Entry name='Limit Detect $idx' value='CY_AUTANALOG_SAR_LIMIT_STATUS_STC$idx'  visible='true' repeatCount='4'/>
+    </ParamChoice>
+
+    <ParamString id='gpioDataLimitDetectionChoice'
+                 name='gpioDataLimitDetectionChoice'
+                 group='Internal'
+                 desc=''
+                 visible='false'
+                 editable='false'
+                 default='`${sar_gpio_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC0 ? 0 :
+                             sar_gpio_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC1 ? 1 :
+                             sar_gpio_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC2 ? 2 :
+                             sar_gpio_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC3 ? 3 : -1}`'/>
+
+    <ParamString id='gpioDataLimitDetectionRangeCondition'
+                 name='gpioDataLimitDetectionRangeCondition'
+                 group='Internal'
+                 visible='false'
+                 editable='false'
+                 desc=''
+                 default='`${getExposedMember(resource_sar, "sar_limitCondition" . gpioDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='gpioDataLimitDetectionLowerThreshold'
+                name='gpioDataLimitDetectionLowerThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc=''
+                default='`${getExposedMember(resource_sar, "sar_lowerThreshold" . gpioDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='gpioDataLimitDetectionUpperThreshold'
+                name='gpioDataLimitDetectionUpperThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc=''
+                default='`${getExposedMember(resource_sar, "sar_upperThreshold" . gpioDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='gpioDataLimitDetectionRangeCondition_Info'
+                 name='Limit Condition'
+                 group='`${rootGroupName}`'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${operatingMode eq "HighSpeed" &amp;&amp; limitDetection &amp;&amp; sar_gpio_limitDetectionSelect ne CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED}`'
+                 editable='false'
+                 default='`${(gpioDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_BELOW") ? "ADC Data &lt; " . gpioDataLimitDetectionLowerThreshold . "" :
+                             (gpioDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_ABOVE") ? "ADC Data &gt; " . gpioDataLimitDetectionUpperThreshold . "" :
+                             (gpioDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_INSIDE") ? "" . gpioDataLimitDetectionLowerThreshold . " &lt;= ADC Data &lt; " . gpioDataLimitDetectionUpperThreshold . "" :
+                             (gpioDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_OUTSIDE") ? "ADC Data &lt; " . gpioDataLimitDetectionLowerThreshold . " or ADC Data &gt;= " . gpioDataLimitDetectionUpperThreshold . "" :
+                             "N/A"}`'/>
+
+    <ParamChoice id='sar_gpio_fifoSelect'
+                 name='FIFO Select'
+                 group='`${rootGroupName}`'
+                 visible='`${isBlockUsed(resource_fifo) &amp;&amp; (operatingMode eq "HighSpeed")}`'
+                 editable='`${isBlockUsed(resource_fifo) &amp;&amp; (operatingMode eq "HighSpeed")}`'
+                 desc=''
+                 default='CY_AUTANALOG_FIFO_DISABLED'>
+      <Entry name='Disabled' value='CY_AUTANALOG_FIFO_DISABLED' visible='true'/>
+      <Entry name='FIFO $idx'
+             value='CY_AUTANALOG_FIFO_SELECT$idx'
+             visible='`${($idx &lt; fifoCount)}`' repeatCount='8'/>
+    </ParamChoice>
+
+    <ParamChoice id='sar_gpio_nonInvertingInputCoefficient'
+                 name='Non-Inverting Input Coefficient'
+                 group='`${rootGroupName}`'
+                 visible='`${(operatingMode eq "HighSpeed") &amp;&amp; (offsetAndGainCorrection)}`'
+                 editable='true'
+                 desc='Gain and Offset Correction Coefficients of the Non-Inverting Input'
+                                   default='CY_AUTANALOG_SAR_CH_COEFF_DISABLED'>
+      <Entry name='Disabled'         value='CY_AUTANALOG_SAR_CH_COEFF_DISABLED' visible='true'/>
+      <Entry name='Coefficient $idx' value='CY_AUTANALOG_SAR_CH_COEFF$idx'      visible='true' repeatCount='8'/>
+    </ParamChoice>
+
+    <ParamChoice id='sar_gpio_invertingInputCoefficient'
+                 name='Inverting Input Coefficient'
+                 group='`${rootGroupName}`'
+                 visible='`${(((operatingMode eq "HighSpeed") &amp;&amp; (offsetAndGainCorrection)) &amp;&amp; pseudoDifferentialEnable)}`'
+                 editable='true'
+                 desc='Gain and Offset Correction Coefficients of the Inverting Input'
+                                   default='CY_AUTANALOG_SAR_CH_COEFF_DISABLED'>
+      <Entry name='Disabled'         value='CY_AUTANALOG_SAR_CH_COEFF_DISABLED' visible='true'/>
+      <Entry name='Coefficient $idx' value='CY_AUTANALOG_SAR_CH_COEFF$idx'      visible='true' repeatCount='8'/>
+    </ParamChoice>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure a parent resource for ADC GPIO Channels.' condition='`${!isBlockUsed(resource_sar)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_sar}`' value='lppass_adc-1.0' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware/>
+</PersonalityTemplate>
