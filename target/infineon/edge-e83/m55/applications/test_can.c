@@ -31,7 +31,7 @@ static rt_err_t can_rx_ind(rt_device_t dev, rt_size_t size)
 
 static void can_dump_msg(const char* prefix, const can_msg* msg)
 {
-    uint32_t id = (msg->id_type == CAN_ID_EXTENDED) ? msg->ext_id : msg->std_id;
+    uint32_t id = msg->msg_id;
 
     rt_kprintf("%s ID:0x%08lX Type:%s Len:%ld Data:",
                prefix,
@@ -184,10 +184,10 @@ static int can_test_send(int argc, char** argv, bool ext_id)
 
     if (ext_id) {
         msg.id_type = CAN_ID_EXTENDED;
-        msg.ext_id = id & 0x1FFFFFFFUL;
+        msg.msg_id = id & 0x1FFFFFFFUL;
     } else {
         msg.id_type = CAN_ID_STANDARD;
-        msg.std_id = id & 0x7FFUL;
+        msg.msg_id = id & 0x7FFUL;
     }
 
     msg.frame_type = CAN_FRAME_DATA;

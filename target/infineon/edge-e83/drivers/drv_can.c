@@ -154,11 +154,9 @@ static void ifx_canfd_fill_msg_from_rx(const cy_stc_canfd_rx_buffer_t* rx, can_m
     msg->frame_type = (rx->r0_f->rtr == CY_CANFD_RTR_REMOTE_FRAME) ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
 
     if (msg->id_type == CAN_ID_EXTENDED) {
-        msg->ext_id = rx->r0_f->id & 0x1FFFFFFFUL;
-        msg->std_id = 0U;
+        msg->msg_id = rx->r0_f->id & 0x1FFFFFFFUL;
     } else {
-        msg->std_id = rx->r0_f->id & 0x7FFUL;
-        msg->ext_id = 0U;
+        msg->msg_id = rx->r0_f->id & 0x7FFUL;
     }
 
     msg->data_len = ifx_canfd_dlc_to_len(rx->r1_f->dlc);
@@ -409,9 +407,9 @@ static int ifx_canfd_sendmsg(can_dev_t can, const can_msg_t msg)
     obj->tx_t0.rtr = (msg->frame_type == CAN_FRAME_REMOTE) ? CY_CANFD_RTR_REMOTE_FRAME : CY_CANFD_RTR_DATA_FRAME;
 
     if (msg->id_type == CAN_ID_EXTENDED) {
-        id = msg->ext_id & 0x1FFFFFFFUL;
+        id = msg->msg_id & 0x1FFFFFFFUL;
     } else {
-        id = msg->std_id & 0x7FFUL;
+        id = msg->msg_id & 0x7FFUL;
     }
     obj->tx_t0.id = id;
 
