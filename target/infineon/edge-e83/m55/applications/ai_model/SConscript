@@ -32,7 +32,7 @@ if missing_headers:
 else:
     group = DefineGroup('MotorFaultAIModel',
                         src,
-                        depend=[''],
+                        depend=['BSP_USING_DEEPCRAFT_AI'],
                         CPPPATH=path,
                         CPPDEFINES=[
                             'COMPONENT_ML_TFLM',
