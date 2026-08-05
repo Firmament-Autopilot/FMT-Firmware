@@ -37,6 +37,7 @@ extern "C" {
 
 #define CAN_FILTER_TYPE_MASK  ((uint32_t)0x00000001)
 #define CAN_FILTER_TYPE_RANGE ((uint32_t)0x00000002)
+#define CAN_FILTER_TYPE_DUAL  ((uint32_t)0x00000003)
 
 /* Default config for serial_configure structure */
 #define CAN_DEFAULT_CONFIG                       \
@@ -46,18 +47,16 @@ extern "C" {
 
 typedef struct
 {
-    uint32_t std_id;     /*!< Specifies the standard identifier.
-                             This parameter must be a number between Min_Data = 0 and Max_Data = 0x7FF */
-    uint32_t ext_id;     /*!< Specifies the extended identifier.
-                             This parameter must be a number between Min_Data = 0 and Max_Data = 0x1FFFFFFF */
+    uint32_t msg_id;     /*!< Specifies the message identifier (standard/extended).
+                             This parameter must be a number between Min_Data = 0 and Max_Data = 0x7FF (0x1FFFFFFF for extended) */
     uint32_t id_type;    /*!< Specifies the type of identifier for the message that will be transmitted.
                           This parameter can be a value of @ref CAN_Identifier_Type */
     uint32_t frame_type; /*!< Specifies the type of frame for the message that will be transmitted.
                        This parameter can be a value of @ref CAN_remote_transmission_request */
     uint32_t data_len;   /*!< Specifies the length of the frame that will be transmitted.
-                         This parameter must be a number between Min_Data = 0 and Max_Data = 8 */
-    uint8_t data[8];     /*!< Contains the data to be transmitted.
-                              This parameter must be a number between Min_Data = 0 and Max_Data = 0xFF */
+                         This parameter must be a number between Min_Data = 0 and Max_Data = 8 (64 for FDCAN) */
+    uint8_t data[64];    /*!< Contains the data to be transmitted.
+                             This parameter must be a number between Min_Data = 0 and Max_Data = 0xFF */
 } can_msg, *can_msg_t;
 
 struct can_configure {

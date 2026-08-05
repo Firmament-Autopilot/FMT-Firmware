@@ -71,6 +71,15 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { NULL } /* NULL indicate the end */
 };
 
+bool get_device_uid(uint32_t uid[3])
+{
+    uid[0] = LL_GetUID_Word0();
+    uid[1] = LL_GetUID_Word1();
+    uid[2] = LL_GetUID_Word2();
+
+    return true;
+}
+
 /**
  * @brief Enable on-board device power supply
  *

@@ -70,6 +70,15 @@ static const struct dfs_mount_tbl mnt_table[] = {
 
 static toml_table_t* __toml_root_tab = NULL;
 
+bool get_device_uid(uint32_t uid[3])
+{
+    uid[0] = LL_GetUID_Word0();
+    uid[1] = LL_GetUID_Word1();
+    uid[2] = LL_GetUID_Word2();
+
+    return true;
+}
+
 static void MPU_Config(void)
 {
     MPU_Region_InitTypeDef MPU_InitStruct = { 0 };

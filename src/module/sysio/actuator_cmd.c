@@ -131,7 +131,7 @@ fmt_err_t send_actuator_cmd(void)
             continue;
         }
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
+#if defined(FMT_SIM_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
         /* write actuator command */
         if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
             err = FMT_ERROR;

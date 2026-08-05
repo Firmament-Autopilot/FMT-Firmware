@@ -25,6 +25,7 @@
 MCN_DEFINE(gcs_cmd, sizeof(GCS_Cmd_Bus));
 MCN_DECLARE(fms_output);
 
+static bool initialized = false;
 static uint32_t gcs_cmd_buffer[20];
 static float gcs_cmd_param_buffer[20 * 7];
 static ringbuffer* gcs_cmd_rb;
@@ -148,7 +149,7 @@ fmt_err_t gcs_set_mode(PilotMode mode)
     if ((fms_out.mode == PilotMode_Mission || fms_out.mode == PilotMode_Offboard)
         && fms_out.mode == mode && fms_out.state == VehicleState_Hold) {
         /* When vehicle is in auto mode (mission,offboard), reset the mode would trigger FMS_Cmd_Continue.
-           e.g, When mission is paused, the vehicle would enter hold mode (state = VehicleState_Hold), 
+           e.g, When mission is paused, the vehicle would enter hold mode (state = VehicleState_Hold),
            however, the mode is still PilotMode_Mission, so the mode would not change when user try
            to set mode to Mission and continue. Therefore, we send FMS_Cmd_Continue instead to continue
            the mission mode. */
@@ -166,6 +167,10 @@ fmt_err_t gcs_cmd_collect(void)
     static uint32_t last_cmd_timestamp = 0;
     uint8_t updated = 0;
     uint32_t time_now = systime_now_ms();
+
+    if (initialized == false) {
+        return FMT_ENOSYS;
+    }
 
     if (ringbuffer_getlen(gcs_mode_rb) >= sizeof(gcs_cmd.mode)) {
         ringbuffer_get(gcs_mode_rb, (uint8_t*)&gcs_cmd.mode, sizeof(gcs_cmd.mode));
@@ -216,6 +221,8 @@ fmt_err_t gcs_cmd_init(void)
 
     fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL);
     FMT_ASSERT(fms_out_nod != NULL);
+
+    initialized = true;
 
     return FMT_EOK;
 }

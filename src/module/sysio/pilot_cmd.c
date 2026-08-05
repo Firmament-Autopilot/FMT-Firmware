@@ -32,6 +32,7 @@ pilot_mode_config* pilotModes = NULL;
 pilot_event_cmd_t* pilotEventCmds = NULL;
 pilot_status_cmd_t* pilotStatusCmds = NULL;
 
+static bool initialized = false;
 static rt_device_t rcDev;
 static uint8_t stickMapping[4];
 static uint8_t auxMapping[4];
@@ -304,7 +305,7 @@ fmt_err_t pilot_cmd_collect(void)
     uint8_t update = 0;
     rc_dev_t rc = (rc_dev_t)rcDev;
 
-    if (rcDev == NULL) {
+    if (rcDev == NULL || initialized == false) {
         /* no rc device */
         return FMT_ENOTHANDLE;
     }
@@ -423,6 +424,8 @@ fmt_err_t pilot_cmd_init(void)
     FMT_CHECK(mcn_advertise(MCN_HUB(pilot_cmd), echo_pilot_cmd));
     FMT_CHECK(mcn_advertise(MCN_HUB(rc_channels), echo_rc_channels));
     FMT_CHECK(mcn_advertise(MCN_HUB(rc_trim_channels), echo_rc_channels));
+
+    initialized = true;
 
     return FMT_EOK;
 }

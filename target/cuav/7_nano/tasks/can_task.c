@@ -37,10 +37,10 @@ void task_can_entry(void* parameter)
     /* main loop */
     while (1) {
         while (rt_device_read(can_dev, RT_WAITING_NO, &msg, 1) > 0) {
-            printf("can recv msg, id:0x%x, data:%x,%x,%x,%x,%x,%x,%x,%x\n", msg.std_id, msg.data[0], msg.data[1], msg.data[2], msg.data[3], msg.data[4], msg.data[5], msg.data[6], msg.data[7]);
+            printf("can recv msg, id:0x%x, data:%x,%x,%x,%x,%x,%x,%x,%x\n", msg.msg_id, msg.data[0], msg.data[1], msg.data[2], msg.data[3], msg.data[4], msg.data[5], msg.data[6], msg.data[7]);
         }
 
-        msg.std_id = 0x100;
+        msg.msg_id = 0x100;
         msg.id_type = CAN_ID_STANDARD;
         msg.frame_type = CAN_FRAME_DATA;
         msg.data_len = 8;
