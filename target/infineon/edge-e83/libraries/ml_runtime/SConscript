@@ -93,7 +93,7 @@ libs = ['tensorflow-microlite']
 
 group = DefineGroup('InfineonMLRuntime',
                     src,
-                    depend=[''],
+                    depend=['BSP_USING_DEEPCRAFT_AI'],
                     CPPPATH=path,
                     LOCAL_CPPPATH=path,
                     CPPDEFINES=cppdefines,
