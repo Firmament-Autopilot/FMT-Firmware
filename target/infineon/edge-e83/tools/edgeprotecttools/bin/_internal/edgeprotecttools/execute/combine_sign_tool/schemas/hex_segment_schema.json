@@ -1,0 +1,76 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "hex-segment"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "Input hex file to containing the segment to extract",
+                        "type": "string"
+                    },
+                    "address": {
+                        "title": "Address of the segment that has to be extracted",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    }
+                },
+                "required": [
+                    "file",
+                    "address"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the file where to save the extracted segment",
+                        "type": "string"
+                    },
+                    "format": {
+                        "title": "Format of the output file: 'ihex' or 'bin'",
+                        "type": "string",
+                        "enum": [
+                            "ihex",
+                            "bin"
+                        ]
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        }
+    }
+}

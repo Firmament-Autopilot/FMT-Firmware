@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_ctb_dyn-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* CTB dynamic configuration personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2024-2025 Cypress Semiconductor Corporation (an Infineon company)
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_ctb_dynamic' name='CTB Dynamic' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <PhysicalResource ipblock='mxs22lppass' version='1'>
+    <PhysicalResource type='ctb'>
+      <PhysicalResource type='oa'>
+        <VirtualResourceDefinition type='ctb_dynamic'
+                                   display_name='Dynamic Configuration $idx{0}'
+                                   display_path='$display_path{1}/$display_name{1}'
+                                   display_mode='DYNAMIC'
+                                   count='8'/>
+      </PhysicalResource>
+    </PhysicalResource>
+  </PhysicalResource>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs22lppass' />
+      <Resource name='pass\.ctb\.oa\.ctb_dynamic'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='ctb_dyn_nonInvInputPinMux'      paramId='nonInvInputPinMux' />
+    <ExposedMember key='ctb_dyn_nonInvInputRefMux'      paramId='nonInvInputRefMux' />
+    <ExposedMember key='ctb_dyn_invInputPinMux'         paramId='invInputPinMux' />
+    <ExposedMember key='ctb_dyn_resInputPinMux'         paramId='resInputPinMux' />
+    <ExposedMember key='ctb_dyn_resInputRefMux'         paramId='resInputRefMux' />
+    <ExposedMember key='ctb_dyn_sharedMuxInput'         paramId='sharedMuxInput' />
+    <ExposedMember key='ctb_dyn_sharedMuxOutput'        paramId='sharedMuxOutput' />
+    <ExposedMember key='ctb_dyn_connectOutputToPin'     paramId='connectOutputToPin' />
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool id='debug' name='debug' group='Internal' default='false' visible='false' editable='true' desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='oaInstNum' name='OA Instance Number' group='Internal' default='`${getInstNumber("oa")}`' visible='`${debug}`' editable='false' desc='' />
+    <ParamString id='ctbInstNum' name='CTB Instance Number' group='Internal' default='`${getInstNumber("ctb")}`' visible='`${debug}`' editable='false' desc='' />
+    <ParamString id='passInstNum' name='Pass Instance Number' group='Internal' default='`${getInstNumber("pass")}`' visible='`${debug}`' editable='false' desc='' />
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='ctbPath' name='CTB Path' group='Internal' visible='`${debug}`' editable='false' desc='' default='pass[`${passInstNum}`].ctb[`${ctbInstNum}`]'/>
+    <ParamBool id='ctbIsUsed' name='CTB Is Used' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed(ctbPath)}`'/>
+
+    <Repeat count='2'>
+        <ParamString id='oa$idxPath' name='OA $idx Path' group='Internal' visible='`${debug}`' editable='false' desc='' default='pass[`${passInstNum}`].ctb[`${ctbInstNum}`].oa[$idx]'/>
+        <ParamBool id='oa$idxIsUsed' name='OA $idx Is Used' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed(oa$idxPath)}`'/>
+    </Repeat>
+
+    <ParamBool id='oaInstNumIsUsed' name='Current OA Is Used' group='Internal' visible='false' editable='false' desc='' default='`${oaInstNum eq 0 ? oa0IsUsed : oa1IsUsed}`'/>
+    <ParamString id='oaInstNumPath' name='OA Instance Number Path' group='Internal' visible='false' editable='false' desc='' default='`${oaInstNum eq 0 ? oa0Path : oa1Path}`'/>
+    <ParamString id='powerOaInstNum' name='Current OA Power State' group='Internal' visible='false' editable='false' desc='' default='`${oaInstNumIsUsed ? getExposedMember(oaInstNumPath, "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF"}`'/>
+    <ParamString id='topology' name='' group='Internal' desc='' visible='false' editable='false'
+                 default='`${getExposedMember("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[" . oaInstNum . "]", "topology")}`'/>
+
+    <ParamBool id='topologyIsOpenLoop' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oaInstNumIsUsed &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_OPEN_LOOP_OPAMP")}`'/>
+    <ParamBool id='topologyIsBuffer' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oaInstNumIsUsed &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_BUFFER")}`'/>
+    <ParamBool id='topologyIsComparator' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oaInstNumIsUsed &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR")}`'/>
+    <ParamBool id='topologyIsHystericComparator' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oaInstNumIsUsed &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR")}`'/>
+    <ParamBool id='topologyIsDifferential' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oaInstNumIsUsed &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER")}`'/>
+    <ParamBool id='topologyIsPGA' name='' group='Internal' editable='false' visible='`${debug}`' desc='' default='`${oaInstNumIsUsed &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA")}`'/>
+    <ParamBool id='topologyIsTIA' name='' group='Internal' editable='false' visible='`${debug}`' desc='' default='`${oaInstNumIsUsed &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_TIA")}`'/>
+
+    <ParamString id='ctbOutherInstNum' name='Outher CTB Instance Number' group='Internal' default='`${ctbInstNum eq 0 ? 1 : 0}`' visible='`${debug}`' editable='false' desc='' />
+    <Repeat count='2'>
+      <ParamString id='oa$idxPathOutherCtb' name='OA $idx Path For Outher CTB' group='Internal' visible='`${debug}`' editable='false' desc='' default='pass[`${passInstNum}`].ctb[`${ctbOutherInstNum}`].oa[$idx]'/>
+      <ParamBool id='oa$idxIsUsedOutherCtb' name='OA $idx Is Used For Outher CTB' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed(oa$idxPathOutherCtb)}`'/>
+
+      <ParamString id='topologyIsComparator$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(oa$idxPathOutherCtb, "topologyIsComparator")}`'/>
+      <ParamString id='topologyIsHystericComparator$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(oa$idxPathOutherCtb, "topologyIsHystericComparator")}`'/>
+      <ParamString id='power$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oa$idxIsUsedOutherCtb ? getExposedMember(oa$idxPathOutherCtb, "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF"}`'/>
+    </Repeat>
+
+    <ParamBool id='prbIsUsed' name='PRB Is Used' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed("pass[" . passInstNum . "].prb[0]")}`'/>
+    <Repeat count='2'>
+        <ParamBool    id='dac$idxPath'            name='DAC$idx Path'               group='Internal' visible='`${debug}`' editable='false' desc='' default='pass[`${passInstNum}`].dac[$idx]'/>
+        <ParamBool    id='dac$idxIsUsed'          name='DAC$idx Is Used'            group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed("pass[" . passInstNum . "].dac[$idx]")}`'/>
+        <ParamString  id='prbOut$idxIsEnabled'    name='PRB Output $idx Is Enabled' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${prbIsUsed ? getExposedMember("pass[" . passInstNum . "].prb[0]", "prbOut$idxEnable") : "false"}`'/>
+    </Repeat>
+
+    <ParamString id='pinName0Or5' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oaInstNum eq 0 ? "Pin 0" : "Pin 5"}`'/>
+    <ParamString id='pinName1Or4' name='' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${oaInstNum eq 0 ? "Pin 1" : "Pin 4"}`'/>
+
+    <ParamChoice id='nonInvInputPinMux'
+                 name='Non-Inverting Input Pin-Mux'
+                 group='Dynamic Configuration'
+                 visible='true'
+                 desc='Connects the Non-Inverting Input to a pin using the Pin-Mux. Reserve and configure the corresponding pin in Autonomous Analog tab.'
+                 editable='true'
+                 default='CY_AUTANALOG_CTB_OA_NINV_PIN_DISCONNECT'>
+      <Entry name='No Connection'                           value='CY_AUTANALOG_CTB_OA_NINV_PIN_DISCONNECT'       visible='true'/>
+      <Entry name='`${pinName0Or5}`'                        value='CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P0_OA1_P5'    visible='`${oaInstNum eq 0 ? getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin0") : getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin5")}`'/>
+      <Entry name='`${pinName1Or4}`'                        value='CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P1_OA1_P4'    visible='`${oaInstNum eq 0 ? getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin1") : getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin4")}`'/>
+    </ParamChoice>
+
+    <ParamChoice id='nonInvInputRefMux'
+                 name='Non-Inverting Input Reference-Mux'
+                 group='Dynamic Configuration'
+                 visible='true'
+                 desc='Connect the Non-Inverting Input to a an internal signal using the Reference-Mux'
+                 editable='true'
+                 default='CY_AUTANALOG_CTB_OA_NINV_REF_DISCONNECT'>
+      <Entry name='No Connection'                           value='CY_AUTANALOG_CTB_OA_NINV_REF_DISCONNECT'       visible='true'/>
+      <Entry name='DAC0'                                    value='CY_AUTANALOG_CTB_OA_NINV_REF_DAC0'             visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+      <Entry name='DAC1'                                    value='CY_AUTANALOG_CTB_OA_NINV_REF_DAC1'             visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+      <Entry name='PRB OUT0'                                value='CY_AUTANALOG_CTB_OA_NINV_REF_PRB_OUT0'         visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+      <Entry name='PRB OUT1'                                value='CY_AUTANALOG_CTB_OA_NINV_REF_PRB_OUT1'         visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+      <Entry name='VBGR (0.9 V)'                            value='CY_AUTANALOG_CTB_OA_NINV_REF_VBGR'             visible='true'/>
+      <Entry name='CTB`${ctbOutherInstNum}` Opamp $idx Out' value='CY_AUTANALOG_CTB_OA_NINV_REF_CTB_OA$idx_OUT'   visible='`${hasBlock("pass[0].ctb[" . ctbOutherInstNum . "].oa[$idx]") &amp;&amp; isBlockUsed("pass[0].ctb[" . ctbOutherInstNum . "].oa[$idx]")}`' repeatCount='2'/>
+    </ParamChoice>
+
+    <ParamChoice id='invInputPinMux'
+                 name='Inverting Input Pin-Mux'
+                 group='Dynamic Configuration'
+                 visible='`${!(topologyIsPGA || topologyIsBuffer || topologyIsDifferential)}`'
+                 desc='Connect Inverting Input to a pin using the Pin-Mux. Reserve and configure the corresponding pin in Autonomous Analog tab.'
+                 editable='`${!topologyIsPGA}`'
+                 default='CY_AUTANALOG_CTB_OA_INV_PIN_DISCONNECT'>
+      <Entry name='No Connection'                           value='CY_AUTANALOG_CTB_OA_INV_PIN_DISCONNECT'        visible='true'/>
+      <Entry name='`${pinName0Or5}`'                        value='CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P0_OA1_P5'     visible='`${oaInstNum eq 0 ? getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin0") : getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin5")}`'/>
+      <Entry name='`${pinName1Or4}`'                        value='CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P1_OA1_P4'     visible='`${oaInstNum eq 0 ? getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin1") : getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin4")}`'/>
+    </ParamChoice>
+
+    <ParamChoice id='resInputPinMux'
+                 name='Resistor Input Pin-Mux'
+                 group='Dynamic Configuration'
+                 visible='`${(topologyIsPGA)}`'
+                 desc='Connect the Non-Inverting Input to a pin using the Pin-Mux. Reserve and configure the corresponding pin in Autonomous Analog tab.'
+                 editable='`${(topologyIsPGA)}`'
+                 default='CY_AUTANALOG_CTB_OA_RES_PIN_DISCONNECT'>
+      <Entry name='No Connection'                           value='CY_AUTANALOG_CTB_OA_RES_PIN_DISCONNECT'        visible='true'/>
+      <Entry name='`${pinName0Or5}`'                        value='CY_AUTANALOG_CTB_OA_RES_PIN_OA0_P0_OA1_P5'     visible='`${oaInstNum eq 0 ? getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin0") : getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin5")}`'/>
+      <Entry name='`${pinName1Or4}`'                        value='CY_AUTANALOG_CTB_OA_RES_PIN_OA0_P1_OA1_P4'     visible='`${oaInstNum eq 0 ? getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin1") : getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin4")}`'/>
+    </ParamChoice>
+
+    <ParamChoice id='resInputRefMux'
+                 name='Resistor Input Reference-Mux'
+                 group='Dynamic Configuration'
+                 visible='`${(topologyIsPGA)}`'
+                 desc='Connect the Non-Inverting Input to a an internal signal using the Reference-Mux'
+                 editable='`${(topologyIsPGA)}`'
+                 default='CY_AUTANALOG_CTB_OA_RES_REF_DISCONNECT'>
+      <Entry name='No Connection'                           value='CY_AUTANALOG_CTB_OA_RES_REF_DISCONNECT'        visible='true'/>
+      <Entry name='DAC0'                                    value='CY_AUTANALOG_CTB_OA_RES_REF_DAC0'              visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+      <Entry name='DAC1'                                    value='CY_AUTANALOG_CTB_OA_RES_REF_DAC1'              visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+      <Entry name='CTB`${ctbOutherInstNum}` Opamp $idx Out' value='CY_AUTANALOG_CTB_OA_RES_REF_CTB_OA$idx_OUT'    visible='`${hasBlock("pass[0].ctb[" . ctbOutherInstNum . "].oa[$idx]") &amp;&amp; isBlockUsed("pass[0].ctb[" . ctbOutherInstNum . "].oa[$idx]")}`' repeatCount='2'/>
+      <Entry name='VSSA'                                    value='CY_AUTANALOG_CTB_OA_RES_REF_VSSA'              visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='sharedMuxInput'
+                 name='Shared-Mux Input'
+                 group='Dynamic Configuration'
+                 visible='true'
+                 desc='Connect the input of the Shared Mux to a pin. Reserve and configure the corresponding pin in Autonomous Analog tab.'
+                 editable='true'
+                 default='CY_AUTANALOG_CTB_OA_MUX_IN_DISCONNECT'>
+      <Entry name='No Connection'         value='CY_AUTANALOG_CTB_OA_MUX_IN_DISCONNECT'   visible='true'/>
+      <Entry name='Pin $idx'              value='CY_AUTANALOG_CTB_OA_MUX_IN_P$idx'        visible='`${getExposedMember("pass[0]", "ctb" . ctbInstNum . "_pin$idx")}`' repeatCount='8'/>
+    </ParamChoice>
+
+    <ParamChoice id='sharedMuxOutput'
+                 name='Shared-Mux Output'
+                 group='Dynamic Configuration'
+                 visible='true'
+                 desc='Connect the output of the Shared Mux to an Opamp terminal'
+                 editable='true'
+                 default='CY_AUTANALOG_CTB_OA_MUX_OUT_DISCONNECT'>
+      <Entry name='No Connection'         value='CY_AUTANALOG_CTB_OA_MUX_OUT_DISCONNECT'  visible='true'/>
+      <Entry name='Non-Inverting Input'   value='CY_AUTANALOG_CTB_OA_MUX_OUT_NINV'        visible='true'/>
+      <Entry name='Inverting Input'       value='CY_AUTANALOG_CTB_OA_MUX_OUT_INV'         visible='`${!(topologyIsPGA || topologyIsBuffer || topologyIsDifferential)}`'/>
+      <Entry name='Resistor Input'        value='CY_AUTANALOG_CTB_OA_MUX_OUT_RES'         visible='`${topologyIsPGA}`'/>
+    </ParamChoice>
+
+    <ParamBool id='connectOutputToPin'
+               name='Connect Output to Pin'
+               group='Dynamic Configuration'
+               visible='`${!(topologyIsComparator || topologyIsHystericComparator)}`'
+               editable='`${!(topologyIsOpenLoop || topologyIsComparator || topologyIsHystericComparator)}`'
+               desc='Connect the Opamp output to the dedicated pin. Reserve and configure the corresponding pin in Autonomous Analog tab.'
+               default='`${topologyIsOpenLoop}`'/>
+
+    <ParamBool id='nonInvInputPinMuxDisconnected'         name='' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_DISCONNECT}`'/>
+    <ParamBool id='sharedMuxOutputDisconnected'           name='' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_DISCONNECT}`'/>
+    <ParamBool id='sharedMuxInputDisconnected'            name='' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_DISCONNECT}`'/>
+    <ParamBool id='nonInvInputRefMuxDisconnected'         name='' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_DISCONNECT}`'/>
+    <ParamBool id='invInputPinMuxDisconnected'            name='' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${invInputPinMux eq CY_AUTANALOG_CTB_OA_INV_PIN_DISCONNECT}`'/>
+    <ParamBool id='resInputPinMuxDisconnected'            name='' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${resInputPinMux eq CY_AUTANALOG_CTB_OA_RES_PIN_DISCONNECT}`'/>
+    <ParamBool id='resInputRefMuxDisconnected'            name='' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_DISCONNECT}`'/>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='The DAC $idx selected as a source of Vref is disabled.' repeatCount='2'
+         condition='`${!dac$idxIsUsed &amp;&amp; (resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_DAC$idx || nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_DAC$idx)}`' />
+
+    <DRC type='ERROR' text='The PRB Output $idx is disabled.'  repeatCount='2'
+         condition='`${(!prbIsUsed || !prbOut$idxIsEnabled) &amp;&amp; nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_PRB_OUT$idx}`' />
+
+    <DRC type='ERROR' text='The OpAmp `${oaInstNum}` in CTB `${ctbInstNum}` is disabled or in power-off state.'
+         condition='`${!ctbIsUsed || !oaInstNumIsUsed || powerOaInstNum eq "CY_AUTANALOG_CTB_OA_PWR_OFF"}`' />
+
+    <DRC type='ERROR' text='Opamp $idx in CTB `${ctbOutherInstNum}` is off in static config or configured as a Comparator or a Comparator with hysteresis.' repeatCount='2'
+        condition='`${(nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_CTB_OA$idx_OUT || resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_CTB_OA$idx_OUT)
+        &amp;&amp; (power$idx eq "CY_AUTANALOG_CTB_OA_PWR_OFF" || topologyIsComparator$idx || topologyIsHystericComparator$idx)}`'/>
+
+    <DRC type='ERROR' text='Other muxes are connected to the Non-Inverting Input and unbuffered Vref (VBGR, PRB or unbuffered DAC) is also applied to the same input.'
+        condition='`${(nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_VBGR ||
+                       nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_PRB_OUT0 ||
+                       nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_PRB_OUT1 ||
+                       (nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_DAC0) &amp;&amp; (dac0IsUsed ?
+                       !(getExposedMember("pass[" . passInstNum . "].dac[0]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL" ||
+                         getExposedMember("pass[" . passInstNum . "].dac[0]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL") :
+                         false) ||
+                       (nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_DAC1) &amp;&amp; (dac1IsUsed ?
+                       !(getExposedMember("pass[" . passInstNum . "].dac[1]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL" ||
+                         getExposedMember("pass[" . passInstNum . "].dac[1]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL") :
+                         false)) &amp;&amp;
+                      (!nonInvInputPinMuxDisconnected || sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_NINV)}`' />
+
+    <DRC type='ERROR' text='Other muxes are connected to the Resistor Input and unbuffered Vref from DAC is also applied to the same input.'
+        condition='`${((resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_DAC0) &amp;&amp; (dac0IsUsed ?
+                       !(getExposedMember("pass[" . passInstNum . "].dac[0]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL" ||
+                         getExposedMember("pass[" . passInstNum . "].dac[0]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL") :
+                         false) ||
+                       (resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_DAC1) &amp;&amp; (dac1IsUsed ?
+                       !(getExposedMember("pass[" . passInstNum . "].dac[1]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL" ||
+                         getExposedMember("pass[" . passInstNum . "].dac[1]", "dac_outputTopology") eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL") :
+                         false)) &amp;&amp;
+                       (!resInputPinMuxDisconnected || sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_RES)}`' />
+
+    <DRC type='ERROR' text='Other muxes are connected to the Resistor Input while this input is connected to the VSSA.'
+        condition='`${(resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_VSSA) &amp;&amp; ((sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_RES) || !resInputPinMuxDisconnected)}`' />
+
+    <DRC type='ERROR' text='Shared-Mux output is not connected in OpAmp`${oaInstNum}` in CTB `${ctbInstNum}`.' condition='`${sharedMuxOutputDisconnected &amp;&amp; !sharedMuxInputDisconnected}`' />
+
+    <DRC type='ERROR' text='Shared-Mux Input is not connected in OpAmp`${oaInstNum}` in CTB `${ctbInstNum}`.' condition='`${sharedMuxInputDisconnected &amp;&amp; !sharedMuxOutputDisconnected}`' />
+
+    <DRC type='ERROR' text='The OpAmp `${oaInstNum}` topology Open Loop, Comparator or Comparator with hysteresis in CTB `${ctbInstNum}` does not have at least one Mux connection to the Inverting and Non-Inverting terminals.'
+      condition='`${(topologyIsOpenLoop || topologyIsComparator || topologyIsHystericComparator) &amp;&amp;
+                    ((nonInvInputPinMuxDisconnected &amp;&amp; nonInvInputRefMuxDisconnected &amp;&amp; (sharedMuxOutput ne CY_AUTANALOG_CTB_OA_MUX_OUT_NINV)) ||
+                    (invInputPinMuxDisconnected     &amp;&amp; (sharedMuxOutput ne CY_AUTANALOG_CTB_OA_MUX_OUT_INV)))}`' />
+
+    <DRC type='ERROR' text='The OpAmp `${oaInstNum}` topology Buffer or Differential Amplifier in CTB `${ctbInstNum}` does not have at least one Mux connection to the Non-Inverting terminal.'
+      condition='`${(topologyIsBuffer || topologyIsDifferential) &amp;&amp;
+                    (nonInvInputPinMuxDisconnected &amp;&amp; nonInvInputRefMuxDisconnected &amp;&amp; (sharedMuxOutput ne CY_AUTANALOG_CTB_OA_MUX_OUT_NINV))}`' />
+
+    <DRC type='ERROR' text='The OpAmp `${oaInstNum}` topology PGA in CTB `${ctbInstNum}` does not have at least one Mux connection to the Resistor Input and Non-Inverting terminals.'
+      condition='`${topologyIsPGA     &amp;&amp;
+      ((nonInvInputPinMuxDisconnected &amp;&amp; nonInvInputRefMuxDisconnected &amp;&amp; (sharedMuxOutput ne CY_AUTANALOG_CTB_OA_MUX_OUT_NINV)) ||
+      (resInputRefMuxDisconnected     &amp;&amp; resInputPinMuxDisconnected    &amp;&amp; (sharedMuxOutput ne CY_AUTANALOG_CTB_OA_MUX_OUT_RES)))}`' />
+
+    <DRC type='ERROR' text='The OpAmp `${oaInstNum}` topology TIA in CTB `${ctbInstNum}` does not have at least one Mux connection to the Non-Inverting Input for Vref (VBGR, PRB, DAC, CTB or external over the pin) and Inverting terminal.'
+      condition='`${topologyIsTIA     &amp;&amp;
+      ((nonInvInputPinMuxDisconnected &amp;&amp; nonInvInputRefMuxDisconnected &amp;&amp; sharedMuxOutput ne CY_AUTANALOG_CTB_OA_MUX_OUT_NINV) ||
+      (invInputPinMuxDisconnected     &amp;&amp; (sharedMuxOutput ne CY_AUTANALOG_CTB_OA_MUX_OUT_INV)))}`' />
+
+    <DRC type='ERROR' text='The OpAmp `${oaInstNum}` topology PGA in CTB `${ctbInstNum}` must not use the same pins for Non-Inverting Input and Resistor Input terminals.'
+      condition='`${topologyIsPGA &amp;&amp;
+                   ((nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P0_OA1_P5  &amp;&amp; resInputPinMux eq CY_AUTANALOG_CTB_OA_RES_PIN_OA0_P0_OA1_P5)   ||
+                    (nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P1_OA1_P4  &amp;&amp; resInputPinMux eq CY_AUTANALOG_CTB_OA_RES_PIN_OA0_P1_OA1_P4)   ||
+                    (nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_DAC0           &amp;&amp; resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_DAC0)            ||
+                    (nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_DAC1           &amp;&amp; resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_DAC1)            ||
+                    (nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_CTB_OA0_OUT    &amp;&amp; resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_CTB_OA0_OUT)     ||
+                    (nonInvInputRefMux eq CY_AUTANALOG_CTB_OA_NINV_REF_CTB_OA1_OUT    &amp;&amp; resInputRefMux eq CY_AUTANALOG_CTB_OA_RES_REF_CTB_OA1_OUT))}`' />
+
+    <DRC type='ERROR' text='The OpAmp `${oaInstNum}` topology TIA, Open Loop, Comparator or Comparator with hysteresis in CTB `${ctbInstNum}` must not use the same pins for Non-Inverting Input and Inverting Input terminals.'
+      condition='`${(topologyIsTIA || topologyIsOpenLoop || topologyIsComparator || topologyIsHystericComparator) &amp;&amp;
+                   ((nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P0_OA1_P5  &amp;&amp; invInputPinMux eq CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P0_OA1_P5)     ||
+                    (nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P1_OA1_P4  &amp;&amp; invInputPinMux eq CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P1_OA1_P4)     ||
+                    (nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P0_OA1_P5  &amp;&amp; (oaInstNum == 0 ? sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P0 : sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P5) &amp;&amp; sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_INV) ||
+                    (nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P1_OA1_P4  &amp;&amp; (oaInstNum == 0 ? sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P1 : sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P4) &amp;&amp; sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_INV) ||
+                    (invInputPinMux    eq CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P0_OA1_P5   &amp;&amp; nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P0_OA1_P5) ||
+                    (invInputPinMux    eq CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P1_OA1_P4   &amp;&amp; nonInvInputPinMux eq CY_AUTANALOG_CTB_OA_NINV_PIN_OA0_P1_OA1_P4) ||
+                    (invInputPinMux    eq CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P0_OA1_P5   &amp;&amp; (oaInstNum == 0 ? sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P0 : sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P5) &amp;&amp; sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_NINV) ||
+                    (invInputPinMux    eq CY_AUTANALOG_CTB_OA_INV_PIN_OA0_P1_OA1_P4   &amp;&amp; (oaInstNum == 0 ? sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P1 : sharedMuxInput eq CY_AUTANALOG_CTB_OA_MUX_IN_P4) &amp;&amp; sharedMuxOutput eq CY_AUTANALOG_CTB_OA_MUX_OUT_NINV))}`' />
+
+  </DRCs>
+
+  <ConfigFirmware>
+  </ConfigFirmware>
+
+</PersonalityTemplate>

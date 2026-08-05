@@ -1,0 +1,33 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "add-signature command example",
+            "description": "Adds a signature to the MCUboot formatted image",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "add-signature",
+                    "inputs": [
+                        {
+                            "description": "Encrypted unsigned bootloader",
+                            "file": "./hexs/rram_1_signed.hex"
+                        },
+                        {
+                            "description": "Signature returned by HSM",
+                            "file": "./hexs/signature.bin",
+                            "algorithm": "ECDSA-P256"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "Final image signed with HSM",
+                            "format": "ihex",
+                            "file": "./hexs/encrypted_signed.hex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+import rtconfig
+from building import *
+import os
+
+objs = []
+cwd  = GetCurrentDir()
+list = os.listdir(cwd)
+
+if GetDepend(['BSP_USING_FREERTOS']):
+    objs = objs + SConscript('abstraction-rtos/SConscript')
+
+Return('objs')

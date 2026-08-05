@@ -1,0 +1,28 @@
+        {
+            "name": "&&MTB_COMBINE_SIGN_&&IDX&&_CONFIG_NAME&&",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "preLaunchCommands": [
+                "monitor sleep 2000",
+                // Program via the hex file to get complete coverage
+                "exec-file &&MTB_COMBINE_SIGN_&&IDX&&_VSCODE_HEX_PATH&&"
+            ],
+            "overrideRestartCommands": [
+                "starti"
+            ],
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",  // Specifies application entry point name where program will halt
+            "preLaunchTask": "Build Application",
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&"
+            }
+        }

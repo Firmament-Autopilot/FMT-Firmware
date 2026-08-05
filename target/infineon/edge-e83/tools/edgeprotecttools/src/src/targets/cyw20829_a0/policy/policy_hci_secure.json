@@ -1,0 +1,145 @@
+{
+    "policy": {
+        "platform": "cyw20829",
+        "version": 2.0,
+        "type": "hci_secure"
+    },
+    "device_policy":
+    {
+        "debug":
+        {
+            "cpu":
+            {
+                "ap_cm33": {
+                    "description": "Configures the CM33 debug access port availability in the SECURE LCS",
+                    "value": "Disable"
+                },
+                "listen_window": {
+                    "description": "Configures the listen window time to acquire the CM33 debug access port in the SECURE LCS",
+                    "value": "0 ms"
+                },
+                "cm33_dbg":
+                {
+                    "description": "Configures the invasive debug of CM33 core",
+                    "value": "Disable"
+                },
+                "cm33_nid":
+                {
+                    "description": "Configures the non-invasive debug of CM33 core",
+                    "value": "Disable"
+                },
+                "dead_ap_cm33": {
+                    "description": "Configures the CM33 debug access port availability in the DEAD branch",
+                    "value": "Permanently Disable"
+                },
+                "dead_cm33_dbg":
+                {
+                    "description": "Configures the invasive debug of CM33 core in the DEAD branch",
+                    "applicable_conf": "Enable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "dead_cm33_nid":
+                {
+                    "description": "Configures the non-invasive debug of CM33 core in the DEAD branch",
+                    "applicable_conf": "Enable, Permanently Disable",
+                    "value": "Enable"
+                }
+            },
+            "system":
+            {
+                "ap": {
+                    "description": "Configures the System debug access port (DAP) availability in the SECURE LCS",
+                    "applicable_conf": "Enable, Disable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "mpc/ppc": {
+                    "description": "Indicates that the MPC/PPC on the system access port must be programmed and locked according to the settings in the next fields",
+                    "applicable_conf": "Enable, Disable",
+                    "value": "Enable"
+                },
+                "sram": {
+                    "description": "Configures what portion of SRAM macro 0 is accessible through the System debug access port in the SECURE LCS. Only a portion of SRAM starting at the bottom of the area is exposed",
+                    "applicable_conf": "Entire region, 7/8, 3/4, 1/2, 1/4, 1/8, 1/16, Nothing",
+                    "value": "Entire region"
+                },
+                "mmio": {
+                    "description": "Configures what portion of the MMIO region is accessible through the System debug access port in the SECURE LCS",
+                    "applicable_conf": "All, Only IPC, No access",
+                    "value": "No access"
+                },
+                "dead_ap": {
+                    "description": "Configures the System debug access port (DAP) availability in the DEAD branch",
+                    "applicable_conf": "Enable, Permanently Disable",
+                    "value": "Permanently Disable"
+                },
+                "dead_mpc/ppc": {
+                    "description": "Indicates that the MPC/PPC on the system access port must be programmed and locked in the DEAD branch according to the next fields settings",
+                    "applicable_conf": "Enable, Disable",
+                    "value": "Disable"
+                },
+                "dead_sram": {
+                    "description": "Configures what portion of SRAM macro 0 is accessible through the System debug access port in the DEAD branch. Only a portion of SRAM starting at the bottom of the area is exposed",
+                    "applicable_conf": "Entire region, 7/8, 3/4, 1/2, 1/4, 1/8, 1/16, Nothing",
+                    "value": "Entire region"
+                },
+                "dead_mmio": {
+                    "description": "Configures what portion of the MMIO region is accessible through the system debug access port in the DEAD branch",
+                    "applicable_conf": "All, Only IPC, No access",
+                    "value": "All"
+                }
+            }
+        },
+        "smif_config":
+        {
+            "smif_configuration": {
+                "description": "SMIF Configuration",
+                "value": "HCI mode"
+            },
+            "chip_select": {
+                "description": "Chip Select",
+                "value": "CS0"
+            },
+            "data_width": {
+                "description": "Data Width",
+                "value": "4X"
+            },
+            "data_select": {
+                "description": "Data Select",
+                "value": "SEL0"
+            },
+            "addressing_mode": {
+                "description": "Addressing Mode",
+                "value": "3-byte"
+            },
+            "encryption": {
+                "value": false
+            }
+        },
+        "flow_control":
+        {
+            "target_lcs": {
+                "description": "The device LCS after the device is reset after service application completes execution",
+                "applicable_conf": "NORMAL, SECURE",
+                "value": "SECURE"
+            },
+            "program_oem_assets": {
+                "description": "Programs OEM assets (smif_config and debug) and makes them immutable (this can be done only once)",
+                "value": true
+            },
+            "program_oem_key_0_hash": {
+                "description": "Programs the OEM key 0 hash and makes it immutable (this can be done only once)",
+                "value": true
+            }
+        }
+    },
+    "pre_build":
+    {
+        "keys":
+        {
+            "oem_pub_key_0": {
+                "description": "Path to the ICV HCI public key 0",
+                "value": "../keys/pub_hci_0.pem"
+            }
+        }
+    }
+}

@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file pll250m.cypersonality
+* \version 1.0
+*
+* \brief
+* PLL250M personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2021-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='mxs22pll250' name='PLL250' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs22srss,mxs40ssrss' />
+      <Resource name='srss\.clock\.pll250m|srss\.clock\.dpll250' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__pll.html' linkText='Open PLL Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+    <ParamBool id='is_mxs22srssv2_1' name='is_mxs22srssv2_1' group="" default='`${ "mxs22srss" eq getIpBlockName() &amp;&amp; (getVersion() eq 2) &amp;&amp; (GENERATED.IP_MINOR_VERSION == 1)}`' visible='false' editable='false' desc='True if the IP version is MX22SRSS v2.1' />
+
+    <!-- PLL source clock and max device frequency -->
+    <ParamString id='clockInst' default='`${"mxs22srss" eq getIpBlockName() ? getInstNumber("pll250m") : getInstNumber("dpll250") +1}`' />
+    <ParamString id='dpllInst' default='`${"mxs22srss" eq getIpBlockName() ? getInstNumber("pll250m") : getInstNumber("dpll250")}`' />
+    <ParamString id='sourceClockRsc' default='srss[0].clock[0].pathmux[`${clockInst}`]' />
+    <ParamString id='sourceFrequency' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+
+    <ParamString id='sourceFrequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(sourceFrequency,accuracy)}`' visible='true' editable='false' desc='Source clock frequency' />
+    <!-- For ULP mode, Fpll_max = 100 MHz, for LP mode Fpll_max = 350 MHz, for HP mode Fpll_max = 500 MHz -->
+    <ParamString id='maxFrequency' default='`${"mxs22srss" eq getIpBlockName() ? (is_mxs22srssv2_1 ? 192 : 500) : 240}`' />
+
+    <ParamBool id='lowFrequencyMode' name='Low Frequency Mode' group='General' default='false' visible='true' editable='false' desc='VCO frequency range selection' />
+    <ParamChoice id='configuration' name='Configuration' group='General' default='auto' visible='true' desc='Choose the automatic or manual PLL tuning'>
+      <Entry name='Automatic' value='auto' />
+      <Entry name='Manual'    value='manual' />
+    </ParamChoice>
+    <ParamBool id='manConfig' default='`${configuration eq manual}`' />
+    <ParamRange id='desiredFrequency' name='Desired Frequency (MHz)' group='General' default='`${min(maxFrequency, 100)}`' min='`${"mxs22srss" eq getIpBlockName() ? 10 : 50}`' max='`${maxFrequency}`' resolution='0.001' visible='`${!manConfig}`' desc='' />
+    <ParamChoice id='optimization' name='Optimization' group='General' default='MinPower' visible='`${!manConfig}`' editable='false' desc='The feedback tuning options'>
+      <Entry name='Min Power' value='MinPower' />
+      <Entry name='Min Jitter' value='MinJitter' />
+    </ParamChoice>
+
+    <ParamString id='frequencyScaler' default='`${"mxs22srss" ne getIpBlockName() ? 2 : 1}`' />
+    <ParamString id='callSolver' default='`${runTcl("pll250_solver-1.0.tcl", sourceFrequency / 1000000.0, desiredFrequency, frequencyScaler, lowFrequencyMode, optimization eq MinPower)}`' />
+
+    <ParamRange id='feedback' name='Feedback (16-200)' group='General' default='`${getTclVar("feedbackDiv", callSolver)}`' min='16' max='200' resolution='1'  visible='true' editable='`${manConfig}`' desc='The feedback clock divider' />
+    <ParamRange id='reference' name='Reference (1-16)' group='General' default='`${getTclVar("referenceDiv", callSolver)}`' min='1' max='16' resolution='1'  visible='true' editable='`${manConfig}`' desc='The reference clock divider' />
+    <ParamRange id='output' name='Output (1-16)' group='General' default='`${getTclVar("outputDiv", callSolver)}`' min='1' max='16' resolution='1'  visible='true' editable='`${manConfig}`' desc='The output clock divider' />
+    <ParamRange id='frac' name='Fraction divider (0-16777215)' group='General' default='`${getTclVar("fracDiv", callSolver)}`' min='0' max='16777215' resolution='1'  visible='true' editable='`${manConfig}`' desc='The fractional clock divider.' />
+    <ParamBool id='dcoMode' name='DCO Mode Enable' group='General' default='`${getTclVar("dcoModeBit", callSolver)}`' visible='true' editable='`${manConfig}`' desc='DCO MODE Bit' />
+    <ParamBool id='fracDitherEn' name='Fraction Dither' group='General' default='`${configuration eq manual}`' visible='true' editable='`${configuration eq manual}`' desc='Enables dithering during fractional operation.' />
+    <ParamBool id='fracEn' name='Fraction Enable' group='General' default='`${!(configuration eq manual)}`' visible='true' editable='`${configuration eq manual}`' desc='Enables fractional division mode.' />
+    <ParamString id='frequency' default='`${(sourceFrequency * ( (feedback &lt;&lt; 24) + frac)  / (reference * output)) &gt;&gt; 24}`' />
+    <ParamString id='frequencyInfo' name='Actual Frequency' group='General' default='`${getOrDefault(formatFrequency(frequency), "No source")}`' visible='true' editable='false' desc='The calculated resulting PLL output frequency' />
+  </Parameters>
+
+  <Variables>
+    <!-- Manual DRC verify params -->
+    <Variable id='pfdFreq' value='`${sourceFrequency / reference / 1000000.0}`' />
+
+    <Variable id='pllPathNum' value='SRSS_DPLL_`${("mxs40ssrss" eq getIpBlockName()) ? "250M" : "LP"}`_`${dpllInst}`_PATH_NUM' />
+    <Variable id='isMXS22' value='`${("mxs22srss" eq getIpBlockName())}`' />
+    <Variable id='maxFrequencyPwrMode' value='`${getExposedMember("srss[0].power[0]", "usingUlp") ? 100 : (getExposedMember("srss[0].power[0]", "usingLp") ? 350 : 500)}`' />
+  </Variables>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for PLL is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz is higher than the maximum operating frequency `${maxFrequency}` MHz of the device' condition='`${!(isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingUlp")) &amp;&amp; desiredFrequency &gt; maxFrequency}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of `${maxFrequencyPwrMode}` MHz when the ULP mode is used' condition='`${isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingUlp") &amp;&amp; desiredFrequency &gt; maxFrequencyPwrMode &amp;&amp; "mxs22srss" eq getIpBlockName()}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of 60 MHz when the ULP mode is used' condition='`${isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingUlp") &amp;&amp; desiredFrequency &gt; 60 &amp;&amp; "mxs40ssrss" eq getIpBlockName()}`' paramId='desiredFrequency' />
+
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz is higher than the maximum operating frequency `${maxFrequency}` MHz of the device' condition='`${!(isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingLp")) &amp;&amp; desiredFrequency &gt; maxFrequency}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of `${maxFrequencyPwrMode}` MHz when the LP mode is used' condition='`${isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingLp") &amp;&amp; desiredFrequency &gt; maxFrequencyPwrMode &amp;&amp; "mxs22srss" eq getIpBlockName()}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of 200 MHz when the LP mode is used' condition='`${isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingLp") &amp;&amp; desiredFrequency &gt; 200 &amp;&amp; "mxs40ssrss" eq getIpBlockName()}`' paramId='desiredFrequency' />
+
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz is higher than the maximum operating frequency `${maxFrequency}` MHz of the device' condition='`${!("mxs22srss" eq getIpBlockName() ? isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingHp") : false) &amp;&amp; desiredFrequency &gt; maxFrequency}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of `${maxFrequency}` MHz when the HP mode is used' condition='`${("mxs22srss" eq getIpBlockName() ? isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingHp") : false) &amp;&amp; desiredFrequency &gt; maxFrequency}`' paramId='desiredFrequency' />
+
+    <DRC type='ERROR' text='Source clock for PLL is outside the valid range of 4 MHz - 64 MHz' condition='`${(sourceFrequency &lt; 4000000) || (sourceFrequency &gt; 64000000)}`' paramId='sourceFrequencyInfo'/>
+    <!-- Manual mode DRCs -->
+    <DRC type='ERROR' text='PFD reference frequency out of range. PFD reference frequency (sourceFrequency / Reference) of `${pfdFreq}` MHz is outside valid range of 4 MHz - 8 MHz' condition='`${manConfig &amp;&amp; (pfdFreq &lt; 4 || pfdFreq &gt; 8)}`' />
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_FEEDBACK_DIV' value='`${feedback}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_REFERENCE_DIV' value='`${reference}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_OUTPUT_DIV' value='`${output}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_FRAC_DIV' value='`${frac}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_FRAC_DITHER_EN' value='`${fracDitherEn}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_FRAC_EN' value='`${fracEn}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_LF_MODE' value='`${lowFrequencyMode}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_OUTPUT_MODE' value='CY_SYSCLK_FLLPLL_OUTPUT_AUTO' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_LP`${dpllInst}`_OUTPUT_FREQ' value='`${frequency}`' public='false' />
+    <ConfigStruct name='`${INST_NAME . "_lp_pllConfig"}`' type='cy_stc_dpll_lp_config_t' const='false' public='false' include='`${"mxs40ssrss" eq getIpBlockName()}`'>
+      <Member name='feedbackDiv' value='`${feedback}`' />
+      <Member name='referenceDiv' value='`${reference}`' />
+      <Member name='outputDiv' value='`${output}`' />
+      <Member name='pllDcoMode' value='`${dcoMode}`' />
+      <Member name='outputMode' value='CY_SYSCLK_FLLPLL_OUTPUT_AUTO' />
+      <Member name='fracDiv' value='`${frac}`' />
+      <Member name='fracDitherEn' value='`${fracDitherEn}`' />
+      <Member name='fracEn' value='`${fracEn}`' />
+      <Member name='sscgDepth' value='0x0U' />
+      <Member name='sscgRate' value='0x0U' />
+      <Member name='sscgDitherEn' value='0x0U' />
+      <Member name='sscgMode' value='0x0U' />
+      <Member name='sscgEn' value='0x0U' />
+      <Member name='dcoCode' value='0x0U' />
+      <Member name='accMode' value='0x1U' />
+      <Member name='tdcMode' value='0x1U' />
+      <Member name='pllTg' value='0x0U' />
+      <Member name='accCntLock' value='0x0U' />
+      <Member name='kiInt' value='0x24U' />
+      <Member name='kpInt' value='0x1CU' />
+      <Member name='kiAccInt' value='0x23U' />
+      <Member name='kpAccInt' value='0x1AU' />
+      <Member name='kiFrac' value='0x24U' />
+      <Member name='kpFrac' value='0x20U' />
+      <Member name='kiAccFrac' value='0x23U' />
+      <Member name='kpAccFrac' value='0x1AU' />
+      <Member name='kiSscg' value='0x18U' />
+      <Member name='kpSscg' value='0x18U' />
+      <Member name='kiAccSscg' value='0x16U' />
+      <Member name='kpAccSscg' value='0x14U' />
+    </ConfigStruct>
+    <ConfigStruct name='`${INST_NAME . "_lp_pllConfig"}`' type='cy_stc_dpll_lp_config_t' const='false' public='false' include='`${"mxs22srss" eq getIpBlockName() &amp;&amp; (getVersion() eq 1)}`'>
+      <Member name='feedbackDiv' value='`${feedback}`' />
+      <Member name='referenceDiv' value='`${reference}`' />
+      <Member name='outputDiv' value='`${output}`' />
+      <Member name='pllDcoMode' value='`${dcoMode}`' />
+      <Member name='outputMode' value='CY_SYSCLK_FLLPLL_OUTPUT_AUTO' />
+      <Member name='fracDiv' value='`${frac}`' />
+      <Member name='fracDitherEn' value='`${fracDitherEn}`' />
+      <Member name='fracEn' value='`${fracEn}`' />
+      <Member name='dcoCode' value='0xFU' />
+      <Member name='kiInt' value='0xAU' />
+      <Member name='kiFrac' value='0xBU' />
+      <Member name='kiSscg' value='0x7U' />
+      <Member name='kpInt' value='0x8U' />
+      <Member name='kpFrac' value='0x9U' />
+      <Member name='kpSscg' value='0x7U' />
+    </ConfigStruct>
+    <ConfigStruct name='`${INST_NAME . "_lp_pllConfig"}`' type='cy_stc_dpll_lp_config_t' const='false' public='false' include='`${is_mxs22srssv2_1}`'>
+      <Member name='feedbackDiv' value='`${feedback}`' />
+      <Member name='referenceDiv' value='`${reference}`' />
+      <Member name='outputDiv' value='`${output}`' />
+      <Member name='pllDcoMode' value='`${dcoMode}`' />
+      <Member name='outputMode' value='CY_SYSCLK_FLLPLL_OUTPUT_AUTO' />
+      <Member name='fracDiv' value='`${frac}`' />
+      <Member name='fracDitherEn' value='`${fracDitherEn}`' />
+      <Member name='fracEn' value='`${fracEn}`' />
+      <Member name='sscgDepth' value='0x0U' />
+      <Member name='sscgRate' value='0x0U' />
+      <Member name='sscgDitherEn' value='0x0U' />
+      <Member name='sscgMode' value='0x0U' />
+      <Member name='sscgEn' value='0x0U' />
+      <Member name='dcoCode' value='0xFU' />
+      <Member name='disableBias' value='0x0U' />
+      <Member name='pllTg' value='0x0U' />
+      <Member name='kiInt' value='0x28U' />
+      <Member name='kpInt' value='0x20U' />
+      <Member name='kiAccInt' value='0x27U' />
+      <Member name='kpAccInt' value='0x23U' />
+      <Member name='pwrupAccInt' value='0U' />
+      <Member name='kiFrac' value='0x2CU' />
+      <Member name='kpFrac' value='0x24U' />
+      <Member name='kiAccFrac' value='0x27U' />
+      <Member name='kpAccFrac' value='0x1CU' />
+      <Member name='pwrupAccFrac' value='0U' />
+      <Member name='kiSscg' value='0x1CU' />
+      <Member name='kpSscg' value='0x1CU' />
+      <Member name='kiAccSscg' value='0x27U' />
+      <Member name='kpAccSscg' value='0x23U' />
+      <Member name='pwrupAccSscg' value='0x0U' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME . "_pllConfig"}`' type='cy_stc_pll_manual_config_t' const='false' public='false'>
+      <Member name='lpPllCfg' value='&amp;`${INST_NAME . "_lp_pllConfig"}`' />
+    </ConfigStruct>
+
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_Dpll_Lp`${dpllInst}`_Init(void)' public='false'>
+      <Line value='#if !defined (CY_PDL_TZ_ENABLED)'                                                                                      include='`${isMXS22}`' />
+      <Line value='if (Cy_SysClk_PllIsEnabled(`${pllPathNum}`))'                                                                          include='`${isMXS22}`' />
+      <Line value='    return;'                                                                                                           include='`${isMXS22}`' />
+      <Line value='#endif'                                                                                                                include='`${isMXS22}`' />
+      <Line value=''                                                                                                                      include='`${isMXS22}`' />
+      <Line value='Cy_SysClk_PllDisable(`${pllPathNum}`);' />
+      <Line value='if (CY_SYSCLK_SUCCESS != Cy_SysClk_PllManualConfigure(`${pllPathNum}`, &amp;`${INST_NAME}`_pllConfig))' />
+      <Line value='{' />
+      <Line value='    cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);' />
+      <Line value='}' />
+      <Line value=''                                                                                                                      include='`${isMXS22}`' />
+      <Line value='#if (defined (CY_IP_MXS22SRSS_VERSION) &amp;&amp; defined (CY_IP_MXS22SRSS_VERSION)) &amp;&amp; \'                     include='`${isMXS22}`' />
+      <Line value='   ((CY_IP_MXS22SRSS_VERSION == 1) &amp;&amp; (CY_IP_MXS22SRSS_VERSION_MINOR == 0))'                                   include='`${isMXS22}`' />
+      <Line value='    /* The workaround for devices with MXS22SRSS block 1.0 */'                                                         include='`${isMXS22}`' />
+      <Line value='    uint32_t clkHfMask = Cy_SysClk_ClkHfGetMaskOnPath((cy_en_clkhf_in_sources_t)SRSS_DPLL_LP_`${dpllInst}`_PATH_NUM);' include='`${isMXS22}`' />
+      <Line value='    if(clkHfMask)'                                                                                                     include='`${isMXS22}`' />
+      <Line value='    {'                                                                                                                 include='`${isMXS22}`' />
+      <Line value='        Cy_SysClk_ClkHfEnableDirectMuxWithMask(clkHfMask, true);'                                                      include='`${isMXS22}`' />
+      <Line value='    }'                                                                                                                 include='`${isMXS22}`' />
+      <Line value='#endif /* ((CY_IP_MXS22SRSS_VERSION == 1) &amp;&amp; (CY_IP_MXS22SRSS_VERSION_MINOR == 0)) */'                         include='`${isMXS22}`' />
+      <Line value=''                                                                                                                      include='`${isMXS22}`' />
+      <Line value='if (CY_SYSCLK_SUCCESS != Cy_SysClk_PllEnable(`${pllPathNum}`, 10000u))' />
+      <Line value='{' />
+      <Line value='    cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);' />
+      <Line value='}' />
+      <Line value='else'                                                                                                                  include='`${isMXS22}`' />
+      <Line value='{'                                                                                                                     include='`${isMXS22}`' />
+      <Line value='    /* The workaround for devices with MXS22SRSS block 1.0 */'                                                         include='`${isMXS22}`' />
+      <Line value='#if (defined (CY_IP_MXS22SRSS_VERSION) &amp;&amp; defined (CY_IP_MXS22SRSS_VERSION)) &amp;&amp; \'                     include='`${isMXS22}`' />
+      <Line value='   ((CY_IP_MXS22SRSS_VERSION == 1) &amp;&amp; (CY_IP_MXS22SRSS_VERSION_MINOR == 0))'                                   include='`${isMXS22}`' />
+      <Line value='    Cy_SysLib_DelayUs(SRSS_DPLL_LP_INIT_DELAY_USEC);'                                                                  include='`${isMXS22}`' />
+      <Line value='    Cy_SysClk_ClkHfEnableDirectMuxWithMask(clkHfMask, false);'                                                         include='`${isMXS22}`' />
+      <Line value='#endif /* ((CY_IP_MXS22SRSS_VERSION == 1) &amp;&amp; (CY_IP_MXS22SRSS_VERSION_MINOR == 0)) */'                         include='`${isMXS22}`' />
+      <Line value='}'                                                                                                                     include='`${isMXS22}`' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

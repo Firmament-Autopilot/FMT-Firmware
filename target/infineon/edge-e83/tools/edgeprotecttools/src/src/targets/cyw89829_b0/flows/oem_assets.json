@@ -1,0 +1,12 @@
+{
+  "Assets": [
+    "target_lcs",
+    "control_word",
+    "access_restrict",
+    "wounding"  ,
+    "oem_config",
+    "nv_counter",
+    "oem_key_0_hash",
+    "oem_key_1_hash"
+  ]
+}

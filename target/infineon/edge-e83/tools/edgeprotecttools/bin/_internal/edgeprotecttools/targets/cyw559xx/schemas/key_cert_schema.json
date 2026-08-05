@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "certificate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "KEY_CERT"
+          ]
+        },
+        "version": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 1.0
+        }
+      },
+      "required": [
+        "type",
+        "version"
+      ]
+    },
+    "cert_keypair": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "cert_keypair_pwd": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "nv_counter": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 96
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "next_cert_pubkey": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    }
+  },
+  "required": [
+    "certificate",
+    "cert_keypair",
+    "nv_counter",
+    "next_cert_pubkey"
+  ]
+}

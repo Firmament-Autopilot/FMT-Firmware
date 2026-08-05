@@ -1,0 +1,956 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_ac_stt-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* Autonomous Controller State Transition Table personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_ac_stt' name='AC State' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <PhysicalResource ipblock='mxs22lppass' version='1'>
+    <PhysicalResource type='ac'>
+      <VirtualResourceDefinition type='state'
+                                 display_name='State $idx{0}'
+                                 display_path='$display_path{1}/$display_name{1}'
+                                 display_mode='DYNAMIC'
+                                 count='64'/>
+    </PhysicalResource>
+  </PhysicalResource>
+
+  <FittingRules>
+    <MappingRules>
+    <IpBlock name='mxs22lppass' />
+    <Resource name='pass\.ac\.state'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='stt_conditionCodeGen'                 paramId='conditionCodeGen'                            />
+    <ExposedMember key='stt_actionCodeGen'                    paramId='actionCodeGen'                               />
+    <ExposedMember key='stt_branchingState'                   paramId='branchingState'                              />
+    <ExposedMember key='stt_sendTriggerInterrupt'             paramId='sendTriggerInterrupt'                        />
+    <ExposedMember key='stt_writeCounter'                     paramId='writeCounter'                                />
+    <!-- STT GPIO -->
+    <ExposedMember key='stt_gpioOutUnlock'                    paramId='gpioOutUnlock'                               />
+    <ExposedMember key='stt_gpioOutCodeGen'                   paramId='gpioOutCodeGen'                              />
+    <ExposedMember key='stt_gpioOut$idxPortName'              paramId='gpioOut$idxPortName'         repeatCount='4' />
+    <!-- STT CTB0 (OA0/1) -->
+    <ExposedMember key='stt_ctb0Unlock'                       paramId='ctb0Unlock'                                  />
+    <ExposedMember key='stt_ctb0opamp$idxEnable'              paramId='ctb0opamp$idxEnable'         repeatCount='2' />
+    <ExposedMember key='stt_ctb0opamp$idxDynCfg'              paramId='ctb0opamp$idxDynCfg'         repeatCount='2' />
+    <ExposedMember key='stt_ctb0opamp$idxDynCfgWrapper'       paramId='ctb0opamp$idxDynCfgWrapper'  repeatCount='2' />
+    <ExposedMember key='stt_ctb0opamp$idxGain'                paramId='ctb0opamp$idxGain'           repeatCount='2' />
+    <!-- STT CTB1 (OA0/1) -->
+    <ExposedMember key='stt_ctb1Unlock'                       paramId='ctb1Unlock'                                  />
+    <ExposedMember key='stt_ctb1opamp$idxEnable'              paramId='ctb1opamp$idxEnable'         repeatCount='2' />
+    <ExposedMember key='stt_ctb1opamp$idxDynCfg'              paramId='ctb1opamp$idxDynCfg'         repeatCount='2' />
+    <ExposedMember key='stt_ctb1opamp$idxDynCfgWrapper'       paramId='ctb1opamp$idxDynCfgWrapper'  repeatCount='2' />
+    <ExposedMember key='stt_ctb1opamp$idxGain'                paramId='ctb1opamp$idxGain'           repeatCount='2' />
+    <!-- STT PRB -->
+    <ExposedMember key='stt_prbUnlock'                        paramId='prbUnlock'                                   />
+    <ExposedMember key='stt_prbOut0FirmwareControl'           paramId='prbOut0FirmwareControl'                      />
+    <ExposedMember key='stt_prbOut0Value'                     paramId='prbOut0Value'                                />
+    <ExposedMember key='stt_prbOut1FirmwareControl'           paramId='prbOut1FirmwareControl'                      />
+    <ExposedMember key='stt_prbOut1Value'                     paramId='prbOut1Value'                                />
+    <!-- STT PTC -->
+    <ExposedMember key='stt_ptcUnlock'                        paramId='stateUnlockPtComp'                           />
+    <ExposedMember key='stt_ptc$idxEnable'                    paramId='stateComp$idxEnable'         repeatCount='2' />
+    <ExposedMember key='stt_ptc$idxDynCfg'                    paramId='stateComp$idxDynCfg'         repeatCount='2' />
+    <ExposedMember key='stt_ptc$idxDynCfgWrapper'             paramId='stateComp$idxDynCfgWrapper'  repeatCount='2' />
+    <!-- STT SARADC -->
+    <ExposedMember key='stt_sarAdcUnlock'                     paramId='sarAdcUnlock'                                />
+    <ExposedMember key='stt_sarAdcEnable'                     paramId='sarAdcEnable'                                />
+    <ExposedMember key='stt_sarAdcTrigger'                    paramId='sarAdcTrigger'                               />
+    <ExposedMember key='stt_sarAdcScanGroup'                  paramId='sarAdcScanGroup'                             />
+    <ExposedMember key='stt_sarAdcScanGroupWrapper'           paramId='sarAdcScanGroupWrapper'                      />
+    <!-- STT DAC0/1 -->
+    <ExposedMember key='stt_dac$idxUnlock'                    paramId='dac$idxUnlock'               repeatCount='2' />
+    <ExposedMember key='stt_dac$idxEnable'                    paramId='dac$idxEnable'               repeatCount='2' />
+    <ExposedMember key='stt_dac$idxTrigger'                   paramId='dac$idxTrigger'              repeatCount='2' />
+    <ExposedMember key='stt_dac$idxChannel'                   paramId='dac$idxChannel'              repeatCount='2' />
+    <ExposedMember key='stt_dac$idxCommand'                   paramId='dac$idxCommand'              repeatCount='2' />
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_ac'
+                 name='inst_ac'
+                 group='Internal'
+                 default='`${getInstNumber("ac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_ptc'
+                 name='inst_ptc'
+                 group='Internal'
+                 default='`${getInstNumber("ptc")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_prb'
+                 name='resource_prb'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].prb[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_ptc'
+                 name='resource_ptc'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ptc[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . 0 . "]"}`'/>
+
+<!-- LPPASS external variables -->
+   <Repeat count='64'>
+   <ParamString  id='resource_state_$idx'
+                 name='resource_state_$idx'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${isBlockUsed(resource_ac) ? getExposedMember("pass[" . inst_pass . "].ac[" . inst_ac . "]", "resource_state_" . $idx) : ""}`'/>
+    </Repeat>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false'
+                 default=''/>
+
+    <ParamRange id='curState' name='curState' min='0' max='63' resolution='1' editable='false' visible='`${debug}`' group='Internal' default='`${getInstNumber("state")}`' desc='Get the number of the current state' />
+
+      <ParamBool id='updateOpMode' name='Update Operating Mode' group='State Control'
+                 default='true' visible='`${getInstNumber("state") eq 0}`' editable='false' desc='Lock/Unlock the AC operating mode.'/>
+
+      <ParamChoice id='opModeStt' name='Operating Mode' group='State Control'
+                   default='`${(getExposedMember(resource_ac, "opMode"))}`' visible='`${getInstNumber("state") eq 0}`' editable='false' desc='The operational mode of the Autonomous Analog.'>
+        <Entry name='Low-Power (LP)' value='LowPower' visible='true'/>
+        <Entry name='High-Speed (HS)' value='HighSpeed' visible='true'/>
+      </ParamChoice>
+
+      <ParamChoice
+          group='State Control'
+          id='action'
+          name='Action'
+          desc='The AC Action in the corresponding state of the STT'
+          visible='true' editable='true'
+          default='0'>
+        <Entry name='Stop'                           value='0' visible='true'/>
+        <Entry name='Go to Next State'               value='1' visible='`${!(curState eq 63)}`'/>
+        <Entry name='Wait for True'                  value='2' visible='true'/>
+        <Entry name='Branch if True'                 value='3' visible='true'/>
+        <Entry name='Branch if False'                value='4' visible='true'/>
+        <Entry name='Branch if True, Clear Counter'  value='5' visible='true'/>
+        <Entry name='Branch if False, Clear Counter' value='6' visible='true'/>
+        <Entry name='Sleep'                          value='7' visible='true'/>
+      </ParamChoice>
+
+      <ParamString id='actionCodeGen' name='' group='State Control' desc='' visible='`${debug}`' editable='false'
+                   default='CY_AUTANALOG_STT_AC_ACTION_`${(action == 0) ? "STOP" :
+                                                          (action == 1) ? "NEXT" :
+                                                          (action == 2) ? "WAIT_FOR" :
+                                                          (action == 3) ? "BRANCH_IF_TRUE" :
+                                                          (action == 4) ? "BRANCH_IF_FALSE" :
+                                                          (action == 5) ? "BRANCH_IF_TRUE_CLR" :
+                                                          (action == 6) ? "BRANCH_IF_FALSE_CLR" :
+                                                          (action == 7) ? "WAIT_FOR" : "STOP"}`'/>
+
+      <ParamString id='actionStopDesc' name='' group='State Control' desc='' visible='`${ (action == 0) }`' editable='false'
+                   default='Stop and stay in the current state. Firmware override is required to change states.'/>
+      <ParamString id='actionGotoNextStateDesc' name='' group='State Control' desc='' visible='`${ ( action == 1 ) }`' editable='false'
+                   default='Unconditionally go to the next state'/>
+      <ParamString id='actionWaitForTrueDesc' name='' group='State Control' desc='' visible='`${ (action == 2) }`' editable='false'
+                   default='Wait for the Condition to be True, then go to the next state'/>
+      <ParamString id='actionBranchIfTrueDesc' name='' group='State Control' desc='' visible='`${ (action == 3) }`' editable='false'
+                   default='Go to the Branching State if the condition is True, else go to the next state'/>
+      <ParamString id='actionBranchIfFalseDesc' name='' group='State Control' desc='' visible='`${ (action == 4) }`' editable='false'
+                   default='Go to the Branching State if the condition is False, else go to the next state'/>
+      <ParamString id='actionBranchIfTrueClearCounterDesc' name='' group='State Control' desc='' visible='`${ (action == 5) }`' editable='false'
+                   default='Go to the Branching State if the condition is True, clear the loop counter, else go to the next state'/>
+      <ParamString id='actionBranchIfFalseClearCounterDesc' name='' group='State Control' desc='' visible='`${ (action == 6) }`' editable='false'
+                   default='Go to the Branching State if the condition is False, clear the loop counter, else go to the next state'/>
+      <ParamString id='actionSleepDesc' name='' group='State Control' desc='' visible='`${ (action == 7) }`' editable='false'
+                   default='Sleep (unclocks all the blocks), go to the next state upon wakeup '/>
+
+      <ParamBool id='conditionSrcVisible' name='conditionSrcVisible' group='Internal' desc='' visible='`${debug}`' editable='false'
+                 default='`${( (action ne 0) &amp;&amp; (action ne 1) &amp;&amp; (action ne 7) )}`'/>
+      <ParamChoice
+          group='State Control'
+          id='conditionSrc'
+          name='Condition Source'
+          desc='The Condition Source in the corresponding state'
+          default='0'
+          visible='`${conditionSrcVisible}`'
+          editable='true'>
+        <Entry name='Internal'       value='0' visible='true'/>
+        <Entry name='External / CPU' value='1' visible='true'/>
+        <Entry name='SAR ADC'        value='2' visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='PTComp'         value='3' visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='DAC'            value='4' visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]") ||
+                                                           hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='CTB'            value='5' visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]") ||
+                                                           hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]") ||
+                                                           hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]") ||
+                                                           hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+
+      </ParamChoice>
+
+      <ParamString id='conditionSrcInternalDesc' name='' group='State Control' desc='' visible='`${ (action != 0) &amp;&amp; (action != 1) &amp;&amp; (action != 7) &amp;&amp; (conditionSrc == 0) }`' editable='false'
+                   default='Autonomous Controller&apos;s internal sources'/>
+      <ParamString id='conditionSrcExternalDesc' name='' group='State Control' desc='' visible='`${ (action != 0) &amp;&amp; (action != 1) &amp;&amp; (action != 7) &amp;&amp; (conditionSrc == 1) }`' editable='false'
+                   default='External Blocks or the CPU'/>
+      <ParamString id='conditionSrcSARADCDesc'   name='' group='State Control' desc='' visible='`${ (action != 0) &amp;&amp; (action != 1) &amp;&amp; (action != 7) &amp;&amp; (conditionSrc == 2) }`' editable='false'
+                   default='SAR ADC, FIR filters and FIFO'/>
+      <ParamString id='conditionSrcPTCompDesc'   name='' group='State Control' desc='' visible='`${ (action != 0) &amp;&amp; (action != 1) &amp;&amp; (action != 7) &amp;&amp; (conditionSrc == 3) }`' editable='false'
+                   default='PTComp comparators 0 and 1 or Post-processing 0 and 1'/>
+      <ParamString id='conditionSrcDACDesc'      name='' group='State Control' desc='' visible='`${ (action != 0) &amp;&amp; (action != 1) &amp;&amp; (action != 7) &amp;&amp; (conditionSrc == 4) }`' editable='false'
+                   default='DAC 0 and 1'/>
+      <ParamString id='conditionSrcCTBDesc'      name='' group='State Control' desc='' visible='`${ (action != 0) &amp;&amp; (action != 1) &amp;&amp; (action != 7) &amp;&amp; (conditionSrc == 5) }`' editable='false'
+                   default='CTB 0 and 1 comparators 0 and 1'/>
+
+      <ParamChoice
+          group='State Control'
+          id='wakeupSrc'
+          name='Wake Up Source'
+          desc=''
+          default='CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN_WAKE' visible='`${ (action eq 7) }`' editable='true'>
+        <Entry name='External / CPU Trigger'   value='CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN_WAKE' visible='true'/>
+        <Entry name='Internal / Timer Trigger' value='CY_AUTANALOG_STT_AC_CONDITION_TIMER_DONE_WAKE'      visible='true'/>
+        <Entry name='PTComp Comparator 0'      value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP0_WAKE'     visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Comparator 1'      value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP1_WAKE'     visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='CTB 0 Comparator 0'       value='CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP0_WAKE'       visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+        <Entry name='CTB 0 Comparator 1'       value='CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP1_WAKE'       visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+        <Entry name='CTB 1 Comparator 0'       value='CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP0_WAKE'       visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+        <Entry name='CTB 1 Comparator 1'       value='CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP1_WAKE'       visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+      </ParamChoice>
+
+      <ParamString id='wakeupSrcExternalDesc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp; (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN_WAKE") }`' editable='false'
+                   default='Triggers 0 to 3 from External Blocks or the CPU (Firmware)'/>
+      <ParamString id='wakeupSrcInternalDesc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp; (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_TIMER_DONE_WAKE") }`'  editable='false'
+                   default='Trigger is generated through `${getExposedMember(resource_ac, "sttTimerActualPeriod")}`'/>
+      <ParamString id='wakeupSrcPTComp0Desc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp;  (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP0_WAKE") }`' editable='false'
+                   default='PTComp Comparator 0 Edge Detect Condition'/>
+      <ParamString id='wakeupSrcPTComp1Desc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp;  (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP1_WAKE") }`' editable='false'
+                   default='PTComp Comparator 1 Edge Detect Condition'/>
+      <ParamString id='wakeupSrcCTB0Comp0Desc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp; (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP0_WAKE") }`'  editable='false'
+                   default='CTB 0 Comparator 0 Edge Detect Condition'/>
+      <ParamString id='wakeupSrcCTB0Comp1Desc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp; (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP1_WAKE") }`'  editable='false'
+                   default='CTB 0 Comparator 1 Edge Detect Condition'/>
+      <ParamString id='wakeupSrcCTB1Comp0Desc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp; (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP0_WAKE") }`'  editable='false'
+                   default='CTB 1 Comparator 0 Edge Detect Condition'/>
+      <ParamString id='wakeupSrcCTB1Comp1Desc' name='' group='State Control' desc='' visible='`${ (action eq 7) &amp;&amp; (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP1_WAKE") }`'  editable='false'
+                   default='CTB 1 Comparator 1 Edge Detect Condition'/>
+
+      <ParamChoice
+          group='State Control'
+          id='conditionSttInt'
+          name='Condition'
+          desc='Condition for AC internal sources'
+          visible='`${(conditionSrc == 0) &amp;&amp; conditionSrcVisible}`'
+          default='CY_AUTANALOG_STT_AC_CONDITION_CNT_DONE'
+          editable='`${(conditionSrc == 0) &amp;&amp; conditionSrcVisible}`'>
+        <Entry name='True'                         value='CY_AUTANALOG_STT_AC_CONDITION_TRUE'               visible='`${(action == 3) || (action == 5)}`'/>
+        <Entry name='Enabled Blocks Ready'         value='CY_AUTANALOG_STT_AC_CONDITION_BLOCK_READY'        visible='true'/>
+        <Entry name='Counter Done'                 value='CY_AUTANALOG_STT_AC_CONDITION_CNT_DONE'           visible='true'/>
+      </ParamChoice>
+
+      <ParamChoice
+          group='State Control'
+          id='conditionSttExt'
+          name='Condition'
+          desc='Condition for AC external/CPU sources'
+          visible='`${(conditionSrc == 1) &amp;&amp; conditionSrcVisible}`'
+          default='CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN0'
+          editable='`${(conditionSrc == 1) &amp;&amp; conditionSrcVisible}`'>
+        <Entry name='External Trigger in 0'        value='CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN0'   visible='true'/>
+        <Entry name='External Trigger in 1'        value='CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN1'   visible='true'/>
+        <Entry name='External Trigger in 2'        value='CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN2'   visible='true'/>
+        <Entry name='External Trigger in 3'        value='CY_AUTANALOG_STT_AC_CONDITION_TR_AUTANALOG_IN3'   visible='true'/>
+        <Entry name='Device Active Mode'           value='CY_AUTANALOG_STT_AC_CONDITION_CHIP_ACTIVE'        visible='true'/>
+        <Entry name='Device Deep-Sleep Mode'       value='CY_AUTANALOG_STT_AC_CONDITION_CHIP_DEEPSLEEP'     visible='true'/>
+      </ParamChoice>
+
+      <ParamChoice
+          group='State Control'
+          id='conditionSar'
+          name='Condition'
+          desc='Condition for SAR'
+          visible='`${(conditionSrc == 2) &amp;&amp; conditionSrcVisible}`'
+          default='CY_AUTANALOG_STT_AC_CONDITION_SAR_DONE'
+          editable='`${(conditionSrc == 2) &amp;&amp; conditionSrcVisible}`'>
+        <Entry name='SAR Done'                     value='CY_AUTANALOG_STT_AC_CONDITION_SAR_DONE'           visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR EOS'                      value='CY_AUTANALOG_STT_AC_CONDITION_SAR_EOS'            visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Busy'                     value='CY_AUTANALOG_STT_AC_CONDITION_SAR_BUSY'           visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR FIR 0 Done'               value='CY_AUTANALOG_STT_AC_CONDITION_SAR_FIR0_DONE'      visible='`${hasBlock("pass[0].sar[0].firfilter[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].firfilter[0]")}`'/>
+        <Entry name='SAR FIR 1 Done'               value='CY_AUTANALOG_STT_AC_CONDITION_SAR_FIR1_DONE'      visible='`${hasBlock("pass[0].sar[0].firfilter[1]") &amp;&amp; isBlockUsed("pass[0].sar[0].firfilter[1]")}`'/>
+        <Entry name='SAR FIFO Done'                value='CY_AUTANALOG_STT_AC_CONDITION_SAR_FIFO_DONE'      visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIR 0 FIFO Done'          value='CY_AUTANALOG_STT_AC_CONDITION_SAR_FIR0_FIFO_DONE' visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]") &amp;&amp;
+                                                                                                                        hasBlock("pass[0].sar[0].firfilter[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].firfilter[0]")}`'/>
+        <Entry name='SAR FIR 1 FIFO Done'          value='CY_AUTANALOG_STT_AC_CONDITION_SAR_FIR1_FIFO_DONE' visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]") &amp;&amp;
+                                                                                                                        hasBlock("pass[0].sar[0].firfilter[1]") &amp;&amp; isBlockUsed("pass[0].sar[0].firfilter[1]")}`'/>
+        <Entry name='SAR Range Detect 0'           value='CY_AUTANALOG_STT_AC_CONDITION_SAR_RANGE0'         visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Range Detect 1'           value='CY_AUTANALOG_STT_AC_CONDITION_SAR_RANGE1'         visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Range Detect 2'           value='CY_AUTANALOG_STT_AC_CONDITION_SAR_RANGE2'         visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Range Detect 3'           value='CY_AUTANALOG_STT_AC_CONDITION_SAR_RANGE3'         visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR FIFO 0 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL0'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 1 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL1'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 2 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL2'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 3 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL3'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 4 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL4'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 5 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL5'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 6 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL6'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 7 Level Detect'      value='CY_AUTANALOG_STT_AC_CONDITION_FIFO_LEVEL7'        visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+      </ParamChoice>
+
+      <ParamChoice
+          group='State Control'
+          id='conditionPtcomp'
+          name='Condition'
+          desc='Condition for PTCOMP'
+          visible='`${(conditionSrc == 3) &amp;&amp; conditionSrcVisible}`'
+          default='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP0'
+          editable='`${(conditionSrc == 3) &amp;&amp; conditionSrcVisible}`'>
+        <Entry name='PTComp Comparator 0'          value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP0'        visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Comparator 1'          value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP1'        visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Post Process 0 Strobe' value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_STROBE0'     visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Post Process 1 Strobe' value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_STROBE1'     visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Post Process 0 Range'  value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_RANGE0'      visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Post Process 1 Range'  value='CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_RANGE1'      visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+      </ParamChoice>
+
+      <ParamChoice
+          group='State Control'
+          id='conditionDac'
+          name='Condition'
+          desc='Condition for DAC'
+          visible='`${(conditionSrc == 4) &amp;&amp; conditionSrcVisible}`'
+          default='CY_AUTANALOG_STT_AC_CONDITION_DAC0_EPOCH'
+          editable='`${(conditionSrc == 4) &amp;&amp; conditionSrcVisible}`'>
+        <Entry name='DAC 0 Epoch'                  value='CY_AUTANALOG_STT_AC_CONDITION_DAC0_EPOCH'         visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 1 Epoch'                  value='CY_AUTANALOG_STT_AC_CONDITION_DAC1_EPOCH'         visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='DAC 0 Strobe '                value='CY_AUTANALOG_STT_AC_CONDITION_DAC0_STROBE'        visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 1 Strobe'                 value='CY_AUTANALOG_STT_AC_CONDITION_DAC1_STROBE'        visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='DAC 0 Range Detect 0'         value='CY_AUTANALOG_STT_AC_CONDITION_DAC0_RANGE0'        visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 0 Range Detect 1'         value='CY_AUTANALOG_STT_AC_CONDITION_DAC0_RANGE1'        visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 0 Range Detect 2'         value='CY_AUTANALOG_STT_AC_CONDITION_DAC0_RANGE2'        visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 1 Range Detect 0'         value='CY_AUTANALOG_STT_AC_CONDITION_DAC1_RANGE0'        visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='DAC 1 Range Detect 1'         value='CY_AUTANALOG_STT_AC_CONDITION_DAC1_RANGE1'        visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='DAC 1 Range Detect 2'         value='CY_AUTANALOG_STT_AC_CONDITION_DAC1_RANGE2'        visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+      </ParamChoice>
+
+      <ParamChoice
+          group='State Control'
+          id='conditionCtb'
+          name='Condition'
+          desc='Condition for CTB'
+          visible='`${(conditionSrc == 5) &amp;&amp; conditionSrcVisible}`'
+          default='CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP0'
+          editable='`${(conditionSrc == 5) &amp;&amp; conditionSrcVisible}`'>
+        <Entry name='CTB 0 Comparator 0'           value='CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP0'          visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+        <Entry name='CTB 0 Comparator 1'           value='CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP1'          visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+        <Entry name='CTB 1 Comparator 0'           value='CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP0'          visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+        <Entry name='CTB 1 Comparator 1'           value='CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP1'          visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+      </ParamChoice>
+
+      <ParamString
+          group='State Control'
+          id='condition'
+          name='Condition'
+          desc=''
+          visible='`${debug}`'
+          default='`${(conditionSrc == 0) ? conditionSttInt : ((conditionSrc == 1) ? conditionSttExt : ((conditionSrc == 2) ? conditionSar : ((conditionSrc == 3) ? conditionPtcomp : ((conditionSrc == 4) ? conditionDac : conditionCtb))))}`'
+          editable='false'/>
+
+      <ParamString id='conditionCodeGen' name='' group='State Control' desc='' visible='`${debug}`' editable='false'
+                   default='`${((action == 0) || (action == 1)) ? "CY_AUTANALOG_STT_AC_CONDITION_FALSE" : ((action == 7) ? wakeupSrc : condition)}`'/>
+
+      <ParamChoice
+          group='State Control'
+          id='branchingState'
+          name='Branching State'
+          desc='The Branching State'
+          visible='`${((action == 3) || (action == 4) || (action == 5) || (action == 6))}`'
+          default='`${(0 eq getInstNumber("state")) ? (isBlockUsed(resource_state_1) ? 1 : 0) : 0}`'
+          editable='`${((action == 3) || (action == 4) || (action == 5) || (action == 6))}`'>
+        <Entry name='State $idx' value='$idx'
+               visible='`${(isBlockUsed(resource_state_$idx) &amp;&amp; ($idx ne getInstNumber("state"))) || ((0 eq getInstNumber("state")) &amp;&amp; !(isBlockUsed(resource_state_1)) &amp;&amp; ($idx eq 0) &amp;&amp; !((action == 3) || (action == 4) || (action == 5) || (action == 6)))}`'
+               repeatCount='64'/>
+      </ParamChoice>
+      <ParamRange id='writeCounter'
+                  name='Write Counter'
+                  min='1'
+                  max='4096'
+                  resolution='1'
+                  editable='true'
+                  desc='Write to the loop counter / interval timer'
+                  visible='`${( ( (action == 2) || (action == 3) || (action == 4) || (action == 5) || (action == 6)) &amp;&amp; (condition eq "CY_AUTANALOG_STT_AC_CONDITION_CNT_DONE"))}`'
+                  group='State Control'
+                  default='1'/>
+
+      <ParamBool id='gpioOutUnlock' name='Unlock GPIO out' group='GPIO, Trigger and Interrupt Out' editable='`${getExposedMember(resource_ac, "enableGpioControl") eq true}`' visible='`${getExposedMember(resource_ac, "enableGpioControl") eq true}`' desc='Unlocks the GPIO out field' default='false'/>
+
+      <Repeat count='4'>
+        <ParamBool id='gpioOut$idx' name='GPIO Out $idx' group='GPIO, Trigger and Interrupt Out' editable='`${gpioOutUnlock &amp;&amp; (getExposedMember(resource_ac, "gpio$idxOutEn") eq true)}`' desc='Output digital data to the GPIO $idx' visible='`${gpioOutUnlock &amp;&amp; (getExposedMember(resource_ac, "gpio$idxOutEn") eq true)}`' default='false'/>
+
+        <ParamString id='gpioOut$idxPortName' name='GPIO Out $idx Port Name' group ='GPIO, Trigger and Interrupt Out' editable='false' visible='false' desc=''
+                      default='`${getExposedMember("pass[" . inst_pass . "]", "lppass_dout_$idx")}`'/>
+      </Repeat>
+
+      <ParamBool id='gpioOutEnabled'
+                  name='gpioOutEnabled'
+                  group='GPIO, Trigger and Interrupt Out'
+                  editable='false'
+                  desc=''
+                  visible='`${debug}`'
+                  default='`${(gpioOut0 eq true) || (gpioOut1 eq true) || (gpioOut2 eq true) || (gpioOut3 eq true)}`'/>
+
+      <ParamString id='gpioOutCodeGen' name='gpioOutCodeGen' group='GPIO, Trigger and Interrupt Out' desc='' visible='`${debug}`' editable='false'
+                   default='`${(gpioOutUnlock &amp;&amp; gpioOutEnabled) ? "" . ((gpioOut0 eq true) ? "CY_AUTANALOG_STT_AC_GPIO_OUT0" : "") . ((gpioOut0 eq true) &amp;&amp; (gpioOut1 eq true ? true : (gpioOut2 eq true ? true : (gpioOut3 eq true ? true : false))) ? " | " : "") . ((gpioOut1 eq true) ? "CY_AUTANALOG_STT_AC_GPIO_OUT1" : "") . ((gpioOut1 eq true) &amp;&amp; (gpioOut2 eq true ? true : (gpioOut3 eq true ? true : false)) ? " | " : "") . ((gpioOut2 eq true) ? "CY_AUTANALOG_STT_AC_GPIO_OUT2" : "") . ((gpioOut2 eq true) &amp;&amp; (gpioOut3 eq true) ? " | " : "") . ((gpioOut3 eq true) ? "CY_AUTANALOG_STT_AC_GPIO_OUT3" : "") : "CY_AUTANALOG_STT_AC_GPIO_OUT_DISABLED"}`'/>
+
+      <ParamBool id='sendTriggerInterrupt'
+                 name='Send Trigger/Interrupt'
+                 group='GPIO, Trigger and Interrupt Out'
+                 editable='true'
+                 visible='true'
+                 desc='Send an external trigger or an interrupt to the CPU. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                 default='false'/>
+
+
+      <!-- Repeat for CTB 0/1 params-->
+      <Repeat count='2'>
+        <ParamString id='ctb$idxIsUsed' name='ctb$idxIsUsed' group='Internal' editable='false' visible='false' desc=''
+                     default='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx]")}`' />
+        <ParamString id='ctb$idxOpAmp0IsUsed' name='ctb$idxOpAmp0IsUsed' group='Internal' editable='false' visible='false' desc=''
+                     default='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx].oa[0]")}`' />
+        <ParamString id='ctb$idxOpAmp1IsUsed' name='ctb$idxOpAmp1IsUsed' group='Internal' editable='false' visible='false' desc=''
+                     default='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx].oa[1]")}`' />
+
+        <ParamBool id='ctb$idxUnlock'
+                  name='Unlock CTB $idx'
+                  group='CTB $idx'
+                  editable='`${hasBlock("pass[0].ctb[$idx]") &amp;&amp; ctb$idxIsUsed}`'
+                  visible='`${hasBlock("pass[0].ctb[$idx]") &amp;&amp; (hasBlock("pass[0].ctb[$idx].oa[0]") || hasBlock("pass[0].ctb[$idx].oa[1]"))}`'
+                  desc='Unlocks the CTB $idx fields'
+                  default='false'/>
+
+        <!-- Nested repeat for OA 0/1 params -->
+        <Repeat count='2'>
+          <ParamBool id='ctb$idx{1}opamp$idx{0}Enable'
+                    name='Opamp $idx{0} Enable'
+                    group='CTB $idx{1}'
+                    editable='`${ctb$idx{1}Unlock &amp;&amp; ctb$idx{1}OpAmp$idx{0}IsUsed}`'
+                    visible='`${ctb$idx{1}Unlock  &amp;&amp; hasBlock("pass[0].ctb[$idx{1}].oa[$idx{0}]")}`'
+                    desc='Enables the Opamp $idx{0} for CTB $idx{1}'
+                    default='false'/>
+          <ParamChoice id='ctb$idx{1}opamp$idx{0}DynCfg'
+                      name='Opamp $idx{0} Dynamic Config'
+                      group='CTB $idx{1}'
+                      visible='`${ctb$idx{1}opamp$idx{0}Enable}`'
+                      desc='Selects the dynamic configuration used for Opamp $idx{0}'
+                      editable='`${ctb$idx{1}opamp$idx{0}Enable &amp;&amp; ctb$idx{1}OpAmp$idx{0}IsUsed}`'
+                      default='0'>
+            <Entry name='0' value='0' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[0]")}`'/>
+            <Entry name='1' value='1' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[1]")}`'/>
+            <Entry name='2' value='2' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[2]")}`'/>
+            <Entry name='3' value='3' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[3]")}`'/>
+            <Entry name='4' value='4' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[4]")}`'/>
+            <Entry name='5' value='5' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[5]")}`'/>
+            <Entry name='6' value='6' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[6]")}`'/>
+            <Entry name='7' value='7' visible='`${isBlockUsed("pass[" . inst_pass . "].ctb[$idx{1}].oa[$idx{0}].ctb_dynamic[7]")}`'/>
+          </ParamChoice>
+
+          <ParamString id='ctb$idx{1}opamp$idx{0}DynCfgWrapper'
+                        name='ctb$idx{1}opamp$idx{0}DynCfgWrapper'
+                        group='Internal'
+                        editable='false'
+                        visible='false'
+                        desc=''
+                        default='`${(ctb$idx{1}opamp$idx{0}Enable &amp;&amp; ctb$idx{1}OpAmp$idx{0}IsUsed &amp;&amp; getExposedMember("pass[" .inst_pass . "].ctb[$idx{1}]", "ctb_oa$idx{0}_dynCfgCnt") > 0 ) ? ctb$idx{1}opamp$idx{0}DynCfg : -1}`'/>
+
+          <ParamChoice id='ctb$idx{1}opamp$idx{0}Gain'
+                      name='Opamp $idx{0} Gain'
+                      group='CTB $idx{1}'
+                      visible='`${ctb$idx{1}opamp$idx{0}Enable}`'
+                      desc='Defines the gain used for Opamp $idx{0}, not used for buffer, opamp with open loop and comparator.'
+                      editable='`${ctb$idx{1}opamp$idx{0}Enable &amp;&amp; ctb$idx{1}OpAmp$idx{0}IsUsed}`'
+                      default='CY_AUTANALOG_STT_CTB_OA_GAIN_1_00'>
+            <Entry name='PGA: nonInv 1.00,  Inv 0;     Diff: 1.00;  TIA: 0k'   value='CY_AUTANALOG_STT_CTB_OA_GAIN_1_00'  visible='true'/>
+            <Entry name='PGA: nonInv 1.42,  Inv 0.42;  Diff: 1.42;  TIA: 57k'  value='CY_AUTANALOG_STT_CTB_OA_GAIN_1_42'  visible='true'/>
+            <Entry name='PGA: nonInv 2.00,  Inv 1.00;  Diff: 2.00;  TIA: 96k'  value='CY_AUTANALOG_STT_CTB_OA_GAIN_2_00'  visible='true'/>
+            <Entry name='PGA: nonInv 2.78,  Inv 1.78;  Diff: 2.78;  TIA: 123k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_2_78'  visible='true'/>
+            <Entry name='PGA: nonInv 4.00,  Inv 3.00;  Diff: 4.00;  TIA: 144k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_4_00'  visible='true'/>
+            <Entry name='PGA: nonInv 5.82,  Inv 4.82;  Diff: 5.82;  TIA: 159k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_5_82'  visible='true'/>
+            <Entry name='PGA: nonInv 8.00,  Inv 7.00;  Diff: 8.00;  TIA: 168k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_8_00'  visible='true'/>
+            <Entry name='PGA: nonInv 10.67, Inv 9.67;  Diff: 10.67; TIA: 174k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_10_67' visible='true'/>
+            <Entry name='PGA: nonInv 16.00, Inv 15.00; Diff: 16.00; TIA: 180k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_16_00' visible='true'/>
+            <Entry name='PGA: nonInv 21.33, Inv 20.33; Diff: 21.33; TIA: 183k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_21_33' visible='true'/>
+            <Entry name='PGA: nonInv 32.00, Inv 31.00; Diff: 32.00; TIA: 186k' value='CY_AUTANALOG_STT_CTB_OA_GAIN_32_00' visible='true'/>
+          </ParamChoice>
+
+        </Repeat>
+      </Repeat>
+
+      <ParamString id='ptcIsUsed' name='ptcIsUsed' group='Internal' editable='false' visible='false' desc='' default='`${isBlockUsed(resource_ptc)}`' />
+      <Repeat count='2'>
+        <ParamString id='ptcStaticComp$idxPower' name='ptcStaticComp$idxPower' group='Internal' editable='false' visible='false' desc=''
+                     default='`${ptcIsUsed ? getExposedMember(resource_ptc, "ptc_sta_comp$idxPower") : "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF"}`' />
+      </Repeat>
+
+      <ParamBool id='stateUnlockPtComp'
+                 name='Unlock PTComp'
+                 group='PTComp'
+                 editable='`${hasBlock("pass[0].ptc[0]") &amp;&amp; ptcIsUsed &amp;&amp; (ptcStaticComp0Power ne "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF" || ptcStaticComp1Power ne "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF")}`'
+                 visible='`${hasBlock("pass[0].ptc[0]")}`'
+                 desc='Unlocks the PTComp fields'
+                 default='false'/>
+
+      <Repeat count='2'>
+        <ParamBool id='stateComp$idxEnable'
+                   name='Comparator $idx Enable'
+                   group='PTComp'
+                   visible='`${stateUnlockPtComp}`'
+                   editable='`${ptcStaticComp$idxPower ne "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF"}`'
+                   desc='Unlocks the PTComp Dynamic Configuration fields'
+                   default='false'/>
+
+        <ParamChoice id='stateComp$idxDynCfg'
+                     name='Comparator $idx Dynamic Config'
+                     group='PTComp'
+                     visible='`${stateUnlockPtComp &amp;&amp; stateComp$idxEnable}`'
+                     editable='`${ptcStaticComp$idxPower ne "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF"}`'
+                     desc='Selects the dynamic configuration used for PTComp Comparator $idx'
+                     default='0'>
+          <Entry name='0' value='0' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[0]")}`'/>
+          <Entry name='1' value='1' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[1]")}`'/>
+          <Entry name='2' value='2' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[2]")}`'/>
+          <Entry name='3' value='3' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[3]")}`'/>
+          <Entry name='4' value='4' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[4]")}`'/>
+          <Entry name='5' value='5' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[5]")}`'/>
+          <Entry name='6' value='6' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[6]")}`'/>
+          <Entry name='7' value='7' visible='`${isBlockUsed(resource_ptc . ".ptc_dynamic[7]")}`'/>
+        </ParamChoice>
+
+        <ParamString id='stateComp$idxDynCfgWrapper'
+                      name='stateComp$idxDynCfgWrapper'
+                      group='PTComp'
+                      editable='false'
+                      visible='false'
+                      desc=''
+                      default='`${(ptcStaticComp$idxPower ne "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF" &amp;&amp; getExposedMember(resource_ptc, "ptc_sta_dynCfgCnt") > 0)  ? stateComp$idxDynCfg : -1}`'/>
+      </Repeat>
+
+<!-- STT ADC begin -->
+      <ParamBool id='sarAdcUnlock'
+                 name='Unlock SAR ADC'
+                 group='SAR ADC'
+                 editable='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed(resource_sar) ? (getExposedMember(resource_sar, "sar_adcIsUsed")) : false}`'
+                 visible='`${hasBlock("pass[0].sar[0]")}`'
+                 desc='Enable update of ADC fields in State Transition Table'
+                 default='false'/>
+
+      <ParamBool id='sarAdcEnable'
+                 name='SAR ADC Enabled'
+                 group='SAR ADC'
+                 editable='`${(sarAdcUnlock)}`'
+                 visible='`${(sarAdcUnlock)}`'
+                 desc='Allows ADC control from the Autonomous Controller'
+                 default='false'/>
+
+      <ParamBool id='sarAdcTrigger'
+                 name='SAR ADC Trigger'
+                 group='SAR ADC'
+                 editable='`${(sarAdcEnable)}`'
+                 visible='`${(sarAdcEnable)}`'
+                 desc='Initiates ADC operation for the selected channels'
+                 default='false'/>
+
+    <ParamChoice id='sarAdcScanGroup'
+                 name='SAR ADC Scan Group'
+                 group='SAR ADC'
+                 visible='`${(sarAdcTrigger)}`'
+                 editable='`${(sarAdcTrigger)}`'
+                 desc='Select the group of channels to convert'
+                 default='0'>
+      <Entry name='Group $idx' value='$idx' visible='`${isBlockUsed("pass[" . inst_pass . "].sar[0].group[$idx]")}`' repeatCount='32'/>
+    </ParamChoice>
+
+    <ParamString id='sarAdcScanGroupWrapper'
+                 name='sarAdcScanGroupWrapper'
+                  group='SAR ADC'
+                  editable='false'
+                  visible='false'
+                  desc=''
+                  default='`${sarAdcTrigger &amp;&amp; getExposedMember(resource_sar, "sar_scanCnt") > 0 ? sarAdcScanGroup : -1}`'/>
+
+<!-- STT ADC end -->
+
+<!-- STT DAC begin -->
+      <ParamBool id='dac0Unlock'
+                 name='Unlock DAC'
+                 group='DAC 0'
+                 editable='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                 visible='`${hasBlock("pass[0].dac[0]")}`'
+                 desc='Enable update of DAC fields in State Transition Table'
+                 default='false'/>
+      <ParamBool id='dac0Enable'
+                 name='DAC Enabled'
+                 group='DAC 0'
+                 editable='`${(dac0Unlock) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                 visible='`${(dac0Unlock) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                 desc='Allows DAC control from the Autonomous Controller'
+                 default='false'/>
+      <ParamBool id='dac0Trigger'
+                 name='DAC Trigger'
+                 group='DAC 0'
+                 editable='`${(dac0Unlock) &amp;&amp; (dac0Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                 visible='`${(dac0Unlock) &amp;&amp; (dac0Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                 desc='Initiates DAC operation for the selected channel'
+                 default='false'/>
+      <ParamChoice id='dac0Channel'
+                   name='DAC Channel'
+                   group='DAC 0'
+                   visible='`${(dac0Unlock) &amp;&amp; (dac0Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                   desc='Selection of the channel for DAC operation'
+                   editable='`${(dac0Unlock) &amp;&amp; (dac0Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                   default='CY_AUTANALOG_DAC_CHAN_CFG15'>
+        <Entry name='DAC channel $idx' value='CY_AUTANALOG_DAC_CHAN_CFG$idx' visible='`${isBlockUsed("pass[" . inst_pass . "].dac[" . 0 . "].dacchan[$idx]")}`' repeatCount='15'/>
+        <Entry name='Firmware Channel' value='CY_AUTANALOG_DAC_CHAN_CFG15'   visible='true'/>
+      </ParamChoice>
+      <ParamChoice id='dac0Command'
+                   name='DAC Command'
+                   group='DAC 0'
+                   visible='`${(dac0Unlock) &amp;&amp; (dac0Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                   desc='Defines the direction of movement in the DAC Lookup Table or the increment/decrement of the DAC value'
+                   editable='`${(dac0Unlock) &amp;&amp; (dac0Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[0]")}`'
+                              default='CY_AUTANALOG_DAC_DIRECTION_DISABLED'>
+        <Entry name='None'      value='CY_AUTANALOG_DAC_DIRECTION_DISABLED' visible='true'/>
+        <Entry name='Increment' value='CY_AUTANALOG_DAC_DIRECTION_FORWARD'  visible='true'/>
+        <Entry name='Decrement' value='CY_AUTANALOG_DAC_DIRECTION_REVERSE'  visible='true'/>
+      </ParamChoice>
+
+      <ParamBool id='dac1Unlock'
+                 name='Unlock DAC'
+                 group='DAC 1'
+                 editable='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                 visible='`${hasBlock("pass[0].dac[1]")}`'
+                 desc='Enable update of DAC fields in State Transition Table'
+                 default='false'/>
+      <ParamBool id='dac1Enable'
+                 name='DAC Enabled'
+                 group='DAC 1'
+                 editable='`${(dac1Unlock) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                 visible='`${(dac1Unlock) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                 desc='Allows DAC control from the Autonomous Controller'
+                 default='false'/>
+      <ParamBool id='dac1Trigger'
+                 name='DAC Trigger'
+                 group='DAC 1'
+                 editable='`${(dac1Unlock) &amp;&amp; (dac1Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                 visible='`${(dac1Unlock) &amp;&amp; (dac1Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                 desc='Initiates DAC operation for the selected channel'
+                 default='false'/>
+      <ParamChoice id='dac1Channel'
+                   name='DAC Channel'
+                   group='DAC 1'
+                   visible='`${(dac1Unlock) &amp;&amp; (dac1Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                   desc='Selection of the channel for DAC operation'
+                   editable='`${(dac1Unlock) &amp;&amp; (dac1Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                   default='CY_AUTANALOG_DAC_CHAN_CFG15'>
+        <Entry name='DAC channel $idx' value='CY_AUTANALOG_DAC_CHAN_CFG$idx' visible='`${isBlockUsed("pass[" . inst_pass . "].dac[" . 1 . "].dacchan[$idx]")}`' repeatCount='15'/>
+        <Entry name='Firmware Channel' value='CY_AUTANALOG_DAC_CHAN_CFG15'   visible='true'/>
+      </ParamChoice>
+      <ParamChoice id='dac1Command'
+                   name='DAC Command'
+                   group='DAC 1'
+                   visible='`${(dac1Unlock) &amp;&amp; (dac1Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                   desc='Defines the direction of movement in the DAC Lookup Table or the increment/decrement of the DAC value'
+                   editable='`${(dac1Unlock) &amp;&amp; (dac1Enable) &amp;&amp; isBlockUsed("pass[" . inst_pass . "].dac[1]")}`'
+                              default='CY_AUTANALOG_DAC_DIRECTION_DISABLED'>
+        <Entry name='None'      value='CY_AUTANALOG_DAC_DIRECTION_DISABLED' visible='true'/>
+        <Entry name='Increment' value='CY_AUTANALOG_DAC_DIRECTION_FORWARD'  visible='true'/>
+        <Entry name='Decrement' value='CY_AUTANALOG_DAC_DIRECTION_REVERSE'  visible='true'/>
+      </ParamChoice>
+<!-- STT DAC end -->
+
+      <ParamBool id='prbIsUsed' name='prbIsUsed' group='Internal' editable='false' visible='false' desc='' default='`${isBlockUsed(resource_prb)}`' />
+      <ParamBool id='prbOut0Enable' name='prbOut0Enable' group='Internal' editable='false' visible='false' desc='' default='`${prbIsUsed ? getExposedMember(resource_prb, "prbOut0Enable") : false}`' />
+      <ParamBool id='prbOut1Enable' name='prbOut1Enable' group='Internal' editable='false' visible='false' desc='' default='`${prbIsUsed ? getExposedMember(resource_prb, "prbOut1Enable") : false}`' />
+
+      <ParamBool id='prbUnlock'
+                 name='Unlock PRB'
+                 group='PRB'
+                 editable='`${prbIsUsed &amp;&amp; (prbOut0Enable || prbOut1Enable)}`'
+                 visible='true'
+                 desc='Unlocks PRB.'
+                 default='false'/>
+
+      <ParamBool id='prbOut0FirmwareControl'
+                 name='PRB OUT 0 Firmware Control'
+                 group='PRB'
+                 editable='true'
+                 visible='`${prbUnlock  &amp;&amp; prbOut0Enable}`'
+                 desc='Enables the control of PRB Vref0 from the firmware.'
+                 default='false'/>
+
+    <ParamString id='prbOut0VrefVal'
+                 name='prbOut0VrefVal'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember(resource_prb, "prbOut0VrefVal")}`'/>
+
+      <ParamChoice id='prbOut0Value'
+                   name='PRB OUT 0 Value'
+                   group='PRB'
+                   visible='`${prbUnlock &amp;&amp; prbOut0Enable &amp;&amp; !prbOut0FirmwareControl}`'
+                   desc='The tap selector for the required Vref0.'
+                   editable='true'
+                   default='CY_AUTANALOG_PRB_TAP_0'>
+        <Entry name='`${(($idx + 1) / 16.0) * prbOut0VrefVal}` mV' value='CY_AUTANALOG_PRB_TAP_$idx' visible='true' repeatCount='16'/>
+      </ParamChoice>
+
+      <ParamBool id='prbOut1FirmwareControl'
+                 name='PRB OUT 1 Firmware Control'
+                 group='PRB'
+                 editable='true'
+                 visible='`${prbUnlock  &amp;&amp; prbOut1Enable}`'
+                 desc='Enables the control of PRB Vref1 from the firmware.'
+                 default='false'/>
+
+    <ParamString id='prbOut1VrefVal'
+                 name='prbOut1VrefVal'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember(resource_prb, "prbOut1VrefVal")}`'/>
+
+      <ParamChoice id='prbOut1Value'
+                   name='PRB OUT 1 Value'
+                   group='PRB'
+                   visible='`${prbUnlock &amp;&amp; prbOut1Enable &amp;&amp; !prbOut1FirmwareControl}`'
+                   desc='The tap selector for the required Vref1.'
+                   editable='true'
+                   default='CY_AUTANALOG_PRB_TAP_0'>
+        <Entry name='`${(($idx + 1) / 16.0) * prbOut1VrefVal}` mV' value='CY_AUTANALOG_PRB_TAP_$idx' visible='true' repeatCount='16'/>
+      </ParamChoice>
+
+    <ParamBool id='atLeastOneStateSendsTriggerOrInterrupt'
+               name='atLeastOneStateSendsTriggerOrInterrupt'
+               desc=''
+               group='Internal'
+               visible='`${debug}`'
+               editable='false'
+               default='`${ (sendTriggerInterrupt) }`'/>
+
+
+    <ParamString id='clockValue'       name='clockValue'       group='Internal' desc='' visible='false' editable='false' default='`${opModeStt eq "LowPower" ? 4096000.0 : getExposedMember(resource_pass, "clockHfHz")}`' />
+    <ParamString id='clockPeriod'      name='clockPeriod'      group='Internal' desc='' visible='false' editable='false' default='`${cast(float, 1)/clockValue}`' />
+    <ParamString id='sttClockPeriod'   name='sttClockPeriod'   group='Internal' desc='' visible='false' editable='false' default='`${getExposedMember(resource_ac, "sttTimerActualPeriodValue")}`' />
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure Autonomous Controller.' condition='`${!isBlockUsed(resource_ac)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_ac}`' value='lppass_ac-1.0' valid='true' />
+    </DRC>
+    <DRC type='ERROR'
+         text='The State 0 option is not valid for State 0 as Branching state.'
+         condition='`${(0 eq getInstNumber("state")) &amp;&amp; ((action == 3) || (action == 4) || (action == 5) || (action == 6)) &amp;&amp; (branchingState eq 0)}`'
+         paramId='branchingState' />
+    <DRC type='ERROR'
+         text='Enable the next state `${(curState + 1)}` if &apos;Go to Next State&apos; is selected for the Action field.'
+         condition='`${(action eq 1) ? (!isBlockUsed(resource_ac . ".state[" . (curState + 1) . "]")) : 0}`' />
+    <DRC type='ERROR'
+         text='Enabled and configure the CTB $idx subsystem to wake the Autonomous Analog from Sleep.'
+         condition='`${(action == 7) &amp;&amp; ((wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_CTB$idx_CMP0_WAKE") || (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_CTB$idx_CMP1_WAKE")) &amp;&amp; (!isBlockUsed("pass[" . inst_pass . "].ctb[$idx]"))}`' repeatCount='2'/>
+    <DRC type='ERROR'
+         text='Enable and configure the PTComp subsystem to wake the Autonomous Analog from Sleep.'
+         condition='`${(action == 7) &amp;&amp; ((wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP0_WAKE") || (wakeupSrc eq "CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP1_WAKE")) &amp;&amp; (!isBlockUsed(resource_ptc))}`' />
+    <DRC type='ERROR'
+         text='Enable and configure the CTB $idx subsystem to generate events for the Autonomous Controller.'
+         condition='`${!(action == 0 || action == 1 || action == 7) &amp;&amp; (conditionSrc == 5) &amp;&amp; ((condition eq "CY_AUTANALOG_STT_AC_CONDITION_CTB$idx_CMP0") || (condition eq "CY_AUTANALOG_STT_AC_CONDITION_CTB$idx_CMP1")) &amp;&amp; (!isBlockUsed("pass[" . inst_pass . "].ctb[$idx]"))}`' repeatCount='2'/>
+    <DRC type='ERROR'
+         text='Enable and configure the PTComp subsystem to generate events for the Autonomous Controller.'
+         condition='`${!(action == 0 || action == 1 || action == 7) &amp;&amp; (conditionSrc == 3) &amp;&amp; (!isBlockUsed(resource_ptc))}`' />
+    <DRC type='ERROR'
+         text='Enable and configure the DAC  $idx subsystem to generate events for the Autonomous Controller.'
+         condition='`${!(action == 0 || action == 1 || action == 7) &amp;&amp; (conditionSrc == 4) &amp;&amp; ((condition eq "CY_AUTANALOG_STT_AC_CONDITION_DAC$idx_EPOCH") || (condition eq "CY_AUTANALOG_STT_AC_CONDITION_DAC$idx_STROBE") || (condition eq "CY_AUTANALOG_STT_AC_CONDITION_DAC$idx_RANGE0") || (condition eq "CY_AUTANALOG_STT_AC_CONDITION_DAC$idx_RANGE1") || (condition eq "CY_AUTANALOG_STT_AC_CONDITION_DAC$idx_RANGE2")) &amp;&amp; (!isBlockUsed("pass[" . inst_pass . "].dac[$idx]"))}`' repeatCount='2'/>
+    <DRC type='ERROR'
+         text='Enable and configure the ADC subsystem to generate events for the Autonomous Controller.'
+         condition='`${!(action == 0 || action == 1 || action == 7) &amp;&amp; (conditionSrc == 2) &amp;&amp; (!isBlockUsed(resource_sar))}`' />
+    <DRC type='ERROR'
+         text='The Dynamic Configuration `${ctb0opamp$idxDynCfg}` used for Opamp $idx in CTB 0 should be enabled and configured.'
+         repeatCount='2'
+         condition='`${ctb0opamp$idxEnable &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[$idx].ctb_dynamic[" . ctb0opamp$idxDynCfg . "]")}`' />
+    <DRC type='ERROR'
+         text='The Dynamic Configuration `${ctb1opamp$idxDynCfg}` used for Opamp $idx in CTB 1 should be enabled and configured.'
+         repeatCount='2'
+         condition='`${ctb1opamp$idxEnable &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[$idx].ctb_dynamic[" . ctb1opamp$idxDynCfg . "]")}`' />
+    <DRC type='ERROR'
+         text='The Dynamic Configuration `${stateComp$idxDynCfg}` used for PTComp Comparator $idx should be enabled and configured.'
+         repeatCount='2'
+         condition='`${stateComp$idxEnable &amp;&amp; !isBlockUsed("pass[" . inst_pass . "].ptc[0].ptc_dynamic[" . stateComp$idxDynCfg . "]")}`' />
+
+    <DRC type='ERROR'
+         text='In this state, unlock and enable the PTCopm Comparator $idx used as the Wake Up Source and configure it with edge detection enabled in the static configuration.'
+         repeatCount='2'
+         condition='`${wakeupSrc eq CY_AUTANALOG_STT_AC_CONDITION_PTCOMP_CMP$idx_WAKE &amp;&amp;
+                      (!stateComp$idxEnable || getExposedMember("pass[" . inst_pass . "].ptc[0]", "ptc_sta_comp$idxEdgeDetect") eq "CY_AUTANALOG_PTCOMP_COMP_INT_DISABLED")}`' />
+
+    <DRC type='ERROR'
+         text='In this state, unlock and enable the Opamp $idx in CTB 0 used as the Wake Up Source and also configure it as a comparator with the edge detection enabled in the static configuration.'
+         repeatCount='2'
+         condition='`${wakeupSrc eq CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP$idx_WAKE &amp;&amp;
+                      (!ctb0opamp$idxEnable || !isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[$idx]")
+                      || !(getExposedMember("pass[" . inst_pass . "].ctb[0].oa[$idx]", "topologyIsComparator") || getExposedMember("pass[" . inst_pass . "].ctb[0].oa[$idx]", "topologyIsHystericComparator"))
+                      || getExposedMember("pass[" . inst_pass . "].ctb[0].oa[$idx]", "comparatorEdgeDetect") eq "CY_AUTANALOG_CTB_COMP_INT_EDGE_DISABLED")}`' />
+
+    <DRC type='ERROR'
+         text='In this state, unlock and enable the Opamp $idx in CTB 1 used as the Wake Up Source and also configure it as a comparator with the edge detection enabled in the static configuration.'
+         repeatCount='2'
+         condition='`${wakeupSrc eq CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP$idx_WAKE &amp;&amp;
+                      (!ctb1opamp$idxEnable || !isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[$idx]")
+                      || !(getExposedMember("pass[" . inst_pass . "].ctb[1].oa[$idx]", "topologyIsComparator") || getExposedMember("pass[" . inst_pass . "].ctb[1].oa[$idx]", "topologyIsHystericComparator"))
+                      || getExposedMember("pass[" . inst_pass . "].ctb[1].oa[$idx]", "comparatorEdgeDetect") eq "CY_AUTANALOG_CTB_COMP_INT_EDGE_DISABLED")}`' />
+
+    <DRC type='ERROR'
+         text='Enable and configure the Timer Period used for Wake Up source.'
+         condition='`${!getExposedMember(resource_ac, "sttTimerEnable") &amp;&amp; wakeupSrc eq CY_AUTANALOG_STT_AC_CONDITION_TIMER_DONE_WAKE}`' />
+
+    <DRC type='WARNING'
+         text='Timer Period used for Wake Up source must be longer than loop time.'
+         condition='`${getExposedMember(resource_ac, "sttTimerEnable") &amp;&amp; wakeupSrc eq CY_AUTANALOG_STT_AC_CONDITION_TIMER_DONE_WAKE &amp;&amp; sttClockPeriod &lt;= clockPeriod}`' />
+
+    <DRC type='ERROR'
+         text='In this state, unlock and enable the Opamp $idx in CTB 0 used as the event source in the State Transition Table and also configure it as a comparator with the edge detection enabled in the static configuration.'
+         repeatCount='2'
+         condition='`${!((action == 0) || (action == 1) || (action == 7)) &amp;&amp; (conditionSrc == 5) &amp;&amp; (condition eq "CY_AUTANALOG_STT_AC_CONDITION_CTB0_CMP" . $idx) &amp;&amp;
+                      (!ctb0opamp$idxEnable || !isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[$idx]")
+                      || !(getExposedMember("pass[" . inst_pass . "].ctb[0].oa[$idx]", "topologyIsComparator") || getExposedMember("pass[" . inst_pass . "].ctb[0].oa[$idx]", "topologyIsHystericComparator"))
+                      || getExposedMember("pass[" . inst_pass . "].ctb[0].oa[$idx]", "comparatorEdgeDetect") eq "CY_AUTANALOG_CTB_COMP_INT_EDGE_DISABLED")}`' />
+
+    <DRC type='ERROR'
+         text='In this state, unlock and enable the Opamp $idx in CTB 1 used as the event source in the State Transition Table and also configure it as a comparator with the edge detection enabled in the static configuration.'
+         repeatCount='2'
+         condition='`${!((action == 0) || (action == 1) || (action == 7)) &amp;&amp; (conditionSrc == 5) &amp;&amp; (condition eq "CY_AUTANALOG_STT_AC_CONDITION_CTB1_CMP" . $idx) &amp;&amp;
+                      (!ctb1opamp$idxEnable || !isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[$idx]")
+                      || !(getExposedMember("pass[" . inst_pass . "].ctb[1].oa[$idx]", "topologyIsComparator") || getExposedMember("pass[" . inst_pass . "].ctb[1].oa[$idx]", "topologyIsHystericComparator"))
+                      || getExposedMember("pass[" . inst_pass . "].ctb[1].oa[$idx]", "comparatorEdgeDetect") eq "CY_AUTANALOG_CTB_COMP_INT_EDGE_DISABLED")}`' />
+
+    <DRC type='ERROR'
+         text='The minimum gain for Opamp $idx in CTB 0 is not aligned with gain from the State Transition Table.'
+         repeatCount='2'
+         condition='`${ctb0opamp$idxEnable &amp;&amp; isBlockUsed(resource_pass . ".ctb[0].oa[$idx]") &amp;&amp;
+                      (getExposedMember(resource_pass . ".ctb[0].oa[$idx]", "topologyIsPGA") || getExposedMember(resource_pass . ".ctb[0].oa[$idx]", "topologyIsDifferential")) &amp;&amp;
+                      (cast(float, getExposedMember(resource_pass . ".ctb[0].oa[$idx]", "opampGainMin")) >
+                       cast(float, ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_1_00  ?  1.00 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_1_42  ?  1.42 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_2_00  ?  2.00 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_2_78  ?  2.78 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_4_00  ?  4.00 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_5_82  ?  5.82 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_8_00  ?  8.00 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_10_67 ? 10.67 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_16_00 ? 16.00 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_21_33 ? 21.33 :
+                                   ctb0opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_32_00 ? 32.00 : 1.00))}`' />
+    <DRC type='ERROR'
+         text='The minimum gain for Opamp $idx in CTB 1 is not aligned with gain from the State Transition Table.'
+         repeatCount='2'
+         condition='`${ctb1opamp$idxEnable &amp;&amp; isBlockUsed(resource_pass . ".ctb[1].oa[$idx]") &amp;&amp;
+                      (getExposedMember(resource_pass . ".ctb[1].oa[$idx]", "topologyIsPGA") || getExposedMember(resource_pass . ".ctb[1].oa[$idx]", "topologyIsDifferential")) &amp;&amp;
+                      (cast(float, getExposedMember(resource_pass . ".ctb[1].oa[$idx]", "opampGainMin")) >
+                       cast(float, ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_1_00  ?  1.00 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_1_42  ?  1.42 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_2_00  ?  2.00 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_2_78  ?  2.78 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_4_00  ?  4.00 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_5_82  ?  5.82 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_8_00  ?  8.00 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_10_67 ? 10.67 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_16_00 ? 16.00 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_21_33 ? 21.33 :
+                                   ctb1opamp$idxGain eq CY_AUTANALOG_STT_CTB_OA_GAIN_32_00 ? 32.00 : 1.00))}`' />
+  </DRCs>
+
+  <ConfigFirmware/>
+
+</PersonalityTemplate>

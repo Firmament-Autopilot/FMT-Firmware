@@ -1,0 +1,81 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "bin-dump"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "data": {
+                        "title": "Hex string",
+                        "type": "string"
+                    },
+                    "random": {
+                        "title": "Generate random binary of specified length",
+                        "type": ["integer", "string", "null"]
+                    }
+                }
+            },
+            "allOf": [
+                {
+                    "contains": {
+                        "required": [
+                            "data"
+                        ]
+                    },
+                    "minContains": 0,
+                    "maxContains": 1
+                },
+                {
+                    "contains": {
+                        "required": [
+                            "random"
+                        ]
+                    },
+                    "minContains": 0,
+                    "maxContains": 1
+                }
+            ]
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the signed file",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        }
+    }
+}

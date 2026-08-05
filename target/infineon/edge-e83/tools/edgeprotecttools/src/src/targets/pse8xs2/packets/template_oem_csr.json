@@ -1,0 +1,34 @@
+{ 
+  "VERSION": "1",
+  "TEMPLATE_TYPE": "OEM_CSR",
+  "CERTIFICATE_NAME": "",
+  "OEM": "",
+  "PROJECT": "",
+  "PROJECT_NUMBER": "",
+  "ISSUER": "",
+  "SIGNER_ID": "",
+  "ALGORITHM": {
+      "description": "Key algorithm. Applicable values: ES256",
+      "value": "ES256"
+  },
+  "PUBLIC_KEY_0": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "value":  ""
+  },
+  "PUBLIC_KEY_1": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "value":  ""
+  },
+  "TYPE": {
+      "description": "Certificate type. Applicable values: DEVELOPMENT, PRODUCTION",
+      "value": "DEVELOPMENT"
+  },
+  "DATE": {
+      "description": "The date of creation of the certificate in the format: YYYY-MM-DD hh:mm:ss. If not provided, the system time will be used",
+      "value": ""
+  },
+  "ID": {
+      "description": "Certificate (unique) ID",
+      "value": ""
+  }
+}

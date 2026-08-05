@@ -1,0 +1,30 @@
+{
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "hex-dump command example",
+            "description": "Extracts data from the hex file",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex-dump",
+                    "inputs": [
+                        {
+                            "description": "Input hex file",
+                            "file": "input.hex",
+                            "address": "0x32000000",
+                            "size": "0x200"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "Output bin file",
+                            "file": "output.bin",
+                            "fill-value": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

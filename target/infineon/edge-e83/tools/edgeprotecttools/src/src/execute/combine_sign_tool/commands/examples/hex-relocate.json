@@ -1,0 +1,37 @@
+{
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "hex-relocate command example",
+            "description": "Relocates regions in a hex file to new address spaces",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex-relocate",
+                    "inputs": [
+                        {
+                            "file": "input.hex",
+                            "regions": [
+                                {
+                                    "start": "0x08000000",
+                                    "size": "0x04000000",
+                                    "dest": "0x60000000"
+                                },
+                                {
+                                    "start": "0x0c000000",
+                                    "size": "0x04000000",
+                                    "dest": "0x64000000"
+                                }
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "file": "output.hex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

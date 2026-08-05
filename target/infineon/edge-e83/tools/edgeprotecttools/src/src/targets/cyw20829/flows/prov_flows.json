@@ -1,0 +1,45 @@
+{
+  "flows": {
+    "secure": {
+      "desc": "Secure",
+      "apps": [
+        "prov_oem"
+      ]
+    },
+    "no_secure": {
+      "desc": "No-Secure",
+      "apps": [
+        "prov_oem"
+      ]
+    },
+    "reprovisioning_secure": {
+      "desc": "Reprovisioning Secure",
+      "apps": [
+        "reprovisioning"
+      ]
+    },
+    "reprovisioning_no_secure": {
+      "desc": "Reprovisioning No-Secure",
+      "apps": [
+        "reprovisioning"
+      ]
+    },
+    "hci_secure": {
+      "desc": "HCI mode",
+      "apps": [
+        "prov_oem"
+      ]
+    },
+    "rma": {
+      "desc": "Converts a part to RMA LCS",
+      "apps": [
+        "to_rma"
+      ]
+    }
+  },
+  "paths": {
+    "prov_oem": "../packets/apps/prov_oem/config.json",
+    "reprovisioning": "../packets/apps/reprovisioning/config.json",
+    "to_rma": "../packets/apps/to_rma/config.json"
+  }
+}

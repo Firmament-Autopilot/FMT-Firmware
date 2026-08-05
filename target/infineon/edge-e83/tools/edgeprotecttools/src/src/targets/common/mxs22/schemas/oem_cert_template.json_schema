@@ -1,0 +1,61 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "OEM_CERT",
+    "type": "object",
+    "required": [
+        "VERSION",
+        "TEMPLATE_TYPE",
+        "CERTIFICATE_NAME",
+        "ISSUER",
+        "ID",
+        "DATE",
+        "ALGORITHM",
+        "SIGNER_ID"
+    ],
+    "properties": {
+        "VERSION": {
+            "type": "string"
+        },
+        "TEMPLATE_TYPE": {
+            "type": "string",
+            "enum": ["OEM_CERT"]
+        },
+        "CERTIFICATE_NAME": {
+            "type": "string"
+        },
+        "ISSUER": {
+            "type": "string"
+        },
+        "SIGNER_ID": {
+            "type": "string"
+        },
+        "ALGORITHM": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "enum": ["ES256", "ES384"]
+                }
+            }
+        },
+        "DATE": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "ID": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

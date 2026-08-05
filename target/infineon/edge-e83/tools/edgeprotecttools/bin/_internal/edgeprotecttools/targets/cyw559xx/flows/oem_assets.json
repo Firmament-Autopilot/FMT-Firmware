@@ -1,0 +1,12 @@
+{
+  "Assets": [
+    "oem_mandatory_field_type",
+    "oem_public_key",
+    "provisioning_key_type",
+    "provisioning_key_data",
+    "code_encryption_key_type",
+    "code_encryption_key_data",
+    "nv_counter",
+    "padding"
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "device_id": {
+      "type": "object",
+      "properties": {
+        "silicon_id": {
+          "type": "string"
+        },
+        "family_id": {
+          "type": "string"
+        },
+        "revision_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "silicon_id",
+        "family_id",
+        "revision_id"
+      ]
+    },
+    "control_word": {
+      "type": "object",
+      "properties": {
+        "cm33_ap": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "cm33_dbg": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "cm33_nid": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "sys_ap": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "rma": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        }
+      },
+      "required": [
+        "cm33_ap",
+        "cm33_dbg",
+        "cm33_nid",
+        "sys_ap",
+        "rma"
+      ]
+    },
+    "die_id": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "object",
+          "properties": {
+            "day": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "lot": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777215
+            },
+            "month": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "wafer": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "xpos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "ypos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "sort": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "day",
+            "lot",
+            "month",
+            "wafer",
+            "xpos",
+            "year",
+            "ypos",
+            "sort"
+          ]
+        },
+        "min": {
+          "type": "object",
+          "properties": {
+            "day": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "lot": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777215
+            },
+            "month": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "wafer": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "xpos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "ypos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "sort": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "day",
+            "lot",
+            "month",
+            "wafer",
+            "xpos",
+            "year",
+            "ypos",
+            "sort"
+          ]
+        }
+      },
+      "required": [
+        "max",
+        "min"
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "device_id",
+    "control_word",
+    "die_id"
+  ]
+}

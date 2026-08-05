@@ -1,0 +1,24 @@
+{
+  "auth": {
+    "die_id": {
+      "max": {
+        "day": 255,
+        "lot": 16777215,
+        "month": 255,
+        "wafer": 255,
+        "xpos": 255,
+        "year": 255,
+        "ypos": 255
+      },
+      "min": {
+        "day": 0,
+        "lot": 0,
+        "month": 0,
+        "wafer": 0,
+        "xpos": 0,
+        "year": 0,
+        "ypos": 0
+      }
+    }
+  }
+}

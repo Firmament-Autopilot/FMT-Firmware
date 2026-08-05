@@ -1,0 +1,75 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "MANUFACTURING_CERT",
+    "type": "object",
+    "required": [
+        "VERSION",
+        "TEMPLATE_TYPE",
+        "CERTIFICATE_NAME",
+        "ISSUER",
+        "ID",
+        "DATE",
+        "ALGORITHM",
+        "SIGNER_ID",
+        "PUBLIC_KEY_0",
+        "MFG"
+    ],
+    "properties": {
+        "VERSION": {
+            "type": "string"
+        },
+        "TEMPLATE_TYPE": {
+            "type": "string",
+            "enum": ["MANUFACTURING_CERT"]
+        },
+        "CERTIFICATE_NAME": {
+            "type": "string"
+        },
+        "ISSUER": {
+            "type": "string"
+        },
+        "SIGNER_ID": {
+            "type": "string"
+        },
+        "MFG": {
+            "type": "string"
+        },
+        "ALGORITHM": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "enum": ["ES256", "ES384"]
+                }
+            }
+        },
+        "PUBLIC_KEY_0": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "DATE": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "ID": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

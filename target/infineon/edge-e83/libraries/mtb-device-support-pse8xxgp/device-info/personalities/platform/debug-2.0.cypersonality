@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file debug.cypersonality
+* \version 2.0
+*
+* \brief
+* Debug Access personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright 2018-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id='dap' name='Debug Access' version='2.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v7'>
+  <Dependencies>
+    <IpBlock name='m4cpuss,m4cpuss_ver2,m33syscpuss,m7cpuss,mxdebug600' />
+    <Resource name='(cpuss\.dap)|(debug600)' />
+  </Dependencies>
+
+  <ExposedMembers />
+
+  <Parameters>
+    <ParamDoc id='pdlDoc' name='Application Notes' group='Overview' default='https://www.infineon.com/AN235279' linkText='Performing ETM and ITM Trace on PSoC 6 MCU' visible='`${hasMatch(getIpBlockName(), "m4cpuss.*")}`' desc='Opens the application note for Debug module.' />
+    <ParamChoice id='dbgMode' name='Debug Mode' group='General' default='SWD' visible='true' editable='true' desc='Controls what pins need to be reserved for debugging.'>
+      <Entry name='Disabled' value='NONE' visible='true' />
+      <Entry name='SWD' value='SWD' visible='true' />
+      <Entry name='JTAG' value='JTAG' visible='true' />
+    </ParamChoice>
+    <ParamBool id='traceClockExists' name='traceClock' group='General' default='`${hasVisibleOption("trace_clock[0]")}`' visible='false' editable='false' desc='' />
+    <ParamChoice id='traceModeParallel' name='Trace Mode - Parallel' group='General' default='0' visible='true' editable='true' desc='Number of parallel pins used in trace.'>
+      <Entry name='Disabled' value='0' visible='true' />
+      <Entry name='1-bit Parallel Trace' value='1' visible='`${traceClockExists}`' />
+      <Entry name='2-bit Parallel Trace' value='2' visible='`${traceClockExists}`' />
+      <Entry name='4-bit Parallel Trace' value='4' visible='`${traceClockExists}`' />
+    </ParamChoice>
+    <ParamBool id='traceModeSerial' name='Trace Mode - Serial' group='General' default='false' visible='`${!hasMatch(getIpBlockName(), "mxdebug600") &amp;&amp; dbgMode ne JTAG}`' editable='`${!hasMatch(getIpBlockName(), "mxdebug600")}`' desc='Enables Serial Trace Mode.' />
+    <ParamString id='dbgGroup' name='dbgGroup' group='Internal' default='`${dbgMode eq SWD ? "SWD" : "JTAG"}` Pins' visible='false' editable='false' desc='' />
+    <ParamSignal port='clock_trace_in[0]' name='Clock' group='Trace Clock' visible='`${hasVisibleOption("clock_trace_in[0]") &amp;&amp; (((dbgMode ne JTAG) &amp;&amp; traceModeSerial) || traceModeParallel)}`' desc='Clock that operates this block.' canBeEmpty='`${!traceModeSerial &amp;&amp; !traceModeParallel}`' >
+      <Constraint type='ACCEPT' targetLocation='peri\[\d+\](\.group\[\d+\])?\.div_.*' valid='true' >
+        <Parameter id='intDivider' severity='INFO' reason='Clock Divider must be set to 1.'>
+          <Fixed value='1' />
+        </Parameter>
+        <Parameter id='fracDivider' severity='INFO' reason='Fractional Clock Divider must be set to 0.'>
+          <Fixed value='0' />
+        </Parameter>
+      </Constraint>
+    </ParamSignal>
+    <ParamSignal port='clock_trace_in_pos_en[0]' name='Clock' group='Trace Clock' visible='`${hasVisibleOption("clock_trace_in_pos_en[0]") &amp;&amp; (traceModeSerial || traceModeParallel)}`' desc='Clock that operates this block.' canBeEmpty='`${!traceModeSerial &amp;&amp; !traceModeParallel}`' >
+      <Constraint type='ACCEPT' targetLocation='peri\[\d+\](\.group\[\d+\])?\.div_.*' valid='true' >
+        <Parameter id='intDivider' severity='INFO' reason='Clock Divider must be set to 1.'>
+          <Fixed value='1' />
+        </Parameter>
+        <Parameter id='fracDivider' severity='INFO' reason='Fractional Clock Divider must be set to 0.'>
+          <Fixed value='0' />
+        </Parameter>
+      </Constraint>
+    </ParamSignal>
+    <!-- Peripheral clock divider connection -->
+    <ParamString id='sourceClock' name='sourceClock' group='Internal' default='`${(hasVisibleOption("clock_trace_in[0]")) ? (getBlockFromSignal("clock_trace_in[0]")) : (getBlockFromSignal("clock_trace_in_pos_en[0]"))}`' visible='false' editable='false' desc='Source Clock Resource' />
+    <ParamBool id='pclkOk' name='PCLK Valid' group='Internal' default='`${(hasVisibleOption("clock_trace_in[0]")) ? (hasConnection("clock_trace_in", 0) &amp;&amp; isBlockUsed(sourceClock)) : (hasConnection("clock_trace_in_pos_en", 0) &amp;&amp; isBlockUsed(sourceClock)) }`' visible='false' editable='false' desc='Checks whether there is a PCLK connected and enabled.' />
+
+
+    <ParamSignal port='swj_swdio_tms[0]' name='`${dbgMode eq SWD ? "SWDIO" : "TMS"}`' group='`${dbgGroup}`' visible='`${dbgMode ne NONE}`' desc='Reserve the pin for `${dbgMode eq SWD ? "Single Wire Data In/Out" : "Test Mode Select"}`' canBeEmpty='`${dbgMode eq NONE}`'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Resistive Pull-Up. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='clk_swj_swclk_tclk[0]' name='`${dbgMode eq SWD ? "SWCLK" : "TCLK"}`' group='`${dbgGroup}`' visible='`${(hasVisibleOption("clk_swj_swclk_tclk[0]")) &amp;&amp; (dbgMode ne NONE)}`' desc='Reserve the pin for `${dbgMode eq SWD ? "Single Wire Clock" : "Test Clock"}`' canBeEmpty='`${dbgMode eq NONE}`'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Resistive Pull-Down. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_PULLDOWN' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='swj_swclk_tclk[0]' name='`${dbgMode eq SWD ? "SWCLK" : "TCLK"}`' group='`${dbgGroup}`' visible='`${(hasVisibleOption("swj_swclk_tclk[0]")) &amp;&amp; (dbgMode ne NONE)}`' desc='Reserve the pin for `${dbgMode eq SWD ? "Single Wire Clock" : "Test Clock"}`' canBeEmpty='`${dbgMode eq NONE}`'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Resistive Pull-Down. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_PULLDOWN' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='swj_swo_tdo[0]' name='`${dbgMode eq SWD ? "SWO" : "TDO"}`' group='`${dbgMode eq SWD ? "Trace Pins" :  "JTAG Pins"}`' visible='`${(dbgMode eq JTAG) || ((dbgMode eq SWD) &amp;&amp; traceModeSerial)}`' desc='Reserve the pin for `${dbgMode eq SWD ? "Single Wire Output" : "Test Data Output"}`' canBeEmpty='`${!((dbgMode eq JTAG) || ((dbgMode eq SWD) &amp;&amp; traceModeSerial))}`'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+        <Parameter id='initialState' severity='ERROR' reason='Initial State must be set to High (1).'>
+          <Fixed value='1' />
+        </Parameter>
+        <Parameter id='driveStrength' severity='ERROR' reason='Drive Strength must be set to 1 / 2.'>
+          <Fixed value='CY_GPIO_DRIVE_1_2' />
+        </Parameter>
+        <Parameter id='slewRate' severity='ERROR' reason='Slew Rate must be set to Fast.'>
+          <Fixed value='CY_GPIO_SLEW_FAST' />
+        </Parameter>
+        <Parameter id='isrTrigger' severity='ERROR' reason='Interrupt Trigger Type must be set to None.'>
+          <Fixed value='CY_GPIO_INTR_DISABLE' />
+        </Parameter>
+        <Parameter id='vtrip' severity='ERROR' reason='Threshold must be set to CMOS.'>
+          <Fixed value='CY_GPIO_VTRIP_CMOS' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='swj_swdoe_tdi[0]' name='TDI' group='`${dbgGroup}`' visible='`${dbgMode eq JTAG}`' desc='Reserve pin for Test Data Input' canBeEmpty='`${dbgMode ne JTAG}`'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='swj_trstn[0]' name='TRSTn' group='`${dbgGroup}`' visible='`${(hasVisibleOption("swj_trstn[0]")) &amp;&amp; (dbgMode eq JTAG)}`' desc='Reserve pin for Test Reset' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Resistive Pull-Up. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='rst_swj_trstn[0]' name='TRSTn' group='`${dbgGroup}`' visible='`${(hasVisibleOption("rst_swj_trstn[0]")) &amp;&amp; (dbgMode eq JTAG)}`' desc='Reserve pin for Test Reset' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Resistive Pull-Up. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_PULLUP' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+
+    <ParamSignal port='trace_clock[0]' name='CLK' group='Trace Pins' visible='`${traceModeParallel &amp;&amp; traceClockExists}`' desc='Clock pin for the Cortex ETM Trace.' canBeEmpty='`${!(traceModeParallel &amp;&amp; traceClockExists)}`'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+        <Parameter id='initialState' severity='ERROR' reason='Initial State must be set to High (1).'>
+          <Fixed value='1' />
+        </Parameter>
+        <Parameter id='driveStrength' severity='ERROR' reason='Drive Strength must be set to 1 / 2.'>
+          <Fixed value='CY_GPIO_DRIVE_1_2' />
+        </Parameter>
+        <Parameter id='slewRate' severity='ERROR' reason='Slew Rate must be set to Fast.'>
+          <Fixed value='CY_GPIO_SLEW_FAST' />
+        </Parameter>
+        <Parameter id='isrTrigger' severity='ERROR' reason='Interrupt Trigger Type must be set to None.'>
+          <Fixed value='CY_GPIO_INTR_DISABLE' />
+        </Parameter>
+        <Parameter id='vtrip' severity='ERROR' reason='Threshold must be set to CMOS.'>
+          <Fixed value='CY_GPIO_VTRIP_CMOS' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <Repeat count='64'>
+      <ParamSignal port='trace_data[$idx]' name='Data[$idx]' group='Trace Pins' visible='`${$idx &lt; traceModeParallel}`' desc='Data[$idx] pin for the Cortex ETM Trace.' canBeEmpty='`${!($idx &lt; traceModeParallel)}`'>
+        <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+        <Parameter id='initialState' severity='ERROR' reason='Initial State must be set to High (1).'>
+          <Fixed value='1' />
+        </Parameter>
+        <Parameter id='driveStrength' severity='ERROR' reason='Drive Strength must be set to 1 / 2.'>
+          <Fixed value='CY_GPIO_DRIVE_1_2' />
+        </Parameter>
+        <Parameter id='slewRate' severity='ERROR' reason='Slew Rate must be set to Fast.'>
+          <Fixed value='CY_GPIO_SLEW_FAST' />
+        </Parameter>
+        <Parameter id='isrTrigger' severity='ERROR' reason='Interrupt Trigger Type must be set to None.'>
+          <Fixed value='CY_GPIO_INTR_DISABLE' />
+        </Parameter>
+        <Parameter id='vtrip' severity='ERROR' reason='Threshold must be set to CMOS.'>
+          <Fixed value='CY_GPIO_VTRIP_CMOS' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    </Repeat>
+    <ParamString id='pclkTraceClockString' name='PCLK Destination Clock' group='Internal' default='PCLK_CPUSS_CLOCK_TRACE_IN' visible='false' editable='false' desc='String variable used for PCLK_SCB_CLOCK.' />
+    <ParamString id='pclkTraceClockENString' name='PCLK Destination Clock' group='Internal' default='PCLK_CPUSS_CLOCK_TRACE_IN_POS_EN' visible='false' editable='false' desc='String variable used only for PCLK_SCB_CLOCK_SCB_EN.' />
+    <ParamString id='pclkDebug600TraceClockString' name='PCLK Destination Clock' group='Internal' default='PCLK_DEBUG600_CLOCK_TRACE_IN' visible='false' editable='false' desc='String variable used only for PCLK_SCB_CLOCK_SCB_EN.' />
+
+    <ParamString id='pclkDst' name='PCLK Destination' group='Internal' default='`${(hasMatch(getIpBlockName(), "m33syscpuss.*")) ?
+	                                                                               pclkTraceClockENString : (((hasMatch(getIpBlockName(), "mxdebug600"))) ?  pclkDebug600TraceClockString : pclkTraceClockString )}`' visible='false' editable='false' desc='Generates PCLK connection define.' />
+
+  </Parameters>
+
+  <DRCs>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' include='true' />
+    <ConfigInstruction value='Cy_SysClk_PeriPclkAssignDivider(`${pclkDst}`, `${getExposedMember(sourceClock, "clockSel")}`);' include='`${((!(hasMatch(getIpBlockName(), "m4cpuss.*"))) &amp;&amp; pclkOk)}`'  />
+    <ConfigInstruction value='Cy_SysClk_PeriphAssignDivider(`${pclkDst}`, `${getExposedMember(sourceClock, "clockSel")}`);' include='`${(hasMatch(getIpBlockName(), "m4cpuss.*") &amp;&amp; pclkOk)}`'  />
+  </ConfigFirmware>
+</Personality>

@@ -1,0 +1,16 @@
+{
+  "policy": {
+    "platform": "psoc_c3",
+    "version": 1.0,
+    "type": "reprovisioning"
+  },
+  "revoke": {
+    "description": "Key revocation",
+    "applicable_conf": "IFX_ROT_KEY_0, OEM_ROT_KEY_0, PROT_FW_ROT_KEY_0",
+    "value": "OEM_ROT_KEY_0"
+  },
+  "public_key": {
+    "description": "Path to the public key used to verify this policy signature",
+    "value": "../keys/oem_rot_pub_key_0.pem"
+  }
+}

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="md_ci_src_docs_mt_bsp_user_guide" kind="page">
+    <compoundname>md_ci_src_docs_mt_bsp_user_guide</compoundname>
+    <title>ModusToolbox™ Board Support Package (BSP) Overview</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<sect1 id="md_ci_src_docs_mt_bsp_user_guide_1autotoc_md19">
+<title>Introduction</title>
+<para>A Board Support Package (BSP) provides a standard interface to a board&apos;s features and capabilities. The API is consistent across kits. Other software (such as middleware or the user application) can use the BSP to configure and control the hardware. BSPs have the following characteristics:</para>
+<para><itemizedlist>
+<listitem><para>BSPs initialize device resources, such as clocks and power supplies to set up the device to run firmware.</para>
+</listitem><listitem><para>BSPs contain linker scripts and startup code so you can customize them for your board.</para>
+</listitem><listitem><para>BSPs contain the hardware configuration (structures and macros) for both device peripherals and board peripherals.</para>
+</listitem><listitem><para>BSPs provide abstraction to the board by providing common aliases or names to refer to the board peripherals, such as buttons and LEDs.</para>
+</listitem><listitem><para>BSPs include the libraries for the default capabilities on the board.</para>
+</listitem></itemizedlist>
+</para>
+<para>For a complete description of what the BSP provides and how it is used within ModusToolbox™, see the <ulink url="https://documentation.infineon.com/modustoolbox/docs/zhf1731521206417">ModusToolbox™ User Guide</ulink></para>
+</sect1>
+<sect1 id="md_ci_src_docs_mt_bsp_user_guide_1autotoc_md20">
+<title>Quick Start with BSPs</title>
+<para>This section provides a high-level view for using BSPs. You should be familiar with creating an application using the ModusToolbox™ Project Creator tool. To use a BSP for a kit you need to perform the following steps:</para>
+<para><orderedlist>
+<listitem><para>Get a BSP using one of the following methods:<itemizedlist>
+<listitem><para>Create an application with the Project Creation tool included with the ModusToolbox™ software installer (<computeroutput>&lt; ModusToolbox™ install&gt;/tools_x.y/project-creator</computeroutput>). This tool can also be launched from the Eclipse IDE for ModusToolbox™. The tool fetches the BSP for the kit that you selected, and places it in the <computeroutput>bsps</computeroutput>directory. <linebreak/>
+</para>
+</listitem><listitem><para>In an existing application, use the Library Manager tool to fetch the required BSP. This tool is located in <computeroutput>&lt; ModusToolbox™ install &gt;/tools_x.y/library-manager</computeroutput>. You can also launch it from within the Eclipse IDE for ModusToolbox™.</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Add <computeroutput>#include &quot;cybsp.h&quot;</computeroutput> to your <emphasis>main.c</emphasis> file.</para>
+</listitem><listitem><para>Add <computeroutput><ref refid="group__group__bsp__functions_1gab989986b285e127f78f61c29f6ccbbfa" kindref="member">cybsp_init()</ref></computeroutput> at the start of <computeroutput>main()</computeroutput>.</para>
+</listitem><listitem><para>Refer to the API documentation available inside that BSP <computeroutput>docs</computeroutput> directory to learn more.</para>
+</listitem></orderedlist>
+</para>
+</sect1>
+<sect1 id="md_ci_src_docs_mt_bsp_user_guide_1autotoc_md21">
+<title>References</title>
+<para><itemizedlist>
+<listitem><para><ulink url="https://www.infineon.com/cms/en/design-support/tools/sdk/modustoolbox-software/">ModusToolbox™ Software</ulink></para>
+</listitem><listitem><para><ulink url="https://documentation.infineon.com/modustoolbox/docs/zhf1731521206417">ModusToolbox™ User Guide</ulink></para>
+</listitem><listitem><para><ulink url="http://www.cypress.com">Cypress Semiconductor, an Infineon Technologies Company</ulink></para>
+</listitem><listitem><para><ulink url="https://github.com/Infineon">Infineon GitHub</ulink> </para>
+</listitem></itemizedlist>
+</para>
+</sect1>
+    </detaileddescription>
+    <location file="ci/src/docs/mt_bsp_user_guide.md"/>
+  </compounddef>
+</doxygen>
