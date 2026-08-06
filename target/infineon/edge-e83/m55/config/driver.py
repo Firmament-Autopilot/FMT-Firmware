@@ -11,6 +11,7 @@ DRIVERS = [
     'mag/ist8310.c',
     'airspeed/ms4525.c',
     'mtd/gd25qxx.c',
+    'pmu/ina228.c',
     'range_finder/tofsense.c',
     'vision_flow/mtf_01.c',
 ]

@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 rt_err_t drv_i2c_init(void);
+rt_err_t drv_i2c_soft_init(void);
 
 #ifdef __cplusplus
 }

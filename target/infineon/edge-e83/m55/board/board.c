@@ -166,6 +166,10 @@ void bsp_early_initialize(void)
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
 
+#ifdef BSP_USING_SOFT_I2C1
+    RT_CHECK(drv_i2c_soft_init());
+#endif
+
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
@@ -291,7 +295,7 @@ void bsp_post_initialize(void)
     FMT_CHECK(led_control_init());
 
     /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
