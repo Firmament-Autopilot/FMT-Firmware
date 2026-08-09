@@ -213,6 +213,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
             msg.msg_id = RxHeader.Identifier;
             msg.id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
             msg.frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
+            msg.format = RxHeader.FDFormat == FDCAN_FD_CAN ? CAN_FORMAT_FDCAN : CAN_FORMAT_CLASSIC_CAN;
             msg.data_len = DLCtoBytes[RxHeader.DataLength];
             memcpy(msg.data, RxData, msg.data_len);
 
@@ -399,7 +400,7 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
     TxHeader.DataLength = BytesToDLC(msg->data_len);
     TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
     TxHeader.BitRateSwitch = FDCAN_BRS_ON;
-    TxHeader.FDFormat = TxHeader.DataLength > 8 ? FDCAN_FD_CAN : FDCAN_CLASSIC_CAN; /* if dlc > 8, send with fdcan */
+    TxHeader.FDFormat = (msg->format == CAN_FORMAT_FDCAN)  ? FDCAN_FD_CAN : FDCAN_CLASSIC_CAN;
 
     TxHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
     TxHeader.MessageMarker = 0;
@@ -425,6 +426,7 @@ static int recv_canmsg(can_dev_t can, can_msg_t msg)
         msg->msg_id = RxHeader.Identifier;
         msg->id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
         msg->frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
+        msg->format = RxHeader.FDFormat == FDCAN_FD_CAN ? CAN_FORMAT_FDCAN : CAN_FORMAT_CLASSIC_CAN;
         msg->data_len = DLCtoBytes[RxHeader.DataLength];
         memcpy(msg->data, RxData, msg->data_len);
 

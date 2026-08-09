@@ -9,35 +9,38 @@
 extern "C" {
 #endif
 
-#define CAN_MSG_LEN           sizeof(can_msg)
-#define CAN_RX_FIFO_SIZE      8
+#define CAN_MSG_LEN            sizeof(can_msg)
+#define CAN_RX_FIFO_SIZE       8
 
-#define CAN_BAUD_RATE_1000K   1000 /* 1000 kBit/sec */
-#define CAN_BAUD_RATE_500K    500  /* 500 kBit/sec */
-#define CAN_BAUD_RATE_250K    250  /* 250 kBit/sec */
-#define CAN_BAUD_RATE_125K    125  /* 125 kBit/sec */
+#define CAN_BAUD_RATE_1000K    1000 /* 1000 kBit/sec */
+#define CAN_BAUD_RATE_500K     500  /* 500 kBit/sec */
+#define CAN_BAUD_RATE_250K     250  /* 250 kBit/sec */
+#define CAN_BAUD_RATE_125K     125  /* 125 kBit/sec */
 
 /* can device command */
-#define CAN_OPEN_DEVICE       1000
-#define CAN_CLOSE_DEVICE      1001
-#define CAN_SET_RX_FILTER     1002
+#define CAN_OPEN_DEVICE        1000
+#define CAN_CLOSE_DEVICE       1001
+#define CAN_SET_RX_FILTER      1002
 
 /* serial isr event */
-#define CAN_EVENT_RX_IND      0x01 /* Rx indication */
-#define CAN_EVENT_TX_DONE     0x02 /* Tx complete   */
+#define CAN_EVENT_RX_IND       0x01 /* Rx indication */
+#define CAN_EVENT_TX_DONE      0x02 /* Tx complete   */
 
-#define CAN_RES_TX_OK         0x1000
-#define CAN_RES_TX_FAIL       0x1001
+#define CAN_RES_TX_OK          0x1000
+#define CAN_RES_TX_FAIL        0x1001
 
-#define CAN_ID_STANDARD       ((uint32_t)0x00000000) /*!< Standard Id */
-#define CAN_ID_EXTENDED       ((uint32_t)0x00000001) /*!< Extended Id */
+#define CAN_ID_STANDARD        ((uint32_t)0x00000000) /*!< Standard Id */
+#define CAN_ID_EXTENDED        ((uint32_t)0x00000001) /*!< Extended Id */
 
-#define CAN_FRAME_DATA        ((uint32_t)0x00000000) /*!< Data frame */
-#define CAN_FRAME_REMOTE      ((uint32_t)0x00000001) /*!< Remote frame */
+#define CAN_FRAME_DATA         ((uint32_t)0x00000000) /*!< Data frame */
+#define CAN_FRAME_REMOTE       ((uint32_t)0x00000001) /*!< Remote frame */
 
-#define CAN_FILTER_TYPE_MASK  ((uint32_t)0x00000001)
-#define CAN_FILTER_TYPE_RANGE ((uint32_t)0x00000002)
-#define CAN_FILTER_TYPE_DUAL  ((uint32_t)0x00000003)
+#define CAN_FORMAT_CLASSIC_CAN ((uint32_t)0x00000000) /*!< Classic CAN */
+#define CAN_FORMAT_FDCAN       ((uint32_t)0x00000001) /*!< FD CAN */
+
+#define CAN_FILTER_TYPE_MASK   ((uint32_t)0x00000001)
+#define CAN_FILTER_TYPE_RANGE  ((uint32_t)0x00000002)
+#define CAN_FILTER_TYPE_DUAL   ((uint32_t)0x00000003)
 
 /* Default config for serial_configure structure */
 #define CAN_DEFAULT_CONFIG                       \
@@ -49,10 +52,9 @@ typedef struct
 {
     uint32_t msg_id;     /*!< Specifies the message identifier (standard/extended).
                              This parameter must be a number between Min_Data = 0 and Max_Data = 0x7FF (0x1FFFFFFF for extended) */
-    uint32_t id_type;    /*!< Specifies the type of identifier for the message that will be transmitted.
-                          This parameter can be a value of @ref CAN_Identifier_Type */
-    uint32_t frame_type; /*!< Specifies the type of frame for the message that will be transmitted.
-                       This parameter can be a value of @ref CAN_remote_transmission_request */
+    uint32_t id_type;    /*!< Specifies the type of identifier for the message that will be transmitted. */
+    uint32_t frame_type; /*!< Specifies the type of frame for the message that will be transmitted. */
+    uint32_t format;     /*!< Specifies the type of format for the message that will be transmitted. */
     uint32_t data_len;   /*!< Specifies the length of the frame that will be transmitted.
                          This parameter must be a number between Min_Data = 0 and Max_Data = 8 (64 for FDCAN) */
     uint8_t data[64];    /*!< Contains the data to be transmitted.
