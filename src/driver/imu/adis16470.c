@@ -172,7 +172,7 @@ static rt_err_t adis16470_init(rt_device_t bus_dev)
 
     RT_TRY(adis16470_read_reg(bus_dev, 0x7273, &dev_id));
     if (dev_id != 0x4056) {
-        printf("wrong adis16470 product id:0x%x\n", dev_id);
+        // printf("wrong adis16470 product id:0x%x\n", dev_id);
         return RT_ENOSYS;
     }
 
