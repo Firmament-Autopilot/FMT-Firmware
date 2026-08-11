@@ -131,7 +131,11 @@ void bsp_show_information(void)
         sprintf(buffer, "Unknown");
     }
     banner_item("UID", buffer, '.', BANNER_ITEM_LEN);
+#ifdef OVERRIDE_TARGET_NAME
+    banner_item("Target", override_target_name, '.', BANNER_ITEM_LEN);
+#else
     banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
+#endif
     banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
     banner_item("Airframe", STR(AIRFRAME), '.', BANNER_ITEM_LEN);
 #if !defined(FMT_PLANT_SIM)

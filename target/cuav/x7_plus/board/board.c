@@ -43,7 +43,6 @@
 #include "drv_usbd_cdc.h"
 #include "led.h"
 
-
 #include "default_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
@@ -63,6 +62,8 @@
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 #define SYS_INIT_SCRIPT "/sys/init.sh"
+
+char override_target_name[32] = TARGET_NAME;
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
@@ -348,11 +349,11 @@ void bsp_initialize(void)
     /* init onboard sensors */
     if (drv_adis16470_init("spi1_dev2", "gyro0", "accel0") == RT_EOK) {
         RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro1", "accel1", 0));
-        printf("Board Type:X7+ Pro\n");
+        strcpy(override_target_name, "CUAV X7+ Pro");
     } else {
         RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
         RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1", 0));
-        printf("Board Type:X7+\n");
+        strcpy(override_target_name, "CUAV X7+");
     }
     RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
     // RT_CHECKdrv_ist8310_init("i2c1_dev1", "mag0")

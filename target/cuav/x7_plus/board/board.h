@@ -27,6 +27,8 @@ extern "C" {
 
 // Board Information
 #define TARGET_NAME "CUAV X7+"
+#define OVERRIDE_TARGET_NAME
+extern char override_target_name[];
 
 // Internal SRAM memory size[Kbytes]
 #define SYSTEM_TOTAL_MEM_SIZE (512 * 1024) // 512K
