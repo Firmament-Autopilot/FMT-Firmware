@@ -27,6 +27,7 @@
 #include "driver/mag/bmm150.h"
 #include "driver/mag/ist8310.h"
 #include "driver/mag/qmc5883l.h"
+#include "driver/pmu/ina228.h"
 #include "driver/vision_flow/mtf_01.h"
 #include "drv_adc.h"
 #include "drv_can.h"
@@ -222,6 +223,8 @@ void bsp_initialize(void)
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
+
+    drv_ina228_init("i2c1_dev0", "adc0");
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));

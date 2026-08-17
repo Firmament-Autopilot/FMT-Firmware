@@ -78,7 +78,7 @@ static rt_err_t qmc5883l_init(void)
     RT_CHECK(i2c_write_reg(i2c_dev, REG_CONTROL2, 0x80)); /* software reset */
 
     systime_mdelay(2);
-    
+
     RT_CHECK(i2c_write_reg(i2c_dev, REG_PERIOD, 0x01)); /* set to continious mode */
 
     systime_mdelay(2);

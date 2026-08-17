@@ -24,7 +24,7 @@ rt_err_t hal_adc_open(rt_device_t dev, rt_uint16_t oflag)
 
     adc_dev_t adc_dev = (adc_dev_t)dev;
 
-    if (dev->ref_count == 0) {
+    if (dev->ref_count == 0 && adc_dev->ops->enable != NULL) {
         adc_dev->ops->enable(adc_dev, ADC_CMD_ENABLE);
     }
 
@@ -37,7 +37,7 @@ rt_err_t hal_adc_close(rt_device_t dev)
 
     adc_dev_t adc_dev = (adc_dev_t)dev;
 
-    if (dev->ref_count == 0) {
+    if (dev->ref_count == 0 && adc_dev->ops->enable != NULL) {
         adc_dev->ops->enable(adc_dev, ADC_CMD_DISABLE);
     }
 
@@ -55,8 +55,10 @@ rt_size_t hal_adc_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t si
         return 0;
     }
 
-    if (adc_dev->ops->measure(adc_dev, pos, buffer) == RT_EOK) {
-        res = size;
+    if (adc_dev->ops->measure != NULL) {
+        if (adc_dev->ops->measure(adc_dev, pos, buffer) == RT_EOK) {
+            res = size;
+        }
     }
 
     rt_mutex_release(adc_dev->lock);

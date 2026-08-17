@@ -20,11 +20,11 @@
 #include "hal/pin/pin.h"
 
 #ifndef BSP_SOFT_I2C1_SCL_PIN
-#define BSP_SOFT_I2C1_SCL_PIN 24
+    #define BSP_SOFT_I2C1_SCL_PIN 24
 #endif
 
 #ifndef BSP_SOFT_I2C1_SDA_PIN
-#define BSP_SOFT_I2C1_SDA_PIN 25
+    #define BSP_SOFT_I2C1_SDA_PIN 25
 #endif
 
 #define I2C_DELAY_US      10
@@ -119,6 +119,8 @@ static struct rt_i2c_bit_ops soft_i2c1_bit_ops = {
     .timeout = I2C_TIMEOUT_TICKS,
 };
 
+static struct rt_i2c_device i2c1_dev0 = { .slave_addr = 0x45, .flags = 0 }; // INA228
+
 rt_err_t drv_i2c_soft_init(void)
 {
     RT_TRY(soft_i2c_pin_init());
@@ -126,5 +128,10 @@ rt_err_t drv_i2c_soft_init(void)
     soft_i2c1_bus.priv = &soft_i2c1_bit_ops;
     soft_i2c1_bus.retries = 3;
 
-    return rt_i2c_soft_bus_register(&soft_i2c1_bus, "i2c1");
+    RT_TRY(rt_i2c_soft_bus_register(&soft_i2c1_bus, "i2c1"));
+
+    /* attach i2c devices */
+    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev0, "i2c1_dev0", "i2c1", RT_NULL));
+
+    return RT_EOK;
 }
