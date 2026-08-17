@@ -36,6 +36,11 @@ static rt_thread_t thread;
 static struct rt_event event;
 static uint8_t frame_data[DATA_SIZE];
 
+static uint8_t use_pos;
+static uint8_t use_alt;
+static uint8_t use_att;
+static uint8_t use_psi;
+
 static rt_err_t rx_ind_cb(rt_device_t dev, rt_size_t size)
 {
     return rt_event_send(&event, EVENT_NLINK_UPDATE);
@@ -98,9 +103,10 @@ static void thread_entry(void* args)
 
                         if (result->pos_3d[0] == 1.0f && result->pos_3d[1] == 1.0f && result->pos_3d[2] == 1.0f
                             && result->vel_3d[0] == 0.0f && result->vel_3d[1] == 0.0f && result->vel_3d[2] == 0.0f) {
+                            /* if uwb pos values are all 1.0f and vel values are all 0.0f, uwb is invalid */
                             external_pos_report.field_valid = 0;
                         } else {
-                            external_pos_report.field_valid = 1; /* xy valid, uwb z is not stable */
+                            external_pos_report.field_valid = use_pos | (use_alt << 1) | (use_att << 2) | (use_psi << 3);
                         }
 
                         /* publish external position */
@@ -141,6 +147,11 @@ rt_err_t drv_nlink_linktrack_init(const char* uart_dev_name)
         printf("nlink config baudrate failed!\n");
         return RT_ERROR;
     }
+
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_POS), &use_pos));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_ALT), &use_alt));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_ATT), &use_att));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_PSI), &use_psi));
 
     thread = rt_thread_create("nlink", thread_entry, RT_NULL, 4 * 1024, 7, 1);
 
