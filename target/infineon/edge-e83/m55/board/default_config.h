@@ -39,7 +39,7 @@ target = "Edge-E83"\n
     [[mavproxy.devices]]\n
 	chan = 0\n
 	type = "usb"\n
-	name = "usbd0"\n
+	name = "usbd_cdc"\n
     auto-switch = true\n
 [pilot-cmd]\n
     stick-channel = [4,3,1,2]\n
