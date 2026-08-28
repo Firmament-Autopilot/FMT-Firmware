@@ -24,52 +24,52 @@
 // #define DRV_DBG(...)          console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
-#define PWM_FREQ_50HZ          (50U)
-#define PWM_FREQ_125HZ         (125U)
-#define PWM_FREQ_250HZ         (250U)
-#define PWM_FREQ_400HZ         (400U)
-#define PWM_MIN_PULSE_US       (1000U)
+#define PWM_FREQ_50HZ         (50U)
+#define PWM_FREQ_125HZ        (125U)
+#define PWM_FREQ_250HZ        (250U)
+#define PWM_FREQ_400HZ        (400U)
+#define PWM_MIN_PULSE_US      (1000U)
 
 /* Keep TCPWM prescaler as configured by generated peripherals (div1). */
-#define PWM_CLOCK_PRESCALER    CY_TCPWM_PWM_PRESCALER_DIVBY_1
+#define PWM_CLOCK_PRESCALER   CY_TCPWM_PWM_PRESCALER_DIVBY_1
 
-#define MAIN_PWM_CHAN          (8U)
-#define AUX_PWM_CHAN           (8U)
-#define PWM_DEFAULT_FREQUENCY  PWM_FREQ_50HZ
+#define MAIN_PWM_CHAN         (8U)
+#define AUX_PWM_CHAN          (8U)
+#define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ
 
 #if defined(COMPONENT_CM55) || defined(CORE_NAME_CM55_0)
-#define PWM_USE_MAIN_OUT       (1U)
-#define PWM_USE_AUX_OUT        (0U)
+    #define PWM_USE_MAIN_OUT (1U)
+    #define PWM_USE_AUX_OUT  (0U)
 #elif defined(COMPONENT_CM33) || defined(CORE_NAME_CM33_0)
-#define PWM_USE_MAIN_OUT       (0U)
-#define PWM_USE_AUX_OUT        (1U)
+    #define PWM_USE_MAIN_OUT (0U)
+    #define PWM_USE_AUX_OUT  (1U)
 #else
-#define PWM_USE_MAIN_OUT       (1U)
-#define PWM_USE_AUX_OUT        (1U)
+    #define PWM_USE_MAIN_OUT (1U)
+    #define PWM_USE_AUX_OUT  (1U)
 #endif
 
 /* Effective TCPWM counter clock for actuator channels is ~400kHz on current edge-e83 clock tree. */
-#define TIMER_FREQUENCY_HZ     (400000U)
+#define TIMER_FREQUENCY_HZ (400000U)
 
-#define PWM_MAIN_CH1_CNT       (271U)
-#define PWM_MAIN_CH2_CNT       (264U)
-#define PWM_MAIN_CH3_CNT       (265U)
-#define PWM_MAIN_CH4_CNT       (266U)
-#define PWM_MAIN_CH5_CNT       (267U)
-#define PWM_MAIN_CH6_CNT       (269U)
-#define PWM_MAIN_CH7_CNT       (273U)
-#define PWM_MAIN_CH8_CNT       (275U)
+#define PWM_MAIN_CH1_CNT   (271U)
+#define PWM_MAIN_CH2_CNT   (264U)
+#define PWM_MAIN_CH3_CNT   (265U)
+#define PWM_MAIN_CH4_CNT   (266U)
+#define PWM_MAIN_CH5_CNT   (267U)
+#define PWM_MAIN_CH6_CNT   (269U)
+#define PWM_MAIN_CH7_CNT   (273U)
+#define PWM_MAIN_CH8_CNT   (275U)
 
-#define PWM_AUX_CH9_CNT        (258U)
-#define PWM_AUX_CH10_CNT       (259U)
-#define PWM_AUX_CH11_CNT       (260U)
-#define PWM_AUX_CH12_CNT       (5U)
-#define PWM_AUX_CH13_CNT       (278U)
-#define PWM_AUX_CH14_CNT       (279U)
-#define PWM_AUX_CH15_CNT       (4U)
-#define PWM_AUX_CH16_CNT       (261U)
+#define PWM_AUX_CH9_CNT    (258U)
+#define PWM_AUX_CH10_CNT   (259U)
+#define PWM_AUX_CH11_CNT   (260U)
+#define PWM_AUX_CH12_CNT   (5U)
+#define PWM_AUX_CH13_CNT   (278U)
+#define PWM_AUX_CH14_CNT   (279U)
+#define PWM_AUX_CH15_CNT   (4U)
+#define PWM_AUX_CH16_CNT   (261U)
 
-#define PWM_CH_MASK(n) ((rt_uint16_t)(((n) >= 16U) ? 0xFFFFU : ((1UL << (n)) - 1UL)))
+#define PWM_CH_MASK(n)     ((rt_uint16_t)(((n) >= 16U) ? 0xFFFFU : ((1UL << (n)) - 1UL)))
 
 struct pwm_channel {
     TCPWM_Type* base;
@@ -88,6 +88,8 @@ static uint32_t main_pwm_freq = PWM_DEFAULT_FREQUENCY;
 static uint32_t aux_pwm_freq = PWM_DEFAULT_FREQUENCY;
 static float main_pwm_dc[MAIN_PWM_CHAN];
 static float aux_pwm_dc[AUX_PWM_CHAN];
+static uint16_t main_pwm_init_val[MAIN_PWM_CHAN];
+static uint16_t aux_pwm_init_val[AUX_PWM_CHAN];
 
 static const struct pwm_channel main_pwm_channels[MAIN_PWM_CHAN] = {
     { .base = TCPWM0, .cnt_num = PWM_MAIN_CH1_CNT, .pwm_config = &tcpwm_0_group_1_cnt_15_config },
@@ -236,7 +238,15 @@ static uint32_t pwm_arr_by_freq(uint32_t freq_hz)
 
 static float pwm_val_to_dc(uint16_t pulse_us, uint32_t freq_hz)
 {
-    return (float)pulse_us / (1000000.0f / (float)freq_hz);
+    uint16_t pulse = pulse_us;
+
+    if (pulse < 1000) {
+        pulse = 1000;
+    } else if (pulse > 2000) {
+        pulse = 2000;
+    }
+
+    return (float)pulse / (1000000.0f / (float)freq_hz);
 }
 
 static uint16_t pwm_dc_to_val(float dc, uint32_t freq_hz)
@@ -316,10 +326,9 @@ static rt_err_t pwm_config_group(actuator_dev_t dev, const struct actuator_confi
 
 static void pwm_set_group_safe_output(struct pwm_group* group)
 {
-    float safe_dc = pwm_val_to_dc(PWM_MIN_PULSE_US, *group->freq_hz);
-
     for (uint8_t i = 0; i < group->num_channels; i++) {
-        pwm_write_channel(group, i, safe_dc);
+        // pwm_write_channel(group, i, safe_dc);
+        pwm_write_channel(group, i, group == &main_pwm_group ? pwm_val_to_dc(main_pwm_init_val[i], *group->freq_hz) : pwm_val_to_dc(aux_pwm_init_val[i], *group->freq_hz));
     }
 }
 
@@ -359,21 +368,45 @@ static void pwm_disable_group(struct pwm_group* group)
     }
 }
 
-static rt_err_t pwm_control_group(int cmd, struct pwm_group* group)
+static rt_err_t pwm_control_group(int cmd, struct pwm_group* group, void* arg)
 {
     switch (cmd) {
     case ACT_CMD_CHANNEL_ENABLE:
         /* Keep behavior consistent with STM32 implementation: apply 1000us before enabling outputs. */
         pwm_set_group_safe_output(group);
         pwm_enable_group(group);
-        return RT_EOK;
+        break;
     case ACT_CMD_CHANNEL_DISABLE:
         pwm_disable_group(group);
-        return RT_EOK;
-    case ACT_CMD_SET_PROTOCOL:
+        break;
+    case ACT_CMD_SET_INIT_VAL: {
+        const struct actuator_init_value* init_val = (struct actuator_init_value*)arg;
+        uint8_t index = 0;
+        float safe_dc = pwm_val_to_dc(PWM_MIN_PULSE_US, *group->freq_hz);
+
+        for (uint8_t i = 0; i < group->num_channels; i++) {
+            pwm_write_channel(group, i, safe_dc);
+        }
+
+        if (group == &main_pwm_group) {
+            for (uint8_t i = 0; i < MAIN_PWM_CHAN; i++) {
+                if (init_val->chan_mask & (1 << i)) {
+                    main_pwm_init_val[i] = init_val->value[index++];
+                }
+            }
+        } else {
+            for (uint8_t i = 0; i < AUX_PWM_CHAN; i++) {
+                if (init_val->chan_mask & (1 << i)) {
+                    aux_pwm_init_val[i] = init_val->value[index++];
+                }
+            }
+        }
+    } break;
     default:
         return RT_EINVAL;
     }
+
+    return RT_EOK;
 }
 
 static rt_size_t pwm_read_group(rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size, struct pwm_group* group)
@@ -430,7 +463,7 @@ static rt_err_t main_pwm_control(actuator_dev_t dev, int cmd, void* arg)
     (void)dev;
     (void)arg;
 
-    return pwm_control_group(cmd, &main_pwm_group);
+    return pwm_control_group(cmd, &main_pwm_group, arg);
 }
 
 static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg)
@@ -438,7 +471,7 @@ static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg)
     (void)dev;
     (void)arg;
 
-    return pwm_control_group(cmd, &aux_pwm_group);
+    return pwm_control_group(cmd, &aux_pwm_group, arg);
 }
 
 static rt_size_t main_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
@@ -562,10 +595,10 @@ rt_err_t drv_pwm_init(void)
 #endif
 
 #if PWM_USE_MAIN_OUT
-    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &main_pwm_group);
+    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &main_pwm_group, NULL);
 #endif
 #if PWM_USE_AUX_OUT
-    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group);
+    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group.NULL);
 #endif
 
 #if PWM_USE_MAIN_OUT
