@@ -598,7 +598,7 @@ rt_err_t drv_pwm_init(void)
     pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &main_pwm_group, NULL);
 #endif
 #if PWM_USE_AUX_OUT
-    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group.NULL);
+    pwm_control_group(ACT_CMD_CHANNEL_DISABLE, &aux_pwm_group, NULL);
 #endif
 
 #if PWM_USE_MAIN_OUT
