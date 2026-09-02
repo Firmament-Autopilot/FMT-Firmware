@@ -277,7 +277,16 @@ rt_err_t gps_nmea_init(gnss_device_info* dev_info)
     /* set gps rx indicator */
     RT_CHECK(rt_device_set_rx_indicate(serial_device, gps_serial_rx_ind));
     /* open serial device */
-    RT_CHECK(rt_device_open(serial_device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX));
+    rt_uint16_t oflag = RT_DEVICE_OFLAG_RDWR;
+    if (serial_device->flag & RT_DEVICE_FLAG_DMA_TX) {
+        oflag |= RT_DEVICE_FLAG_DMA_TX;
+    }
+    if (serial_device->flag & RT_DEVICE_FLAG_DMA_RX) {
+        oflag |= RT_DEVICE_FLAG_DMA_RX;
+    } else {
+        oflag |= RT_DEVICE_FLAG_INT_RX;
+    }
+    RT_CHECK(rt_device_open(serial_device, oflag));
     /* init ublox decoder */
     FMT_CHECK(init_nmea_decoder(&nmea_decoder, serial_device, nmea_rx_handle));
 
