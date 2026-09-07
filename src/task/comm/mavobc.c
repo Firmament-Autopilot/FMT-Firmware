@@ -30,8 +30,6 @@
 #undef LOG_TAG
 #define LOG_TAG "MAVOBC"
 
-MCN_DEFINE(mav_actuator_control, sizeof(Control_Out_Bus));
-
 MCN_DECLARE(fms_output);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(rc_channels);
@@ -39,6 +37,7 @@ MCN_DECLARE(auto_cmd);
 MCN_DECLARE(external_pos);
 MCN_DECLARE(mission_data);
 MCN_DECLARE(control_output);
+MCN_DECLARE(mav_actuator_control);
 
 typedef struct
 {
@@ -68,25 +67,6 @@ static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HOME_POSITION, mavlink_msg_home_position_pack_func },
     { MAVLINK_MSG_ID_EXTENDED_SYS_STATE, mavlink_msg_extended_sys_state_pack_func },
 };
-
-static int mav_actuator_control_echo(void* param)
-{
-    Control_Out_Bus control_out;
-
-    if (mcn_copy_from_hub((McnHub*)param, &control_out) != FMT_EOK)
-        return -1;
-
-    printf("timestamp:%d actuator:", control_out.timestamp);
-    for (uint8_t i = 0; i < 16; i++) {
-        if (control_out.actuator_cmd[i] > 0) {
-            printf(" %d", control_out.actuator_cmd[i]);
-        } else {
-            break;
-        }
-    }
-    printf("\n");
-    return 0;
-}
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
@@ -971,8 +951,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
 fmt_err_t mavobc_init(void)
 {
-    mcn_advertise(MCN_HUB(mav_actuator_control), mav_actuator_control_echo);
-
     /* register channel */
     FMT_TRY(mavproxy_register_channel(MAVPROXY_OBC_CHAN));
 
