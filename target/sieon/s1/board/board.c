@@ -46,6 +46,7 @@
 #include "driver/mag/qmc5883l.h"
 #include "driver/mtd/gd25qxx.h"
 #include "driver/range_finder/tofsense.h"
+#include "driver/vision_flow/mtf_01.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
@@ -60,6 +61,7 @@
 #include "module/task_manager/task_manager.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 
 #ifdef FMT_USING_UNIT_TEST
     #include "utest.h"
@@ -346,6 +348,7 @@ void bsp_initialize(void)
     // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     // RT_CHECK(drv_tofsense_init("serial5"));
+    // RT_CHECK(drv_mtf_01_init("serial5"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));

@@ -138,8 +138,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
         if (HAL_CAN_GetRxMessage(hcan, CAN_FILTER_FIFO0, &can1_data.rx_header, can1_data.rx_data) != HAL_OK)
             return;
 
-        msg.std_id = can1_data.rx_header.StdId;
-        msg.ext_id = can1_data.rx_header.ExtId;
+        msg.msg_id = can1_data.rx_header.IDE == CAN_ID_EXTENDED ? can1_data.rx_header.ExtId : can1_data.rx_header.StdId;
         msg.id_type = can1_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
         msg.frame_type = can1_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
         msg.data_len = can1_data.rx_header.DLC;
@@ -152,8 +151,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
         if (HAL_CAN_GetRxMessage(hcan, CAN_FILTER_FIFO0, &can2_data.rx_header, can2_data.rx_data) != HAL_OK)
             return;
 
-        msg.std_id = can2_data.rx_header.StdId;
-        msg.ext_id = can2_data.rx_header.ExtId;
+        msg.msg_id = can2_data.rx_header.IDE == CAN_ID_EXTENDED ? can2_data.rx_header.ExtId : can2_data.rx_header.StdId;
         msg.id_type = can2_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
         msg.frame_type = can2_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
         msg.data_len = can2_data.rx_header.DLC;
@@ -432,8 +430,8 @@ static rt_err_t can_control(can_dev_t can, int cmd, void* arg)
 static int can_sendmsg(can_dev_t can, const can_msg_t msg)
 {
     if (can == &can1_dev) {
-        can1_data.tx_header.StdId = msg->std_id;
-        can1_data.tx_header.ExtId = msg->ext_id;
+        can1_data.tx_header.StdId = msg->msg_id;
+        can1_data.tx_header.ExtId = msg->msg_id;
         can1_data.tx_header.IDE = msg->id_type == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
         can1_data.tx_header.RTR = msg->frame_type == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
         can1_data.tx_header.DLC = msg->data_len;
@@ -445,8 +443,8 @@ static int can_sendmsg(can_dev_t can, const can_msg_t msg)
         if (HAL_CAN_AddTxMessage(&can1_data.hcan, &can1_data.tx_header, can1_data.tx_data, &can1_data.tx_mailbox) == HAL_OK)
             return 1;
     } else if (can == &can2_dev) {
-        can2_data.tx_header.StdId = msg->std_id;
-        can2_data.tx_header.ExtId = msg->ext_id;
+        can2_data.tx_header.StdId = msg->msg_id;
+        can2_data.tx_header.ExtId = msg->msg_id;
         can2_data.tx_header.IDE = msg->id_type == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
         can2_data.tx_header.RTR = msg->frame_type == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
         can2_data.tx_header.DLC = msg->data_len;
@@ -466,8 +464,7 @@ static int can_recvmsg(can_dev_t can, can_msg_t msg)
 {
     if (can == &can1_dev) {
         if (HAL_CAN_GetRxMessage(&can1_data.hcan, CAN_FILTER_FIFO0, &can1_data.rx_header, can1_data.rx_data) == HAL_OK) {
-            msg->std_id = can1_data.rx_header.StdId;
-            msg->ext_id = can1_data.rx_header.ExtId;
+            msg->msg_id = can1_data.rx_header.IDE == CAN_ID_EXTENDED ? can1_data.rx_header.ExtId : can1_data.rx_header.StdId;
             msg->id_type = can1_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
             msg->frame_type = can1_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
             msg->data_len = can1_data.rx_header.DLC;
@@ -478,8 +475,7 @@ static int can_recvmsg(can_dev_t can, can_msg_t msg)
         }
     } else if (can == &can2_dev) {
         if (HAL_CAN_GetRxMessage(&can2_data.hcan, CAN_FILTER_FIFO0, &can2_data.rx_header, can2_data.rx_data) == HAL_OK) {
-            msg->std_id = can2_data.rx_header.StdId;
-            msg->ext_id = can2_data.rx_header.ExtId;
+            msg->msg_id = can2_data.rx_header.IDE == CAN_ID_EXTENDED ? can2_data.rx_header.ExtId : can2_data.rx_header.StdId;
             msg->id_type = can2_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
             msg->frame_type = can2_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
             msg->data_len = can2_data.rx_header.DLC;

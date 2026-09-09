@@ -1,0 +1,152 @@
+{ 
+  "VERSION": {
+    "value": "1",
+    "type": "STRING",
+    "mandatory": true,
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "TEMPLATE_TYPE": {
+    "value": "",
+    "type": "ENUM",
+    "mandatory": true,
+    "applicable_values": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"],
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "CERTIFICATE_NAME": {
+    "value": "",
+    "type": "STRING",
+    "mandatory": true,
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "TYPE": {
+    "value": "",
+    "type": "ENUM",
+    "mandatory": true,
+    "description": "Certificate type. Applicable values: DEVELOPMENT, PRODUCTION",
+    "applicable_values": ["DEVELOPMENT", "PRODUCTION"],
+    "used": ["OEM_CSR"]
+  },
+  "ISSUER": {
+    "value": "",
+    "type": "STRING",
+    "mandatory": true,
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "ID": {
+    "value": "",
+    "type": "HEX",
+    "mandatory": true,
+    "description": "Certificate (unique) ID",
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "DATE": {
+    "value": "",
+    "type": "DATE",
+    "mandatory": true,
+    "description": "YYYY-MM-DD hh:mm:ss",
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "ALGORITHM": {
+    "value": "",
+    "type": "ENUM",
+    "mandatory": true,
+    "description": "Key algorithm. Applicable values: ES256, ES384, ES512",
+    "applicable_values": ["ES256", "ES384", "ES512"],
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "SIGNER_ID": {
+    "value": "",
+    "type": "STRING",
+    "mandatory": true,
+    "used": ["OEM_CSR", "OEM_CERT", "DEVICE_CERT", "MANUFACTURING_CERT"]
+  },
+  "PUBLIC_KEY_0": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "value": "",
+    "type": "KEY",
+    "mandatory": true,
+    "used": ["OEM_CSR", "MANUFACTURING_CERT"]
+  },
+  "PUBLIC_KEY_1": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "value": "",
+    "type": "KEY",
+    "mandatory": false,
+    "present": ["OEM_CSR", "OEM_CERT"],
+    "used": ["OEM_CSR"]
+  },
+  "DIE_ID": {
+    "description": "Defined by the device",
+    "type": "HEX",
+    "mandatory": false,
+    "present": ["DEVICE_CSR", "DEVICE_CERT"]
+  },
+  "FAMILY_ID": {
+    "type": "INT",
+    "mandatory": false,
+    "present": ["DEVICE_CSR", "DEVICE_CERT"]
+  },
+  "REVISION_ID": {
+    "type": "INT",
+    "mandatory": false,
+    "present": ["DEVICE_CSR", "DEVICE_CERT"]
+  },
+  "ROM_BOOT_VERSION": {
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["DEVICE_CSR", "DEVICE_CERT"]
+  },
+  "RRAM_BOOT_VERSION": {
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["DEVICE_CSR", "DEVICE_CERT"]
+  },
+  "BASE_SE_RTS_VERSION": {
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  },
+  "SE_RTS_VERSION": {
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  },
+  "EXTENDED_BOOT_VERSION": {
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  },
+  "SILICON_ID": {
+    "type": "INT",
+    "mandatory": false,
+    "present": []
+  },
+  "OEM": {
+    "value": "",
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["OEM_CSR", "OEM_CERT"],
+    "used": ["OEM_CSR"]
+  },
+  "PROJECT": {
+    "value": "",
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["OEM_CSR", "OEM_CERT"],
+    "used": ["OEM_CSR"]
+  },
+  "PROJECT_NUMBER": {
+    "value": "",
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["OEM_CSR", "OEM_CERT"],
+    "used": ["OEM_CSR"]
+  },
+  "MFG": {
+    "value": "",
+    "type": "STRING",
+    "mandatory": false,
+    "present": ["MANUFACTURING_CERT"],
+    "used": ["MANUFACTURING_CERT"]
+  }
+} 

@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__mtb__ipc__config" kind="group">
+    <compoundname>group_mtb_ipc_config</compoundname>
+    <title>MTB IPC Configuration</title>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__group__mtb__ipc__config_1ga67317da3e1f854f37f7c53775af2b62f" prot="public" static="no">
+        <name>MTB_IPC_CHANNEL_SRF</name>
+        <initializer>(MTB_IPC_CHAN_0)</initializer>
+        <briefdescription>
+<para>Define the channel used to set up the IPC instance set up for SRF operations. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" line="54" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__ipc__config_1ga8ded834ac1aaa7426402c9cddabe892c" prot="public" static="no">
+        <name>MTB_IPC_SEMA_NUM_SRF</name>
+        <initializer>(0UL)</initializer>
+        <briefdescription>
+<para>Define Semaphore index used to initialize the IPC instance set up for SRF operations. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" line="57" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__ipc__config_1ga80224b80366c129818211ed90a0c0264" prot="public" static="no">
+        <name>MTB_IPC_IRQ_SEMA_SRF_RELAY</name>
+        <initializer>(MTB_IPC_IRQ_USER)</initializer>
+        <briefdescription>
+<para>Define reserved semaphore IRQ for SRF operations on Relay core. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" line="60" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__ipc__config_1ga3dae82792fe0868c9b46279aae892a2c" prot="public" static="no">
+        <name>MTB_IPC_IRQ_QUEUE_SRF_RELAY</name>
+        <initializer>(MTB_IPC_IRQ_USER + 1)</initializer>
+        <briefdescription>
+<para>Define reserved semaphore IRQ for SRF operations on Relay core. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" line="63" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__ipc__config_1gaa6b0ecdaff0eab188f49fd7dda10d550" prot="public" static="no">
+        <name>MTB_IPC_IRQ_SEMA_SRF_CLIENT</name>
+        <initializer>(MTB_IPC_IRQ_USER + 2)</initializer>
+        <briefdescription>
+<para>Define reserved semaphore IRQ for SRF operations on client core. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" line="66" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__ipc__config_1ga9dd101ef211f3501c17780f49d780a1a" prot="public" static="no">
+        <name>MTB_IPC_IRQ_QUEUE_SRF_CLIENT</name>
+        <initializer>(MTB_IPC_IRQ_USER + 3)</initializer>
+        <briefdescription>
+<para>Define reserved semaphore IRQ for SRF operations on client core. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" line="69" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_ipc_config.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The ModusToolbox Interprocessor communication library (MTB-IPC) requires reservation of IPC channels and interrupts. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Please refer to device documentation for what channels and interrupts are available on the device. Reservation ensures that there is no overlap between libraries that use IPC. By default, the only library that has a reservation is MTB-SRF and these values must not be deleted for SRF to function correctly.</para>
+<para>This file is owned by the application. The expectation is for the user to store channel and interrupt reservations as needed. Should the user wish to use a middleware library that depends on MTB IPC, the user can keep track of which channels and interrupts have been used here. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

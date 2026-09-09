@@ -1,0 +1,13 @@
+{
+  "image": {
+    "path": "dmpu_full.hex",
+    "address": "0x00300400"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "0x80430000"
+  },
+  "dlm": {
+    "path": "mini_driver_pkg.hex"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "image": {
+    "path": "cyapp_to_rma_signed_ifx0.bin",
+    "address": "0x34003000"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "0x3400D000",
+    "optional": true
+  },
+  "dlm": {
+    "path": "to_rma_dlm.hex"
+  },
+  "allowed_lcs": [
+    "NORMAL_PROVISIONED",
+    "SECURE"
+  ]
+}

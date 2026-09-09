@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0.0",
+  "silicon_id": "0xEE40",
+  "family_id": "0x0118",
+  "si_revision_id": "0x11",
+  "control_word": {
+    "cm33_ap": "Enable",
+    "sys_ap": "Enable",
+    "cm33_dbg": "Enable",
+    "cm33_nid": "Enable",
+    "cm33_spid": "Enable",
+    "cm33_spnid": "Enable",
+    "cm33_secure": "Enable",
+    "sys_secure": "Enable",
+    "rma": "Enable"
+  },
+  "die_id": {
+    "min": {
+      "lot": 0,
+      "wafer": 0,
+      "xpos": 0,
+      "ypos": 0,
+      "sort": 0,
+      "minor": 0,
+      "day": 0,
+      "month": 0,
+      "year": 0
+    },
+    "max": {
+      "lot": 16777215,
+      "wafer": 255,
+      "xpos": 255,
+      "ypos": 255,
+      "sort": 255,
+      "minor": 255,
+      "day": 255,
+      "month": 255,
+      "year": 255
+    }
+  }
+}

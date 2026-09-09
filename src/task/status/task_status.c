@@ -271,16 +271,16 @@ fmt_err_t task_status_init(void)
 
 void task_status_entry(void* parameter)
 {
-#if defined(FMT_USING_HIL)
+#if defined(FMT_PLANT_SIM)
+    LOG_I("Plant Simulation");
+#elif defined(FMT_USING_HIL)
     LOG_I("HIL Simulation");
-#endif
-
-#if defined(FMT_USING_SIH)
+#elif defined(FMT_USING_SIH)
     LOG_I("SIH Simulation");
 #endif
 
-#ifdef FMT_HIL_WITH_ACTUATOR
-    LOG_W("Actuator enabled for HIL, make sure you have removed all propellers!");
+#ifdef FMT_SIM_WITH_ACTUATOR
+    LOG_W("Actuator enabled for simulation, make sure you have removed all propellers!");
 #endif
 
     while (1) {

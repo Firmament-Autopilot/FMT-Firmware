@@ -1,0 +1,16 @@
+{
+  "image": {
+    "path": "cyapp_to_rma_signed_icv0.bin",
+    "address": "0x20004000"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "0x2000D000",
+    "optional": true
+  },
+  "allowed_lcs": [
+    "NORMAL",
+    "NORMAL_NO_SECURE",
+    "SECURE"
+  ]
+}

@@ -1,0 +1,24 @@
+{ 
+  "VERSION": "1",
+  "TEMPLATE_TYPE": "MANUFACTURING_CERT",
+  "CERTIFICATE_NAME": "",
+  "ISSUER": "IFX",
+  "SIGNER_ID": "001",
+  "MFG": "Infineon",
+  "ALGORITHM": {
+      "description": "Key algorithm. Applicable values: ES256, ES384",
+      "value": "ES384"
+  },
+  "PUBLIC_KEY_0": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "value":  ""
+  },
+  "DATE": {
+      "description": "The date of creation of the certificate in the format: YYYY-MM-DD hh:mm:ss. If not provided, the system time will be used",
+      "value": ""
+  },
+  "ID": {
+      "description": "Certificate (unique) ID",
+      "value": ""
+  }
+} 

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--****************************************************************************
+* \file emusb_v2.cypersonality
+* \version 1.0
+*
+* \brief
+*  Personality for configuration USB.
+********************************************************************************
+* \copyright
+* Copyright (c) (2023), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id="mxs22emusb" name="emUSB-Host/Device" version="1.0" xmlns="http://cypress.com/xsd/cyhwpersonality_v9">
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name="mxs22usbhs" />
+      <Resource name="usbhs"/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key="timerEnable" paramId="timerEnable" />
+  </ExposedMembers>
+
+  <Parameters>
+    <!-- Debug mode selection -->
+    <ParamBool id="debug" name="debug" group="Internal" default="false" visible="false" editable="false" desc="Enable/Disable debug mode" />
+
+    <!-- Documentation -->
+    <ParamDoc id='emUsbDocHost' name='Configuration Help' group='Overview' default='`${"https://infineon.github.io/emusb-host/html/index.html"}`' linkText='Open emUSB-Host Documentation' visible='true' desc='Open the USB Documentation' />
+    <ParamDoc id='emUsbDocDevice' name='Configuration Help' group='Overview' default='`${"https://infineon.github.io/emusb-device/html/index.html"}`' linkText='Open emUSB-Device Documentation' visible='true' desc='Open the USB Documentation' />
+
+    <!-- Mode selection -->
+    <ParamChoice id="mode" name="USB mode" group="General" default="Host" visible="true" editable="true" desc="Select USB Mode">
+      <Entry name="Host" value="Host" visible="true" />
+      <Entry name="Device" value="Device" visible="true" />
+    </ParamChoice>
+    <ParamBool id="modeIsDevice" name="modeIsDevice" group="Internal" default="`${mode eq Device}`" visible="false" editable="false" desc="USB mode is Device" />
+    <ParamBool id="modeIsHost" name="modeIsHost" group="Internal" default="`${mode eq Host}`" visible="false" editable="false" desc="USB Mode is Host" />
+
+    <!-- Main Clock selection -->
+    <ParamSignal port="mmio_clk_hf[0]" name="Main Clock" group="Connections" visible="true" desc="The clock to operate this block" canBeEmpty="true" />
+    <ParamBool id="mmioClkHfIsConnected" name="mmioClkHfIsConnected" group="Internal" default="`${hasConnection(&quot;mmio_clk_hf&quot;, 0)}`" visible="`${debug}`" editable="false" desc="Check if mmio_clk_hf[0] is connected" />
+
+    <ParamString id="mmioClkHf" name="mmioClkHf" group="Internal" default="`${getBlockFromSignal(&quot;mmio_clk_hf[0]&quot;)}`" visible="false" editable="false" desc="Get Block signal from mmio_clk_hf[0]" />
+    <ParamRange  id="mmioClkHfHz" name="mmioClkHfHz" group="Internal" default="`${getExposedMember(mmioClkHf, &quot;frequency&quot;)}`" min="0" max="1000000000" resolution="1" visible="`${debug}`" editable="false" desc="Get frequency of mmio_clk_hf[0]" />
+
+    <ParamBool id="isPowerEnabled" name="Is Power Enabled" group="Internal" default="`${isBlockUsed(&quot;srss[0].power[0]&quot;)}`" visible="`${debug}`" editable="false" desc="Check if Power personality is enabled" />
+    <ParamString id="selectedPwrMode" name="selectedPwrMode" group="Internal" default="`${isPowerEnabled ? getExposedMember(&quot;srss[0].power[0]&quot;, &quot;activePowerMode&quot;) : &quot;LP&quot;}`" visible="`${debug}`" editable="false" desc="Get Active power mode. By default LP is selected" />
+
+    <ParamRange id="mmioExpClkHfHz" name="mmioExpClkHfHz" group="Internal" default="`${selectedPwrMode eq &quot;HP&quot; ? 400000000 : 140000000}`" min="0" max="400000000" resolution="1" visible="`${debug}`" editable="false" desc="Select expected frequency for mmio_clk_hf[0]. For HP mode the frequency should be 400 MHz, for LP 140 MHz. In case ULP the personality generates warning." />
+
+    <ParamBool id="isUlpSelected" name="isUlpSelected" group="Internal" default="`${selectedPwrMode eq &quot;ULP&quot;}`" visible="`${debug}`" editable="false" desc="Check if ULP mode is selected" />
+
+    <!-- Peri 1 Group 3 -->
+    <ParamBool id="peri1MemoryMappedIoAppMmio3" name="Is Peri 1 Memory Mapped IO APP_MMIO 3 Enabled" group="Internal" default="`${isBlockUsed(&quot;peri[1].mmio[0]&quot;) &amp;&amp; getExposedMember(&quot;peri[1].mmio[0]&quot;, &quot;dividerEnabled3&quot;)}`" visible="`${debug}`" editable="false" desc="Check if Peri 1 Memory Mapped IO APP_MMIO 3 is enabled" />
+    <ParamRange  id="peri1MemoryMappedIoAppMmio3Div" name="peri1MemoryMappedIoAppMmio3Div" group="Internal" default="`${peri1MemoryMappedIoAppMmio3 ? getExposedMember(&quot;peri[1].mmio[0]&quot;, &quot;divider3&quot;) : getExposedMember(&quot;peri[1].mmio[0]&quot;, &quot;defaultDivider3&quot;)}`" min="1" max="256" resolution="1" visible="`${debug}`" editable="false" desc="Get divider of peri[1].mmio[0] MMIO 3" />
+    <ParamRange  id="peri1MemoryMappedIoAppMmio3DivFreq" name="peri1MemoryMappedIoAppMmio3DivFreq" group="Internal" default="`${peri1MemoryMappedIoAppMmio3 ? getExposedMember(&quot;peri[1].mmio[0]&quot;, &quot;dividerFreq3&quot;) : 0}`" min="0" max="400000000" resolution="1" visible="`${debug}`" editable="false" desc="Get divider frequency of peri[1].mmio[0] MMIO 3" />
+
+    <!-- Phy PLL Ref selection -->
+    <ParamSignal port="clk_phy_pll_ref[0]" name="Phy Pll Clock" group="Connections" visible="true" desc="PHY PLL reference clock" canBeEmpty="true" />
+    <ParamBool id="clkphyPllIsConnected" name="clkphyPllIsConnected" group="Internal" default="`${hasConnection(&quot;clk_phy_pll_ref&quot;, 0)}`" visible="`${debug}`" editable="false" desc="Check if clk_phy_pll_ref[0] is connected" />
+
+    <ParamString id="phyPll" name="phyPll" group="Internal" default="`${getBlockFromSignal(&quot;clk_phy_pll_ref[0]&quot;)}`" visible="false" editable="false" desc="Get Block signal from clk_phy_pll_ref[0]" />
+    <ParamRange  id="phyPllHz" name="phyPllHz" group="Internal" default="`${getExposedMember(phyPll, &quot;frequency&quot;)}`" min="0" max="1000000000" resolution="1" visible="false" editable="false" desc="Get frequency of clk_phy_pll_ref[0]" />
+
+    <ParamRange  id="phyPllHzRealAccuracyPercent" name="phyPllHzRealAccuracyPercent" group="Internal" default="`${getExposedMember(phyPll, &quot;accuracy&quot;)}`" min="0" max="100" resolution="0.0001" visible="false" editable="false" desc="Get accuracy of clk_phy_pll_ref[0]" />
+    <ParamRange  id="phyPllRealAccuracy" name="phyPllRealAccuracy" group="Internal" default="`${phyPllHzRealAccuracyPercent / 100}`" min="0" max="100" resolution="0.000001" visible="false" editable="false" desc="Find real accuracy of clk_phy_pll_ref[0] in relative units" />
+    <ParamRange  id="phyPllRealAccuracyUp" name="phyPllRealAccuracyUp" group="Internal" default="`${phyPllHz + (phyPllHz * phyPllRealAccuracy)}`" min="0" max="1000000000" resolution="0.000001" visible="false" editable="false" desc="Find the maximum frequency deviation (upper limit)" />
+    <ParamRange  id="phyPllRealAccuracyLower" name="phyPllRealAccuracyLower" group="Internal" default="`${phyPllHz - (phyPllHz * phyPllRealAccuracy)}`" min="0" max="1000000000" resolution="0.000001" visible="false" editable="false" desc="Find the maximum frequency deviation (lower limit)" />
+
+    <ParamRange id="phyPllAccuracy" name="phyPllAccuracy" group="Internal" default="0.0005" min="0" max="100" resolution="0.000001" visible="`${debug}`" editable="false" desc="Expected clock accuracy in percent" />
+    <ParamRange id="phyPllAccuracy1Up" name="phyPllAccuracy1Up" group="Internal" default="`${50000000 + (50000000 * phyPllAccuracy)}`" min="0" max="1000000000" resolution="1" visible="false" editable="false" desc="Find the maximum possible frequency deviation (upper limit)" />
+    <ParamRange id="phyPllAccuracy1Lower" name="phyPllAccuracy1Lower" group="Internal" default="`${50000000 - (50000000 * phyPllAccuracy)}`" min="0" max="1000000000" resolution="1" visible="false" editable="false" desc="Find the maximum possible frequency deviation (lower limit)" />
+    <ParamRange id="phyPllAccuracy2Up" name="phyPllAccuracy2Up" group="Internal" default="`${24000000 + (24000000 * phyPllAccuracy)}`" min="0" max="1000000000" resolution="1" visible="false" editable="false" desc="Find the maximum possible frequency deviation (upper limit)" />
+    <ParamRange id="phyPllAccuracy2Lower" name="phyPllAccuracy2Lower" group="Internal" default="`${24000000 - (24000000 * phyPllAccuracy)}`" min="0" max="1000000000" resolution="1" visible="false" editable="false" desc="Find the maximum possible frequency deviation (lower limit)" />
+    <ParamBool  id="phyPllRange1" default="`${(phyPllRealAccuracyUp &lt; phyPllAccuracy1Up) &amp;&amp; (phyPllRealAccuracyLower &gt; phyPllAccuracy1Lower)}`" name="phyPllRange1" group="" visible="false" editable="false" desc=""/>
+    <ParamBool  id="phyPllRange2" default="`${(phyPllRealAccuracyUp &lt; phyPllAccuracy2Up) &amp;&amp; (phyPllRealAccuracyLower &gt; phyPllAccuracy2Lower)}`" name="phyPllRange2" group="" visible="false" editable="false" desc=""/>
+
+    <ParamString id="phyPllFreq" name="Clock real frequency" group="Connections" default="`${phyPllHz . &quot;Hz +/-&quot; . phyPllRealAccuracy * 100 . &quot;%&quot;}`" visible="`${debug}`" editable="false" desc="Real frequency of the connected clock" />
+
+    <ParamBool      id="timerEnable"        name="Enable 1ms Timer" group="Timer" desc="Set timer enabled or disabled"    default="false" visible="`${modeIsDevice}`" editable="true"  />
+
+    <ParamBool      templateId="usbCounter" id="timerEnable" default="`${getParamValue(&quot;mxs22emusb&quot;, &quot;timerEnable&quot;) &amp;&amp; getParamValue(&quot;mxs22emusb&quot;, &quot;modeIsDevice&quot;)}`" name="" group="" visible="false" editable="false" desc=""/>
+    <ParamPlacement templateId="usbCounter" name="Timer Counter" group="Timer" desc="Reserving TCPVM resource if 1ms Timer is enabled" visible="`${timerEnable}`" />
+    <ParamSignal    templateId="usbCounter" port="clock_counter_en[0]" name="Clock Signal" group="Timer/Timer Counter/Inputs" visible="`${timerEnable}`" desc="The clock input defines the operating frequency." canBeEmpty="`${!timerEnable}`" />
+    <ParamBool      templateId="usbCounter" id="inFlash" name="Store Config in Flash" group="Timer/Timer Counter/Advanced" default="false" visible="`${timerEnable}`" editable="`${timerEnable}`" desc="Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false)." />
+  </Parameters>
+
+  <DRCs>
+    <DRC type="WARNING" text="`${&quot;CLK_HF8 does not meet the requirements. The frequency must be in the range 50 MHz +/- &quot; . phyPllAccuracy * 100 . &quot; % or 24 MHz +/- &quot; . phyPllAccuracy * 100 . &quot; % or the maximum deviation in the range [&quot; . phyPllAccuracy1Lower . &quot;-&quot; . phyPllAccuracy1Up . &quot;] / [&quot; . phyPllAccuracy2Lower . &quot;-&quot; . phyPllAccuracy2Up . &quot;] Hz&quot;}`"
+        condition="`${!((phyPllRange1) || (phyPllRange2))}`"
+        location="`${phyPll}`" paramId="frequencyInfo"/>
+
+    <DRC type="ERROR" text="`${&quot;For USB operation, set CLK_HF1 to &quot; . mmioExpClkHfHz / 1000000 . &quot; MHz.&quot;}`"
+        condition="`${(!isUlpSelected) &amp;&amp; (((abs(mmioClkHfHz - mmioExpClkHfHz) / mmioClkHfHz) * 100) &gt; 1.0)}`" />
+
+    <DRC type="ERROR" text="Clock for USB must be always connected"
+        condition="`${!clkphyPllIsConnected}`" paramId="clk_phy_pll_ref[0]"/>
+
+    <DRC type="ERROR" text="Clock for USB must be always connected"
+        condition="`${!mmioClkHfIsConnected}`" paramId="mmio_clk_hf[0]"/>
+
+    <DRC type="ERROR" text="The USB can not operate in Ultra Low Power Profile"
+        condition="`${isUlpSelected}`" paramId="srss[0].power[0]"/>
+
+    <DRC type="ERROR" text="Peri 1 Memory Mapped IO APP_MMIO 3 divider must be enabled for USB operation (See Peripheral-Clocks Tab)"
+        condition="`${!peri1MemoryMappedIoAppMmio3}`" paramId="peri[1].peri_group[3]"/>
+
+    <DRC type="WARNING" text="Divider of Peri 1 Memory Mapped IO APP_MMIO 3 must be set according to the supported frequencies for USB Core: 100 MHz and 200 Mhz."
+        condition="`${selectedPwrMode ne &quot;LP&quot; &amp;&amp; !((peri1MemoryMappedIoAppMmio3DivFreq eq 100000000) || (peri1MemoryMappedIoAppMmio3DivFreq eq 200000000))}`" paramId="peri[1].peri_group[3]"/>
+
+    <DRC type="WARNING" text="Divider of Peri 1 Memory Mapped IO APP_MMIO 3 must be set according to the supported frequencies in LP mode for USB Core: greater or equal 40 Mhz."
+        condition="`${(selectedPwrMode eq &quot;LP&quot;) &amp;&amp; (peri1MemoryMappedIoAppMmio3DivFreq lt 40000000)}`" paramId="peri[1].peri_group[3]"/>
+  </DRCs>
+
+   <ConfigFirmware>
+    <ConfigInstruction purpose="INITIALIZE" value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_USBHS_PERI_NR, CY_MMIO_USBHS_GROUP_NR, CY_MMIO_USBHS_SLAVE_NR, CY_MMIO_USBHS_CLK_HF_NR);" include="true"  />
+  </ConfigFirmware>
+
+  <PersonalityTemplate id="usbCounter" valid="`${getParamValue(&quot;mxs22emusb&quot;, &quot;timerEnable&quot;) &amp;&amp; getParamValue(&quot;mxs22emusb&quot;, &quot;modeIsDevice&quot;)}`">
+    <FittingRules>
+      <MappingRules>
+        <IpBlock name="mxtcpwm_ver2" />
+        <Resource name="tcpwm\.group\.cnt"/>
+      </MappingRules>
+    </FittingRules>
+    <Parameters>
+
+      <!-- Internal -->
+      <ParamBool id="debug" name="debug" group="Internal" default="false" visible="false" editable="false" desc="" />
+      <ParamString id="instName" name="instName" group="Internal" default="emUSB_OS_Timer" visible="`${debug}`" editable="false" desc="" />
+
+      <!-- Instance Numbers -->
+      <ParamRange id="pCntGroup" name="pCntGroup" desc="pCntGroup" group="Internal"  default="`${getInstNumber(&quot;group&quot;)}`" min="0" max="3" resolution="1" visible="`${debug}`" editable="false" />
+      <ParamRange id="tcpwmInst" name="TCPWM Number" group="Internal" default="`${getInstNumber(&quot;tcpwm&quot;)}`" min="0" max="3" resolution="1" visible="`${debug}`" editable="false" desc="" />
+      <ParamRange id="cntInst" name="CNT Number" group="Internal" default="`${getInstNumber(&quot;cnt&quot;) + pCntGroup * 256}`" min="0" max="1023" resolution="1" visible="`${debug}`" editable="false" desc="" />
+
+      <!-- Interrupt -->
+      <ParamString id="InterruptSource" name="InterruptSource" desc="InterruptSource" group="Interrupt Source" default="(CY_TCPWM_INT_ON_TC &amp; 0U) | (CY_TCPWM_INT_ON_CC0) | (CY_TCPWM_INT_ON_CC1 &amp; 0U)" visible="`${debug}`" editable="false" />
+
+      <!-- Clock Frequency -->
+      <ParamString id="sourceClock" name="sourceClock" group="General" default="`${getBlockFromSignal(&quot;clock_counter_en[0]&quot;)}`" visible="`${debug}`" editable="false" desc="Source Clock Resource" />
+      <ParamRange  id="tcpwmClkHz" name="tcpwmClkHz" group="General" default="`${getExposedMember(sourceClock, &quot;frequency&quot;)}`" min="0" max="400000000" resolution="1" visible="`${debug}`" editable="false" desc="TCPWM clock frequency in Hz" />
+
+      <!-- Internal -->
+      <ParamString id="pclk" name="PCLK" group="Internal" default="`${getBlockFromSignal(&quot;clock_counter_en[0]&quot;)}`" visible="`${debug}`" editable="false" desc="Connected peripheral clock divider (PCLK)" />
+      <ParamBool id="pclkOk" name="PCLK Valid" group="Internal" default="`${hasConnection(&quot;clock_counter_en&quot;, 0) &amp;&amp; isBlockUsed(pclk)}`" visible="`${debug}`" editable="false" desc="Checks whether there is a PCLK connected and enabled" />
+      <ParamString id="pclkDst" name="PCLK Destination" group="Internal" default="`${&quot;PCLK_TCPWM&quot; . tcpwmInst . &quot;_CLOCK_COUNTER_EN&quot; . cntInst}`" visible="`${debug}`" editable="false" desc="" />
+
+    </Parameters>
+
+    <ConfigFirmware>
+      <ConfigInclude value="cy_tcpwm_counter.h" include="true" />
+      <ConfigInclude value="cy_sysclk.h" include="`${pclkOk}`" />
+      <ConfigInclude value="cycfg_routing.h" include="true" />
+      <ConfigInclude value="mtb_hal.h" include="true" guard="defined (COMPONENT_MTB_HAL)" />
+
+      <ConfigDefine name="`${instName}`_HW" value="TCPWM`${tcpwmInst}`" public="true" include="true" />
+      <ConfigDefine name="`${instName}`_NUM" value="`${cntInst}`UL" public="true" include="true" />
+      <ConfigDefine name="`${instName}`_IRQ" value="tcpwm_`${tcpwmInst}`_interrupts_`${cntInst}`_IRQn" public="true" include="true" />
+      <ConfigDefine name="`${instName}`_INPUT_DISABLED" value="0x7U" public="false" include="true" />
+      <ConfigStruct name="`${instName . &quot;_config&quot;}`" type="cy_stc_tcpwm_counter_config_t" const="`${inFlash}`" public="true" include="true" >
+        <Member name="period" value="`${(tcpwmClkHz / 1000) - 1 }`" />
+        <Member name="clockPrescaler" value="CY_TCPWM_COUNTER_PRESCALER_DIVBY_1" />
+        <Member name="runMode" value="CY_TCPWM_COUNTER_CONTINUOUS" />
+        <Member name="countDirection" value="CY_TCPWM_COUNTER_COUNT_UP" />
+        <Member name="compareOrCapture" value="CY_TCPWM_COUNTER_MODE_CAPTURE" />
+        <Member name="compare0" value="16384U" />
+        <Member name="compare1" value="16384U" />
+        <Member name="enableCompareSwap" value="false" />
+        <Member name="interruptSources" value="`${InterruptSource}`" />
+        <Member name="captureInputMode" value="`${instName . &quot;_INPUT_DISABLED &amp; 0x3U&quot;}`" />
+        <Member name="captureInput" value="CY_TCPWM_INPUT_0" />
+        <Member name="reloadInputMode" value="`${instName . &quot;_INPUT_DISABLED &amp; 0x3U&quot;}`" />
+        <Member name="reloadInput" value="CY_TCPWM_INPUT_0" />
+        <Member name="startInputMode" value="`${instName . &quot;_INPUT_DISABLED &amp; 0x3U&quot;}`" />
+        <Member name="startInput" value="CY_TCPWM_INPUT_0" />
+        <Member name="stopInputMode" value="`${instName . &quot;_INPUT_DISABLED &amp; 0x3U&quot;}`" />
+        <Member name="stopInput" value="CY_TCPWM_INPUT_0" />
+        <Member name="countInputMode" value="`${instName . &quot;_INPUT_DISABLED &amp; 0x3U&quot;}`" />
+        <Member name="countInput" value="CY_TCPWM_INPUT_1" />
+        <Member name="capture1InputMode" value="`${instName . &quot;_INPUT_DISABLED &amp; 0x3U&quot;}`" />
+        <Member name="capture1Input" value="CY_TCPWM_INPUT_0" />
+        <Member name="compare2" value="CY_TCPWM_GRP_CNT_CC0_DEFAULT" />
+        <Member name="compare3" value="CY_TCPWM_GRP_CNT_CC0_BUFF_DEFAULT" />
+        <Member name="enableCompare1Swap" value="false" />
+        <Member name="trigger0Event" value="CY_TCPWM_CNT_TRIGGER_ON_DISABLED" />
+        <Member name="trigger1Event" value="CY_TCPWM_CNT_TRIGGER_ON_DISABLED" />
+      </ConfigStruct>
+
+      <ConfigStruct name="`${instName}`_clock_ref" type="mtb_hal_peri_div_t" const="`${inFlash}`" public="true" include="true" guard="defined (COMPONENT_MTB_HAL)">
+        <Member name="clk_dst" value="(en_clk_dst_t)`${pclkDst}`" />
+        <Member name="div_type" value="`${getExposedMember(sourceClock, &quot;type&quot;)}`" />
+        <Member name="div_num" value="`${getExposedMember(sourceClock, &quot;number&quot;)}`" />
+      </ConfigStruct>
+
+      <ConfigStruct name="`${instName}`_hal_clock" type="mtb_hal_clock_t" const="`${inFlash}`" public="true" include="true" guard="defined (COMPONENT_MTB_HAL)">
+        <Member name="clock_ref" value="&amp;`${instName}`_clock_ref" />
+        <Member name="interface" value="&amp;mtb_hal_clock_peri_interface" />
+      </ConfigStruct>
+
+      <ConfigStruct name="`${instName}`_hal_config" type="mtb_hal_timer_configurator_t" const="`${inFlash}`" public="true" include="true" guard="defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_TIMER)">
+        <Member name="tcpwm_base" value="`${instName}`_HW" />
+        <Member name="clock" value="&amp;`${instName}`_hal_clock" />
+        <Member name="tcpwm_cntnum" value="`${getInstNumber(&quot;cnt&quot;)}`U" />
+      </ConfigStruct>
+
+      <ConfigInstruction purpose="INITIALIZE" value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_TCPWM`${tcpwmInst}`_PERI_NR, CY_MMIO_TCPWM`${tcpwmInst}`_GROUP_NR, CY_MMIO_TCPWM`${tcpwmInst}`_SLAVE_NR, CY_MMIO_TCPWM`${tcpwmInst}`_CLK_HF_NR);" include="true" guard="defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)" />
+      <ConfigInstruction purpose="INITIALIZE" value="Cy_SysClk_PeriphAssignDivider(`${pclkDst}`, `${getExposedMember(pclk, &quot;clockSel&quot;)}`);" include="`${pclkOk}`"  />
+    </ConfigFirmware>
+  </PersonalityTemplate>
+
+</PersonalityTemplate>

@@ -24,15 +24,18 @@
 
 MCN_DECLARE(control_output);
 MCN_DECLARE(rc_trim_channels);
+MCN_DECLARE(mav_actuator_control);
 
 enum {
-    ACTUATOR_FROM_CONTROL_OUT,
-    ACTUATOR_FROM_RC_CHANNELS,
+    ACTUATOR_FROM_CONTROLLER,
+    ACTUATOR_FROM_RC_CHANNEL,
+    ACTUATOR_FROM_MAVLINK,
     ACTUATOR_FROM_UNKNOWN
 };
 
-static McnNode_t _control_out_nod;
-static McnNode_t _rc_channels_nod;
+static McnNode_t control_out_nod;
+static McnNode_t rc_channels_nod;
+static McnNode_t mav_actuator_control_nod;
 static uint8_t* from_dev;
 static rt_device_t* to_dev;
 static uint8_t mapping_num;
@@ -83,6 +86,7 @@ fmt_err_t send_actuator_cmd(void)
     int i, j;
     bool has_poll_control_out = false;
     bool has_poll_rc_channels = false;
+    bool has_poll_mavlink = false;
     Control_Out_Bus control_out;
     int16_t rc_channel[16];
     uint16_t chan_val[16] = { 0 };
@@ -91,13 +95,13 @@ fmt_err_t send_actuator_cmd(void)
         rt_size_t size = mapping_list[i].map_size;
         uint16_t chan_sel = 0;
 
-        if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
+        if (from_dev[i] == ACTUATOR_FROM_CONTROLLER) {
             if (has_poll_control_out == false) {
-                if (mcn_poll(_control_out_nod) == false) {
+                if (mcn_poll(control_out_nod) == false) {
                     /* no control_out topic updated, continue for next mapping */
                     continue;
                 }
-                mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
+                mcn_copy(MCN_HUB(control_output), control_out_nod, &control_out);
                 has_poll_control_out = true;
             }
 
@@ -107,13 +111,13 @@ fmt_err_t send_actuator_cmd(void)
                 /* set channel value according to from mapping */
                 chan_val[j] = control_out.actuator_cmd[mapping_list[i].from_map[j] - 1];
             }
-        } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
+        } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNEL) {
             if (has_poll_rc_channels == false) {
-                if (mcn_poll(_rc_channels_nod) == 0) {
+                if (mcn_poll(rc_channels_nod) == false) {
                     /* no rc_channels topic updated, continue for next mapping */
                     continue;
                 }
-                mcn_copy(MCN_HUB(rc_trim_channels), _rc_channels_nod, &rc_channel);
+                mcn_copy(MCN_HUB(rc_trim_channels), rc_channels_nod, &rc_channel);
                 has_poll_rc_channels = true;
             }
 
@@ -123,6 +127,22 @@ fmt_err_t send_actuator_cmd(void)
                 /* set channel value according to from mapping */
                 chan_val[j] = rc_channel[mapping_list[i].from_map[j] - 1];
             }
+        } else if (from_dev[i] == ACTUATOR_FROM_MAVLINK) {
+            if (has_poll_mavlink == false) {
+                if (mcn_poll(mav_actuator_control_nod) == false) {
+                    /* no mav_actuator_control topic updated, continue for next mapping */
+                    continue;
+                }
+                mcn_copy(MCN_HUB(mav_actuator_control), mav_actuator_control_nod, &control_out);
+                has_poll_mavlink = true;
+            }
+
+            for (j = 0; j < mapping_list[i].map_size; j++) {
+                /* set channel select according to mapping */
+                chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
+                /* set channel value according to from mapping */
+                chan_val[j] = control_out.actuator_cmd[mapping_list[i].from_map[j] - 1];
+            }
         } else {
             /* to avoid warning */
             (void)size;
@@ -131,7 +151,7 @@ fmt_err_t send_actuator_cmd(void)
             continue;
         }
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
+#if defined(FMT_SIM_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
         /* write actuator command */
         if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
             err = FMT_ERROR;
@@ -148,13 +168,18 @@ fmt_err_t send_actuator_cmd(void)
 
 fmt_err_t actuator_init(void)
 {
-    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL);
-    if (_control_out_nod == NULL) {
+    control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL);
+    if (control_out_nod == NULL) {
         return FMT_ERROR;
     }
 
-    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_trim_channels), NULL);
-    if (_rc_channels_nod == NULL) {
+    rc_channels_nod = mcn_subscribe(MCN_HUB(rc_trim_channels), NULL);
+    if (rc_channels_nod == NULL) {
+        return FMT_ERROR;
+    }
+
+    mav_actuator_control_nod = mcn_subscribe(MCN_HUB(mav_actuator_control), NULL);
+    if (mav_actuator_control_nod == NULL) {
         return FMT_ERROR;
     }
 
@@ -171,9 +196,11 @@ fmt_err_t actuator_init(void)
 
     for (int i = 0; i < mapping_num; i++) {
         if (strcmp(mapping_list[i].from, "control_out") == 0) {
-            from_dev[i] = ACTUATOR_FROM_CONTROL_OUT;
+            from_dev[i] = ACTUATOR_FROM_CONTROLLER;
         } else if (strcmp(mapping_list[i].from, "rc_channels") == 0) {
-            from_dev[i] = ACTUATOR_FROM_RC_CHANNELS;
+            from_dev[i] = ACTUATOR_FROM_RC_CHANNEL;
+        } else if (strcmp(mapping_list[i].from, "mav_actuator_control") == 0) {
+            from_dev[i] = ACTUATOR_FROM_MAVLINK;
         } else {
             from_dev[i] = ACTUATOR_FROM_UNKNOWN;
         }

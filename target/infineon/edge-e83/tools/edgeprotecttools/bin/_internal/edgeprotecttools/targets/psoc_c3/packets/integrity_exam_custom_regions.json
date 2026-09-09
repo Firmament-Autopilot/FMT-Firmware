@@ -1,0 +1,10 @@
+{
+  "regions": [
+    {
+      "description": "OEM_HASH",
+      "region": [["0x13400A00", "372"]],
+      "hash": "BC875829BC0153210B8E24DF8B3F7AEBC26B54949BF32E30EC16027C950A124C",
+      "enabled": true
+    }
+  ]
+}

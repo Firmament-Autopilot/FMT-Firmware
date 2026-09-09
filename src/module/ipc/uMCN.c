@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 #include <string.h>
+
+#include "module/ipc/uMCN.h"
 
 static McnList __mcn_list = { .hub = NULL, .next = NULL };
 static struct rt_timer timer_mcn_freq_est;

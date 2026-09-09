@@ -1,0 +1,33 @@
+{
+    "schema-version": 1.0,
+    "content":
+    [
+        {
+            "name": "metadata_proj_cm33_s",
+            "enabled" : true,
+            "commands" : 
+            [
+                {
+                    "command" : "sign",
+                    "inputs" :
+                    [
+                        {
+                            "file" : "build/rtthread.hex",
+                            "header-size": "0x400",
+                            "fill-value" : "0xff",
+                            "slot-size" : "0x240000",
+                            "hex-address" : "0x70100000"
+                        }
+                    ],
+                    "outputs": 
+                    [
+                        {
+                            "file" : "build/sign_rtthread.hex",
+                            "format": "ihex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_adc_mux-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* SAR ADC MUX channels personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_adc_mux_channel' name='SAR ADC MUX Channel' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <PhysicalResource ipblock='mxs22lppass' version='1'>
+    <PhysicalResource type='sar'>
+      <VirtualResourceDefinition type='muxchan'
+                                 display_name='MUX Channel $idx'
+                                 display_path='$display_path{1}/$display_name{1}/MUX Channels'
+                                 display_mode='DYNAMIC'
+                                 count='16'/>
+    </PhysicalResource>
+  </PhysicalResource>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.sar\.muxchan'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='sar_mux_pseudoDiffMode'               paramId='pseudoDiffMode' />
+    <ExposedMember key='sar_mux_nonInvPin'                    paramId='sar_mux_nonInvPin' />
+    <ExposedMember key='sar_mux_invPin'                       paramId='sar_mux_invPin' />
+    <ExposedMember key='sar_mux_resultFormat'                 paramId='sar_mux_resultFormat' />
+    <ExposedMember key='sar_mux_nonInvertingInputCoefficient' paramId='sar_mux_nonInvertingInputCoefficient' />
+    <ExposedMember key='sar_mux_bypassBuffers'                paramId='sar_mux_bypassBuffers' />
+    <ExposedMember key='sar_mux_accumulationShift'            paramId='sar_mux_accumulationShift' />
+    <ExposedMember key='sar_mux_invertingInputCoefficient'    paramId='sar_mux_invertingInputCoefficient' />
+    <ExposedMember key='sar_mux_limitDetectionSelect'         paramId='sar_mux_limitDetectionSelect' />
+    <ExposedMember key='sar_mux_fifoSelect'                   paramId='sar_mux_fifoSelect' />
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "]"}`'/>
+
+    <ParamString id='resource_fifo'
+                 name='resource_fifo'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].fifo[0]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='operatingMode' name='operatingMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_ac, "opMode")}`'/>
+    <ParamString id='diffMode' name='diffMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_differentialMode")}`'/>
+    <ParamString id='accMode' name='accMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_accumulationMode")}`'/>
+    <ParamString id='accShiftMode' name='accShiftMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_accumulationShiftMode")}`'/>
+    <ParamString id='limitDetection' name='limitDetection' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_limitDetection")}`'/>
+    <ParamString id='offsetAndGainCorrection' name='offsetAndGainCorrection' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_offsetAndGainCorrection")}`'/>
+    <ParamString id='fifoCount' name='fifoCount' group='Internal' visible='false' desc='' editable='false' default='`${(isBlockUsed(resource_fifo) ? getExposedMember(resource_fifo, "numFifos") : 0)}`'/>
+    <ParamString id='allowBufferBypass' name='allowBufferBypass' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_allowBufferBypass")}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false'
+                 default='MUX Channel Configuration'/>
+
+    <ParamBool id='pseudoDiffMode'
+               name='Pseudo-Differential Enable'
+               group='`${rootGroupName}`'
+               visible='`${(operatingMode eq "HighSpeed")}`'
+               editable='`${(operatingMode eq "HighSpeed")}`'
+               desc='Enable Pseudo-Differential Conversions'
+               default='`${(operatingMode eq "HighSpeed")}`'/>
+
+    <ParamChoice id='sar_mux_nonInvPin'
+                 name='Non-Inverting Mux Input'
+                 group='`${rootGroupName}`'
+                 visible='true'
+                 editable='true'
+                 desc='Non-Inverting Input of the Mux channel. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                                        default='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1'>
+      <Entry name='CTB0 Pin 1'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1'    visible='`${getExposedMember("pass[0]", "ctb0_pin1")}`'/>
+      <Entry name='CTB0 Pin 4'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN4'    visible='`${getExposedMember("pass[0]", "ctb0_pin4")}`'/>
+      <Entry name='CTB0 Pin 6'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN6'    visible='`${getExposedMember("pass[0]", "ctb0_pin6")}`'/>
+      <Entry name='CTB0 Pin 7'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN7'    visible='`${getExposedMember("pass[0]", "ctb0_pin7")}`'/>
+      <Entry name='CTB1 Pin 1'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN1'    visible='`${getExposedMember("pass[0]", "ctb1_pin1")}`'/>
+      <Entry name='CTB1 Pin 4'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN4'    visible='`${getExposedMember("pass[0]", "ctb1_pin4")}`'/>
+      <Entry name='CTB1 Pin 6'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN6'    visible='`${getExposedMember("pass[0]", "ctb1_pin6")}`'/>
+      <Entry name='CTB1 Pin 7'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN7'    visible='`${getExposedMember("pass[0]", "ctb1_pin7")}`'/>
+      <Entry name='CTB0 Opamp 0 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+      <Entry name='CTB0 Opamp 1 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+      <Entry name='CTB1 Opamp 0 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+      <Entry name='CTB1 Opamp 1 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+      <Entry name='DAC0'                  value='CY_AUTANALOG_SAR_PIN_MUX_DAC0'         visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+      <Entry name='DAC1'                  value='CY_AUTANALOG_SAR_PIN_MUX_DAC1'         visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+      <Entry name='Temp Sensor +'         value='CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR'  visible='true'/>
+      <Entry name='SAR / PTComp Pin $idx' value='CY_AUTANALOG_SAR_PIN_MUX_GPIO$idx'     visible='`${getExposedMember("pass[0]", "ptc_pin$idx")}`' repeatCount='8' />
+      <Entry name='VSSA'                  value='CY_AUTANALOG_SAR_PIN_MUX_VSSA'         visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='sar_mux_invPin'
+                 name='Inverting Mux Input'
+                 group='`${rootGroupName}`'
+                 visible='`${(operatingMode eq "HighSpeed") ? (pseudoDiffMode) : (diffMode)}`'
+                 editable='true'
+                 desc='Inverting Input of the Mux channel. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                                        default='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1'>
+      <Entry name='CTB0 Pin 1'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN1'    visible='`${getExposedMember("pass[0]", "ctb0_pin1")}`'/>
+      <Entry name='CTB0 Pin 4'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN4'    visible='`${getExposedMember("pass[0]", "ctb0_pin4")}`'/>
+      <Entry name='CTB0 Pin 6'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN6'    visible='`${getExposedMember("pass[0]", "ctb0_pin6")}`'/>
+      <Entry name='CTB0 Pin 7'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_PIN7'    visible='`${getExposedMember("pass[0]", "ctb0_pin7")}`'/>
+      <Entry name='CTB1 Pin 1'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN1'    visible='`${getExposedMember("pass[0]", "ctb1_pin1")}`'/>
+      <Entry name='CTB1 Pin 4'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN4'    visible='`${getExposedMember("pass[0]", "ctb1_pin4")}`'/>
+      <Entry name='CTB1 Pin 6'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN6'    visible='`${getExposedMember("pass[0]", "ctb1_pin6")}`'/>
+      <Entry name='CTB1 Pin 7'            value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_PIN7'    visible='`${getExposedMember("pass[0]", "ctb1_pin7")}`'/>
+      <Entry name='CTB0 Opamp 0 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA0_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+      <Entry name='CTB0 Opamp 1 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB0_OA1_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+      <Entry name='CTB1 Opamp 0 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA0_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+      <Entry name='CTB1 Opamp 1 Out'      value='CY_AUTANALOG_SAR_PIN_MUX_CTB1_OA1_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+      <Entry name='DAC0'                  value='CY_AUTANALOG_SAR_PIN_MUX_DAC0'         visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+      <Entry name='DAC1'                  value='CY_AUTANALOG_SAR_PIN_MUX_DAC1'         visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+      <Entry name='Temp Sensor -'         value='CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR'  visible='true'/>
+      <Entry name='SAR / PTComp Pin $idx' value='CY_AUTANALOG_SAR_PIN_MUX_GPIO$idx'     visible='`${getExposedMember("pass[0]", "ptc_pin$idx")}`' repeatCount='8' />
+      <Entry name='VSSA'                  value='CY_AUTANALOG_SAR_PIN_MUX_VSSA'         visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='sar_mux_bypassBuffers'
+               name='Bypass Buffers'
+               group='`${rootGroupName}`'
+               visible='`${allowBufferBypass}`'
+               editable='true'
+               desc='Bypass the ADC&apos;s Input Buffers and directly connect the inputs to the ADC'
+               default='false'/>
+
+    <ParamChoice id='sar_mux_resultFormat'
+                 name='Result Format'
+                 group='`${rootGroupName}`'
+                 visible='true'
+                 editable='`${!(sar_mux_nonInvPin eq CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR &amp;&amp; sar_mux_invPin eq CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR)}`'
+                 desc='Unsigned or two&apos;s complement (signed) mode'
+                 default='`${(sar_mux_nonInvPin eq CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR &amp;&amp; sar_mux_invPin eq CY_AUTANALOG_SAR_PIN_MUX_TEMP_SENSOR) ? true : false}`'>
+      <Entry name='Unsigned' value='false' visible='true'/>
+      <Entry name='Signed'   value='true'  visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='sar_mux_accumulationShift'
+               name='Accumulation Shift'
+               group='`${rootGroupName}`'
+               visible='`${(accMode ne "CY_AUTANALOG_SAR_ACC_DISABLED")}`'
+               editable='true'
+               desc='Enable shifting the accumulated result to `${(accShiftMode) ? "16" : "12"}`-bit resolution.'
+               default='false'/>
+
+    <ParamChoice id='sar_mux_limitDetectionSelect'
+                 name='Limit Detection Select'
+                 group='`${rootGroupName}`'
+                 visible='`${(limitDetection)}`'
+                 editable='true'
+                 desc='Select the limit condition and thresholds to generate trigger/interrupt'
+                                    default='CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED'>
+      <Entry name='Disabled'          value='CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED' visible='true'/>
+      <Entry name='Limit Detect $idx' value='CY_AUTANALOG_SAR_LIMIT_STATUS_STC$idx'  visible='true' repeatCount='4'/>
+    </ParamChoice>
+
+    <ParamString id='muxDataLimitDetectionChoice'
+                 name='muxDataLimitDetectionChoice'
+                 group='Internal'
+                 desc=''
+                 visible='false'
+                 editable='false'
+                 default='`${sar_mux_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC0 ? 0 :
+                             sar_mux_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC1 ? 1 :
+                             sar_mux_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC2 ? 2 :
+                             sar_mux_limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC3 ? 3 : -1}`'/>
+
+    <ParamString id='muxDataLimitDetectionRangeCondition'
+                 name='muxDataLimitDetectionRangeCondition'
+                 group='Internal'
+                 visible='false'
+                 editable='false'
+                 desc=''
+                 default='`${getExposedMember(resource_sar, "sar_limitCondition" . muxDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='muxDataLimitDetectionLowerThreshold'
+                name='muxDataLimitDetectionLowerThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc=''
+                default='`${getExposedMember(resource_sar, "sar_lowerThreshold" . muxDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='muxDataLimitDetectionUpperThreshold'
+                name='muxDataLimitDetectionUpperThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc=''
+                default='`${getExposedMember(resource_sar, "sar_upperThreshold" . muxDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='muxDataLimitDetectionRangeCondition_Info'
+                 name='Limit Condition'
+                 group='`${rootGroupName}`'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${limitDetection &amp;&amp; sar_mux_limitDetectionSelect ne CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED}`'
+                 editable='false'
+                 default='`${(muxDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_BELOW") ? "ADC Data &lt; " . muxDataLimitDetectionLowerThreshold . "" :
+                             (muxDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_ABOVE") ? "ADC Data &gt; " . muxDataLimitDetectionUpperThreshold . "" :
+                             (muxDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_INSIDE") ? "" . muxDataLimitDetectionLowerThreshold . " &lt;= ADC Data &lt; " . muxDataLimitDetectionUpperThreshold . "" :
+                             (muxDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_OUTSIDE") ? "ADC Data &lt; " . muxDataLimitDetectionLowerThreshold . " or ADC Data &gt;= " . muxDataLimitDetectionUpperThreshold . "" :
+                             "N/A"}`'/>
+
+    <ParamChoice id='sar_mux_fifoSelect'
+                 name='FIFO Select'
+                 group='`${rootGroupName}`'
+                 visible='`${isBlockUsed(resource_fifo)}`'
+                 editable='`${isBlockUsed(resource_fifo)}`'
+                 desc=''
+                 default='CY_AUTANALOG_FIFO_DISABLED'>
+      <Entry name='Disabled' value='CY_AUTANALOG_FIFO_DISABLED' visible='true'/>
+      <Entry name='FIFO $idx'
+             value='CY_AUTANALOG_FIFO_SELECT$idx'
+             visible='`${($idx &lt; fifoCount)}`' repeatCount='8'/>
+    </ParamChoice>
+
+    <ParamChoice id='sar_mux_nonInvertingInputCoefficient'
+                 name='Non-Inverting Input Coefficient'
+                 group='`${rootGroupName}`'
+                 visible='`${(offsetAndGainCorrection)}`'
+                 editable='true'
+                 desc='Gain and Offset Correction Coefficients of the Non-Inverting Input'
+                                   default='CY_AUTANALOG_SAR_CH_COEFF_DISABLED'>
+      <Entry name='Disabled'         value='CY_AUTANALOG_SAR_CH_COEFF_DISABLED' visible='true'/>
+      <Entry name='Coefficient $idx' value='CY_AUTANALOG_SAR_CH_COEFF$idx'      visible='true' repeatCount='8'/>
+    </ParamChoice>
+
+    <ParamChoice id='sar_mux_invertingInputCoefficient'
+                 name='Inverting Input Coefficient'
+                 group='`${rootGroupName}`'
+                 visible='`${offsetAndGainCorrection &amp;&amp; (diffMode || pseudoDiffMode)}`'
+                 editable='true'
+                 desc='Gain and Offset Correction Coefficients of the Inverting Input'
+                                   default='CY_AUTANALOG_SAR_CH_COEFF_DISABLED'>
+      <Entry name='Disabled'         value='CY_AUTANALOG_SAR_CH_COEFF_DISABLED' visible='true'/>
+      <Entry name='Coefficient $idx' value='CY_AUTANALOG_SAR_CH_COEFF$idx'      visible='true' repeatCount='8'/>
+    </ParamChoice>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure a parent resource for ADC MUX Channels.' condition='`${!isBlockUsed(resource_sar)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_sar}`' value='lppass_adc-1.0' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware/>
+</PersonalityTemplate>

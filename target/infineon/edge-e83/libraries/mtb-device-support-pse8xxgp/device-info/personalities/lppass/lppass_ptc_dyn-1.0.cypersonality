@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_ptc_dyn-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* PTComp dynamic configuration personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2024-2025 Cypress Semiconductor Corporation (an Infineon company)
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_ptc_dynamic' name='PTComp Dynamic' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <PhysicalResource ipblock='mxs22lppass' version='1'>
+    <PhysicalResource type='ptc'>
+      <VirtualResourceDefinition type='ptc_dynamic'
+                                 display_name='Dynamic Configuration $idx{0}'
+                                 display_path='$display_path{1}/$display_name{1}'
+                                 display_mode='DYNAMIC'
+                                 count='8'/>
+    </PhysicalResource>
+  </PhysicalResource>
+
+  <FittingRules>
+    <MappingRules>
+    <IpBlock name='mxs22lppass' />
+    <Resource name='pass\.ptc\.ptc_dynamic'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='ptc_dyn_compNonInvInpMux' paramId='dyn_compNonInvInpMux' />
+    <ExposedMember key='ptc_dyn_compInvInpMux' paramId='dyn_compInvInpMux' />
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool id='debug' name='debug' group='Internal' default='false' visible='false' editable='true' desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='passInstNum' name='' group='Internal' default='`${getInstNumber("pass")}`' visible='`${debug}`' editable='false' desc='' />
+    <ParamString id='ptcInstNum' name='' group='Internal' default='`${getInstNumber("ptc")}`' visible='`${debug}`' editable='false' desc='' />
+
+<!-- LPPASS resources -->
+     <ParamString id='resource_ptc'
+                 name='resource_ptc'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . passInstNum . "].ptc[" . ptcInstNum . "]"}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamBool id='isBlockUsedPrb' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${isBlockUsed("pass[" . passInstNum . "].prb[0]")}`'/>
+
+    <ParamBool id='isBlockUsedPtc' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${isBlockUsed("pass[" . passInstNum . "].ptc[0]")}`'/>
+
+    <ParamBool id='isBlockUsedSar' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${isBlockUsed("pass[" . passInstNum . "].sar[0]")}`'/>
+
+    <Repeat count='2'>
+      <ParamBool id='isBlockUsedCtb$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${isBlockUsed("pass[" . passInstNum . "].ctb[$idx]")}`'/>
+
+      <ParamBool id='isBlockUsedCtb0Oa$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${isBlockUsed("pass[" . passInstNum . "].ctb[0].oa[$idx]")}`'/>
+
+      <ParamBool id='isBlockUsedCtb1Oa$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${isBlockUsed("pass[" . passInstNum . "].ctb[1].oa[$idx]")}`'/>
+
+      <ParamString id='powerCtb0Oa$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${getExposedMember("pass[" . passInstNum . "].ctb[0].oa[$idx]", "power")}`'/>
+
+      <ParamString id='powerCtb1Oa$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${getExposedMember("pass[" . passInstNum . "].ctb[1].oa[$idx]", "power")}`'/>
+
+      <ParamString id='topologyCtb0Oa$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${getExposedMember("pass[" . passInstNum . "].ctb[0].oa[$idx]", "topology")}`'/>
+
+      <ParamString id='topologyCtb1Oa$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${getExposedMember("pass[" . passInstNum . "].ctb[1].oa[$idx]", "topology")}`'/>
+
+      <ParamString id='prbOut$idxEnable' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${getExposedMember("pass[" . passInstNum . "].prb[0]", "prbOut$idxEnable")}`'/>
+
+      <ParamString id='ptc_sta_comp$idxPower' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${getExposedMember("pass[" . passInstNum . "].ptc[0]", "ptc_sta_comp$idxPower")}`'/>
+
+      <ParamBool id='isBlockUsedDac$idx' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                  default='`${isBlockUsed("pass[" . passInstNum . "].dac[$idx]")}`'/>
+    </Repeat>
+
+    <ParamBool id='ptc_sta_compIsOn' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                default='`${isBlockUsedPtc &amp;&amp; (ptc_sta_comp0Power ne "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF" || ptc_sta_comp1Power ne "CY_AUTANALOG_PTCOMP_COMP_PWR_OFF")}`'/>
+
+    <ParamChoice id='dyn_compNonInvInpMux'
+                   name='Non-Inverting Input Mux'
+                   group='Comparator 0 \ 1'
+                   visible='`${ptc_sta_compIsOn}`'
+                   editable='true'
+                   desc='Connects the Non-Inverting Input to a pin using the Mux. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                   default='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN1'>
+        <Entry name='CTB0 Pin 1'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN1'    visible='`${getExposedMember("pass[0]", "ctb0_pin1")}`'/>
+        <Entry name='CTB0 Pin 4'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN4'    visible='`${getExposedMember("pass[0]", "ctb0_pin4")}`'/>
+        <Entry name='CTB0 Pin 6'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN6'    visible='`${getExposedMember("pass[0]", "ctb0_pin6")}`'/>
+        <Entry name='CTB0 Pin 7'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN7'    visible='`${getExposedMember("pass[0]", "ctb0_pin7")}`'/>
+        <Entry name='CTB1 Pin 1'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN1'    visible='`${getExposedMember("pass[0]", "ctb1_pin1")}`'/>
+        <Entry name='CTB1 Pin 4'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN4'    visible='`${getExposedMember("pass[0]", "ctb1_pin4")}`'/>
+        <Entry name='CTB1 Pin 6'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN6'    visible='`${getExposedMember("pass[0]", "ctb1_pin6")}`'/>
+        <Entry name='CTB1 Pin 7'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN7'    visible='`${getExposedMember("pass[0]", "ctb1_pin7")}`'/>
+        <Entry name='CTB0 Opamp 0 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB0_OA0_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+        <Entry name='CTB0 Opamp 1 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB0_OA1_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+        <Entry name='CTB1 Opamp 0 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB1_OA0_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+        <Entry name='CTB1 Opamp 1 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB1_OA1_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+        <Entry name='DAC0'                    value='CY_AUTANALOG_PTCOMP_COMP_DAC0'         visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC1'                    value='CY_AUTANALOG_PTCOMP_COMP_DAC1'         visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='PRB OUT0'                value='CY_AUTANALOG_PTCOMP_COMP_PRB_OUT0'     visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+        <Entry name='PRB OUT1'                value='CY_AUTANALOG_PTCOMP_COMP_PRB_OUT1'     visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+        <Entry name='SAR / PTComp Pin $idx'   value='CY_AUTANALOG_PTCOMP_COMP_GPIO$idx'     visible='`${getExposedMember("pass[0]", "ptc_pin$idx")}`' repeatCount='8' />
+      </ParamChoice>
+
+      <ParamChoice id='dyn_compInvInpMux'
+                   name='Inverting Input Mux'
+                   group='Comparator 0 \ 1'
+                   visible='`${ptc_sta_compIsOn}`'
+                   editable='true'
+                   desc='Connects the Inverting Input to a pin using the Mux. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                   default='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN1'>
+        <Entry name='CTB0 Pin 1'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN1'    visible='`${getExposedMember("pass[0]", "ctb0_pin1")}`'/>
+        <Entry name='CTB0 Pin 4'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN4'    visible='`${getExposedMember("pass[0]", "ctb0_pin4")}`'/>
+        <Entry name='CTB0 Pin 6'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN6'    visible='`${getExposedMember("pass[0]", "ctb0_pin6")}`'/>
+        <Entry name='CTB0 Pin 7'              value='CY_AUTANALOG_PTCOMP_COMP_CTB0_PIN7'    visible='`${getExposedMember("pass[0]", "ctb0_pin7")}`'/>
+        <Entry name='CTB1 Pin 1'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN1'    visible='`${getExposedMember("pass[0]", "ctb1_pin1")}`'/>
+        <Entry name='CTB1 Pin 4'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN4'    visible='`${getExposedMember("pass[0]", "ctb1_pin4")}`'/>
+        <Entry name='CTB1 Pin 6'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN6'    visible='`${getExposedMember("pass[0]", "ctb1_pin6")}`'/>
+        <Entry name='CTB1 Pin 7'              value='CY_AUTANALOG_PTCOMP_COMP_CTB1_PIN7'    visible='`${getExposedMember("pass[0]", "ctb1_pin7")}`'/>
+        <Entry name='CTB0 Opamp 0 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB0_OA0_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+        <Entry name='CTB0 Opamp 1 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB0_OA1_OUT' visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+        <Entry name='CTB1 Opamp 0 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB1_OA0_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+        <Entry name='CTB1 Opamp 1 Out'        value='CY_AUTANALOG_PTCOMP_COMP_CTB1_OA1_OUT' visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+        <Entry name='DAC0'                    value='CY_AUTANALOG_PTCOMP_COMP_DAC0'         visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC1'                    value='CY_AUTANALOG_PTCOMP_COMP_DAC1'         visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='PRB OUT0'                value='CY_AUTANALOG_PTCOMP_COMP_PRB_OUT0'     visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+        <Entry name='PRB OUT1'                value='CY_AUTANALOG_PTCOMP_COMP_PRB_OUT1'     visible='`${hasBlock("pass[0].prb[0]") &amp;&amp; isBlockUsed("pass[0].prb[0]")}`'/>
+        <Entry name='SAR / PTComp Pin $idx'   value='CY_AUTANALOG_PTCOMP_COMP_GPIO$idx'     visible='`${getExposedMember("pass[0]", "ptc_pin$idx")}`' repeatCount='8' />
+      </ParamChoice>
+
+  </Parameters>
+
+  <DRCs>
+      <DRC type='ERROR' text='Enable the CTB 0 Opamp $idx Out to use it as Input for Non-Inverting Input Mux.' condition='`${!(isBlockUsedCtb0 &amp;&amp; isBlockUsedCtb0Oa$idx) &amp;&amp; (dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB0_OA$idx_OUT)}`' repeatCount='2' />
+      <DRC type='ERROR' text='Enable the CTB 1 Opamp $idx Out to use it as Input for Non-Inverting Input Mux.' condition='`${!(isBlockUsedCtb1 &amp;&amp; isBlockUsedCtb1Oa$idx) &amp;&amp; (dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB1_OA$idx_OUT)}`' repeatCount='2' />
+      <DRC type='ERROR' text='Enable the DAC $idx to use it as Input for Non-Inverting Input Mux.' condition='`${!(isBlockUsedDac$idx) &amp;&amp; (dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_DAC$idx)}`' repeatCount='2' />
+      <DRC type='ERROR' text='Enable PRB and enable Output 0 to use it as Input for Non-Inverting Input Mux.' condition='`${!(isBlockUsedPrb &amp;&amp; prbOut0Enable) &amp;&amp; (dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_PRB_OUT0)}`' />
+      <DRC type='ERROR' text='Enable PRB and enable Output 1 to use it as Input for Non-Inverting Input Mux.' condition='`${!(isBlockUsedPrb &amp;&amp; prbOut1Enable) &amp;&amp; (dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_PRB_OUT1)}`' />
+      <DRC type='ERROR' text='Enable SAR OR PTC to use SAR/PTComp Pin as Input for Non-Inverting Input Mux.' condition='`${!(isBlockUsedPtc || isBlockUsedSar) &amp;&amp; (dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_GPIO$idx)}`' repeatCount='8'/>
+
+      <DRC type='ERROR' text='Enable the CTB 0 Opamp $idx Out to use it as Input for Inverting Input Mux.' condition='`${!(isBlockUsedCtb0 &amp;&amp; isBlockUsedCtb0Oa$idx) &amp;&amp; (dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB0_OA$idx_OUT)}`' repeatCount='2' />
+      <DRC type='ERROR' text='Enable the CTB 1 Opamp $idx Out to use it as Input for Inverting Input Mux.' condition='`${!(isBlockUsedCtb1 &amp;&amp; isBlockUsedCtb1Oa$idx) &amp;&amp; (dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB1_OA$idx_OUT)}`' repeatCount='2' />
+      <DRC type='ERROR' text='Enable the DAC $idx to use it as Input for Inverting Input Mux.' condition='`${!(isBlockUsedDac$idx) &amp;&amp; (dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_DAC$idx)}`' repeatCount='2' />
+      <DRC type='ERROR' text='Enable PRB and enable Output 0 to use it as Input for Inverting Input Mux.' condition='`${!(isBlockUsedPrb &amp;&amp; prbOut0Enable) &amp;&amp; (dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_PRB_OUT0)}`' />
+      <DRC type='ERROR' text='Enable PRB and enable Output 1 to use it as Input for Inverting Input Mux.' condition='`${!(isBlockUsedPrb &amp;&amp; prbOut1Enable) &amp;&amp; (dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_PRB_OUT1)}`' />
+      <DRC type='ERROR' text='Enable SAR OR PTC to use SAR/PTComp Pin as Input for Inverting Input Mux.' condition='`${!(isBlockUsedPtc || isBlockUsedSar) &amp;&amp; (dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_GPIO$idx)}`' repeatCount='8'/>
+
+
+      <DRC type='ERROR' text='Enable and configure a parent resource for PTComp dynamic configuration.' condition='`${!isBlockUsed(resource_ptc)}`' >
+        <FixIt action='ENABLE_BLOCK' target='`${resource_ptc}`' value='lppass_ptc-1.0' valid='true' />
+      </DRC>
+      <DRC type='WARNING' text='The same input is selected on both Non-Inverting Input and Inverting Input Muxes.'
+           condition='`${dyn_compNonInvInpMux eq dyn_compInvInpMux &amp;&amp; ptc_sta_compIsOn}`' />
+
+      <DRC type='ERROR' text='The Opamp $idx Out in CTB0 is off in the static config, or is configured as comparator.' repeatCount='2'
+           condition='`${(dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB0_OA$idx_OUT || dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB0_OA$idx_OUT)
+           &amp;&amp; (!isBlockUsedCtb0Oa$idx || powerCtb0Oa$idx eq "CY_AUTANALOG_CTB_OA_PWR_OFF" || topologyCtb0Oa$idx eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR" || topologyCtb0Oa$idx eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR")}`' />
+
+      <DRC type='ERROR' text='The Opamp $idx Out in CTB1 is off in the static config, or is configured as comparator.' repeatCount='2'
+           condition='`${(dyn_compNonInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB1_OA$idx_OUT || dyn_compInvInpMux eq CY_AUTANALOG_PTCOMP_COMP_CTB1_OA$idx_OUT)
+           &amp;&amp; (!isBlockUsedCtb1Oa$idx || powerCtb1Oa$idx eq "CY_AUTANALOG_CTB_OA_PWR_OFF" || topologyCtb1Oa$idx eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR" || topologyCtb1Oa$idx eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR")}`' />
+
+  </DRCs>
+
+  <ConfigFirmware>
+  </ConfigFirmware>
+
+</PersonalityTemplate>

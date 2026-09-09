@@ -1,0 +1,65 @@
+{
+  "VERSION": {
+    "type": "STRING",
+    "mandatory": false,
+    "present": []
+  },
+  "DICE_DEVICE_ID_PUBLIC_KEY": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "type": "KEY",
+    "mandatory": false,
+    "present": ["DEVICE_CERT"]
+  },
+  "DIE_ID": {
+    "description": "Defined by the device",
+    "type": "HEX",
+    "mandatory": false,
+    "present": ["DEVICE_CERT"]
+  },
+  "FAMILY_ID": {
+    "type": "INT",
+    "mandatory": false,
+    "present": ["DEVICE_CERT"]
+  },
+  "REVISION_ID": {
+    "type": "INT",
+    "mandatory": false,
+    "present": ["DEVICE_CERT"]
+  },
+  "ROM_BOOT_VERSION": {
+    "type": "VERSION",
+    "mandatory": false,
+    "present": ["DEVICE_CERT"]
+  },
+  "RRAM_BOOT_VERSION": {
+    "type": "VERSION",
+    "mandatory": false,
+    "present": ["DEVICE_CSR", "DEVICE_CERT"]
+  },
+  "ALIAS_PUBLIC_KEY": {
+    "description": "Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+    "type": "KEY",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  },
+  "BASE SE_RT_SERVICES VERSION": {
+    "type": "VERSION",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  },
+  "FULL SE_RT_SERVICES VERSION": {
+    "type": "VERSION",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  },
+  "CM33_L1_BOOT VERSION": {
+    "type": "VERSION",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  },
+  "SILICON_ID": {
+    "type": "INT",
+    "mandatory": false,
+    "present": ["ALIAS_CERT"]
+  }
+} 

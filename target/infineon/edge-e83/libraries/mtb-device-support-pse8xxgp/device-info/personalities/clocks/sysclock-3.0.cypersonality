@@ -1,0 +1,491 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file sysclock.cypersonality
+* \version 3.0
+*
+* \brief
+* SysClocks personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='sysclocks' name='SysClocks' version='3.0' intrinsic='true' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40srss,mxs40ssrss,mxs40srss_ver3,mxs40srss_ver2,mxs22srss' />
+      <Resource name='srss\.clock' />
+    </MappingRules>
+  </FittingRules>
+
+  <Variables>
+    <Variable id='isMXS40' value='`${("mxs40srss" eq getIpBlockName())}`' />
+    <Variable id='isMXS22' value='`${("mxs22srss" eq getIpBlockName())}`' />
+
+    <Variable id='is_psoc64' value='`${isMXS40 &amp;&amp; getOrDefault((getDeviceAttr("Security") ne "NA"), false)}`' />
+    <Variable id='is_mxs22srssv2_1' value='`${isMXS22 &amp;&amp; (getVersion() eq 2) &amp;&amp; (GENERATED.IP_MINOR_VERSION == 1)}`' />
+  </Variables>
+
+  <DRCs>
+    <DRC type='ERROR' text='CLK_HF0 is not enabled.' condition='`${!isBlockUsed("srss[0].clock[0].hfclk[0]")}`' >
+      <FixIt action='ENABLE_BLOCK' target='srss[0].clock[0].hfclk[0]' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='The IMO must be enabled for chip operation.' condition='`${hasBlock("srss[0].clock[0].imo[0]") &amp;&amp; !isBlockUsed("srss[0].clock[0].imo[0]")}`' >
+      <FixIt action='ENABLE_BLOCK' target='srss[0].clock[0].imo[0]' valid='true' />
+    </DRC>
+    <DRC type='WARNING' text='Clock initialization depends on the power configuration. Enable the power personality to ensure correct initialization.' condition='`${!isBlockUsed("srss[0].power[0]")}`' location='srss[0].power[0]' >
+      <FixIt action='ENABLE_BLOCK' target='srss[0].power[0]' valid='true' />
+    </DRC>
+    <DRC type='INFO' text='The DPLL_LP might be used as a source clock for QSPI. In case when the CM33 Secure application executed from external flash the user should not reconfigure a clock tree related to the appropriate QSPI interface.' condition='`${isMXS22 &amp;&amp; (isBlockUsed("srss[0].clock[0].pll250m[0]") || isBlockUsed("srss[0].clock[0].pll250m[1]"))}`' location='`${isBlockUsed("srss[0].clock[0].pll250m[0]") ? "srss[0].clock[0].pll250m[0]" : isBlockUsed("srss[0].clock[0].pll250m[1]") ? "srss[0].clock[0].pll250m[1]" : "srss[0].clock[0].pll250m[0]"}`' />
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigInclude value='cy_pra.h' include='`${is_psoc64}`' />
+    <ConfigInclude value='cy_pra_cfg.h' include='`${is_psoc64}`' />
+    <ConfigInclude value='cy_wdt.h' />
+    <ConfigInclude value='cy_ble_clk.h' include='`${hasBlock("bless[0]")}`' />
+    <ConfigInclude value='cycfg_clock_types.h' />
+
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_ERROR'   value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ALTHF_ERROR' value='2' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_PLL_ERROR'   value='3' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_FLL_ERROR'   value='4' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_WCO_ERROR'   value='5' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_LPECO_ERROR' value='6' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ACTIVE_CORE_HF' value='CY_CFG_SYSCLK_CLKHF0' public='false' guard='!defined(COMPONENT_CM7) &amp;&amp; !defined(COMPONENT_CM55)' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ACTIVE_CORE_HF' value='CY_CFG_SYSCLK_CLKHF1' public='false' guard='defined(COMPONENT_CM7) || defined(COMPONENT_CM55)' />
+    <ConfigDefine name='CY_CFG_SYSCLK_FIRST_CLKPATH_DIRECT' value='((cy_en_clkhf_in_sources_t)`${hasBlock("srss[0].clock[0].fll[0]") ? "(CY_SRSS_FLL_PRESENT+CY_SRSS_NUM_PLL)" : "CY_SRSS_NUM_PLL"}`)' public='false' />
+
+    <ConfigStruct name='`${INST_NAME . "_secureConfig"}`' type='cy_stc_pra_system_config_t' const='false' public='false' include='`${is_psoc64}`' />
+
+    <ConfigArray name='cycfg_clkhf_configs' type='cycfg_clkhf_config_t *' const='true' public='false' include='`${NUM_HFROOT &gt; 0}`'>
+      <ArrayElement value='`${isBlockUsed("srss[0].clock[0].hfclk[$idx{0}]") ? "&amp;cycfg_hf$idx{0}Config" : "NULL"}`' include='`${$idx{0} &lt; NUM_HFROOT}`' repeatCount='16' />
+    </ConfigArray>
+    <ConfigArray name='cycfg_clkhf_csv_configs' type='cycfg_clkhf_csv_config_t *' const='true' public='false' include='`${CSV_PRESENT &gt; 0}`'>
+      <ArrayElement value='`${getOrDefault(getExposedMember("srss[0].clock[0].hfclk[$idx{0}]", "csvEnabled"), false) ? "&amp;cycfg_hf$idx{0}CsvConfig" : "NULL"}`' include='`${$idx{0} &lt; NUM_HFROOT}`' repeatCount='16' />
+    </ConfigArray>
+    <ConfigArray name='cycfg_clkpath_configs' type='cy_en_clkpath_in_sources_t' const='true' public='false' include='`${NUM_CLKPATH &gt; 0}`'>
+      <ArrayElement value='CY_CFG_SYSCLK_CLKPATH$idx{0}_SOURCE' include='`${$idx{0} &lt; NUM_CLKPATH}`' repeatCount='16' />
+    </ConfigArray>
+
+    <ConfigFunction signature='static void cycfg_SysClk_ClkHfInit(uint32_t clkHf, cy_en_clkhf_in_sources_t source, cy_en_clkhf_dividers_t divider)' public='false' include='`${NUM_HFROOT &gt; 0}`'>
+      <Line value='Cy_SysClk_ClkHfSetDivider(clkHf, divider);' />
+      <Line value='Cy_SysClk_ClkHfSetSource(clkHf, source);' />
+      <Line value='if (clkHf != 0U)' />
+      <Line value='{' />
+      <Line value='    Cy_SysClk_ClkHfEnable(clkHf);' />
+      <Line value='}' />
+    </ConfigFunction>
+    <ConfigFunction signature='static void cycfg_SysClk_ClkHfCsvInit(uint32_t clkHf, cy_en_clkhf_csv_ref_clk_t refClk, uint32_t accuracy, cy_en_clkhf_csv_action_t action)' public='false' include='`${CSV_PRESENT &gt; 0}`'>
+      <Line value='const cy_stc_clkhf_csv_hf_config_t csvConfig = { clkHf, refClk };' />
+      <Line value='Cy_SysClk_ClkHfCsvConfigure(&amp;csvConfig, accuracy);' />
+      <Line value='Cy_SysClk_ClkHfCsvAction(clkHf, action);' />
+      <Line value='Cy_SysClk_ClkHfCsvEnable(clkHf);' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='__WEAK void __NO_RETURN cycfg_ClockStartupError(uint32_t error)' public='false'>
+      <Line value='(void)error; /* Suppress the compiler warning */' />
+      <Line value='while(1);' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_Ilo0DeInit(void)' public='false' include='`${isBlockUsed("clock[0].srss[0].ilo[0]")}`'>
+      <Line value='if(Cy_SysPm_IsBgRefCtrl())' />
+      <Line value='{' />
+      <Line value='    Cy_SysPm_BgRefCtrl(false);' />
+      <Line value='    Cy_SysClk_IloSrcDisable(0);' />
+      <Line value='    Cy_SysClk_IloSrcHibernateOn(0, false);' />
+      <Line value='    Cy_SysPm_BgRefCtrl(true);' />
+      <Line value='}' />
+      <Line value='else' />
+      <Line value='{' />
+      <Line value='    Cy_SysClk_IloSrcDisable(0);' />
+      <Line value='    Cy_SysClk_IloSrcHibernateOn(0, false);' />
+      <Line value='}' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_Ilo1DeInit(void)' public='false' include='`${isBlockUsed("clock[0].srss[0].ilo[1]")}`'>
+      <Line value='Cy_SysClk_IloSrcDisable(1);' />
+      <Line value='Cy_SysClk_IloSrcHibernateOn(1, false);' />
+    </ConfigFunction>
+
+    <ConfigFunction signature='void init_cycfg_secure_struct(cy_stc_pra_system_config_t * secure_config)' public='false' include='`${is_psoc64}`'>
+      <Line value='memset(secure_config, 0, sizeof(cy_stc_pra_system_config_t));' />
+
+      <Line value='secure_config->powerEnable = CY_CFG_PWR_ENABLED;' />
+      <Line value='secure_config->ldoEnable = CY_CFG_PWR_USING_LDO;' />
+      <Line value='secure_config->ldoVoltage = CY_CFG_PWR_LDO_VOLTAGE;' />
+      <Line value='secure_config->pmicEnable = CY_CFG_PWR_USING_PMIC;' />
+      <Line value='secure_config->vBackupVDDDEnable = CY_CFG_PWR_VBACKUP_USING_VDDD;' />
+      <Line value='secure_config->ulpEnable = CY_CFG_PWR_USING_ULP;' />
+      <Line value='secure_config->pwrCurrentModeMin = CY_CFG_PWR_REGULATOR_MODE_MIN;' />
+      <Line value='secure_config->buckVoltage = CY_CFG_PWR_BUCK_VOLTAGE;' />
+
+      <Line value='secure_config->ecoEnable = CY_CFG_SYSCLK_ECO_ENABLED;'         include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoFreqHz = CY_CFG_SYSCLK_ECO_FREQ;'            include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoLoad = CY_CFG_SYSCLK_ECO_CLOAD;'             include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoEsr = CY_CFG_SYSCLK_ECO_ESR;'                include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoDriveLevel = CY_CFG_SYSCLK_ECO_DRIVE_LEVEL;' include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoInPort = CY_CFG_SYSCLK_ECO_GPIO_IN_PRT;'     include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoOutPort = CY_CFG_SYSCLK_ECO_GPIO_OUT_PRT;'   include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoInPinNum = CY_CFG_SYSCLK_ECO_GPIO_IN_PIN;'   include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+      <Line value='secure_config->ecoOutPinNum = CY_CFG_SYSCLK_ECO_GPIO_OUT_PIN;' include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+
+      <Line value='secure_config->extClkEnable = CY_CFG_SYSCLK_EXTCLK_ENABLED;'   include='`${isBlockUsed("clock[0].srss[0].ext[0]")}`' />
+      <Line value='secure_config->extClkFreqHz = CY_CFG_SYSCLK_EXTCLK_FREQ;'      include='`${isBlockUsed("clock[0].srss[0].ext[0]")}`' />
+      <Line value='secure_config->extClkPort = CY_CFG_SYSCLK_EXTCLK_GPIO_PRT;'    include='`${isBlockUsed("clock[0].srss[0].ext[0]")}`' />
+      <Line value='secure_config->extClkPinNum = CY_CFG_SYSCLK_EXTCLK_GPIO_PIN;'  include='`${isBlockUsed("clock[0].srss[0].ext[0]")}`' />
+      <Line value='secure_config->extClkHsiom = CY_CFG_SYSCLK_EXTCLK_GPIO_HSIOM;' include='`${isBlockUsed("clock[0].srss[0].ext[0]")}`' />
+
+      <Line value='secure_config->iloEnable = CY_CFG_SYSCLK_ILO_ENABLED;'         include='`${isBlockUsed("clock[0].srss[0].ilo[0]")}`' />
+      <Line value='secure_config->iloHibernateON = CY_CFG_SYSCLK_ILO_HIBERNATE;'  include='`${isBlockUsed("clock[0].srss[0].ilo[0]")}`' />
+
+      <Line value='secure_config->wcoEnable = CY_CFG_SYSCLK_WCO_ENABLED;'     include='`${isBlockUsed("clock[0].srss[0].wco[0]")}`' />
+      <Line value='secure_config->bypassEnable = CY_CFG_SYSCLK_WCO_BYPASS;'   include='`${isBlockUsed("clock[0].srss[0].wco[0]")}`' />
+      <Line value='secure_config->wcoInPort = CY_CFG_SYSCLK_WCO_IN_PRT;'      include='`${isBlockUsed("clock[0].srss[0].wco[0]")}`' />
+      <Line value='secure_config->wcoOutPort = CY_CFG_SYSCLK_WCO_OUT_PRT;'    include='`${isBlockUsed("clock[0].srss[0].wco[0]")}`' />
+      <Line value='secure_config->wcoInPinNum = CY_CFG_SYSCLK_WCO_IN_PIN;'    include='`${isBlockUsed("clock[0].srss[0].wco[0]")}`' />
+      <Line value='secure_config->wcoOutPinNum = CY_CFG_SYSCLK_WCO_OUT_PIN;'  include='`${isBlockUsed("clock[0].srss[0].wco[0]")}`' />
+
+      <Line value='secure_config->fllEnable = CY_CFG_SYSCLK_FLL_ENABLED;'             include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->fllOutFreqHz = CY_CFG_SYSCLK_FLL_OUT_FREQ;'         include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->fllMult = CY_CFG_SYSCLK_FLL_MULT;'                  include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->fllRefDiv = CY_CFG_SYSCLK_FLL_REFDIV;'              include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->fllCcoRange = CY_CFG_SYSCLK_FLL_CCO_RANGE;'         include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->enableOutputDiv = CY_CFG_SYSCLK_FLL_ENABLE_OUTDIV;' include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->lockTolerance = CY_CFG_SYSCLK_FLL_LOCK_TOLERANCE;'  include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->igain = CY_CFG_SYSCLK_FLL_IGAIN;'                   include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->pgain = CY_CFG_SYSCLK_FLL_PGAIN;'                   include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->settlingCount = CY_CFG_SYSCLK_FLL_SETTLING_COUNT;'  include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->outputMode = CY_CFG_SYSCLK_FLL_OUTPUT_MODE;'        include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+      <Line value='secure_config->ccoFreq = CY_CFG_SYSCLK_FLL_CCO_FREQ;'              include='`${isBlockUsed("clock[0].srss[0].fll[0]")}`' />
+
+      <Line value='secure_config->pll$idxEnable = CY_CFG_SYSCLK_PLL$idx_ENABLED;'             repeatCount='2' include='`${isBlockUsed("clock[0].srss[0].pll[$idx]")}`' />
+      <Line value='secure_config->pll$idxFeedbackDiv = CY_CFG_SYSCLK_PLL$idx_FEEDBACK_DIV;'   repeatCount='2' include='`${isBlockUsed("clock[0].srss[0].pll[$idx]")}`' />
+      <Line value='secure_config->pll$idxReferenceDiv = CY_CFG_SYSCLK_PLL$idx_REFERENCE_DIV;' repeatCount='2' include='`${isBlockUsed("clock[0].srss[0].pll[$idx]")}`' />
+      <Line value='secure_config->pll$idxOutputDiv = CY_CFG_SYSCLK_PLL$idx_OUTPUT_DIV;'       repeatCount='2' include='`${isBlockUsed("clock[0].srss[0].pll[$idx]")}`' />
+      <Line value='secure_config->pll$idxLfMode = CY_CFG_SYSCLK_PLL$idx_LF_MODE;'             repeatCount='2' include='`${isBlockUsed("clock[0].srss[0].pll[$idx]")}`' />
+      <Line value='secure_config->pll$idxOutputMode = CY_CFG_SYSCLK_PLL$idx_OUTPUT_MODE;'     repeatCount='2' include='`${isBlockUsed("clock[0].srss[0].pll[$idx]")}`' />
+      <Line value='secure_config->pll$idxOutFreqHz = CY_CFG_SYSCLK_PLL$idx_OUTPUT_FREQ;'      repeatCount='2' include='`${isBlockUsed("clock[0].srss[0].pll[$idx]")}`' />
+
+      <Line value='secure_config->path$idxEnable = CY_CFG_SYSCLK_CLKPATH$idx_ENABLED;'  repeatCount='6' include='`${isBlockUsed("clock[0].srss[0].pathmux[$idx]")}`' />
+      <Line value='secure_config->path$idxSrc = CY_CFG_SYSCLK_CLKPATH$idx_SOURCE;'      repeatCount='6' include='`${isBlockUsed("clock[0].srss[0].pathmux[$idx]")}`' />
+
+      <Line value='secure_config->clkFastEnable = CY_CFG_SYSCLK_CLKFAST_ENABLED;'   include='`${isBlockUsed("clock[0].srss[0].fastclk[0]")}`' />
+      <Line value='secure_config->clkFastDiv = CY_CFG_SYSCLK_CLKFAST_DIVIDER;'      include='`${isBlockUsed("clock[0].srss[0].fastclk[0]")}`' />
+
+      <Line value='secure_config->clkPeriEnable = CY_CFG_SYSCLK_CLKPERI_ENABLED;'   include='`${isBlockUsed("clock[0].srss[0].periclk[0]")}`' />
+      <Line value='secure_config->clkPeriDiv = CY_CFG_SYSCLK_CLKPERI_DIVIDER;'      include='`${isBlockUsed("clock[0].srss[0].periclk[0]")}`' />
+
+      <Line value='secure_config->clkSlowEnable = CY_CFG_SYSCLK_CLKSLOW_ENABLED;' include='`${isBlockUsed("clock[0].srss[0].slowclk[0]")}`' />
+      <Line value='secure_config->clkSlowDiv = CY_CFG_SYSCLK_CLKSLOW_DIVIDER;'    include='`${isBlockUsed("clock[0].srss[0].slowclk[0]")}`' />
+
+      <Line value='secure_config->clkHF$idxEnable = CY_CFG_SYSCLK_CLKHF$idx_ENABLED;'   repeatCount='6' include='`${isBlockUsed("clock[0].srss[0].hfclk[$idx]")}`' />
+      <Line value='secure_config->hf$idxSource = CY_CFG_SYSCLK_CLKHF$idx_CLKPATH;'      repeatCount='6' include='`${isBlockUsed("clock[0].srss[0].hfclk[$idx]")}`' />
+      <Line value='secure_config->hf$idxDivider = CY_CFG_SYSCLK_CLKHF$idx_DIVIDER;'     repeatCount='6' include='`${isBlockUsed("clock[0].srss[0].hfclk[$idx]")}`' />
+      <Line value='secure_config->hf$idxOutFreqMHz = CY_CFG_SYSCLK_CLKHF$idx_FREQ_MHZ;' repeatCount='6' include='`${isBlockUsed("clock[0].srss[0].hfclk[$idx]")}`' />
+
+      <Line value='secure_config->clkPumpEnable = CY_CFG_SYSCLK_CLKPUMP_ENABLED;' include='`${isBlockUsed("clock[0].srss[0].pumpclk[0]")}`' />
+      <Line value='secure_config->pumpSource = CY_CFG_SYSCLK_CLKPUMP_SOURCE;'     include='`${isBlockUsed("clock[0].srss[0].pumpclk[0]")}`' />
+      <Line value='secure_config->pumpDivider = CY_CFG_SYSCLK_CLKPUMP_DIVIDER;'   include='`${isBlockUsed("clock[0].srss[0].pumpclk[0]")}`' />
+
+      <Line value='secure_config->clkLFEnable = CY_CFG_SYSCLK_CLKLF_ENABLED;' include='`${isBlockUsed("clock[0].srss[0].lfclk[0]")}`' />
+      <Line value='secure_config->clkLfSource = CY_CFG_SYSCLK_CLKLF_SOURCE;'  include='`${isBlockUsed("clock[0].srss[0].lfclk[0]")}`' />
+
+      <Line value='secure_config->clkBakEnable = CY_CFG_SYSCLK_CLKBAK_ENABLED;' include='`${isBlockUsed("clock[0].srss[0].bakclk[0]")}`' />
+      <Line value='secure_config->clkBakSource = CY_CFG_SYSCLK_CLKBAK_SOURCE;'  include='`${isBlockUsed("clock[0].srss[0].bakclk[0]")}`' />
+
+      <Line value='secure_config->clkTimerEnable = CY_CFG_SYSCLK_CLKTIMER_ENABLED;'   include='`${isBlockUsed("clock[0].srss[0].timerclk[0]")}`' />
+      <Line value='secure_config->clkTimerSource = CY_CFG_SYSCLK_CLKTIMER_SOURCE;'    include='`${isBlockUsed("clock[0].srss[0].timerclk[0]")}`' />
+      <Line value='secure_config->clkTimerDivider = CY_CFG_SYSCLK_CLKTIMER_DIVIDER;'  include='`${isBlockUsed("clock[0].srss[0].timerclk[0]")}`' />
+
+      <Line value='secure_config->clkSrcAltSysTick = CY_CFG_SYSCLK_CLKALTSYSTICK_SOURCE;' include='`${isBlockUsed("clock[0].srss[0].altsystickclk[0]")}`' />
+
+      <Line value='secure_config->piloEnable = CY_CFG_SYSCLK_PILO_ENABLED;' include='`${isBlockUsed("clock[0].srss[0].pilo[0]")}`' />
+
+      <Line value='secure_config->clkAltHfEnable = CY_CFG_SYSCLK_ALTHF_ENABLED;'                include='`${isBlockUsed("clock[0].srss[0].althf[0]")}`' />
+      <Line value='secure_config->altHFcLoad = CY_CFG_SYSCLK_ALTHF_BLE_ECO_CLOAD;'              include='`${isBlockUsed("clock[0].srss[0].althf[0]")}`' />
+      <Line value='secure_config->altHFxtalStartUpTime = CY_CFG_SYSCLK_ALTHF_BLE_ECO_TIME;'     include='`${isBlockUsed("clock[0].srss[0].althf[0]")}`' />
+      <Line value='secure_config->altHFclkFreq = CY_CFG_SYSCLK_ALTHF_BLE_ECO_FREQ;'             include='`${isBlockUsed("clock[0].srss[0].althf[0]")}`' />
+      <Line value='secure_config->altHFsysClkDiv = CY_CFG_SYSCLK_ALTHF_BLE_ECO_CLK_DIV;'        include='`${isBlockUsed("clock[0].srss[0].althf[0]")}`' />
+      <Line value='secure_config->altHFvoltageReg = CY_CFG_SYSCLK_ALTHF_BLE_ECO_VOL_REGULATOR;' include='`${isBlockUsed("clock[0].srss[0].althf[0]")}`' />
+    </ConfigFunction>
+
+    <!-- Configure Non-Secure options -->
+    <ConfigFunction name='init_cycfg_ns_clocks' signature='void %1(void)' public='true' include='`${isMXS22}`'>
+      <Line value='#if (!defined(COMPONENT_SECURE_DEVICE))' />
+      <Line value='/* Update global variables used in sysclock driver */' />
+      <Line value='#ifdef CY_CFG_SYSCLK_ECO_ENABLED' />
+      <Line value='    Cy_SysClk_EcoSetFrequency(CY_CFG_SYSCLK_ECO_FREQ);' />
+      <Line value='#endif' />
+      <Line value='#ifdef CY_CFG_SYSCLK_EXTCLK_ENABLED' />
+      <Line value='    Cy_SysClk_ExtClkSetFrequency(CY_CFG_SYSCLK_EXTCLK_FREQ);' />
+      <Line value='#endif' />
+      <Line value='' />
+      <Line value='/* Update global variables used by Cy_SysLib_Delay functions */' />
+      <Line value='uint32_t clk_hf0_freq_hz = 0;' />
+      <Line value='#if (CY_CFG_SYSCLK_CLKHF0_FREQ_MHZ)' />
+      <Line value='clk_hf0_freq_hz = CY_CFG_SYSCLK_CLKHF0_FREQ_MHZ * 1000000;' />
+      <Line value='#endif /* CY_CFG_SYSCLK_CLKHF0_FREQ_MHZ */' />
+      <Line value='uint32_t clk_hf1_freq_hz = 0;' />
+      <Line value='#if (CY_CFG_SYSCLK_CLKHF1_FREQ_MHZ)' />
+      <Line value='clk_hf1_freq_hz = CY_CFG_SYSCLK_CLKHF1_FREQ_MHZ * 1000000;' />
+      <Line value='#endif /* CY_CFG_SYSCLK_CLKHF1_FREQ_MHZ */' />
+      <Line value='SystemCoreClockSetup((CY_SYSCLK_CLK_CORE_HF_PATH_NUM == 0 ? clk_hf0_freq_hz : clk_hf1_freq_hz), clk_hf0_freq_hz);' />
+      <Line value='' />
+      <Line value='#endif /* (!defined(COMPONENT_SECURE_DEVICE)) */' />
+    </ConfigFunction>
+
+    <!-- Configure Secure options -->
+    <ConfigInstruction value='#if defined(CY_DEVICE_SECURE)' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='    cy_en_pra_status_t configStatus;' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='    init_cycfg_secure_struct(&amp;`${INST_NAME . "_secureConfig"}`);' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='    configStatus = CY_PRA_FUNCTION_CALL_RETURN_PARAM(CY_PRA_MSG_TYPE_SYS_CFG_FUNC,' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='                                CY_PRA_FUNC_INIT_CYCFG_DEVICE,' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='                                &amp;`${INST_NAME . "_secureConfig"}`);' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='    if ( configStatus != CY_PRA_STATUS_SUCCESS )' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='        cycfg_ClockStartupError(configStatus);' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='    Cy_SysClk_ExtClkSetFrequency(CY_CFG_SYSCLK_EXTCLK_FREQ);' purpose='INITIALIZE' include='`${is_psoc64 &amp;&amp; isBlockUsed("srss[0].clock[0].ext[0]")}`' />
+    <ConfigInstruction value='#else /* defined(CY_DEVICE_SECURE) */' purpose='INITIALIZE' include='`${is_psoc64}`' />
+
+    <!-- Configure worst possible flash wait states -->
+    <ConfigInstruction value='/* Set worst case memory wait states (! ultra low power, 180 MHz), will update at the end */' purpose='INITIALIZE' include='`${!isMXS22}`' />
+    <ConfigInstruction value='Cy_SysLib_SetWaitStates(false, 180UL);' purpose='INITIALIZE' include='`${!isMXS22}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' include='`${!isMXS22}`' />
+
+    <!-- Configure power options -->
+    <ConfigInstruction value='init_cycfg_power();' purpose='INITIALIZE' include='`${!isMXS22}`' />
+    <!-- Reset backup domain before CLK_BAK initialization -->
+    <ConfigInstruction value='#if (CY_CFG_PWR_VBACKUP_USING_VDDD)' purpose='INITIALIZE' include='`${isMXS22}`' />
+    <ConfigInstruction value='    if (0u == Cy_SysLib_GetResetReason() /* POR, XRES, or BOD */)' purpose='INITIALIZE' include='`${isMXS22}`' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' include='`${isMXS22}`' />
+    <ConfigInstruction value='        Cy_SysLib_ResetBackupDomain();' purpose='INITIALIZE' include='`${isMXS22}`' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' include='`${isMXS22}`' />
+    <ConfigInstruction value='#endif /* CY_CFG_PWR_VBACKUP_USING_VDDD */' purpose='INITIALIZE' include='`${isMXS22}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' include='`${isMXS22}`' />
+
+    <!-- Set up a temporary fail-safe bypass for the IHO/IMO to the active core -->
+    <ConfigInstruction value='/* Set up a temporary fail-safe bypass for the IHO/IMO to the active core */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_IhoInit();' purpose='INITIALIZE' include='`${hasBlock("srss[0].clock[0].iho[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkPathSetSource(CY_CFG_SYSCLK_FIRST_CLKPATH_DIRECT, `${hasBlock("srss[0].clock[0].iho[0]") ? "CY_SYSCLK_CLKPATH_IN_IHO" : "CY_SYSCLK_CLKPATH_IN_IMO"}`);' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_ClkHfSetSource(CY_CFG_SYSCLK_ACTIVE_CORE_HF, CY_CFG_SYSCLK_FIRST_CLKPATH_DIRECT);' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_ClkHfSetDivider(CY_CFG_SYSCLK_ACTIVE_CORE_HF, CY_SYSCLK_CLKHF_NO_DIVIDE);' purpose='INITIALIZE' />
+
+    <!-- Reset and configure platform clocks -->
+    <ConfigInstruction value='/* Reset and configure platform clocks */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_WDT_Unlock(); /* Unlock WDT to be able to modify LFCLK registers */' purpose='INITIALIZE' include='`${!is_mxs22srssv2_1}`'/>
+    <ConfigInstruction value='Cy_WDTx_Unlock(WDT_STRUCT0); /* Unlock WDT to be able to modify LFCLK registers */' purpose='INITIALIZE' include='`${is_mxs22srssv2_1}`'/>
+    <ConfigInstruction value='#if defined(SRSS_NUM_WDT_A) &amp;&amp; (SRSS_NUM_WDT_A > 0)' purpose='INITIALIZE' include='`${is_mxs22srssv2_1}`' />
+    <ConfigInstruction value='Cy_WDTx_Unlock(WDT_STRUCT1); /* Unlock WDT to be able to modify LFCLK registers */' purpose='INITIALIZE' include='`${is_mxs22srssv2_1}`'/>
+    <ConfigInstruction value='#endif /* defined(SRSS_NUM_WDT_A) &amp;&amp; (SRSS_NUM_WDT_A > 0) */' purpose='INITIALIZE' include='`${is_mxs22srssv2_1}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkFastSetDivider(0U);' purpose='INITIALIZE' include='`${hasBlock("srss[0].clock[0].fastclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkPeriSetDivider(1U);' purpose='INITIALIZE' include='`${hasBlock("srss[0].clock[0].periclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkSlowSetDivider(0U);' purpose='INITIALIZE' include='`${hasBlock("srss[0].clock[0].slowclk[0]")}`' />
+    <ConfigInstruction value='(void)Cy_BLE_EcoReset();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].eco[0]") &amp;&amp; isMXS40}`' />
+    <!-- TODO: Make sure this handles all types of PLL -->
+    <ConfigInstruction value='for (uint32_t pll = CY_SRSS_NUM_PLL; pll > 0UL; --pll) /* PLL 1 is the first PLL. 0 is invalid. */' purpose='INITIALIZE' include='`${isMXS40}`' />
+    <ConfigInstruction value='for (uint32_t pll = (CY_SRSS_NUM_PLL - 1); pll > 0UL; --pll) /* PLL 1 is the first PLL. 0 is invalid. */' purpose='INITIALIZE' include='`${isMXS22}`' />
+    <ConfigInstruction value='{' purpose='INITIALIZE' />
+    <ConfigInstruction value='    (void)Cy_SysClk_PllDisable(pll);' purpose='INITIALIZE' />
+    <ConfigInstruction value='}' purpose='INITIALIZE' />
+    <ConfigInstruction value='' purpose='INITIALIZE' />
+
+    <!-- Enable all source clocks -->
+    <ConfigInstruction value='/* Enable all source clocks */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_Ilo$idxInit();' purpose='INITIALIZE' repeatCount='2' include='`${hasBlock("srss[0].clock[0].ilo[1]") &amp;&amp; isBlockUsed("srss[0].clock[0].ilo[$idx]")}`' />
+    <ConfigInstruction value='Cy_SysClk_PiloInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pilo[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_WcoInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].wco[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_EcoInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].eco[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_EcoPrescalerInit();' purpose='INITIALIZE' repeatCount='2' include='`${isBlockUsed("srss[0].clock[0].ecoprescaler[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_LpecoInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].lpeco[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_LpecoPrescalerInit();' purpose='INITIALIZE' repeatCount='2' include='`${isBlockUsed("srss[0].clock[0].lpecoprescaler[0]")}`' />
+    <!--CDT 264793-->
+    <ConfigInstruction value='Cy_SysClk_ClkLfInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].lfclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_AltHfInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].althf[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ExtClkInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].ext[0]")}`' />
+
+    <!-- Configure CPU clock dividers -->
+    <ConfigInstruction value='Cy_SysClk_ClkFastInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].fastclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkPeriInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].periclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkSlowInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].clkslow[0]")}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' />
+
+    <!-- Configure the path clocks, except for the fail-safe bypass for the IHO/IMO -->
+    <ConfigInstruction value='/* Configure the path clocks, except for the fail-safe bypass for the IHO/IMO */' purpose='INITIALIZE' />
+    <ConfigInstruction value='for (uint32_t i = 0; i &lt; CY_SRSS_NUM_CLKPATH; i++)' purpose='INITIALIZE' />
+    <ConfigInstruction value='{' purpose='INITIALIZE' />
+    <ConfigInstruction value='    if (i != CY_CFG_SYSCLK_FIRST_CLKPATH_DIRECT)' purpose='INITIALIZE' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' />
+    <ConfigInstruction value='        Cy_SysClk_ClkPathSetSource(i, cycfg_clkpath_configs[i]);' purpose='INITIALIZE' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' />
+    <ConfigInstruction value='}' purpose='INITIALIZE' />
+    <ConfigInstruction value='' purpose='INITIALIZE' />
+
+    <!-- Configure FLL/PLL clocks -->
+    <ConfigInstruction value='/* Configure PLL clocks */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_FllInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].fll[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_Pll$idxInit();' purpose='INITIALIZE' repeatCount='16' include='`${isBlockUsed("srss[0].clock[0].pll[$idx]") || isBlockUsed("srss[0].clock[0].pll400m[$idx]")}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' />
+
+    <!-- Configure the HF clocks, excluding the HF clock of the active core -->
+    <ConfigInstruction value='/* Configure the HF clocks, excluding the HF clock of the active core */' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='for (uint32_t i = 0U; i &lt; CY_SRSS_NUM_HFROOT; i++)' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='{' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    if (i != CY_CFG_SYSCLK_ACTIVE_CORE_HF)' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        const cycfg_clkhf_config_t *hfConfig = cycfg_clkhf_configs[i];' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        if (hfConfig != NULL)' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        {' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='            cycfg_SysClk_ClkHfInit(i, hfConfig->source, hfConfig->divider);' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        }' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='}' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+
+    <!-- Configure miscellaneous clocks -->
+    <ConfigInstruction value='/* Configure miscellaneous clocks */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_ClkTimerInit();' purpose='INITIALIZE' include='`${"mxs40srss" eq getIpBlockName()}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkPumpInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pumpclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkBakInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].bakclk[0]")}`' />
+
+    <ConfigInstruction value='Cy_SysClk_Dpll_Hp$idx_Init();' purpose='INITIALIZE' repeatCount='2' include='`${isBlockUsed("srss[0].clock[0].pll500m[$idx]")}`' />
+    <!-- TODO: Is this workaround still needed? -->
+    <ConfigInstruction value='#ifdef UPDATE_DPLL_LP_TRIM_VALUES' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[0]")}`' />
+    <ConfigInstruction value='    /* Workaround: update DPLL_LP trim values */' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[0]")}`' />
+    <ConfigInstruction value='    CY_SET_REG32(0x52403218,0x921F190A); /* DPLL_LP0_TEST3 */' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[0]")}`' />
+    <ConfigInstruction value='    CY_SET_REG32(0x5240321C,0x08100000); /* DPLL_LP0_TEST4 */' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[0]")}`' />
+    <ConfigInstruction value='#endif' include='`${isBlockUsed("srss[0].clock[0].pll250m[0]")}`' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_Dpll_Lp0_Init();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].dpll250[0]") || isBlockUsed("srss[0].clock[0].pll250m[0]")}`' />
+
+    <ConfigInstruction value='#ifdef UPDATE_DPLL_LP_TRIM_VALUES' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[1]")}`' />
+    <ConfigInstruction value='    /* Workaround: update DPLL_LP trim values */' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[1]")}`' />
+    <ConfigInstruction value='    CY_SET_REG32(0x52403238,0x921F190A); /* DPLL_LP1_TEST3 */' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[1]")}`' />
+    <ConfigInstruction value='    CY_SET_REG32(0x5240323C,0x08100000); /* DPLL_LP1_TEST4 */' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].pll250m[1]")}`' />
+    <ConfigInstruction value='#endif' include='`${isBlockUsed("srss[0].clock[0].pll250m[1]")}`' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_Dpll_Lp1_Init();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].dpll250[1]") || isBlockUsed("srss[0].clock[0].pll250m[1]")}`' />
+
+    <!-- Configure the HF clock of the active core and disable any unused HF clocks -->
+    <ConfigInstruction value='/* Configure HF0 clock and disable any unused HF clocks */' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='for (uint32_t i = 0U; i &lt; CY_SRSS_NUM_HFROOT; i++)' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='{' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    const cycfg_clkhf_config_t *hfConfig = cycfg_clkhf_configs[i];' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    if (hfConfig != NULL)' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        if (i == CY_CFG_SYSCLK_ACTIVE_CORE_HF)' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        {' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='            cycfg_SysClk_ClkHfInit(i, hfConfig->source, hfConfig->divider);' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        }' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    else' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='        (void)Cy_SysClk_ClkHfDisable(i);' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+    <ConfigInstruction value='}' purpose='INITIALIZE' include='`${NUM_HFROOT &gt; 0}`' />
+
+    <!-- Configure the path clocks used for the fail-safe bypass for the IHO/IMO -->
+    <ConfigInstruction value='/* Configure the path clocks used for the fail-safe bypass for the IHO/IMO */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_ClkPathSetSource(CY_CFG_SYSCLK_FIRST_CLKPATH_DIRECT, cycfg_clkpath_configs[CY_CFG_SYSCLK_FIRST_CLKPATH_DIRECT]);' purpose='INITIALIZE' />
+
+    <ConfigInstruction value='#ifdef CY_CFG_SYSCLK_CLKALTSYSTICK_ENABLED' purpose='INITIALIZE' />
+    <ConfigInstruction value='    Cy_SysClk_ClkAltSysTickInit();' purpose='INITIALIZE' />
+    <ConfigInstruction value='#endif' purpose='INITIALIZE' />
+    <ConfigInstruction value='' purpose='INITIALIZE' />
+
+    <ConfigInstruction value='Cy_SysClk_EcoSetFrequency(CY_CFG_SYSCLK_ECO_FREQ);' purpose='INITIALIZE' include='`${isBlockUsed("clock[0].srss[0].eco[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ExtClkSetFrequency(CY_CFG_SYSCLK_EXTCLK_FREQ);' purpose='INITIALIZE' include='`${isBlockUsed("clock[0].srss[0].ext[0]")}`'/>
+
+    <!-- Configure default enabled clocks -->
+    <ConfigInstruction value='/* Configure default enabled clocks */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_IloInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].ilo[0]") &amp;&amp; !hasBlock("srss[0].clock[0].ilo[1]")}`' />
+    <ConfigInstruction value='Cy_SysClk_MfoInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].mfo[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkMfInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].mfclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkPwrInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].powerclk[0]")}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkMemInit();' purpose='INITIALIZE' include='`${isBlockUsed("srss[0].clock[0].memclk[0]")}`' />
+
+    <!-- Disable any unused clock sources -->
+    <ConfigInstruction value='/* Disable unused clock sources */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysClk_IhoDisable();' purpose='INITIALIZE' include='`${hasBlock("srss[0].clock[0].iho[0]") &amp;&amp; !isBlockUsed("srss[0].clock[0].iho[0]")}`' />
+    <ConfigInstruction value='/* Wait 4 ILO cycles in case of unfinished CLKLF clock source transition */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysLib_DelayUs(200U);' purpose='INITIALIZE' include='`${!isBlockUsed("srss[0].clock[0].ilo[0]")}`' /> <!--DRIVERS 3401-->
+    <ConfigInstruction value='Cy_SysClk_IloDisable();' purpose='INITIALIZE' include='`${!isBlockUsed("srss[0].clock[0].ilo[0]") &amp;&amp; "mxs40srss" eq getIpBlockName()}`' />
+    <ConfigInstruction value='Cy_SysClk_IloHibernateOn(false);' purpose='INITIALIZE' include='`${!isBlockUsed("srss[0].clock[0].ilo[0]") &amp;&amp; "mxs40srss" eq getIpBlockName()}`' />
+    <ConfigInstruction value='Cy_SysClk_Ilo$idxDeInit();' purpose='INITIALIZE' repeatCount='2' include='`${hasBlock("srss[0].clock[0].ilo[1]") &amp;&amp; !isBlockUsed("srss[0].clock[0].ilo[$idx]")}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' include='`${!isBlockUsed("srss[0].clock[0].ilo[0]")}`' />
+
+    <ConfigInstruction value='#endif /* (!defined(CY_DEVICE_SECURE)) */' purpose='INITIALIZE' include='`${is_psoc64}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' include='`${is_psoc64}`' />
+
+    <!-- Configure system for final clock frequencies -->
+    <!-- TODO: check whether this should be HFCLK0 or HFCLK1 -->
+    <ConfigInstruction value='/* Update System configuration based on clock configuration */' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_SysLib_SetWaitStates(CY_CFG_PWR_USING_ULP != 0, CY_CFG_SYSCLK_CLKHF0_FREQ_MHZ);' purpose='INITIALIZE' include='`${!isMXS22}`' />
+    <ConfigInstruction value='SystemCoreClockUpdate();' purpose='INITIALIZE' />
+    <ConfigInstruction value='' purpose='INITIALIZE' />
+
+    <!-- Configure clock supervisors -->
+    <ConfigInstruction value='/* Configure clock supervisors */' purpose='INITIALIZE' />
+    <ConfigInstruction value='for (uint32_t i = 0U; i &lt; CY_SRSS_NUM_HFROOT; i++)' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='{' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='    const cycfg_clkhf_csv_config_t *hfCsvConfig = cycfg_clkhf_csv_configs[i];' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='    if (hfCsvConfig != NULL)' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='        cycfg_SysClk_ClkHfCsvInit(i, hfCsvConfig->refClk, hfCsvConfig->accuracy, hfCsvConfig->action);' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='    else' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='    {' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='        Cy_SysClk_ClkHfCsvDisable(i);' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='    }' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='}' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' include='`${CSV_PRESENT &gt; 0}`' />
+    <ConfigInstruction value='Cy_SysClk_ClkLfCsvInit();' purpose='INITIALIZE' include='`${getOrDefault(getExposedMember("srss[0].clock[0].lfclk[0]", "csvEnabled"), false)}`' />
+    <ConfigInstruction value='' purpose='INITIALIZE' />
+
+    <!-- cycfg_types.h -->
+    <ConfigFile name='cycfg_clock_types.h'>
+      <Line value='/* This file is automatically generated. */' />
+      <Line value='#if !defined(CYCFG_CLOCK_TYPES_H)' />
+      <Line value='#define CYCFG_CLOCK_TYPES_H' />
+      <Line value=''/>
+      <Line value='#include "cy_sysclk.h"' />
+      <Line value=''/>
+      <Line value='/**  HF Clock Configuration  */' include='`${NUM_HFROOT &gt; 0}`'/>
+      <Line value='typedef struct' include='`${NUM_HFROOT &gt; 0}`' />
+      <Line value='{' include='`${NUM_HFROOT &gt; 0}`' />
+      <Line value='    /**  HF clock source  */' include='`${NUM_HFROOT &gt; 0}`'/>
+      <Line value='    cy_en_clkhf_in_sources_t source;' include='`${NUM_HFROOT &gt; 0}`' />
+      <Line value='    /**  HF clock divider  */' include='`${NUM_HFROOT &gt; 0}`'/>
+      <Line value='    cy_en_clkhf_dividers_t divider;' include='`${NUM_HFROOT &gt; 0}`' />
+      <Line value='} cycfg_clkhf_config_t;' include='`${NUM_HFROOT &gt; 0}`' />
+      <Line value='' include='`${NUM_HFROOT &gt; 0}`' />
+      <Line value='/**  HF Clock Supervisor Configuration  */' include='`${CSV_PRESENT &gt; 0}`'/>
+      <Line value='typedef struct' include='`${CSV_PRESENT &gt; 0}`' />
+      <Line value='{' include='`${CSV_PRESENT &gt; 0}`' />
+      <Line value='    /**  HF Clock Supervisor reference clock  */' include='`${CSV_PRESENT &gt; 0}`'/>
+      <Line value='    cy_en_clkhf_csv_ref_clk_t refClk;' include='`${CSV_PRESENT &gt; 0}`' />
+      <Line value='    /**  HF Clock Supervisor accuracy  */' include='`${CSV_PRESENT &gt; 0}`'/>
+      <Line value='    uint32_t accuracy;' include='`${CSV_PRESENT &gt; 0}`' />
+      <Line value='    /**  HF Clock Supervisor action  */' include='`${CSV_PRESENT &gt; 0}`'/>
+      <Line value='    cy_en_clkhf_csv_action_t action;' include='`${CSV_PRESENT &gt; 0}`' />
+      <Line value='} cycfg_clkhf_csv_config_t;' include='`${CSV_PRESENT &gt; 0}`' />
+      <Line value='' include='`${CSV_PRESENT &gt; 0}`' />
+      <Line value='#endif /* CYCFG_CLOCK_TYPES_H */' />
+    </ConfigFile>
+  </ConfigFirmware>
+</PersonalityTemplate>

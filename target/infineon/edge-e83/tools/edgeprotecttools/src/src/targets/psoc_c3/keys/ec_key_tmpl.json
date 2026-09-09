@@ -1,0 +1,4 @@
+{
+  "description": "This is a template for creating an ECDSA public key based on key public numbers (CURVE=secp256r1)",
+  "pub": ""
+}

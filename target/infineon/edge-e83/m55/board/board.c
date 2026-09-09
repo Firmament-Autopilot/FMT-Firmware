@@ -1,0 +1,319 @@
+/******************************************************************************
+ * Copyright 2020-2026 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+
+#include <firmament.h>
+
+#include <msh.h>
+#include <shell.h>
+#include <string.h>
+
+#include "board.h"
+#include "default_config.h"
+#include "driver/barometer/dps368.h"
+#include "driver/imu/bmi088.h"
+#include "driver/mag/bmm150.h"
+#include "driver/mag/ist8310.h"
+#include "driver/mag/qmc5883l.h"
+#include "driver/pmu/ina228.h"
+#include "driver/vision_flow/mtf_01.h"
+#include "drv_adc.h"
+#include "drv_can.h"
+#include "drv_eth.h"
+#include "drv_gpio.h"
+#include "drv_i2c.h"
+#include "drv_ipc_dev.h"
+#include "drv_pwm.h"
+#include "drv_sdio.h"
+#include "drv_spi.h"
+#include "drv_systick.h"
+#include "drv_uart.h"
+#include "drv_usbd_cdc.h"
+#include "led.h"
+#include "model/control/control_interface.h"
+#include "model/fms/fms_interface.h"
+#include "model/ins/ins_interface.h"
+#include "module/config/actuator_config.h"
+#include "module/config/console_config.h"
+#include "module/config/mavproxy_config.h"
+#include "module/config/pilot_cmd_config.h"
+#include "module/file_manager/file_manager.h"
+#include "module/log/boot_log.h"
+#include "module/mavproxy/mavproxy.h"
+#include "module/param/param.h"
+#include "module/pmu/power_manager.h"
+#include "module/sensor/sensor_gps.h"
+#include "module/sensor/sensor_hub.h"
+#include "module/sysio/actuator_cmd.h"
+#include "module/sysio/auto_cmd.h"
+#include "module/sysio/gcs_cmd.h"
+#include "module/sysio/mission_data.h"
+#include "module/sysio/pilot_cmd.h"
+#include "module/system/statistic.h"
+#include "module/system/systime.h"
+#include "module/task_manager/task_manager.h"
+#include "module/toml/toml.h"
+#include "module/utils/devmq.h"
+#include "module/workqueue/workqueue_manager.h"
+
+bool get_device_uid(uint32_t uid[3])
+{
+    uid[0] = Cy_SysLib_GetUniqueId() & 0xFFFFFFFF;
+    uid[1] = (Cy_SysLib_GetUniqueId() >> 32) & 0xFFFFFFFF;
+    uid[2] = 0;
+
+    return true;
+}
+
+void cy_bsp_all_init(void)
+{
+    cy_rslt_t result;
+
+    /* Initialize the device and board peripherals */
+    result = cybsp_init();
+
+    /* Board init failed. Stop program execution */
+    if (result != CY_RSLT_SUCCESS) {
+        CY_ASSERT(0);
+    }
+}
+
+void _start(void)
+{
+    extern int main(void);
+    main();
+    while (1)
+        ;
+    __builtin_unreachable();
+}
+
+#ifdef FMT_USING_SIH
+    #include "model/plant/plant_interface.h"
+#endif
+
+#define MATCH(a, b)     (strcmp(a, b) == 0)
+#define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+#define SYS_INIT_SCRIPT "/sys/init.sh"
+
+extern void bsp_show_information(void);
+extern fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab);
+
+static const struct dfs_mount_tbl mnt_table[] = {
+    { "sd0", "/", "elm", 0, NULL },
+    { NULL } /* NULL indicate the end */
+};
+
+#ifdef RT_USING_FINSH
+    #include <finsh.h>
+static void reboot(uint8_t argc, char** argv)
+{
+    rt_hw_cpu_reset();
+}
+MSH_CMD_EXPORT(reboot, Reboot System);
+#endif /* RT_USING_FINSH */
+
+/**
+ * @brief  this function is executed in case of error occurrence.
+ * @param  none
+ * @retval none
+ */
+void _Error_Handler(char* s, int num)
+{
+    /* User can add his own implementation to report the HAL error return state */
+    LOG_E("Error_Handler at file:%s num:%d", s, num);
+
+    while (1) {
+    }
+}
+
+/* this function will be called before rtos start, which is not in the thread context */
+void bsp_early_initialize(void)
+{
+    cy_bsp_all_init();
+
+    /* heap initialization */
+    rt_system_heap_init((void*)HEAP_BEGIN, (void*)HEAP_END);
+
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
+    /* usart driver init */
+    RT_CHECK(drv_usart_init());
+
+    /* init console to enable console output */
+    FMT_CHECK(console_init());
+
+    /* systick driver init */
+    RT_CHECK(drv_systick_init());
+
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
+
+    /* init RC */
+    // RT_CHECK(drv_rc_init());
+
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
+
+#ifdef BSP_USING_SOFT_I2C1
+    RT_CHECK(drv_i2c_soft_init());
+#endif
+
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
+
+    /* can driver init */
+    RT_CHECK(drv_can_init());
+
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
+}
+
+/* this function will be called after rtos start, which is in thread context */
+void bsp_initialize(void)
+{
+    /* system time module init */
+    FMT_CHECK(systime_init());
+
+    /* start recording boot log */
+    FMT_CHECK(boot_log_init());
+
+    /* init uMCN */
+    FMT_CHECK(mcn_init());
+
+    /* create workqueue */
+    FMT_CHECK(workqueue_manager_init());
+
+#ifdef RT_USING_LWIP
+    /* init rt_workqueue, which is used by tcpip stack */
+    FMT_CHECK(rt_work_sys_workqueue_init());
+
+    /* init lwip */
+    extern int lwip_system_init();
+    FMT_CHECK(lwip_system_init());
+#endif
+
+#ifdef BSP_USING_ETH
+    /* eth driver init */
+    RT_CHECK(drv_eth_init());
+#endif
+
+    /* init storage devices */
+    RT_CHECK(drv_sdio_init());
+    /* init file system */
+    FMT_CHECK(file_manager_init(mnt_table));
+
+    /* init parameter system */
+    FMT_CHECK(param_init());
+
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
+
+    /* init usbd_cdc */
+    RT_CHECK(drv_usb_cdc_init());
+
+    drv_ina228_init("i2c1_dev0", "adc0");
+
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    FMT_CHECK(advertise_sensor_imu(0));
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
+    FMT_CHECK(advertise_sensor_gps(0));
+    FMT_CHECK(advertise_sensor_airspeed(0));
+#else
+    // /* init onboard sensors */
+    RT_CHECK(drv_bmi088_init("spi3_dev2", "spi3_dev1", "gyro0", "accel0", 0));
+    // drv_ist8310_init("i2c5_dev1", "mag0", EXTERNAL_DEV | 0);
+    // RT_CHECK(drv_qmc5883l_init("i2c5_dev2", "mag0", EXTERNAL_DEV | 0));
+    RT_CHECK(drv_bmm150_init("spi3_dev3", "mag0", 0));
+    // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
+    RT_CHECK(drv_mtf_01_init("serial1"));
+    RT_CHECK(drv_dps368_init("spi8_dev1", "barometer"));
+
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
+#endif
+
+    RT_CHECK(drv_ipc_dev_init());
+
+    /* init finsh */
+    finsh_system_init();
+    /* Mount finsh to console after finsh system init */
+    FMT_CHECK(console_enable_input());
+
+#ifdef FMT_USING_CM_BACKTRACE
+    /* cortex-m backtrace */
+    cm_backtrace_init("e83", TARGET_NAME, FMT_VERSION);
+#endif
+#ifdef FMT_USING_UNIT_TEST
+    utest_init();
+#endif
+}
+
+void bsp_post_initialize(void)
+{
+    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
+        /* use default system configuration */
+        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+        rt_kprintf("Default configuration loaded.\n");
+    }
+
+    /* init gnss */
+    FMT_CHECK(gnss_init());
+
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
+
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
+
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
+
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
+
+    /* init actuator */
+    FMT_CHECK(actuator_init());
+
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
+
+    /* init led control */
+    FMT_CHECK(led_control_init());
+
+    /* initialize power management unit */
+    FMT_CHECK(pmu_init());
+
+    /* show system information */
+    bsp_show_information();
+
+    /* execute init script */
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
+
+    /* dump boot log to file */
+    boot_log_dump();
+}
+
+/**
+ * This function will initial STM32 board.
+ */
+void rt_hw_board_init()
+{
+    bsp_early_initialize();
+}

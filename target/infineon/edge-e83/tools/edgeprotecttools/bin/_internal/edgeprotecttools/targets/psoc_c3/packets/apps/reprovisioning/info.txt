@@ -1,0 +1,4 @@
+name: cyapp_reprovisioning
+description: The re-provisioning allows overwrite the allowed assets after device running the customer firmware. The OEM_PROD_KEY and ICV keys support one time re-provisioning. The valid device LCS to launch this application is SECURE.
+type: Firmware application
+version: 1.0.0.4508

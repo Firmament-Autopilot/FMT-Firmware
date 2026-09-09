@@ -56,6 +56,7 @@ static void show_get_usage(void)
 static rt_size_t act_device_write(actuator_dev_t act_dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_size_t ret = size;
+    uint16_t chan_old_val[ACT_CHAN_NUM];
 
     /* Suspend controller output */
     mcn_suspend(MCN_HUB(control_output));
@@ -63,11 +64,16 @@ static rt_size_t act_device_write(actuator_dev_t act_dev, rt_uint16_t chan_sel, 
     printf("Press any key to stop...\n");
 
     if (act_dev->config.protocol == ACT_PROTOCOL_PWM) {
+        /* save old value */
+        rt_device_read(&act_dev->parent, chan_sel, chan_old_val, size);
+        /* write new value */
         ret = rt_device_write(&act_dev->parent, chan_sel, chan_val, size);
         while (1) {
             /* type any key to exit */
             if (syscmd_has_input()) {
                 syscmd_flush();
+                /* resume old value */
+                rt_device_write(&act_dev->parent, chan_sel, chan_old_val, size);
                 break;
             }
 

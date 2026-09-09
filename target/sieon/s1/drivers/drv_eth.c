@@ -11,7 +11,6 @@
 #include "lwipopts.h"
 #include <netif/ethernetif.h>
 
-
 /*
  * Emac driver uses CubeMX tool to generate emac and phy's configuration,
  * the configuration files can be found in CubeMX_Config folder.
@@ -164,11 +163,12 @@ static rt_err_t rt_stm32_eth_init(rt_device_t dev)
                 }
             } else {
                 status = RT_ETIMEOUT;
+                break;
             }
         }
     }
 
-    rt_thread_delay(2000);
+    rt_thread_delay(1000);
 
     if (HAL_ETH_ReadPHYRegister(&EthHandle, PHY_ADDR, PHY_BASIC_CONTROL_REG, &regvalue) == HAL_OK) {
         regvalue |= PHY_AUTO_NEGOTIATION_MASK;

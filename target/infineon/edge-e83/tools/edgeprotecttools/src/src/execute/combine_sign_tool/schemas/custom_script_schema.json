@@ -1,0 +1,41 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "custom-script"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "command-line": {
+                        "title": "The command line to execute",
+                        "type": "string"
+                    },
+                    "shell": {
+                        "title": "Indicates whether the specified command will be executed through the shell",
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "command-line"
+                ]
+            }
+        }
+    }
+}

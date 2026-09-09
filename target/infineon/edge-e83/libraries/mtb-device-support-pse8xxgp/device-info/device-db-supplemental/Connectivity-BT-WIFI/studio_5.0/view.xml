@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns="http://cypress.com/xsd/cystudioview_v1">
+  <Parameters>
+    <Param name="PERFORM_CODEGEN_IN_EVAL_ORDER" value="" />
+  </Parameters>
+  <ExposedParameterKeys>
+    <ExposedParamKey id="CPU_MAX_MHZ" param_name="Speed_MHz" />
+    <ExposedParamKey id="POWER_MODES" param_name="Power_Modes" />
+    <ExposedParamKey id="SAR_SAMPLE_RATE" param_name="SAR12Sample_ksps" />
+    <ExposedParamKey id="VDD_MIN" param_name="Vddmin_volts" />
+    <ExposedParamKey id="VDD_MAX" param_name="Vddmax_volts" />
+  </ExposedParameterKeys>
+  <Connectivity location="connectivity" />
+  <Wounding location="chipresourcewoundings.xml" />
+  <PinResourceType value="ioss[%1$d].pin[%2$d]" />
+  <TrigMuxConnectTemplate value="/* NOT USED */" />
+  <TrigMuxSelectTemplate value="/* NOT USED */" />
+  <Profiles>
+    <Profile displayName="Software" fileName="software" description="Software configuration" evalPriority="0" displayPriority="10" resources="features\[\d+\].*" />
+    <Profile purpose="MEMORY" displayName="Memory" fileName="memory" description="Memory configuration" evalPriority="1" displayPriority="8" resources="vres\[\d+\]\.memory_region_data\[\d+\].*" />
+    <Profile diagramType="CLOCKS" displayName="Clocks" fileName="clocks" description="Clock configuration" evalPriority="2" displayPriority="6" resources="srss\[\d+\]\.(clock|rtc)\[\d+\].*|wco\[\d+\].*|exco\[\d+\].*|(cpuss|m33syscpuss|m55appcpuss|m0seccpuss)\[\d+\]\.systick.*" />
+    <Profile diagramType="CLOCKS" displayName="Clocks" fileName="peripheral_clocks" description="Peripheral clock divider configuration" evalPriority="3" displayPriority="6" resources="peri\[\d+\].+" />
+    <Profile displayName="System" fileName="system" description="System configuration" evalPriority="4" displayPriority="7" resources="power\[\d+\].*|srss\[\d+\]\.(power|pd|eeprom)\[\d+\].*|(cpuss|m33syscpuss)\[\d+\]\.dap\[\d+\].*|debug600\[\d+\].*" />
+    <Profile displayName="System" fileName="system" description="System configuration" evalPriority="9" displayPriority="7" resources="vres\[\d+\]\.(security|protection)\[\d+\].*" />
+    <Profile displayName="System" fileName="system" description="System configuration" evalPriority="13" displayPriority="7" resources=".*\.(cm33|cm55|sau|mpu_s|mpu_ns)\[\d+\]|.*\.mpc\[\d+\]|peri\[\d+\]" />
+    <Profile displayName="DMA" fileName="dmas" description="DMA configuration" evalPriority="5" displayPriority="9" resources=".*(dw|dmac|axidmac|axi_dmac|mxdw|mxahbdmac)\d?\[\d+\].*" />
+    <Profile diagramType="PACKAGE" displayName="Pins" fileName="pins" description="Pin configuration" evalPriority="8" displayPriority="4" resources="(ioss|iocl)\[\d+\].*" />
+    <Profile displayName="Connectivity" fileName="connectivity_wifi" description="Connectivity Wi-Fi configuration" evalPriority="11" displayPriority="5" resources="wifi(\[\d+\]).*" />
+    <Profile displayName="Connectivity" fileName="connectivity_bt" description="Connectivity BT configuration" evalPriority="11" displayPriority="5" resources="bt(\[\d+\]).*" />
+    <Profile displayName="Connectivity" fileName="connectivity_coex" description="Connectivity Coex configuration" evalPriority="11" displayPriority="5" resources="coex(\[\d+\]).*" />
+    <Profile purpose="MEMORY" displayName="Memory" fileName="memory" description="Memory configuration" evalPriority="12" displayPriority="8" resources="vres\[\d+\]\.(reserved_memory_region|memory)\[\d+\].*" />
+    <Profile displayName="Solutions" fileName="solutions" description="Solution configuration" evalPriority="10" displayPriority="1" resources="vres\[\d+\].*" />
+    <Profile displayName="Peripherals" fileName="peripherals" description="Peripheral Hardware Block configuration" evalPriority="7" displayPriority="2" resources=".*" />
+    <Profile purpose="ROUTING" diagramType="ANALOG" displayName="Analog-Routing" fileName="routing" description="Establishes all necessary connections between hardware elements." evalPriority="6" displayPriority="3" resources="NONE">
+      <Includes />
+    </Profile>
+  </Profiles>
+</View>

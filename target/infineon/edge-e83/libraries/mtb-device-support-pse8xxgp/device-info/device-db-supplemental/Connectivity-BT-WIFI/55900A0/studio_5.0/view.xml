@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns="http://cypress.com/xsd/cystudioview_v1">
+  <PinResourceType value="ioss[0].port[%1$d].pin[%2$d]" />
+</View>

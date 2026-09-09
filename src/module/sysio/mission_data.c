@@ -25,6 +25,7 @@ MCN_DECLARE(fms_output);
 MCN_DECLARE(pilot_cmd);
 MCN_DECLARE(gcs_cmd);
 
+static bool initialized = false;
 static struct mission_item* mission_data;
 static uint16_t mission_count;
 static Mission_Data_Bus data_bus;
@@ -258,9 +259,9 @@ fmt_err_t load_mission_data(const char* path)
         mdp = mission_data;
         while (!feof(fp) && cnt < mission_count) {
             /* Mission file format:
-            * <INDEX> <CURRENT WP> <COORD FRAME> <COMMAND> <PARAM1> <PARAM2> <PARAM3> <PARAM4> 
-            * <PARAM5/X/LATITUDE> <PARAM6/Y/LONGITUDE> <PARAM7/Z/ALTITUDE> <AUTOCONTINUE> 
-            */
+             * <INDEX> <CURRENT WP> <COORD FRAME> <COMMAND> <PARAM1> <PARAM2> <PARAM3> <PARAM4>
+             * <PARAM5/X/LATITUDE> <PARAM6/Y/LONGITUDE> <PARAM7/Z/ALTITUDE> <AUTOCONTINUE>
+             */
             fscanf(fp, "%hu %hhu %hhu %hu %f %f %f %f %ld %ld %f %hhu", &mdp->seq, &mdp->current, &mdp->frame, &mdp->command, &mdp->param1, &mdp->param2, &mdp->param3, &mdp->param4, &mdp->x, &mdp->y, &mdp->z, &mdp->autocontinue);
 
             mdp++;
@@ -286,6 +287,10 @@ fmt_err_t mission_data_collect(void)
 {
     /* The default vehicle status is Disarm */
     static FMS_Out_Bus old_fms_out = { .status = VehicleStatus_Disarm };
+
+    if (initialized == false) {
+        return FMT_ENOSYS;
+    }
 
     if (mcn_poll(fms_out_nod)) {
         FMS_Out_Bus fms_out;
@@ -407,6 +412,8 @@ fmt_err_t mission_data_init(void)
 
     FMT_TRY(load_mission_data(MISSION_FILE));
     FMT_TRY(mission_reset());
+
+    initialized = true;
 
     return FMT_EOK;
 }

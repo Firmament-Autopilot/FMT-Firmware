@@ -1,0 +1,86 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "hash"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "Input bin file",
+                        "type": "string"
+                    },
+                    "algorithm": {
+                        "title": "Hash algorithm",
+                        "type": "string",
+                        "enum": [
+                            "SHA256",
+                            "SHA384",
+                            "SHA512"
+                        ]
+                    }
+                }
+            },
+            "allOf": [
+                {
+                    "contains": {
+                        "required": [
+                            "file",
+                            "algorithm"
+                        ]
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                }
+            ]
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the output file",
+                        "type": "string"
+                    },
+                    "format": {
+                        "title": "Format of the output file: 'bin' or 'txt'",
+                        "type": "string",
+                        "enum": [
+                            "bin",
+                            "txt"
+                        ]
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        }
+    }
+}

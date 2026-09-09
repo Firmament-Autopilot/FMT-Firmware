@@ -1,0 +1,174 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    //
+    // NOTE for JLink users:
+    //
+    //    Please create the following setting in your VSCode User Settings or in
+    //    your global PATH.  Cortex-Debug needs to find the specific gdb-server
+    //    you want to use.
+    //
+    //       Windows     : "cortex-debug.JLinkGDBServerPath": "<JLinkInstallDir>/JLinkGDBServerCL"
+    //       Linux / Mac : "cortex-debug.JLinkGDBServerPath": "<JLinkInstallDir>/JLinkGDBServer"
+    //
+    //    User settings are located in:
+    //
+    //       Windows : %APPDATA%/Code/User/settings.json
+    //       Mac     : $HOME/Library/Application Support/Code/User/settings.json
+    //       Linux   : $HOME/.config/Code/User/settings.json
+    //
+    //    You can use the VSCode Settings UI to edit the files mentioned above.
+    //
+    //    For the JLink configurations in this file, the "device" name comes from
+    //    the list found here:
+    //       https://www.segger.com/downloads/supported-devices.php
+    //
+    //    To use KitProg3/MiniProg4 JTAG interface, update transport in openocd.tcl located at the
+    //    project root - find "transport select [swd|jtag]" and specify the appropriate interface.
+    //    To use JLink JTAG interface, update corresponding JLink configuration. Set "interface"
+    //    property to "jtag" and delete the "_tm" suffix (if present) in the "device" property.
+    //
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Multi-Core Debug (JLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE_APPLICATION&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "overrideRestartCommands": [
+                "monitor reset",
+                "flushregs",
+                "set $XPSR = 0x01000000", // Set Thumb bit in XPSR as a temporary workaround
+                "set $pc = &&&PC_SYMBOL&&",
+                "set $sp = &&&SP_SYMBOL&&"
+            ],
+            "overrideLaunchCommands": [
+                "set mem inaccessible-by-default off",
+                "-enable-pretty-printing",
+                "set remotetimeout 90",
+                "monitor reset",
+                "load &&_MTB_RECIPE__HEX_FILE_APPLICATION&&",
+                "monitor reset",
+                "flushregs",
+                "set $XPSR = 0x01000000", // Set Thumb bit in XPSR as a temporary workaround
+                "set $pc = &&&PC_SYMBOL&&",
+                "set $sp = &&&SP_SYMBOL&&"
+            ],
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__APPLICATION_SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",    // Specifies application entry point name where program will halt
+            "preLaunchTask": "Build", // Set this to run a task from tasks.json before
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": " Multi-core"
+            },
+            "chainedConfigurations": {
+                "enabled": true,
+                "waitOnEvent": "postInit",
+                "lifecycleManagedByParent": true,
+                "launches": [                               // Array of launches. Order is respected
+                    {
+                        "name": "Attach PSOCE84 CM55 (JLink)",     // Name of another configuration
+                        "folder": "./&&_MTB_RECIPE__CM55_PRJ_DIR&&",
+                        "overrides": {
+                            "overrideRestartCommands": [
+                                "monitor halt"
+                            ],
+                            "postStartSessionCommands": [
+                                "tb main",
+                                "continue"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Program Application (JLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            // executable not needed but need some valid file to get the session to start
+            "executable": "&&_MTB_RECIPE__ELF_FILE_APPLICATION&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "overrideLaunchCommands": [
+                "monitor reset",      // Reset both core and the peripherals
+                "load &&_MTB_RECIPE__HEX_FILE_APPLICATION&&",
+                "monitor reset",
+                "flushregs"
+            ],
+            "postStartSessionCommands": [
+                "quit"
+            ],
+            "preLaunchTask": "Build",    // Set this to run a task from tasks.json
+                                                        // before device programming
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": " Multi-core"
+            }
+        },
+        {
+            "name": "Erase Device (JLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            // executable not needed but need some valid file to get the session to start
+            "executable": "&&_MTB_RECIPE__ELF_FILE_APPLICATION&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "overrideLaunchCommands": [
+                "monitor reset 0",      // Reset both core and the peripherals
+                "monitor flash erase",
+                "monitor reset 2"       // Reset via the reset pin
+            ],
+            "postStartSessionCommands": [
+                "quit"
+            ],
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": " Multi-core"
+            }
+        },
+        {
+            "name": "Erase All (JLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            // executable not needed but need some valid file to get the session to start
+            "executable": "&&_MTB_RECIPE__ELF_FILE_APPLICATION&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "overrideLaunchCommands": [
+                "monitor exec EnableEraseAllFlashBanks",
+                "monitor reset 0",      // Reset both core and the peripherals
+                "monitor flash erase",
+                "monitor reset 2"       // Reset via the reset pin
+            ],
+            "postStartSessionCommands": [
+                "quit"
+            ],
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": " Multi-core"
+            }
+        }
+    ]
+}

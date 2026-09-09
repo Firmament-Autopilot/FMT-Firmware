@@ -1,0 +1,148 @@
+        {
+            "name": "Launch PSOCE84 &&_MTB_RECIPE__TARGET_PROCESSOR_NAME&& (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "openocd",
+            "searchDir": [
+                "${workspaceFolder}",
+                "&&_MTB_RECIPE__QSPI_CFG_PATH&&"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set DEBUG_CERTIFICATE &&_MTB_RECIPE__DBG_CERTIFICATE_PATH&&"
+            ],
+            "preLaunchCommands": [
+                // Add symbol file of NS or S project//CM33 Only//
+                //"add-symbol-file <other_proj_elf_file_path>"//CM33 Only//
+            ],
+            "overrideLaunchCommands": [
+                "set mem inaccessible-by-default off",
+                "-enable-pretty-printing",
+                "set remotetimeout 60",
+                // Comment this next line out if you don't want to reload program//CM33 Only//
+                // Comment this next two lines out if you don't want to reload program//CM55 Only//
+                "monitor targets cat1d.cm33",//CM55 Only//
+                "monitor flash write_image erase {&&_MTB_RECIPE__HEX_FILE&&}",
+                "monitor reset init",
+                "monitor reset_halt &&_MTB_RECIPE__OPENOCD_RESET_TARGET&&"
+            ],
+            "overrideRestartCommands": [
+                "monitor reset_halt &&_MTB_RECIPE__OPENOCD_RESET_TARGET&&"
+            ],
+            "postRestartSessionCommands": [
+            ],
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,//CM55 Only//
+            "targetProcessor": &&_MTB_RECIPE__TARGET_PROCESSOR_NUMBER&&,//CM55 Only//
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",  // Specifies application entry point name where program will halt
+            "preLaunchTask": "Build",
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&_&&_PRJ_NAME&&"
+            }
+        },
+        // When using 'attach', make sure your program is running on the board and that your
+        // executable matches the image in the chip exactly, or else strange things can happen
+        // with breakpoints, variables, etc.
+        {
+            "name": "Attach PSOCE84 &&_MTB_RECIPE__TARGET_PROCESSOR_NAME&& (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "&&_MTB_RECIPE__ATTACH_SERVER_TYPE&&",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set ENABLE_ACQUIRE 0",
+                "set DEBUG_CERTIFICATE &&_MTB_RECIPE__DBG_CERTIFICATE_PATH&&"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "preAttachCommands": [
+                // Add symbol file of NS or S project//CM33 Only//
+                //"add-symbol-file <other_proj_elf_file_path>"//CM33 Only//
+            ],
+            "overrideAttachCommands": [
+                "set mem inaccessible-by-default off",
+                "-enable-pretty-printing",
+                "set remotetimeout 60",
+                "info threads",
+                "monitor reset_halt &&_MTB_RECIPE__OPENOCD_RESET_TARGET&& attach"
+            ],
+            "overrideRestartCommands": [
+                "monitor reset_halt &&_MTB_RECIPE__OPENOCD_RESET_TARGET&& attach"
+            ],
+            "postRestartSessionCommands": [
+            ],
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,//CM55 Only//
+            "targetProcessor": &&_MTB_RECIPE__TARGET_PROCESSOR_NUMBER&&,//CM55 Only//
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",    // Specifies application entry point name for restart/reset
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&_&&_PRJ_NAME&&"
+            }
+        },//CM55 Only//
+        }//CM33 Only//
+        // When using 'attach', make sure your program is running on the board and that your//CM55 Only//
+        // executable matches the image in the chip exactly, or else strange things can happen//CM55 Only//
+        // with breakpoints, variables, etc.//CM55 Only//
+        {//CM55 Only//
+            "name": "Add CM55 to CM33 PSOCE84 (KitProg3_MiniProg4)",//CM55 Only//
+            "type": "cortex-debug",//CM55 Only//
+            "request": "attach",//CM55 Only//
+            "cwd": "${workspaceFolder}",//CM55 Only//
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",//CM55 Only//
+            "servertype": "external",//CM55 Only//
+            "gdbTarget": "localhost:50001",//CM55 Only//
+            "searchDir": [//CM55 Only//
+                "${workspaceFolder}",//CM55 Only//
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"//CM55 Only//
+            ],//CM55 Only//
+            "openOCDPreConfigLaunchCommands": [//CM55 Only//
+                "set ENABLE_ACQUIRE 0"//CM55 Only//
+            ],//CM55 Only//
+            "configFiles": [//CM55 Only//
+                "openocd.tcl"//CM55 Only//
+            ],//CM55 Only//
+            "overrideAttachCommands": [//CM55 Only//
+                "set mem inaccessible-by-default off",//CM55 Only//
+                "-enable-pretty-printing",//CM55 Only//
+                "set remotetimeout 60",//CM55 Only//
+                "info threads",//CM55 Only//
+                "monitor reset_halt &&_MTB_RECIPE__OPENOCD_RESET_TARGET&& multi"//CM55 Only//
+            ],//CM55 Only//
+            "overrideRestartCommands": [//CM55 Only//
+                "monitor reset_halt &&_MTB_RECIPE__OPENOCD_RESET_TARGET&& multi"//CM55 Only//
+            ],//CM55 Only//
+            "postStartSessionCommands":[//CM55 Only//
+                "continue"//CM55 Only//
+            ],//CM55 Only//
+            "postRestartSessionCommands": [//CM55 Only//
+            ],//CM55 Only//
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,//CM55 Only//
+            "targetProcessor": &&_MTB_RECIPE__TARGET_PROCESSOR_NUMBER&&,//CM55 Only//
+            // svdFile is optional, it can be very large.//CM55 Only//
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",//CM55 Only//
+            "breakAfterReset": true,//CM55 Only//
+            "runToEntryPoint": "main",    // Specifies application entry point name for restart/reset//CM55 Only//
+            "showDevDebugOutput": "none",//CM55 Only//
+            "presentation": {//CM55 Only//
+                "hidden": true,//CM55 Only//
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&_&&_PRJ_NAME&&"//CM55 Only//
+            }//CM55 Only//
+        }//CM55 Only//

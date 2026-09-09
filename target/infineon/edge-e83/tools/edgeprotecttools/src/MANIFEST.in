@@ -1,0 +1,7 @@
+include README.md
+include CHANGELOG.md
+include EULA
+include LICENSE
+include docs/*
+recursive-include src *
+global-exclude .DS_Store

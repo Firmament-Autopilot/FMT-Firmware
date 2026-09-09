@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file smif_v2.cypersonality
+* \version 1.0
+*
+* \brief
+* Quad Serial Peripheral Interface (QSPI) personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2022-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id='mxs40smif_ver2' name='Quad Serial Peripheral Interface (QSPI)' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v7'>
+  <Dependencies>
+    <IpBlock name='mxsmif,mxsmif_ver2_s40e'>
+        <Version major='3' />
+        <Version major='2' />
+    </IpBlock>
+    <Resource name='smif' />
+  </Dependencies>
+  <ExposedMembers>
+    <ExposedMember key='inFlash' paramId='inFlash' />
+  </ExposedMembers>
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__smif.html' linkText='Open SMIF Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <!-- General -->
+
+    <ParamChoice id='rx_clock_select' name='Receiver Clock Source' group='General' default='CY_SMIF_SEL_INVERTED_FEEDBACK_CLK' visible='`${getVersion() eq 2}`' editable='`${getVersion() eq 2}`' desc='Specifies the clock source for the receiver clock'>
+      <Entry name='Output Clock'                 value='CY_SMIF_SEL_OUTPUT_CLK'             visible='true'/>
+      <Entry name='Inverted Output Clock'        value='CY_SMIF_SEL_INVERTED_OUTPUT_CLK'    visible='true'/>
+      <Entry name='Feedback Clock'               value='CY_SMIF_SEL_FEEDBACK_CLK'           visible='true'/>
+      <Entry name='Inverted Feedback Clock'      value='CY_SMIF_SEL_INVERTED_FEEDBACK_CLK'  visible='true'/>
+      <Entry name='Internal CLock'               value='CY_SMIF_SEL_INTERNAL_CLK'           visible='true'/>
+      <Entry name='Inverted Internal Clock'      value='CY_SMIF_SEL_INVERTED_INTERNAL_CLK'  visible='true'/>
+      <Entry name='Inverted HyperBus RWDS Clock' value='CY_SMIF_SEL_INVERTED_SPHB_RWDS_CLK' visible='true'/>
+      <Entry name='HyperBus RWDS Clock'          value='CY_SMIF_SEL_SPHB_RWDS_CLK'          visible='true'/>
+	</ParamChoice>
+
+    <ParamBool id='delay_tap_enable' name='Delay Tap Enable' group='General' default='false' visible='`${getVersion() eq 2}`' editable='`${getVersion() eq 2}`' desc='If checked Delay tap is enabled. ' />
+
+    <ParamChoice id='delay_line_select' name='Delay Line Select' group='General' default='CY_SMIF_NO_DELAY_SEL' visible='`${getVersion() eq 2}`' editable='`${getVersion() eq 2}`' desc='Specifies the delay line used for RX data capturing with'>
+      <Entry name='1 New Cell Per Tap' value='CY_SMIF_1_NEW_SEL_PER_TAP' visible='true'/>
+      <Entry name='1 Cell Per Tap' value='CY_SMIF_1_SEL_PER_TAP' visible='true'/>
+      <Entry name='2 Cell Per Tap' value='CY_SMIF_2_SEL_PER_TAP' visible='true'/>
+      <Entry name='4 Cell Per Tap' value='CY_SMIF_4_SEL_PER_TAP' visible='true'/>
+      <Entry name='No delay line' value='CY_SMIF_NO_DELAY_SEL' visible='true'/>
+	</ParamChoice>
+
+    <!-- Clocks -->
+    <ParamSignal port='clk_if[0]' name='Interface Clock' group='Clocks' visible='true' desc='Transmission interface clock. Divides HF clock supplied internally by 2' canBeEmpty='false' />
+    <ParamSignal port='spihb_clk[0]' name='SPI Clock' group='Clocks' visible='true' desc='The Serial Clock (SCLK) to the slave devices' canBeEmpty='false'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='smifIfSource' name='smifIfSource' group='Internal' default='`${getBlockFromSignal("clk_if[0]")}`' visible='false' editable='false' desc='Interface Source Clock Resource' />
+    <ParamRange  id='smifIfClkHz' name='smifIfClkHz' group='Internal' default='`${getExposedMember(smifIfSource, "frequency")}`' min='1' max='200000000' resolution='1' visible='false' editable='false' desc='SMIF IF clock frequency in Hz.' />
+    <ParamString id='sclkPin' name='sclkPin' group='Internal' default='`${getBlockFromSignal("spihb_clk[0]")}`' visible='false' editable='false' desc='' />
+
+    <!-- External tools -->
+    <ParamString id='cfgFileName' name='cfgFileName' group='External Tools' default='design.cyqspi' visible='false' editable='false' desc='' />
+    <ParamString id='cfgFilePath' name='cfgFilePath' group='External Tools' default='`${cy_design_path() . "/" . cfgFileName}`' visible='false' editable='false' desc='' />
+
+    <ParamCustom id='configurator' name='QSPI Configurator' group='External Tools' default='0' path='`${cy_tools_path("qspi-configurator") . "/qspi-configurator"}`' modal='false' visible='true' editable='true' desc='Launch QSPI Configurator tool'>
+      <Arg value='`${"--config=" . cfgFilePath}`' />
+      <Arg value='`${"--output-dir=" . cy_codegen_path()}`' />
+      <Arg value='`${"--library=" . cy_libs_file()}`' />
+    </ParamCustom>
+
+
+    <!-- SPI Data -->
+    <ParamSignal port='spihb_data0[0]' name='SPI Data[0]' group='Data' visible='`${hasVisibleOption("spihb_data0[0]")}`' desc='Data line 0 to be used by the QSPI block, must be used in conjunction with Data line 1' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data0Pin' name='data0Pin' group='Internal' default='`${getBlockFromSignal("spihb_data0[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_data1[0]' name='SPI Data[1]' group='Data' visible='`${hasVisibleOption("spihb_data1[0]")}`' desc='Data line 1 to be used by the QSPI block, must be used in conjunction with Data line 0' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data1Pin' name='data1Pin' group='Internal' default='`${getBlockFromSignal("spihb_data1[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_data2[0]' name='SPI Data[2]' group='Data' visible='`${hasVisibleOption("spihb_data2[0]")}`' desc='Data line 2 to be used by the QSPI block, must be used in conjunction with Data line 3' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data2Pin' name='data2Pin' group='Internal' default='`${getBlockFromSignal("spihb_data2[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_data3[0]' name='SPI Data[3]' group='Data' visible='`${hasVisibleOption("spihb_data3[0]")}`' desc='Data line 3 to be used by the QSPI block, must be used in conjunction with Data line 2' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data3Pin' name='data3Pin' group='Internal' default='`${getBlockFromSignal("spihb_data3[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_data4[0]' name='SPI Data[4]' group='Data' visible='`${(CHIP_TOP.DATA8_PRESENT == 1) &amp;&amp; hasVisibleOption("spihb_data4[0]")}`' desc='Data line 4 to be used by the QSPI block, must be used in conjunction with Data line 5' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data4Pin' name='data4Pin' group='Internal' default='`${getBlockFromSignal("spihb_data4[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_data5[0]' name='SPI Data[5]' group='Data' visible='`${(CHIP_TOP.DATA8_PRESENT == 1) &amp;&amp; hasVisibleOption("spihb_data5[0]")}`' desc='Data line 5 to be used by the QSPI block, must be used in conjunction with Data line 4' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data5Pin' name='data5Pin' group='Internal' default='`${getBlockFromSignal("spihb_data5[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_data6[0]' name='SPI Data[6]' group='Data' visible='`${(CHIP_TOP.DATA8_PRESENT == 1) &amp;&amp; hasVisibleOption("spihb_data6[0]")}`' desc='Data line 6 to be used by the QSPI block, must be used in conjunction with Data line 7' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data6Pin' name='data6Pin' group='Internal' default='`${getBlockFromSignal("spihb_data6[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_data7[0]' name='SPI Data[7]' group='Data' visible='`${(CHIP_TOP.DATA8_PRESENT == 1) &amp;&amp; hasVisibleOption("spihb_data7[0]")}`' desc='Data line 7 to be used by the QSPI block, must be used in conjunction with Data line 6' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer on&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='data7Pin' name='data7Pin' group='Internal' default='`${getBlockFromSignal("spihb_data7[0]")}`' visible='false' editable='false' desc='' />
+
+    <!-- SPI Select -->
+    <ParamSignal port='spihb_select0[0]' name='SPI Slave Select 0' group='Slave Select' visible='`${hasVisibleOption("spihb_select0[0]")}`' desc='Select signal 0 to specify which memory device to communicate with' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='ssel0Pin' name='ssel0Pin' group='Internal' default='`${getBlockFromSignal("spihb_select0[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_select1[0]' name='SPI Slave Select 1' group='Slave Select' visible='`${hasVisibleOption("spihb_select1[0]")}`' desc='Select signal 1 to specify which memory device to communicate with' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='ssel1Pin' name='ssel1Pin' group='Internal' default='`${getBlockFromSignal("spihb_select1[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_select2[0]' name='SPI Slave Select 2' group='Slave Select' visible='`${hasVisibleOption("spihb_select2[0]")}`' desc='Select signal 2 to specify which memory device to communicate with' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='ssel2Pin' name='ssel2Pin' group='Internal' default='`${getBlockFromSignal("spihb_select2[0]")}`' visible='false' editable='false' desc='' />
+    <ParamSignal port='spihb_select3[0]' name='SPI Slave Select 3' group='Slave Select' visible='`${hasVisibleOption("spihb_select3[0]")}`' desc='Select signal 3 to specify which memory device to communicate with' canBeEmpty='true'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='ERROR' reason='Drive Mode must be set to &apos;Strong Drive. Input buffer off&apos;.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamString id='ssel3Pin' name='ssel3Pin' group='Internal' default='`${getBlockFromSignal("spihb_select3[0]")}`' visible='false' editable='false' desc='' />
+
+    <!-- Interrupt -->
+    <ParamBool id='isrAlignment' name='Memory Mode Alignment Error' group='Interrupt' default='false' visible='true' editable='true' desc='An alignment error in the memory mode (XIP mode) is set as an interrupt cause' />
+    <ParamBool id='isrUnderflow' name='RX Data FIFO Underflow' group='Interrupt' default='false' visible='true' editable='true' desc='The Rx Data FIFO underflow condition is set as an interrupt cause' />
+    <ParamBool id='isrCmdOverflow' name='TX Command FIFO Overflow' group='Interrupt' default='false' visible='true' editable='true' desc='The TX command FIFO overflow condition is set as an interrupt cause' />
+    <ParamBool id='isrDataOverflow' name='TX Data FIFO Overflow' group='Interrupt' default='false' visible='true' editable='true' desc='The TX data FIFO overflow condition is set as an interrupt cause' />
+
+    <!-- DMA -->
+    <ParamSignal port='tr_rx_req[0]' name='RX Trigger Output' group='DMA Triggers' visible='true' desc='Enables the RX trigger output terminal (tr_rx_req)' canBeEmpty='true' />
+    <ParamRange id='rxTriggerLevel' name='RX FIFO Trigger Level' group='DMA Triggers' default='0' min='0' max='7' resolution='1' visible='true' editable='true' desc='The level that can trigger the RX FIFO to trigger an interrupt or a DMA request' />
+    <ParamSignal port='tr_tx_req[0]' name='TX Trigger Output' group='DMA Triggers' visible='true' desc='enables the TX trigger output terminal (tr_tx_req)' canBeEmpty='true' />
+    <ParamRange id='txTriggerLevel' name='TX FIFO Trigger Level' group='DMA Triggers' default='0' min='0' max='7' resolution='1' visible='true' editable='true' desc='The level that can trigger the TX FIFO to trigger an interrupt or a DMA request' />
+
+    <ParamString id='dmaRxTriggerOut' name='dmaRxTriggerOut' group='Internal' default='`${getBlockFromSignal("tr_rx_req[0]")}`' visible='false' editable='false' desc='' />
+    <ParamString id='dmaTxTriggerOut' name='dmaTxTriggerOut' group='Internal' default='`${getBlockFromSignal("tr_tx_req[0]")}`' visible='false' editable='false' desc='' />
+
+    <!-- SMIF instance number -->
+    <ParamString id='InstNumber' name='InstNumber' group='Internal' default='`${getInstNumber("smif")}`' visible='false' editable='false' desc='SMIF Instance name number.' />
+
+    <!-- Other -->
+    <ParamBool id='inFlash' name='Store Config in Flash' group='Advanced' default='true' visible='true' editable='true' desc='Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false).' />
+
+    <!-- Helpers -->
+    <Repeat count='8'>
+      <ParamBool id='hasConnection$idx' name='' group='Hidden' default='`${hasConnection("spihb_data$idx", 0)}`' visible='false' editable='false' desc='' />
+    </Repeat>
+    <Repeat count='4'>
+      <ParamBool id='hasSelect$idx' name='' group='Hidden' default='`${hasConnection("spihb_select$idx", 0)}`' visible='false' editable='false' desc='' />
+    </Repeat>
+    <ParamBool id='allDataConnected' name='' group='Hidden' default='`${hasConnection0 &amp;&amp; hasConnection2 &amp;&amp; hasConnection4 &amp;&amp; hasConnection6}`' visible='false' editable='false' desc='' />
+    <ParamBool id='requireMultipleSelects' name='' group='Hidden' default='`${!allDataConnected &amp;&amp; ((hasConnection0 &amp;&amp; hasConnection4) || (hasConnection0 &amp;&amp; hasConnection6) || (hasConnection2 &amp;&amp; hasConnection4) || (hasConnection2 &amp;&amp; hasConnection6))}`' visible='false' editable='false' desc='' />
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='SPI Data[0] and SPI Data[1] must be used together' condition='`${hasConnection0 != hasConnection1 &amp;&amp; hasConnection0}`' paramId='spihb_data1[0]' />
+    <DRC type='ERROR' text='SPI Data[0] and SPI Data[1] must be used together' condition='`${hasConnection0 != hasConnection1 &amp;&amp; hasConnection1}`' paramId='spihb_data0[0]' />
+    <DRC type='ERROR' text='SPI Data[2] and SPI Data[3] must be used together' condition='`${hasConnection2 != hasConnection3 &amp;&amp; hasConnection2}`' paramId='spihb_data3[0]' />
+    <DRC type='ERROR' text='SPI Data[2] and SPI Data[3] must be used together' condition='`${hasConnection2 != hasConnection3 &amp;&amp; hasConnection3}`' paramId='spihb_data2[0]' />
+    <DRC type='ERROR' text='SPI Data[4] and SPI Data[5] must be used together' condition='`${hasConnection4 != hasConnection5 &amp;&amp; hasConnection4}`' paramId='spihb_data5[0]' />
+    <DRC type='ERROR' text='SPI Data[4] and SPI Data[5] must be used together' condition='`${hasConnection4 != hasConnection5 &amp;&amp; hasConnection5}`' paramId='spihb_data4[0]' />
+    <DRC type='ERROR' text='SPI Data[6] and SPI Data[7] must be used together' condition='`${hasConnection6 != hasConnection7 &amp;&amp; hasConnection6}`' paramId='spihb_data6[0]' />
+    <DRC type='ERROR' text='SPI Data[6] and SPI Data[7] must be used together' condition='`${hasConnection6 != hasConnection7 &amp;&amp; hasConnection7}`' paramId='spihb_data5[0]' />
+    <DRC type='ERROR' text='At least two SPI Data signal must be connected' condition='`${!(hasConnection0 || hasConnection2 || hasConnection4 || hasConnection6)}`' paramId='spihb_data0[0]' />
+    <DRC type='ERROR' text='At least two SPI Data signal must be connected' condition='`${!(hasConnection1 || hasConnection3 || hasConnection5 || hasConnection7)}`' paramId='spihb_data1[0]' />
+    <DRC type='ERROR' text='At least one SPI Select signal must be connected' condition='`${!(requireMultipleSelects || hasSelect0 || hasSelect1 || hasSelect2 || hasSelect3)}`' paramId='spihb_select0[0]' />
+    <DRC type='ERROR' text='At least two SPI Select signal must be connected' condition='`${requireMultipleSelects &amp;&amp; !((hasSelect0 &amp;&amp; hasSelect1) || (hasSelect0 &amp;&amp; hasSelect2) || (hasSelect0 &amp;&amp; hasSelect3) || (hasSelect1 &amp;&amp; hasSelect2) || (hasSelect1 &amp;&amp; hasSelect3) || (hasSelect2 &amp;&amp; hasSelect3))}`' paramId='spihb_select0[0]'/>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_smif.h' include='true' />
+    <ConfigInclude value='mtb_hal.h' include='true' guard='defined (COMPONENT_MTB_HAL)' />
+    <ConfigDefine name='`${INST_NAME}`_HW' value='SMIF`${InstNumber}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_IRQ' value='`${getVersion() eq 2 ? "smif_0_interrupt_IRQn" : "smif_interrupt_normal_IRQn"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_MEMORY_MODE_ALIGMENT_ERROR' value='`${isrAlignment ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_RX_DATA_FIFO_UNDERFLOW' value='`${isrUnderflow ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_TX_COMMAND_FIFO_OVERFLOW' value='`${isrCmdOverflow ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_TX_DATA_FIFO_OVERFLOW' value='`${isrDataOverflow ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_RX_DMA_TRIGGER_OUT_USED' value='`${dmaRxTriggerOut ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_TX_DMA_TRIGGER_OUT_USED' value='`${dmaTxTriggerOut ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+
+    <ConfigDefine name='`${INST_NAME}`_RX_FIFO_TRIGEER_LEVEL' value='(`${rxTriggerLevel}`UL)' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_TX_FIFO_TRIGEER_LEVEL' value='(`${txTriggerLevel}`UL)' public='true' include='true' />
+
+    <ConfigDefine name='`${INST_NAME}`_DATALINES0_1' value='`${hasConnection0 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_DATALINES2_3' value='`${hasConnection2 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_DATALINES4_5' value='`${hasConnection4 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_DATALINES6_7' value='`${hasConnection6 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+
+    <ConfigDefine name='`${INST_NAME}`_SS0' value='`${hasSelect0 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_SS1' value='`${hasSelect1 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_SS2' value='`${hasSelect2 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_SS3' value='`${hasSelect3 ? "(1UL)" : "(0UL)"}`' public='true' include='true' />
+
+    <ConfigDefine name='`${INST_NAME}`_DESELECT_DELAY' value='7' public='true' include='true' />
+
+    <ConfigStruct name='`${INST_NAME . "_config"}`' type='cy_stc_smif_config_t' const='`${inFlash}`' public='true' include='true' >
+      <Member name='mode' value='(uint32_t)CY_SMIF_NORMAL' />
+      <Member name='deselectDelay' value='`${INST_NAME}`_DESELECT_DELAY' />
+      <Member name='rxClockSel' value='`${rx_clock_select}`' />
+      <Member name='blockEvent' value='(uint32_t)CY_SMIF_BUS_ERROR' />
+      <Member name='delayTapEnable' value='`${delay_tap_enable}`' />
+      <Member name='delayLineSelect' value='`${delay_line_select}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_clock_ref' type='mtb_hal_hf_clock_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL)'>
+        <Member name='inst_num' value='`${getExposedMember(smifIfSource, "clockInst")}`U' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_hal_clock' type='mtb_hal_clock_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL)'>
+        <Member name='clock_ref' value='&amp;`${INST_NAME}`_clock_ref' />
+        <Member name='interface' value='&amp;mtb_hal_clock_hf_interface' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${toUpper(INST_NAME)}`_hal_config' type='mtb_hal_memoryspi_configurator_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_MEMORYSPI)'>
+      <Member name='base' value='`${INST_NAME}`_HW' />
+      <Member name='clock' value='&amp;`${INST_NAME}`_hal_clock' />
+      <Member name='config' value='&amp;`${toUpper(INST_NAME)}`_config' />
+      <Member name='csel' value='{`${ssel0Pin &amp;&amp; hasExposedMember(ssel0Pin, "halPortPin") ? "true" : "false"}`, `${ssel1Pin &amp;&amp; hasExposedMember(ssel1Pin, "halPortPin") ? "true" : "false"}`, `${ssel2Pin &amp;&amp; hasExposedMember(ssel2Pin, "halPortPin") ? "true" : "false"}`, `${ssel3Pin &amp;&amp; hasExposedMember(ssel3Pin, "halPortPin") ? "true" : "false"}`}' />
+      <Member name='irqs' value='`${toUpper(INST_NAME)}`_MEMORY_MODE_ALIGMENT_ERROR &#60;&#60; 5 | `${toUpper(INST_NAME)}`_RX_DATA_FIFO_UNDERFLOW &#60;&#60; 4 | `${toUpper(INST_NAME)}`_TX_COMMAND_FIFO_OVERFLOW &#60;&#60; 3 | `${toUpper(INST_NAME)}`_TX_DATA_FIFO_OVERFLOW &#60;&#60; 2 | (uint8_t)(`${toUpper(INST_NAME)}`_RX_FIFO_TRIGEER_LEVEL != 0) &#60;&#60; 1 | (uint8_t)(`${toUpper(INST_NAME)}`_TX_FIFO_TRIGEER_LEVEL != 0) &#60;&#60; 0' />
+      <Member name='dmas' value='`${toUpper(INST_NAME)}`_RX_DMA_TRIGGER_OUT_USED &#60;&#60; 1 | `${toUpper(INST_NAME)}`_TX_DMA_TRIGGER_OUT_USED &#60;&#60; 0' />
+    </ConfigStruct>
+
+  </ConfigFirmware>
+</Personality>

@@ -1,0 +1,20 @@
+{
+  "Assets": [
+    "prot_fw_nv_counter",
+    "padding_3",
+    "prot_fw_enable",
+    "prot_fw_auth_ctl",
+    "prot_fw_rot_key_0_hash",
+    "prot_fw_rot_key_1_hash",
+    "prot_fw_key",
+    "prot_fw_addr",
+    "prot_fw_size",
+    "prot_fw_rw_addr",
+    "prot_fw_rw_size",
+    "prot_fw_ram_addr",
+    "prot_fw_ram_size",
+    "prot_fw_pc_ctl_valid",
+    "prot_fw_pc1_handler",
+    "prot_fw_complete"
+  ]
+}

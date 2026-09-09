@@ -1,0 +1,14 @@
+{
+  "image": {
+    "path": "cyapp_reprovisioning_signed_icv0.bin",
+    "address": "0x20004000"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "0x2000D000"
+  },
+  "allowed_lcs": [
+    "NORMAL_NO_SECURE",
+    "SECURE"
+  ]
+}

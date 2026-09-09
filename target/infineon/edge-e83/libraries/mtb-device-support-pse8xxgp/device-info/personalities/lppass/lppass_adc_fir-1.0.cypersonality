@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_adc_fir-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* SAR ADC FIR filter personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_adc_fir_filter' name='SAR ADC FIR Filter' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.sar\.firfilter'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='filterCoefficients'   paramId='filterCoefficients' />
+    <ExposedMember key='inputChannel'         paramId='inputChannel' />
+    <ExposedMember key='numberOfTaps'         paramId='numberOfTaps' />
+    <ExposedMember key='shiftOutput'          paramId='shiftOutput' />
+    <ExposedMember key='waitForTapInit'       paramId='waitForTapInit' />
+    <ExposedMember key='limitDetectionSelect' paramId='limitDetectionSelect' />
+    <ExposedMember key='fifoSelect'           paramId='fifoSelect' />
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "]"}`'/>
+
+    <ParamString id='resource_fifo'
+                 name='resource_fifo'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].fifo[0]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='limitDetection' name='limitDetection' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_limitDetection")}`'/>
+    <ParamString id='fifoCount' name='fifoCount' group='Internal' visible='false' desc='' editable='false' default='`${(isBlockUsed(resource_fifo) ? getExposedMember(resource_fifo, "numFifos") : 0)}`'/>
+
+    <Repeat count='8'>
+      <ParamString id='sar_gpiochan_$idx_enabled' name='sar_gpiochan_$idx_enabled' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_gpiochan_$idx_enabled")}`'/>
+    </Repeat>
+
+    <Repeat count='16'>
+      <ParamString id='sar_muxchan_$idx_enabled' name='sar_muxchan_$idx_enabled' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_muxchan_$idx_enabled")}`'/>
+    </Repeat>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false'
+                 default='FIR Filter Configuration'/>
+
+      <ParamChoice id='inputChannel'
+                   name='Channel'
+                   group='`${rootGroupName}`'
+                   visible='true'
+                   editable='true'
+                   desc='List of configured Mux and GPIO channels'
+                                      default='CY_AUTANALOG_SAR_FIR_CH_DISABLED'>
+        <Entry name='Disabled'          value='CY_AUTANALOG_SAR_FIR_CH_DISABLED' visible='true'/>
+        <Entry name='GPIO Channel $idx' value='CY_AUTANALOG_SAR_FIR_CH_GPIO$idx' visible='`${sar_gpiochan_$idx_enabled}`' repeatCount='8'/>
+        <Entry name='Mux Channel $idx'  value='CY_AUTANALOG_SAR_FIR_CH_MUX$idx'  visible='`${sar_muxchan_$idx_enabled}`' repeatCount='16'/>
+      </ParamChoice>
+
+      <ParamRange id='numberOfTaps'
+                  name='Number of Taps'
+                  group='`${rootGroupName}`'
+                  min='1'
+                  max='64'
+                  resolution='1'
+                  visible='true'
+                  editable='true'
+                  desc=''
+                  default='1'/>
+
+      <ParamBool id='waitForTapInit'
+                 name='Wait for Tap Init'
+                 group='`${rootGroupName}`'
+                 visible='true'
+                 editable='true'
+                 desc='Wait for `${numberOfTaps}` inputs before start outputting data'
+                 default='true'/>
+
+      <ParamRange id='shiftOutput'
+                  name='Shift Output'
+                  group='`${rootGroupName}`'
+                  min='0'
+                  max='15'
+                  resolution='1'
+                  visible='true'
+                  editable='true'
+                  desc='Shift right by this value'
+                  default='0x0'/>
+
+      <ParamChoice id='fifoSelect'
+                   name='FIFO Select'
+                   group='`${rootGroupName}`'
+                   visible='`${isBlockUsed(resource_fifo)}`'
+                   editable='`${isBlockUsed(resource_fifo)}`'
+                   desc='Send the FIR results to FIFO'
+                   default='CY_AUTANALOG_FIFO_DISABLED'>
+        <Entry name='Disabled' value='CY_AUTANALOG_FIFO_DISABLED' visible='true'/>
+        <Entry name='FIFO $idx'
+               value='CY_AUTANALOG_FIFO_SELECT$idx'
+               visible='`${($idx &lt; fifoCount)}`' repeatCount='8'/>
+      </ParamChoice>
+
+      <ParamChoice id='limitDetectionSelect'
+                   name='Limit Detection Select'
+                   group='`${rootGroupName}`'
+                   visible='`${(limitDetection)}`'
+                   editable='true'
+                   desc='Select the limit condition and thresholds to generate trigger/interrupt'
+                                      default='CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED'>
+        <Entry name='Disabled'          value='CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED' visible='true'/>
+        <Entry name='Limit Detect $idx' value='CY_AUTANALOG_SAR_LIMIT_STATUS_STC$idx'  visible='true' repeatCount='4'/>
+      </ParamChoice>
+
+    <ParamString id='firDataLimitDetectionChoice'
+                 name='firDataLimitDetectionChoice'
+                 group='Internal'
+                 desc=''
+                 visible='false'
+                 editable='false'
+                 default='`${limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC0 ? 0 :
+                             limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC1 ? 1 :
+                             limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC2 ? 2 :
+                             limitDetectionSelect eq CY_AUTANALOG_SAR_LIMIT_STATUS_STC3 ? 3 : -1}`'/>
+
+    <ParamString id='firDataLimitDetectionRangeCondition'
+                 name='firDataLimitDetectionRangeCondition'
+                 group='Internal'
+                 visible='false'
+                 editable='false'
+                 desc=''
+                 default='`${getExposedMember(resource_sar, "sar_limitCondition" . firDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='firDataLimitDetectionLowerThreshold'
+                name='firDataLimitDetectionLowerThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc=''
+                default='`${getExposedMember(resource_sar, "sar_lowerThreshold" . firDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='firDataLimitDetectionUpperThreshold'
+                name='firDataLimitDetectionUpperThreshold'
+                group='Internal'
+                visible='false'
+                editable='false'
+                desc=''
+                default='`${getExposedMember(resource_sar, "sar_upperThreshold" . firDataLimitDetectionChoice . "")}`'/>
+
+    <ParamString id='firDataLimitDetectionRangeCondition_Info'
+                 name='Limit Condition'
+                 group='`${rootGroupName}`'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${limitDetection &amp;&amp; limitDetectionSelect ne CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED}`'
+                 editable='false'
+                 default='`${(firDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_BELOW") ? "ADC Data &lt; " . firDataLimitDetectionLowerThreshold . "" :
+                             (firDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_ABOVE") ? "ADC Data &gt; " . firDataLimitDetectionUpperThreshold . "" :
+                             (firDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_INSIDE") ? "" . firDataLimitDetectionLowerThreshold . " &lt;= ADC Data &lt; " . firDataLimitDetectionUpperThreshold . "" :
+                             (firDataLimitDetectionRangeCondition eq "CY_AUTANALOG_SAR_COND_OUTSIDE") ? "ADC Data &lt; " . firDataLimitDetectionLowerThreshold . " or ADC Data &gt;= " . firDataLimitDetectionUpperThreshold . "" :
+                             "N/A"}`'/>
+
+      <ParamChoice id='filterCoefficients'
+                   name='Filter Coefficients'
+                   group='`${rootGroupName}`'
+                   visible='true'
+                   editable='true'
+                   desc='FIR filter coefficients'
+                   default='0'>
+        <Entry name='Generate using configurator' value='0' visible='false'/>
+        <Entry name='User-generated' value='1' visible='true'/>
+      </ParamChoice>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure a parent resource for ADC FIR filters.' condition='`${!isBlockUsed(resource_sar)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_sar}`' value='lppass_adc-1.0' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware/>
+</PersonalityTemplate>

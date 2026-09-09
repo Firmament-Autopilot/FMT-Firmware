@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "serial_number": "",
+  "issuer": {
+    "country": "",
+    "organization": "",
+    "organizational_unit": "",
+    "state_or_province": "",
+    "locality": "",
+    "street_address": "",
+    "postal_code": "",
+    "email_address": "",
+    "common_name": ""
+  },
+  "validity": {
+    "not_before": "",
+    "not_after": "2160-10-05T16:52:44"
+  },
+  "subject": {
+    "country": "",
+    "organization": "",
+    "organizational_unit": "",
+    "state_or_province": "",
+    "locality": "",
+    "street_address": "",
+    "postal_code": "",
+    "email_address": "",
+    "common_name": ""
+  },
+  "subject_public_key": "",
+  "extensions": []
+}

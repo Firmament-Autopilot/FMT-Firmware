@@ -1,0 +1,19 @@
+{ 
+  "VERSION": "1",
+  "TEMPLATE_TYPE": "OEM_CERT",
+  "CERTIFICATE_NAME": "OEM_CSR",
+  "ISSUER": "Infineon",
+  "SIGNER_ID": "001",
+  "ALGORITHM": {
+      "description": "Key algorithm. Applicable values: ES256, ES384",
+      "value": "ES256"
+  },
+  "DATE": {
+      "description": "The date of creation of the certificate in the format: YYYY-MM-DD hh:mm:ss. If not provided, the system time will be used",
+      "value": ""
+  },
+  "ID": {
+      "description": "Certificate (unique) ID",
+      "value": ""
+  }
+} 

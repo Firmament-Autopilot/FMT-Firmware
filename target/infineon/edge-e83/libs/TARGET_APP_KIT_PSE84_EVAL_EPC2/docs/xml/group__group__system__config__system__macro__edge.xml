@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__system__macro__edge" kind="group">
+    <compoundname>group_system_config_system_macro_edge</compoundname>
+    <title>System Macros</title>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__group__system__config__system__macro__edge_1ga4f6dca85ca8144c2612e2c33d7ce3950" prot="public" static="no">
+        <name>CY_SYS_CORE_PWR_CTL_KEY_OPEN</name>
+        <initializer>(0x05FAUL)</initializer>
+        <briefdescription>
+<para>Power Control Key Open. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" line="46" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__system__macro__edge_1ga80e951c6e3bbd6ac0ca9d5ab517b198f" prot="public" static="no">
+        <name>CY_SYS_CORE_PWR_CTL_KEY_CLOSE</name>
+        <initializer>(0xFA05UL)</initializer>
+        <briefdescription>
+<para>Power Control Key Close. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" line="47" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__system__macro__edge_1ga2c3161220ca73cd6884dcaba546bf772" prot="public" static="no">
+        <name>CY_STARTUP_M33_ID</name>
+        <initializer>((uint32_t)((uint32_t)((0x10U) &amp; 0x3FFFU) &lt;&lt; 18U))</initializer>
+        <briefdescription>
+<para>The Cortex-M33 startup driver identifier. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="208" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" bodystart="208" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__system__macro__edge_1ga5f7da3feb40c1556b01fb39f09302784" prot="public" static="no">
+        <name>CY_STARTUP_M55_ID</name>
+        <initializer>((uint32_t)((uint32_t)((0x11U) &amp; 0x3FFFU) &lt;&lt; 18U))</initializer>
+        <briefdescription>
+<para>The Cortex-M55 startup driver identifier. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="211" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" bodystart="211" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

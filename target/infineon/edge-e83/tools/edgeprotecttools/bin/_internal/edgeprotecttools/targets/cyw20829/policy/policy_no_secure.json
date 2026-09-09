@@ -1,0 +1,152 @@
+{
+    "policy": {
+        "platform": "cyw20829",
+        "version": 2.0,
+        "type": "no_secure"
+    },
+    "device_policy":
+    {
+        "debug":
+        {
+            "cpu":
+            {
+                "ap_cm33": {
+                    "description": "Configures the CM33 debug access port availability in the NORMAL_NO_SECURE LCS",
+                    "applicable_conf": "Enable, Disable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "listen_window": {
+                    "description": "Configures the listen window time to acquire the CM33 debug access port in the NORMAL_NO_SECURE LCS",
+                    "applicable_conf": "100 ms, 20 ms, 2 ms, 0 ms",
+                    "value": "100 ms"
+                },
+                "cm33_dbg":
+                {
+                    "description": "Configures the invasive debug of CM33 core",
+                    "applicable_conf": "Enable, Disable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "cm33_nid":
+                {
+                    "description": "Configures the non-invasive debug of CM33 core",
+                    "applicable_conf": "Enable, Disable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "dead_ap_cm33": {
+                    "description": "Configures the CM33 debug access port availability in the DEAD branch",
+                    "applicable_conf": "Enable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "dead_cm33_dbg":
+                {
+                    "description": "Configures the invasive debug of CM33 core in the DEAD branch",
+                    "applicable_conf": "Enable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "dead_cm33_nid":
+                {
+                    "description": "Configures the non-invasive debug of CM33 core in the DEAD branch",
+                    "applicable_conf": "Enable, Permanently Disable",
+                    "value": "Enable"
+                }
+            },
+            "system":
+            {
+                "ap": {
+                    "description": "Configures the System debug access port (DAP) availability in the NORMAL_NO_SECURE LCS",
+                    "applicable_conf": "Enable, Disable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "mpc/ppc": {
+                    "description": "Indicates that the MPC/PPC on the system access port must be programmed and locked according to the settings in the next fields",
+                    "applicable_conf": "Enable, Disable",
+                    "value": "Disable"
+                },
+                "sram": {
+                    "description": "Configures what portion of SRAM macro 0 is accessible through the System debug access port in the NORMAL_NO_SECURE LCS. Only a portion of SRAM starting at the bottom of the area is exposed",
+                    "applicable_conf": "Entire region, 7/8, 3/4, 1/2, 1/4, 1/8, 1/16, Nothing",
+                    "value": "Entire region"
+                },
+                "mmio": {
+                    "description": "Configures what portion of the MMIO region is accessible through the System debug access port in the NORMAL_NO_SECURE LCS",
+                    "applicable_conf": "All, Only IPC, No access",
+                    "value": "All"
+                },
+                "dead_ap": {
+                    "description": "Configures the System debug access port (DAP) availability in the DEAD branch",
+                    "applicable_conf": "Enable, Permanently Disable",
+                    "value": "Enable"
+                },
+                "dead_mpc/ppc": {
+                    "description": "Indicates that the MPC/PPC on the system access port must be programmed and locked in the DEAD branch according to the next fields settings",
+                    "applicable_conf": "Enable, Disable",
+                    "value": "Disable"
+                },
+                "dead_sram": {
+                    "description": "Configures what portion of SRAM macro 0 is accessible through the System debug access port in the DEAD branch. Only a portion of SRAM starting at the bottom of the area is exposed",
+                    "applicable_conf": "Entire region, 7/8, 3/4, 1/2, 1/4, 1/8, 1/16, Nothing",
+                    "value": "Entire region"
+                },
+                "dead_mmio": {
+                    "description": "Configures what portion of the MMIO region is accessible through the system debug access port in the DEAD branch",
+                    "applicable_conf": "All, Only IPC, No access",
+                    "value": "All"
+                }
+            }
+        },
+        "smif_config":
+        {
+            "smif_configuration": {
+                "description": "SMIF Configuration",
+                "applicable_conf": "SFDP 1.5 and above, QER_1, QER_2, QER_3, QER_4, QER_5, QER_6",
+                "value": "QER_1"
+            },
+            "chip_select": {
+                "description": "Chip Select",
+                "applicable_conf": "CS0, CS1",
+                "value": "CS0"
+            },
+            "data_width": {
+                "description": "Data Width",
+                "applicable_conf": "1X, 2X, 4X",
+                "value": "4X"
+            },
+            "data_select": {
+                "description": "Data Select",
+                "applicable_conf": "SEL0, SEL1",
+                "value": "SEL0"
+            },
+            "addressing_mode": {
+                "description": "Addressing Mode",
+                "applicable_conf": "3-byte or 4-byte",
+                "value": "3-byte"
+            },
+            "encryption": {
+                "description": "Enables SMIF encryption",
+                "value": false
+            }
+        },
+        "flow_control":
+        {
+            "target_lcs": {
+                "description": "The device LCS after the device is reset after service application completes execution",
+                "applicable_conf": "NORMAL, NORMAL_NO_SECURE",
+                "value": "NORMAL_NO_SECURE"
+            },
+            "program_oem_assets": {
+                "description": "Programs OEM assets (smif_config and debug) and makes them immutable (this can be done only once)",
+                "value": true
+            }
+        }
+    },
+    "pre_build":
+    {
+        "keys":
+        {
+            "encrypt_key": {
+                "description": "Path to the AES-128 key for image encryption in external memory",
+                "value": "../keys/encrypt_key.bin"
+            }
+        }
+    }
+}

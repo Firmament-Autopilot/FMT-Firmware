@@ -1,0 +1,87 @@
+{
+    "$schema": "https://json-schema.org/2020-12/schema",
+    "title": "Combining/Signing root schema",
+    "type": "object",
+    "required": [
+        "schema-version",
+        "content"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "schema-version": {
+            "title": "JSON schema version",
+            "description": "An explanation about the purpose of this instance",
+            "type": "number"
+        },
+        "content": {
+            "title": "Group array schema",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "title": "Group item",
+                "type": "object",
+                "required": [
+                    "name",
+                    "commands"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "title": "Group name",
+                        "type": "string"
+                    },
+                    "description": {
+                        "title": "Group description",
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "title": "Indicates whether the group is enabled",
+                        "type": "boolean"
+                    },
+                    "commands": {
+                        "title": "Commands array schema",
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "title": "Command item",
+                            "type": "object",
+                            "required": [
+                                "command",
+                                "inputs"
+                            ],
+                            "additionalProperties": true,
+                            "properties": {
+                                "command": {
+                                    "title": "Command name",
+                                    "type": "string",
+                                    "enum": [
+                                        "add-signature",
+                                        "custom-script",
+                                        "extract-payload",
+                                        "encrypt-aes",
+                                        "hex-segment",
+                                        "merge",
+                                        "shift",
+                                        "sign",
+                                        "bin-dump",
+                                        "bin2hex",
+                                        "hash",
+                                        "hex-dump",
+                                        "hex2bin",
+                                        "hex-relocate"
+                                    ]
+                                },
+                                "inputs": {
+                                    "type": "array"
+                                },
+                                "outputs": {
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

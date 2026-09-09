@@ -24,16 +24,17 @@ extern "C" {
 #endif
 
 enum {
-    // GLOBAL-NED (North-East-Down) Global (WGS84) coordinate frame
+    // GLOBAL-NED (North-East-Down) Global (WGS84) coordinate frame with origin same as INS origin point.
+    // The x-axis is aligned to the earth north direction
     FRAME_GLOBAL_NED = 0,
     // LOCAL-NED (North-East-Down) Local coordinate frame with origin fixed relative to vehicle arm place.
-    // The forward axis is aligned to the earth north direction
+    // The x-axis is aligned to the earth north direction
     FRAME_LOCAL_NED,
     // LOCAL-FRD (Front-Right-Down) Local coordinate frame with origin fixed relative to vehicle arm place.
-    // The forward axis is aligned to the front of the vehicle when armed.
+    // The x-axis is aligned to the front of the vehicle when armed.
     FRAME_LOCAL_FRD,
-    // BODY-FRD (Front-Right-Down) Local coordinate frame with an origin fixed relative to vehicle arm place.
-    // The forward axis is aligned to the front of the vehicle
+    // BODY-FRD (Front-Right-Down) Body coordinate frame with an origin fixed relative to vehicle arm place.
+    // The x-axis is aligned to the front of the vehicle
     FRAME_BODY_FRD,
 };
 

@@ -366,7 +366,7 @@ static int extpos_calib(struct optparse options)
 
     psi_meas = psi_meas / i;
 
-    PARAM_SET_FLOAT(INS, EXTPOS_PSI, psi_meas);
+    PARAM_SET_FLOAT(INS, EXTPOS_PSI_OFS, psi_meas);
 
     printf("extpos psi:%f\n", psi_meas * 180 / PI);
     printf("you need enter param save calibration result\n");

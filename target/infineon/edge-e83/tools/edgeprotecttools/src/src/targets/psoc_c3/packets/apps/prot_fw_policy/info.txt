@@ -1,0 +1,4 @@
+name: cyapp_prot_fw_policy
+description: The application provisions the assets for PROTECTED FW. The valid device LCS to launch this application is NORMAL_PROVISIONED. It is required to emulate device manufacturing flow on PSVP.
+type: Firmware application
+version: 1.0.0.4508

@@ -1,0 +1,91 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "add-signature"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the file",
+                        "type": "string"
+                    },
+                    "algorithm": {
+                        "title": "The signature algorithm",
+                        "type": "string",
+                        "enum": [
+                            "ECDSA-P256",
+                            "ECDSA-P384",
+                            "ECDSA-P521",
+                            "RSA2048",
+                            "RSA4096"
+                        ]
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            },
+            "allOf": [
+                {
+                    "contains": {
+                        "required": [
+                            "algorithm"
+                        ]
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                }
+            ]
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the signed file",
+                        "type": "string"
+                    },
+                    "format": {
+                        "title": "Format of the output file: 'ihex' or 'bin'",
+                        "type": "string",
+                        "enum": [
+                            "ihex",
+                            "bin"
+                        ]
+                    }
+                },
+                "required": [
+                    "file",
+                    "format"
+                ]
+            }
+        }
+    }
+}

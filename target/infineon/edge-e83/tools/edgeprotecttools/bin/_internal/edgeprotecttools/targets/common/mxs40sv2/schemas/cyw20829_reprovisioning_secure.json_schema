@@ -1,0 +1,183 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema#",
+    "id": "#",
+    "required": true,
+    "type": "object",
+    "properties": {
+        "device_policy": {
+            "id": "device_policy",
+            "required": true,
+            "type": "object",
+            "description" : "Device configuration parameters",
+            "properties": {
+                "reprovisioning": {
+                    "id": "reprovisioning",
+                    "required": true,
+                    "type": "object",
+                    "description": "Re-provisioning assets",
+                    "properties": {
+                        "nv_counter": {
+                            "id": "nv_counter",
+                            "required": false,
+                            "description": "Anti-rollback counter. Each item of the 'value' array defines counter for each next application. Each 'bits_per_cnt' item defines number of bits for the next application counter (total bits number 32). IMPORTANT: 'bits_per_cnt' in the provisioning and reprovisioning policy files MUST BE the same",
+                            "properties": {
+                                "value": {
+                                    "anyOf": [
+                                        {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 32
+                                        },
+                                        {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "minimum": 0
+                                            }
+                                        }
+                                    ]
+                                },
+                                "bits_per_cnt": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 32
+                                    }
+                                }
+                            }
+                        },
+                        "revoke_oem_pubkey_0": {
+                            "id": "Revokes OEM public key 0. The OEM public key 1 is used for image verification (this can be done only once). This option is not applicable if SMIF encryption is enabled",
+                            "required": false,
+                            "description": "Key Revocation of OEM 0",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "revoke_icv_pubkey_0": {
+                            "id": "revoke_icv_pubkey_0",
+                            "required": false,
+                            "description": "Revokes ICV public key 0. The ICV public key 1 is used for service application verification (this can be done only once)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "flow_control": {
+                    "id": "flow_control",
+                    "required": false,
+                    "type": "object",
+                    "description": "Flow Control",
+                    "properties": {
+                        "program_oem_key_1_hash": {
+                            "id": "program_oem_key_1_hash",
+                            "required": false,
+                            "description": "Programs the OEM key 1 hash and makes it immutable (this can be done only once)",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "sys_reset_req": {
+                            "id": "sys_reset_req",
+                            "required": false,
+                            "description": "Resets a device after service application completes execution",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "pre_build": {
+            "id": "pre_build",
+            "required": true,
+            "type": "object",
+            "description": "Pre-build parameters",
+            "properties": {
+                "keys": {
+                    "id": "keys",
+                    "required": true,
+                    "type": "object",
+                    "description": "Paths the OEM symmetric public keys and asymmetric key (optional)",
+                    "properties": {
+                        "oem_pub_key_0": {
+                            "id": "oem_pub_key_0",
+                            "required": true,
+                            "description": "Path to the OEM public key 0",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "oem_pub_key_1": {
+                            "id": "oem_pub_key_1",
+                            "required": false,
+                            "description": "Path to the OEM public key 1",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "post_build": {
+        "id": "post_build",
+        "required": true,
+        "type": "object",
+        "description": "Post-build parameters",
+            "properties": {
+                "keys": {
+                    "id": "keys",
+                    "required": true,
+                    "type": "object",
+                    "description": "Paths the OEM symmetric private keys and asymmetric key (optional)",
+                    "properties": {
+                        "oem_priv_key_0": {
+                            "id": "oem_priv_key_0",
+                            "required": true,
+                            "description": "Path to the OEM private key 0",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "oem_priv_key_1": {
+                            "id": "oem_priv_key_1",
+                            "required": false,
+                            "description": "Path to the OEM private key 1",
+                            "properties": {
+                                "value":
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

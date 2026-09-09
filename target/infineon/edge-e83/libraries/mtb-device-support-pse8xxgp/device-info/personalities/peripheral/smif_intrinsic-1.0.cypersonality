@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file smif_intrinsic-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* Intrinsic SMIF personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright 2022-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id='mxs40smif_intrinsic' name='Quad Serial Peripheral Interface (QSPI) Intrinsic' intrinsic='true' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v7'>
+  <Dependencies>
+    <IpBlock name='mxsmif,mxsmif_ver2_s40e'>
+        <Version major='6' />
+        <Version major='5' />
+        <Version major='4' />
+        <Version major='3' />
+        <Version major='2' />
+        <Version major='1' />
+    </IpBlock>
+    <Resource name='smif' />
+  </Dependencies>
+  <ExposedMembers/>
+  <Parameters>
+    <ParamString id='cfgFileName' name='cfgFileName' group='External Tools' default='design.cyqspi' visible='false' editable='false' desc='' />
+    <ParamString id='cfgFilePath' name='cfgFilePath' group='External Tools' default='`${cy_design_path() . "/" . cfgFileName}`' visible='false' editable='false' desc='' />
+    <ParamBool id='qspiUsed' name='qspiUsed' group='Internal' default='`${fileExists(cy_design_path() . "/design.cyqspi")}`' visible='false' editable='false' desc='' />
+  </Parameters>
+  <DRCs />
+  <ConfigFirmware>
+    <!-- Intention of this intrinsic SMIF personality is to generate cycfg_qspi_memslot.c/h if design.cyqspi exists
+         Check if design.cyqspi exists in the design.modus directory
+         Also check if SMIF resource is disabled to avoid generating .c/.h file twice -->
+      <ConfigTool value='`${cy_tools_path("qspi-configurator") . "/qspi-configurator-cli"}`' include='`${qspiUsed || isBlockUsed("smif[0]") || isBlockUsed("smif[0].core[0]") || isBlockUsed("smif[0].core[1]")}`'>
+      <Arg value='`${"--config=" . cfgFilePath}`' />
+	  <Arg value='`${"--library=" . cy_libs_file()}`' />
+      <Arg value='`${"--output-dir=" . cy_codegen_path()}`' />
+    </ConfigTool>
+  </ConfigFirmware>
+</Personality>

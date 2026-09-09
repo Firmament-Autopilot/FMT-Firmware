@@ -1,0 +1,61 @@
+{
+    "policy": {
+        "platform": "cyw20829",
+        "version": 2.1,
+        "type": "reprovisioning_secure"
+    },
+    "device_policy":
+    {
+        "reprovisioning":
+        {
+            "nv_counter": {
+                "description": "Anti-rollback counter. Each item of the 'value' array defines counter for each next application. Each 'bits_per_cnt' item defines number of bits for the next application counter (total bits number 32). IMPORTANT: 'bits_per_cnt' in the provisioning and reprovisioning policy files MUST BE the same",
+                "value": [0],
+                "bits_per_cnt": [32]
+            },
+            "revoke_oem_pubkey_0": {
+                "id": "Revokes OEM public key 0. The OEM public key 1 is used for image verification (this can be done only once). This option is not applicable if SMIF encryption is enabled",
+                "value": false
+            }
+        },
+        "flow_control":
+        {
+            "program_oem_key_1_hash": {
+                "description": "Programs the OEM key 1 hash and makes it immutable (this can be done only once)",
+                "value": false
+            },
+            "sys_reset_req": {
+                "description": "Resets a device after RAM application finishes execution.",
+                "value": false
+            }
+        }
+    },
+    "pre_build":
+    {
+        "keys":
+        {
+            "oem_pub_key_0": {
+                "description": "Path to the OEM public key 0",
+                "value": "../keys/pub_oem_0.pem"
+            },
+            "oem_pub_key_1": {
+                "description": "Path to the OEM public key 1",
+                "value": "../keys/pub_oem_1.pem"
+            }
+        }
+    },
+    "post_build":
+    {
+        "keys":
+        {
+            "oem_priv_key_0": {
+                "description": "Path to the OEM private key 0",
+                "value": "../keys/priv_oem_0.pem"
+            },
+            "oem_priv_key_1": {
+                "description": "Path to the OEM private key 1",
+                "value": "../keys/priv_oem_1.pem"
+            }
+        }
+    }
+}

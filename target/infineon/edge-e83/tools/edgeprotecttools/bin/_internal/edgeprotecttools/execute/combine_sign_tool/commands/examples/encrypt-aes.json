@@ -1,0 +1,33 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "encrypt-aes command example",
+            "description": "Encrypts binary file",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "encrypt-aes",
+                    "inputs": [
+                        {
+                            "description": "Binary file",
+                            "file": "file.bin",
+                            "key": "key.bin",
+                            "cipher-mode": "CBC",
+                            "iv": "auto",
+                            "add-iv": true,
+                            "nonce": null
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "Output file",
+                            "file": "output.bin",
+                            "iv-output": null
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<PersonalityTemplate id='security_mpu' name='MPU' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <Constants>
+    <Const id='REGION_COUNT' value='8' />
+  </Constants>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='m33syscpuss,m55appcpuss' />
+      <Resource name='(m33syscpuss|m55appcpuss).(cm33|cm55).(mpu_ns|mpu_s)' />
+      <OperatingMode value='MCU' />
+    </MappingRules>
+  </FittingRules>
+  <BehaviorImplementation>
+    <Implements type='security_mpu_v1'>
+      <ExposedMember key='name$idx' paramId='name$idx' repeatCount='$REGION_COUNT' />
+      <ExposedMember key='enable$idx' paramId='enable$idx' repeatCount='$REGION_COUNT' />
+      <ExposedMember key='base_addr$idx' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+      <ExposedMember key='end_addr$idx' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    </Implements>
+  </BehaviorImplementation>
+  <Parameters>
+    <ParamDoc id='doc' name='CMSIS Help' group='Overview' default='https://arm-software.github.io/CMSIS_5/5.8.0/Core/html/group__mpu8__functions.html' linkText='Open MPU CMSIS Documentation' visible='true' desc='Open MPU CMSIS Documentation' />
+    <ParamDoc id='doc_api' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/page_prot_person.html#MPU_personality' linkText='Open Personality Documentation' visible='true' desc='Open Personality Documentation' />
+    <ParamString id='notice' name='Notice' group='Overview' default='MPU region addresses are not automatically synchronized with Memory region addresses. If you move a memory region, it is necessary to manually update the "Start Address" and "Size (bytes)" parameters of any corresponding MPU region.' visible='true' editable='false'  />
+
+    <Repeat count='$REGION_COUNT'>
+      <ParamString id='name$idx' default='`${getBlockDisplayName(INST_LOC, false) . " Region $idx"}`' editable='false' visible='false' desc='' group='' name='' />
+      <ParamString id='shortname$idx' default='MPU region $idx' editable='false' visible='false' desc='' group='' name='' />
+      <ParamBool id='enable$idx' name='`${shortname$idx}`' group='' default='false' visible='true' editable='true' desc='Should the MPU region region be enabled?' />
+      <ParamString id='base_addr$idx' name='Start Address' group='`${shortname$idx}`' default='0x00000000' visible='`${enable$idx}`' editable='`${enable$idx}`' desc='Base address of MPU region region $idx.' />
+      <ParamString id='size$idx' name='Size (bytes)' group='`${shortname$idx}`' default='`${toHex(1048576, 8)}`' visible='`${enable$idx}`' editable='`${enable$idx}`' desc='Size of MPU region region $idx.' />
+      <ParamString id='end_addr$idx' name='End Address' group='`${shortname$idx}`' default='`${toHex(base_addr$idx + size$idx - 1, 8)}`' visible='`${enable$idx}`' editable='false' desc='End address of MPU region region $idx. Syntax in inclusive format.' />
+      <ParamBool id='privileged$idx' name='Privileged Access Only' group='`${shortname$idx}`' default='false' visible='`${enable$idx}`' editable='`${enable$idx}`' desc='Are these memory locations only accessible to privileged callers?' />
+      <ParamBool id='writable$idx' name='Writable' group='`${shortname$idx}`' default='true' visible='`${enable$idx}`' editable='`${enable$idx}`' desc='Are these memory locations writable?' />
+      <ParamBool id='executable$idx' name='Executable' group='`${shortname$idx}`' default='false' visible='`${enable$idx}`' editable='`${enable$idx}`' desc='Are these memory locations executable?' />
+      <ParamBool id='shareable$idx' name='Shareable' group='`${shortname$idx}`' default='false' visible='`${enable$idx}`' editable='`${enable$idx}`' desc='Are these memory locations shareable?' />
+      <ParamBool id='device$idx' name='Device Memory' group='`${shortname$idx}`' default='false' visible='`${enable$idx &amp;&amp; (!(getBlockType(1) eq "cm33"))}`' editable='true' desc='Is this memory used for peripheral control registers?' />
+      <ParamChoice id='cacheable$idx' name='Cacheable' group='`${shortname$idx}`' default='4' visible='`${(enable$idx &amp;&amp; !device$idx) &amp;&amp; (!(getBlockType(1) eq "cm33"))}`' editable='true' desc='Can these memory locations be cached? Applies to both inner and outer.'>
+        <Entry name='Non-Cacheable' value='4' visible='true' />
+        <Entry name='Write-Back Non-Transient' value='15' visible='true' />
+        <Entry name='Write-Back Transient' value='7' visible='true' />
+        <Entry name='Write-Through Non-Transient' value='11' visible='true' />
+        <Entry name='Write-Through Transient' value='3' visible='true' />
+      </ParamChoice>
+
+      <ParamChoice id='devMemAttr$idx' name='Memory attibutes' group='`${shortname$idx}`' default='0' visible='`${(enable$idx &amp;&amp; device$idx) &amp;&amp; (!(getBlockType(1) eq "cm33"))}`' editable='true' desc='The memory attributes for Device.'>
+        <Entry name='Device-nGnRnE' value='0' visible='true' />
+        <Entry name='Device-nGnRE' value='1' visible='true' />
+        <Entry name='Device-nGRE' value='2' visible='true' />
+        <Entry name='Device-GRE' value='3' visible='true' />
+      </ParamChoice>
+
+    </Repeat>
+  </Parameters>
+
+  <Variables>
+    <Variable id='enabled_num' value='`${((enable0) ? 1 : 0) + ((enable1) ? 1 : 0) + ((enable2) ? 1 : 0) + ((enable3) ? 1 : 0) + ((enable4) ? 1 : 0) + ((enable5) ? 1 : 0) + ((enable6) ? 1 : 0) + ((enable7) ? 1 : 0)}`' />
+    <!-- We don't based this on the instance name because other parts of the initialization process need to be able to reference this by a stable core-based name -->
+    <Variable id='configArrayName' value='cycfg_mpu_`${getBlockType(1)}`_`${splitAt(getBlockType(2), 1, "_")}`_`${getInstNumber(getBlockType(1))}`_config' />
+  </Variables>
+
+  <DRCs>
+    <DRC repeatCount='$REGION_COUNT' type='ERROR' paramId='base_addr$idx'
+      condition='`${!hasMatch(base_addr$idx, "^(0[Xx][0-9a-fA-F]+|[0-9]+)$")}`'
+      text='&apos;`${base_addr$idx}`&apos; is not a valid number.'/>
+    <DRC repeatCount='$REGION_COUNT' type='ERROR' paramId='base_addr$idx'
+      condition='`${base_addr$idx &lt; 0 | base_addr$idx &gt; 0xFFFFFFFE}`'
+      text='&apos;`${base_addr$idx}`&apos; is not within the legal range of [0x00000000-0xfffffffe] for parameter &apos;base_addr$idx&apos;'>
+      <FixIt action='SET_PARAM' target='base_addr$idx' value='`${toHex(max(0u, min(base_addr$idx, 0xFFFFFFFEu)), 8)}`' valid='true' />
+    </DRC>
+    <DRC repeatCount='$REGION_COUNT' type='ERROR' paramId='base_addr$idx'
+      condition='`${(cast(uint64, base_addr$idx) % 32u) != 0u}`'
+      text='&apos;`${base_addr$idx}`&apos; is not a multiple of 32 (0x20)'>
+      <FixIt action='SET_PARAM' target='base_addr$idx' value='`${toHex(base_addr$idx &amp; 0xFFFFFFE0u, 8)}`' valid='true' />
+    </DRC>
+    <DRC repeatCount='$REGION_COUNT' type='ERROR' paramId='size$idx'
+      condition='`${!hasMatch(size$idx, "^(0[Xx][0-9a-fA-F]+|[0-9]+)$")}`'
+      text='&apos;`${size$idx}`&apos; is not a valid number.'/>
+    <DRC repeatCount='$REGION_COUNT' type='ERROR' paramId='size$idx'
+      condition='`${size$idx &lt; 0x1F | size$idx &gt; 0xFFFFFFFE}`'
+      text='&apos;`${size$idx}`&apos; is not within the legal range of [0x0000001f-0xfffffffe] for parameter &apos;size$idx&apos;'>
+      <FixIt action='SET_PARAM' target='size$idx' value='`${toHex(max(0x1Fu, min(size$idx, 0xFFFFFFFEu)), 8)}`' valid='true' />
+    </DRC>
+    <DRC repeatCount='$REGION_COUNT' type='ERROR' paramId='size$idx'
+      condition='`${(cast(uint64, size$idx) % 32u) != 0u}`'
+      text='&apos;`${size$idx}`&apos; is not a multiple of 32 (0x20)'>
+      <FixIt action='SET_PARAM' target='size$idx' value='`${toHex(max(0x20u, size$idx &amp; 0xFFFFFFE0u), 8)}`' valid='true' />
+    </DRC>
+
+    <DRC type='ERROR' text='MPU region $idx has an End Address lower than its Base Address.' condition='`${enable$idx &amp;&amp; (end_addr$idx &lt; base_addr$idx)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 0.' condition='`${($idx != 0) &amp;&amp; enable$idx &amp;&amp; enable0 &amp;&amp; (base_addr0 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt; end_addr0)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 0.' condition='`${($idx != 0) &amp;&amp; enable$idx &amp;&amp; enable0 &amp;&amp; (base_addr0 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr0)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 1.' condition='`${($idx != 1) &amp;&amp; enable$idx &amp;&amp; enable1 &amp;&amp; (base_addr1 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt; end_addr1)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 1.' condition='`${($idx != 1) &amp;&amp; enable$idx &amp;&amp; enable1 &amp;&amp; (base_addr1 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr1)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 2.' condition='`${($idx != 2) &amp;&amp; enable$idx &amp;&amp; enable2 &amp;&amp; (base_addr2 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt; end_addr2)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 2.' condition='`${($idx != 2) &amp;&amp; enable$idx &amp;&amp; enable2 &amp;&amp; (base_addr2 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr2)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 3.' condition='`${($idx != 3) &amp;&amp; enable$idx &amp;&amp; enable3 &amp;&amp; (base_addr3 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt; end_addr3)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 3.' condition='`${($idx != 3) &amp;&amp; enable$idx &amp;&amp; enable3 &amp;&amp; (base_addr3 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr3)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 4.' condition='`${($idx != 4) &amp;&amp; enable$idx &amp;&amp; enable4 &amp;&amp; (base_addr4 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt;= end_addr4)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 4.' condition='`${($idx != 4) &amp;&amp; enable$idx &amp;&amp; enable4 &amp;&amp; (base_addr4 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr4)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 5.' condition='`${($idx != 5) &amp;&amp; enable$idx &amp;&amp; enable5 &amp;&amp; (base_addr5 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt; end_addr5)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 5.' condition='`${($idx != 5) &amp;&amp; enable$idx &amp;&amp; enable5 &amp;&amp; (base_addr5 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr5)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 6.' condition='`${($idx != 6) &amp;&amp; enable$idx &amp;&amp; enable6 &amp;&amp; (base_addr6 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt; end_addr6)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 6.' condition='`${($idx != 6) &amp;&amp; enable$idx &amp;&amp; enable6 &amp;&amp; (base_addr6 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr6)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has a Base Address inside MPU region 7.' condition='`${($idx != 7) &amp;&amp; enable$idx &amp;&amp; enable7 &amp;&amp; (base_addr7 &lt;= base_addr$idx) &amp;&amp; (base_addr$idx &lt; end_addr7)}`' paramId='base_addr$idx' repeatCount='$REGION_COUNT' />
+    <DRC type='ERROR' text='MPU region $idx has an End Address inside MPU region 7.' condition='`${($idx != 7) &amp;&amp; enable$idx &amp;&amp; enable7 &amp;&amp; (base_addr7 &lt; end_addr$idx) &amp;&amp; (end_addr$idx &lt;= end_addr7)}`' paramId='end_addr$idx' repeatCount='$REGION_COUNT' />
+
+  </DRCs>
+    <ConfigFirmware>
+      <ConfigInclude value='cy_cmsis_utils.h' public='header' />
+
+      <ConfigArray name='`${configArrayName}`' type='cy_stc_mpu_config_t' const='true' public='true' arraySize='`${enabled_num}`'>
+        <ConfigStruct repeatCount='$REGION_COUNT' include='`${enable$idx eq true}`' name='na' type='na' const='true' public='true' >
+          <Member name='reg_num'             value='$idxU' />
+          <Member name='base_addr'           value='`${base_addr$idx}`' />
+          <Member name='end_addr'            value='`${end_addr$idx}`' />
+          <Member name='writable'            value='`${writable$idx}`' />
+          <Member name='require_privileged'  value='`${privileged$idx}`' />
+          <Member name='shareable'           value='`${shareable$idx}`' />
+          <Member name='executable'          value='`${executable$idx}`' />
+          <Member name='cacheable'           value='`${cacheable$idx}`' />
+          <Member name='is_device'           value='`${device$idx}`' />
+          <Member name='device_attrs'        value='`${devMemAttr$idx}`' />
+        </ConfigStruct>
+      </ConfigArray>
+    </ConfigFirmware>
+</PersonalityTemplate>

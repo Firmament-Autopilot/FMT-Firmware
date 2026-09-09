@@ -1,0 +1,104 @@
+from building import *
+import os
+
+Import('SDK_LIB')
+
+cwd = GetCurrentDir()
+
+ml_middleware = cwd + '/third_party/ml-middleware'
+ml_tflm = cwd + '/third_party/ml-tflite-micro/COMPONENT_ML_TFLM'
+u55_driver = SDK_LIB + '/mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_U55'
+
+src = [
+    'src/deepcraft_ai_fmt.c',
+    'model/model.c',
+    'third_party/ml-middleware/source/mtb_ml.c',
+    'third_party/ml-middleware/source/mtb_ml_utils.c',
+    'third_party/ml-middleware/source/COMPONENT_U55/mtb_ml_ethosu.c',
+    'third_party/ml-middleware/source/COMPONENT_ML_TFLM/mtb_ml_model.cpp',
+    '../mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_U55/src/ethosu_device_u55_u65.c',
+    '../mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_U55/src/ethosu_driver.c',
+    '../mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_U55/src/ethosu_pmu.c',
+]
+
+path = [
+    cwd + '/include',
+    cwd + '/model',
+    SDK_LIB + '/Infineon_core-lib-latest/include',
+    SDK_LIB + '/Infineon_retarget-io-latest',
+    SDK_LIB + '/mtb-device-support-pse8xxgp/pdl/devices/include',
+    SDK_LIB + '/mtb-device-support-pse8xxgp/pdl/drivers/include',
+    ml_middleware + '/include',
+    ml_middleware + '/source',
+    ml_middleware + '/source/COMPONENT_ML_TFLM',
+    ml_tflm + '/include',
+    ml_tflm + '/include/flatbuffers/include',
+    ml_tflm + '/include/gemmlowp',
+    ml_tflm + '/include/gemmlowp/fixedpoint',
+    ml_tflm + '/include/gemmlowp/internal',
+    ml_tflm + '/include/signal',
+    ml_tflm + '/include/tensorflow/compiler',
+    ml_tflm + '/include/tensorflow/compiler/mlir',
+    ml_tflm + '/include/tensorflow/compiler/mlir/lite',
+    ml_tflm + '/include/tensorflow/compiler/mlir/lite/core',
+    ml_tflm + '/include/tensorflow/compiler/mlir/lite/core/api',
+    ml_tflm + '/include/tensorflow/compiler/mlir/lite/core/c',
+    ml_tflm + '/include/tensorflow/compiler/mlir/lite/kernels',
+    ml_tflm + '/include/tensorflow/compiler/mlir/lite/kernels/internal',
+    ml_tflm + '/include/tensorflow/compiler/mlir/lite/schema',
+    ml_tflm + '/include/tensorflow/lite',
+    ml_tflm + '/include/tensorflow/lite/c',
+    ml_tflm + '/include/tensorflow/lite/core',
+    ml_tflm + '/include/tensorflow/lite/core/api',
+    ml_tflm + '/include/tensorflow/lite/core/c',
+    ml_tflm + '/include/tensorflow/lite/kernels',
+    ml_tflm + '/include/tensorflow/lite/kernels/internal',
+    ml_tflm + '/include/tensorflow/lite/kernels/internal/optimized',
+    ml_tflm + '/include/tensorflow/lite/kernels/internal/reference',
+    ml_tflm + '/include/tensorflow/lite/kernels/internal/reference/integer_ops',
+    ml_tflm + '/include/tensorflow/lite/micro',
+    ml_tflm + '/include/tensorflow/lite/micro/arena_allocator',
+    ml_tflm + '/include/tensorflow/lite/micro/cortex_m_generic',
+    ml_tflm + '/include/tensorflow/lite/micro/kernels',
+    ml_tflm + '/include/tensorflow/lite/micro/kernels/cmsis_nn',
+    ml_tflm + '/include/tensorflow/lite/micro/memory_planner',
+    ml_tflm + '/include/tensorflow/lite/micro/tflite_bridge',
+    ml_tflm + '/include/tensorflow/lite/schema',
+    ml_tflm + '/include/ethos-u-core-driver',
+    u55_driver + '/include',
+    u55_driver + '/src',
+]
+
+path += [
+    SDK_LIB + '/../../../../src',
+]
+
+cppdefines = [
+    'ARM_MATH_AUTOVECTORIZE',
+    'ARM_MATH_DSP',
+    'ARM_MATH_HELIUM',
+    'COMPONENT_CMSIS_DSP',
+    'COMPONENT_HARDFP',
+    'COMPONENT_ML_INT8x8',
+    'COMPONENT_ML_TFLM',
+    'COMPONENT_MW_ML_MIDDLEWARE',
+    'COMPONENT_MW_ML_TFLITE_MICRO',
+    'COMPONENT_U55',
+    'CY_ML_ARENA_MEM=.cy_socmem_data',
+    'CY_ML_MODEL_MEM=.cy_socmem_data',
+    'TF_LITE_STATIC_MEMORY',
+]
+
+libpath = [ml_tflm + '/COMPONENT_U55/TOOLCHAIN_GCC_ARM']
+libs = ['tensorflow-microlite']
+
+group = DefineGroup('DeepCraftAI',
+                    src,
+                    depend=['BSP_USING_DEEPCRAFT_AI'],
+                    CPPPATH=path,
+                    LOCAL_CPPPATH=path,
+                    CPPDEFINES=cppdefines,
+                    LIBS=libs,
+                    LIBPATH=libpath)
+
+Return('group')

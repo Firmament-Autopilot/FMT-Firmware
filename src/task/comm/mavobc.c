@@ -15,6 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include "Controller.h"
 #include "FMS.h"
 #include "INS.h"
 #include "module/mavproxy/mavproxy.h"
@@ -29,18 +30,23 @@
 #undef LOG_TAG
 #define LOG_TAG "MAVOBC"
 
+MCN_DEFINE(mav_actuator_control, sizeof(Control_Out_Bus));
+
 MCN_DECLARE(fms_output);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(rc_channels);
 MCN_DECLARE(auto_cmd);
 MCN_DECLARE(external_pos);
 MCN_DECLARE(mission_data);
+MCN_DECLARE(control_output);
 
 typedef struct
 {
     uint8_t msgid;
     msg_pack_cb_t msg_pack_cb;
 } msg_pack_cb_table;
+
+static Control_Out_Bus mav_actuator_control;
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_pack_func },
@@ -62,6 +68,25 @@ static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HOME_POSITION, mavlink_msg_home_position_pack_func },
     { MAVLINK_MSG_ID_EXTENDED_SYS_STATE, mavlink_msg_extended_sys_state_pack_func },
 };
+
+static int mav_actuator_control_echo(void* param)
+{
+    Control_Out_Bus control_out;
+
+    if (mcn_copy_from_hub((McnHub*)param, &control_out) != FMT_EOK)
+        return -1;
+
+    printf("timestamp:%d actuator:", control_out.timestamp);
+    for (uint8_t i = 0; i < 16; i++) {
+        if (control_out.actuator_cmd[i] > 0) {
+            printf(" %d", control_out.actuator_cmd[i]);
+        } else {
+            break;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
@@ -468,6 +493,23 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     mavlink_system_t mav_sys = mavproxy_get_system();
 
     switch (msg->msgid) {
+#if defined(FMT_PLANT_SIM)
+    /* In plant simulation mode, we receive control output from obc channel */
+    case MAVLINK_MSG_ID_HIL_ACTUATOR_CONTROLS: {
+        mavlink_hil_actuator_controls_t actuator_control;
+        Control_Out_Bus control_out = { 0 };
+
+        mavlink_msg_hil_actuator_controls_decode(msg, &actuator_control);
+
+        control_out.timestamp = systime_now_ms();
+        for (uint8_t i = 0; i < 16; i++) {
+            control_out.actuator_cmd[i] = (actuator_control.controls[i] + 3.0f) * 500;
+        }
+
+        mcn_publish(MCN_HUB(control_output), &control_out);
+    } break;
+#endif
+
     case MAVLINK_MSG_ID_HEARTBEAT:
         if (PARAM_GET_UINT8(SYSTEM, OBC_HEARTBEAT)) {
             /* send obc heartbeat to gcs */
@@ -615,7 +657,9 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             auto_cmd.timestamp = systime_now_ms();
 
-            if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_NED) {
+            if (pos_target_local_ned.coordinate_frame == MAV_FRAME_GLOBAL) {
+                auto_cmd.frame = FRAME_GLOBAL_NED;
+            } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_NED) {
                 auto_cmd.frame = FRAME_LOCAL_NED;
             } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_FRD) {
                 auto_cmd.frame = FRAME_LOCAL_FRD;
@@ -728,8 +772,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
                 LOG_W("unsupported SET_POSITION_TARGET_GLOBAL_INT frame:%d", pos_target_global_int.coordinate_frame);
                 break;
             }
-
-            auto_cmd.frame = FRAME_GLOBAL_NED;
 
             if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_X_IGNORE)) {
                 auto_cmd.lat_cmd = pos_target_global_int.lat_int;
@@ -909,12 +951,18 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         if (this_system.sysid == mavlink_msg_set_actuator_control_target_get_target_system(msg)) {
             mavlink_set_actuator_control_target_t actuator_control_target;
             mavlink_msg_set_actuator_control_target_decode(msg, &actuator_control_target);
-            // remained to be processed by FMS and CONTROLLER
+
+            mav_actuator_control.timestamp = systime_now_ms();
+            for (uint8_t i = 0; i < 8; i++) {
+                mav_actuator_control.actuator_cmd[i] = actuator_control_target.controls[i] * 500 + 1500;
+            }
+
+            mcn_publish(MCN_HUB(mav_actuator_control), &mav_actuator_control);
         }
         break;
 
     default:
-        LOG_W("unsupported mavlink msg:%d", msg->msgid);
+        // LOG_W("unsupported mavlink msg:%d", msg->msgid);
         break;
     }
 
@@ -923,15 +971,20 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
 fmt_err_t mavobc_init(void)
 {
+    mcn_advertise(MCN_HUB(mav_actuator_control), mav_actuator_control_echo);
+
     /* register channel */
     FMT_TRY(mavproxy_register_channel(MAVPROXY_OBC_CHAN));
 
     /* register periodical mavlink msg */
+#if defined(FMT_PLANT_SIM)
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_SENSOR, 100, mavlink_msg_hil_sensor_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_GPS, 10, mavlink_msg_hil_gps_pack_func, true));
+#else
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_SYS_STATUS, 1, mavlink_msg_sys_status_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1, mavlink_msg_extended_sys_state_pack_func, true));
+#endif
 
     /* register obc mavlink handler */
     FMT_TRY(mavproxy_monitor_register_handler(MAVPROXY_OBC_CHAN, handle_mavlink_message));

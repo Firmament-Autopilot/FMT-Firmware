@@ -1,0 +1,67 @@
+{
+    "core": {
+        "version": "1.2.0.495"
+    },
+    "opt": {
+        "props": {
+            "capabilities": [
+                "adc",
+                "audio",
+                "bsp_gen6",
+                "bt",
+                "can",
+                "comp",
+                "cyw55513",
+                "cyw55xxx",
+                "dac",
+                "dma",
+                "epc2",
+                "ethernet",
+                "flash_0k",
+                "gfx",
+                "hal",
+                "i2c",
+                "i2s",
+                "i3c",
+                "kit_pse84_eval_epc2",
+                "led",
+                "low_power",
+                "lptimer",
+                "mcu_gp",
+                "memory_qspi",
+                "multi_core",
+                "npu",
+                "opamp",
+                "pdm",
+                "pse8xxgp",
+                "qspi",
+                "rtc",
+                "sdhc",
+                "sdio",
+                "smart_io",
+                "spi",
+                "sram_1024k",
+                "std_crypto",
+                "switch",
+                "tdm",
+                "uart",
+                "usb_device",
+                "usb_host",
+                "wifi"
+            ],
+            "dependencies": {
+                "bt-fw-ifx-cyw55500a1": "latest-v2.X",
+                "core-lib": "latest-v1.X",
+                "core-make": "latest-v3.X",
+                "mtb-dsl-pse8xxgp": "release-v1.1.1",
+                "se-rt-services-utils": "release-v1.2.0"
+            },
+            "flow_version": "2.0",
+            "min_tools": "3.6.0",
+            "template": {
+                "id": "mtb-template-pse8xxgp",
+                "version": "release-v1.2.0"
+            }
+        }
+    }
+}

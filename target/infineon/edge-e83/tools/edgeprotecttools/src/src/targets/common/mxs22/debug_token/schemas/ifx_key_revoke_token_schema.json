@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "revoke": {
+      "type": "object",
+      "properties": {
+        "IFX_ROT_KEY": {
+          "type": "boolean"
+        },
+        "IFX_FW_INTEGRITY_KEY": {
+          "type": "boolean"
+        },
+        "IFX_FW_ENCRYPTION_KEY": {
+          "type": "boolean"
+        },
+        "IFX_RMA_MASTER_KEY": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IFX_ROT_KEY",
+        "IFX_FW_INTEGRITY_KEY",
+        "IFX_FW_ENCRYPTION_KEY",
+        "IFX_RMA_MASTER_KEY"
+      ]
+    }
+  },
+  "required": [
+    "revoke"
+  ]
+}

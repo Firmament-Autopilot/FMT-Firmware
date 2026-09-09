@@ -1,0 +1,330 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__cm55__functions__edge" kind="group">
+    <compoundname>group_system_config_cm55_functions_edge</compoundname>
+    <title>Cortex-M55 Control Functions</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1gae852a7b7f1309b8d97c11eb2ee713179" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t Cy_SysCM55GetStatus</definition>
+        <argsstring>(MXCM55_Type *CM55Base)</argsstring>
+        <name>Cy_SysCM55GetStatus</name>
+        <param>
+          <type>MXCM55_Type *</type>
+          <declname>CM55Base</declname>
+        </param>
+        <briefdescription>
+<para>Returns the Cortex-M55 core power mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>CM55Base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>MXCM55 base address </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="group__group__system__config__core__status__macro__edge" kindref="compound">Core Status Macros</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="156" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="278" bodyend="283" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="156" declcolumn="10"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1gaaee957e11ebb7961c2a80a7fc8785f95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysCM55Enable</definition>
+        <argsstring>(MXCM55_Type *CM55Base, uint32_t vectorTableOffset, cy_app_cpu_dbg_port_type_t dbgMode, uint32_t waitus)</argsstring>
+        <name>Cy_SysCM55Enable</name>
+        <param>
+          <type>MXCM55_Type *</type>
+          <declname>CM55Base</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>vectorTableOffset</declname>
+        </param>
+        <param>
+          <type><ref refid="group__group__system__enums_1ga634e13f2e3ab2305ee501dea2d00ed24" kindref="member">cy_app_cpu_dbg_port_type_t</ref></type>
+          <declname>dbgMode</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>waitus</declname>
+        </param>
+        <briefdescription>
+<para>Sets vector table base address and enables the Cortex-M55 core and its debug port policy. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="note"><para>If the CPU is already enabled, it is reset and then enabled. </para>
+</simplesect>
+<simplesect kind="note"><para>APP_MMIO_TCM IP should be enabled before call of this API </para>
+</simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>CM55Base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>MXCM55 base address </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vectorTableOffset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The offset of the vector table base address from memory address 0x00000000. The offset should be multiple to 1024 bytes. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dbgMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>debug port policy. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>waitus</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The timeout value in microsecond used to wait for core to be booted. value zero is for infinite wait till the core is booted successfully.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>: For the PSE84 device, this functions clears the first 16 words in the default vector address (for PSE84 device it is ITCM memory). The processor reads the first two words at the default vector table address to get Stack pointer and Secure reset vector address. Because the processor branches to the address read from this reset vector, this operation may causes access violation exception. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="157" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="468" bodyend="588" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="157" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1ga688183b526204c8dd5a0556ffdc02683" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysCM55Disable</definition>
+        <argsstring>(void)</argsstring>
+        <name>Cy_SysCM55Disable</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Disables CM55. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="note"><para>Below is the sequence that needs to be followed<itemizedlist>
+<listitem><para>Turn OFF the APPCPU PPU.</para>
+</listitem><listitem><para>Enter DS on CM55. </para>
+</listitem></itemizedlist>
+</para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="158" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="402" bodyend="442" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="158" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1gaae3cf41b1f6eeb4f6f01bed9d5653089" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysCM55Reset</definition>
+        <argsstring>(MXCM55_Type *CM55Base, uint32_t waitus)</argsstring>
+        <name>Cy_SysCM55Reset</name>
+        <param>
+          <type>MXCM55_Type *</type>
+          <declname>CM55Base</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>waitus</declname>
+        </param>
+        <briefdescription>
+<para>Resets the Cortex-M55 core and waits for the mode to take the effect. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>CM55Base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>MXCM55 base address </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>waitus</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The timeout value in microsecond used to wait for core to be reset. value zero is for infinite wait till the core is reset successfully.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="warning"><para>Do not call the function while the Cortex-M55 is executing because such a call may corrupt/abort a pending bus-transaction by the CPU and cause unexpected behavior in the system including a deadlock. Call the function while the Cortex-M55 core is in the Sleep or Deep Sleep low-power mode. Use the Power Management (syspm) API to put the CPU into the low-power modes. Use the Cy_SysPm_ReadStatus() to get a status of the CPU. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="159" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="608" bodyend="676" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="159" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1ga2c9c7235b32e25e40b5a60493c6f5fa7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysEnableSOCMEM</definition>
+        <argsstring>(bool enable)</argsstring>
+        <name>Cy_SysEnableSOCMEM</name>
+        <param>
+          <type>bool</type>
+          <declname>enable</declname>
+        </param>
+        <briefdescription>
+<para>Enables SOCMEM IP. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>enable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Enable or disable SOCMEM </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="160" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="296" bodyend="349" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="160" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1gae0b13828ca2650fd4b17663dea8238d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_System_EnablePD1</definition>
+        <argsstring>(void)</argsstring>
+        <name>Cy_System_EnablePD1</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Safely Enables the PD1 Power Domain. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function implements the sequence required to safely enable PD1 power domain, which includes</para>
+<para><itemizedlist>
+<listitem><para>Enabling the required CLK_HF&apos;s</para>
+</listitem><listitem><para>Enabling/Disabling the required Power Domain Dependencies</para>
+</listitem><listitem><para>Configuring the Power Domain PPU&apos;s with appropriate configuration</para>
+</listitem><listitem><para>Making sure the PD&apos;s are properly enabled using the required delay&apos;s</para>
+</listitem></itemizedlist>
+</para>
+<para>As an illustration on when to call this function , refer to below PDCM(Power Dependency Control Matrix)...</para>
+<para><image type="html" name="PSE84_PDCM_Default.png" inline="yes"></image>
+</para>
+<para>Where the table indicates the default PDCM dependencies.</para>
+<para>With respect to PD1, table indicates below constraints</para>
+<para>1) If APPCPU, SOCMEM and U55 are ON then APPSS needs to be ON.</para>
+<para>2) If APPSS is ON then PD1 needs to be ON.</para>
+<para>If any of the APPCPU, SOCMEM, U55 and APPSS power domains need to be switched ON, user needs to call this API first to switch ON PD1 safely.</para>
+<para><simplesect kind="note"><para></para>
+</simplesect>
+<itemizedlist>
+<listitem><para>Enabling peripherals in SYS_MMIO groups i.e. PERI0 group requires PD0 power domain to be ON.</para>
+</listitem><listitem><para>Enabling peripherals in APP_MMIO groups i.e. PERI1 group requires PD1 power domain to be ON.</para>
+</listitem></itemizedlist>
+</para>
+<para>Once PD1 is enabled, switching ON/OFF of individual power domains under PD1 can be done using below API&apos;s</para>
+<para><ref refid="group__group__system__config__cm55__functions__edge_1ga2c9c7235b32e25e40b5a60493c6f5fa7" kindref="member">Cy_SysEnableSOCMEM</ref></para>
+<para><ref refid="group__group__system__config__cm55__functions__edge_1gaaee957e11ebb7961c2a80a7fc8785f95" kindref="member">Cy_SysCM55Enable</ref></para>
+<para><ref refid="group__group__system__config__cm55__functions__edge_1ga237ac03639063c3f32e14961fcc194c1" kindref="member">Cy_SysU55Enable</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="161" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="188" bodyend="249" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="161" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1gaa864ce851a42f626f26befe50b6aedd0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_System_DisablePD1</definition>
+        <argsstring>(void)</argsstring>
+        <name>Cy_System_DisablePD1</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Safely Disables the PD1 Power Domain. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="162" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="258" bodyend="267" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="162" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1gad700761d3215537e5c660feb96345f40" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysCM55SetDbgPort</definition>
+        <argsstring>(cy_app_cpu_dbg_port_type_t dbgMode)</argsstring>
+        <name>Cy_SysCM55SetDbgPort</name>
+        <param>
+          <type><ref refid="group__group__system__enums_1ga634e13f2e3ab2305ee501dea2d00ed24" kindref="member">cy_app_cpu_dbg_port_type_t</ref></type>
+          <declname>dbgMode</declname>
+        </param>
+        <briefdescription>
+<para>Set APPCPU debug port mode policy. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dbgMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>debug port policy </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+<para>Disable debug port for CM55</para>
+<para>Enables invasive debug CM55</para>
+<para>Enables all trace and non-invasive debug features</para>
+<para>Enables invasive debug &amp; all trace and non-invasive enable for CM55</para>
+<para>Invalid value passed</para>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="163" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="359" bodyend="389" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="163" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm55__functions__edge_1ga237ac03639063c3f32e14961fcc194c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysU55Enable</definition>
+        <argsstring>(bool enable)</argsstring>
+        <name>Cy_SysU55Enable</name>
+        <param>
+          <type>bool</type>
+          <declname>enable</declname>
+        </param>
+        <briefdescription>
+<para>This function enables or disables the U55 ML accelerator When enabling, this enables the clock, configures the PPU to active, and sets PDCM dependency to keep the U55 active as long as the current CPU is active. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>In Disable case it configures the PPU to off, clears the PDCM dependency to allow the U55 to disable, then disables the clock once the U55 has successfully powered off. This function waits to return until the U55 has powered off.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>enable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Enable or disable U55 </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="166" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="91" bodyend="126" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="166" declcolumn="6"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

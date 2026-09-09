@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!--****************************************************************************
+* \file pdm_pcm_v2-4.0.cypersonality
+* \version 4.0
+*
+* \brief
+* PDM-PCM Multi Mic supported personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2024), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id="pdm_v2" name="PDM-PCM Multi Mic" version="4.0" xmlns="http://cypress.com/xsd/cyhwpersonality_v7">
+  <Dependencies>
+    <IpBlock name="mxpdm" />
+    <Resource name="pdm" />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id="pdlDoc" name="Configuration Help" group="Overview" default="file:///`${cy_libs_path()}`/docs/html/group__group__pdm__pcm__v2.html" linkText="Open PDM_PCM Documentation" visible="true" desc="Opens the Peripheral Driver Library Documentation." />
+    <ParamRange id="pdmInst" name="PDM instance Number" group="Internal" default="`${getInstNumber(&quot;pdm&quot;)}`" min="0" max="3" resolution="1" visible="false" editable="false" desc="" />
+    <!-- Channels -->
+	<ParamChoice id="interface_type" name="Interface Format" group="Channel Info" default="1" visible="true" editable="true" desc="Set channels enabled.">
+      <Entry name="Mono Channel(s) (independent data lines)" value="1"  visible="true" />
+      <Entry name="Stereo (Two channels with shared data line)" value="2"  visible="true" />
+    </ParamChoice>
+
+    <Repeat count="8">
+        <ParamString id="pdmCh$idx_Ex" name="pdmCh$idx_Ex" desc="look up expression for pdm channel" group="Channels" default="pdm[`${pdmInst}`].rx_struct[$idx]" visible="false" editable="false" />
+        <ParamBool id="hasPDMCh$idx" name="hasPDMCh$idx" group="Channels" default="`${hasBlock(pdmCh$idx_Ex)}`" visible="false" editable="false" desc="Check whether device has this PDM channel available" />
+        <ParamBool id="is_receiver_$idx_used" name="$idx" group="Channels" default="false" visible="`${($idx &lt; NR) &amp;&amp; hasPDMCh$idx}`" editable="`${($idx &lt; NR) &amp;&amp; hasPDMCh$idx}`" desc="Channel $idx enable/disable control." />
+    </Repeat>
+
+	<Repeat count="8">
+        <ParamSignal port="tr_activate[$idx]" name="Trigger $idx Input" group="Channel $idx Config"  visible="`${is_receiver_$idx_used}`" desc="Sets up the trigger input signal for the PDM Channel $idx start." canBeEmpty="true" />
+        <ParamRange id="sampleDelay_$idx" name="Interface Sample Delay" group="Channel $idx Config" default="2" min="0" max="255" resolution="1" visible="`${is_receiver_$idx_used}`" editable="true" desc="Interface sample delay. This field specifies when a PDM value is captured. Internally user selected value will be incremented by 1. Value 0 means 1 clock cycle after the rising edge." />
+		<ParamChoice id="wordSize_$idx" name="Word Size" group="Channel $idx Config" default="CY_PDM_PCM_WSIZE_16_BIT" visible="`${is_receiver_$idx_used}`" editable="true" desc="Set word length (in bits)">
+		  <Entry name="8"  value="CY_PDM_PCM_WSIZE_8_BIT"  visible="true" />
+		  <Entry name="10" value="CY_PDM_PCM_WSIZE_10_BIT" visible="true" />
+		  <Entry name="12" value="CY_PDM_PCM_WSIZE_12_BIT" visible="true" />
+		  <Entry name="14" value="CY_PDM_PCM_WSIZE_14_BIT" visible="true" />
+		  <Entry name="16" value="CY_PDM_PCM_WSIZE_16_BIT" visible="true" />
+		  <Entry name="18" value="CY_PDM_PCM_WSIZE_18_BIT" visible="true" />
+		  <Entry name="20" value="CY_PDM_PCM_WSIZE_20_BIT" visible="true" />
+		  <Entry name="24" value="CY_PDM_PCM_WSIZE_24_BIT" visible="true" />
+		  <Entry name="32" value="CY_PDM_PCM_WSIZE_32_BIT" visible="true" />
+		</ParamChoice>
+
+		<ParamBool id="signExtension_$idx" name="Sign Extension" group="Channel $idx Config" default="true" visible="`${is_receiver_$idx_used}`" editable="true" desc="Sign extension type:" />
+
+		<ParamRange id="rxFifoTriggerLevel_$idx" name="FIFO Trigger Level" group="Channel $idx Config" default="10" min="0" max="63" resolution="1" visible="`${is_receiver_$idx_used}`" editable="true" desc="Set FIFO level to trigger an event (interrupt or DMA request). Should not be greater than 63." />
+
+		<ParamBool id="fir0Enable_$idx" name="FIR0 Enable" group="Channel $idx Config" default="true" visible="`${is_receiver_$idx_used}`" editable="true" desc="FIR 0 filter coefficient enable. " />
+
+		<ParamChoice id="cicDecimCode_$idx" name="CIC FILTER DECIMATION" group="Channel $idx Config" default="CY_PDM_PCM_CHAN_CIC_DECIM_8" visible="`${is_receiver_$idx_used}`" editable="true" desc="CIC filter decimation. The CIC filter PCM frequency is a fraction of the PDM frequency">
+		  <Entry name="1/2"  value="CY_PDM_PCM_CHAN_CIC_DECIM_2"  visible="true" />
+		  <Entry name="1/4"  value="CY_PDM_PCM_CHAN_CIC_DECIM_4"  visible="true" />
+		  <Entry name="1/8"  value="CY_PDM_PCM_CHAN_CIC_DECIM_8"  visible="true" />
+		  <Entry name="1/16" value="CY_PDM_PCM_CHAN_CIC_DECIM_16" visible="true" />
+		  <Entry name="1/32" value="CY_PDM_PCM_CHAN_CIC_DECIM_32" visible="true" />
+		</ParamChoice>
+
+		<ParamChoice id="fir0DecimCode_$idx" name="FIR0 FILTER DECIMATION" group="Channel $idx Config" default="CY_PDM_PCM_CHAN_FIR0_DECIM_2" visible="`${is_receiver_$idx_used}`" editable="true" desc="FIR filter decimation. The FIR filter PCM frequency is a fraction of the CIC filter PCM frequency">
+		  <Entry name="1/1"  value="CY_PDM_PCM_CHAN_FIR0_DECIM_1"  visible="true" />
+		  <Entry name="1/2"  value="CY_PDM_PCM_CHAN_FIR0_DECIM_2"  visible="true" />
+		  <Entry name="1/3"  value="CY_PDM_PCM_CHAN_FIR0_DECIM_3"  visible="true" />
+		  <Entry name="1/4"  value="CY_PDM_PCM_CHAN_FIR0_DECIM_4"  visible="true" />
+		  <Entry name="1/5"  value="CY_PDM_PCM_CHAN_FIR0_DECIM_5"  visible="true" />
+		</ParamChoice>
+
+		<ParamRange id="fir0Scale_$idx" name="FIR0 Scale" group="Channel $idx Config" default="7" min="0" max="31" resolution="1" visible="`${is_receiver_$idx_used}`" editable="true" desc="FIR 0 filter PCM scaling. FIR 0 filter PCM values are scaled to 26-bit signed PCM values Range 0 to 31." />
+
+		<ParamChoice id="fir1DecimCode_$idx" name="FIR1 FILTER DECIMATION" group="Channel $idx Config" default="CY_PDM_PCM_CHAN_FIR1_DECIM_2" visible="`${is_receiver_$idx_used}`" editable="true" desc="FIR filter decimation. The FIR filter PCM frequency is a fraction of the CIC filter PCM frequency">
+		  <Entry name="1/1"  value="CY_PDM_PCM_CHAN_FIR1_DECIM_1"  visible="true" />
+		  <Entry name="1/2"  value="CY_PDM_PCM_CHAN_FIR1_DECIM_2"  visible="true" />
+		  <Entry name="1/3"  value="CY_PDM_PCM_CHAN_FIR1_DECIM_3"  visible="true" />
+		  <Entry name="1/4"  value="CY_PDM_PCM_CHAN_FIR1_DECIM_4"  visible="true" />
+		</ParamChoice>
+
+		<ParamRange id="fir1Scale_$idx" name="FIR1 Scale" group="Channel $idx Config" default="7" min="0" max="31" resolution="1" visible="`${is_receiver_$idx_used}`" editable="true" desc="FIR 1 filter PCM scaling. FIR 1 filter PCM values are scaled to 26-bit signed PCM values Range 0 to 31." />
+
+		<ParamBool id="dcBlockDisable_$idx" name="DC Block Enable" group="Channel $idx Config" default="true" visible="`${is_receiver_$idx_used}`" editable="true" desc="DC block to is by default enabled. Disable this bit to disable the DC Block. This is used for test purpose only. " />
+
+		<ParamChoice id="dcBlockCode_$idx" name="DC Block Code" group="Channel $idx Config" default="CY_PDM_PCM_CHAN_DCBLOCK_CODE_1" visible="`${is_receiver_$idx_used &amp;&amp; dcBlockDisable_$idx}`" editable="true" desc="DC blocker coefficient">
+		  <Entry name="CODE 1"   value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_1"   visible="true" />
+		  <Entry name="CODE 2"   value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_2"   visible="true" />
+		  <Entry name="CODE 4"   value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_4"   visible="true" />
+		  <Entry name="CODE 8"   value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_8"   visible="true" />
+		  <Entry name="CODE 16"  value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_16"   visible="true" />
+		  <Entry name="CODE 32"  value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_32"   visible="true" />
+		  <Entry name="CODE 64"  value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_64"   visible="true" />
+		  <Entry name="CODE 128" value="CY_PDM_PCM_CHAN_DCBLOCK_CODE_128"   visible="true" />
+		</ParamChoice>
+
+	</Repeat>
+
+    <!-- PDM Config -->
+    <ParamRange id="clockDiv" name="Clock Divider" group="PDM Config" default="7" min="0" max="255" resolution="1" visible="true" editable="true" desc="Sets the input Clock Divider. The actual range is 1 to 256. The value that user assigns here will be incremented by 1 and assigned internally. For example value 0 is 'divide by 1'" />
+
+    <ParamChoice id="clockSelect" name="Clock Select" group="PDM Config" default="CY_PDM_PCM_SEL_SRSS_CLOCK" visible="true" editable="true" desc="Set interface source clock: SRSS, DATA[0], DATA[1], OFF">
+      <Entry name="SRSS CLOCK" value="CY_PDM_PCM_SEL_SRSS_CLOCK" visible="true" />
+      <Entry name="PDM DATA0"  value="CY_PDM_PCM_SEL_PDM_DATA0" visible="false" />
+      <Entry name="PDM DATA1"  value="CY_PDM_PCM_SEL_PDM_DATA1" visible="false" />
+      <Entry name="SEL OFF"    value="CY_PDM_PCM_SEL_OFF" visible="false" />
+    </ParamChoice>
+
+    <ParamChoice id="halveRate" name="Halve Rate" group="PDM Config" default="CY_PDM_PCM_RATE_FULL" visible="true" editable="true" desc="Halve rate sampling.">
+      <Entry name="Channel Full"  value="CY_PDM_PCM_RATE_FULL"  visible="true" />
+      <Entry name="Channel Halve" value="CY_PDM_PCM_RATE_HALVE" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="routeCtl_0_1_int1" name="Route Control for Channels 0 and 1" group="PDM Config" default="0" visible="`${(interface_type == 1) &amp;&amp; (is_receiver_0_used) &amp;&amp; (is_receiver_1_used)}`" editable="true" multiSelect="false" desc="Specifies which PDM Data should route to specific PDM receiver.">
+      <Entry name="Route all channels as independent mono channels"  value="0"  visible="true" />
+      <Entry name="Channel 0 Data routed to Channel 1 Receiver" value="1" visible="true" />
+      <Entry name="Channel 1 Data routed to Channel 0 Receiver" value="2" visible="true" />
+      <Entry name="Channel 0 Data to Channel 1 Receiver and Channel 1 Data to Channel 0 Receiver" value="3" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="routeCtl_0_1_int2" name="Route Control for Channels 0 and 1" group="PDM Config" default="1" visible="`${(interface_type == 2) &amp;&amp; (is_receiver_0_used) &amp;&amp; (is_receiver_1_used)}`" editable="true" multiSelect="false" desc="Specifies which PDM Data should route to specific PDM receiver.">
+      <Entry name="Channel 0 Data routed to Channel 1 Receiver" value="1" visible="true" />
+      <Entry name="Channel 1 Data routed to Channel 0 Receiver" value="2" visible="true" />
+    </ParamChoice>
+
+    <ParamRange id="routeCtl0_1" name="routeCtl0_1" group="Internal" default="`${(interface_type == 1) ? routeCtl_0_1_int1 : (((is_receiver_0_used) &amp;&amp; (is_receiver_1_used)) ? routeCtl_0_1_int2 : 0)}`" min="0" max="4" resolution="1" visible="false" editable="false" desc="" />
+
+    <ParamChoice id="routeCtl_2_3_int1" name="Route Control for Channels 2 and 3" group="PDM Config" default="0" visible="`${(interface_type == 1) &amp;&amp; (is_receiver_2_used) &amp;&amp; (is_receiver_3_used)}`" editable="true" multiSelect="false" desc="Specifies which PDM Data should route to specific PDM receiver.">
+      <Entry name="Route all channels as independent mono channels"  value="0"  visible="true" />
+      <Entry name="Channel 2 Data routed to Channel 3 Receiver" value="8" visible="true" />
+      <Entry name="Channel 3 Data routed to Channel 2 Receiver" value="4" visible="true" />
+      <Entry name="Channel 2 Data to Channel 3 Receiver and Channel 3 Data to Channel 2 Receiver" value="12" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="routeCtl_2_3_int2" name="Route Control for Channels 2 and 3" group="PDM Config" default="4" visible="`${(interface_type == 2) &amp;&amp; (is_receiver_2_used) &amp;&amp; (is_receiver_3_used)}`" editable="true" multiSelect="false" desc="Specifies which PDM Data should route to specific PDM receiver.">
+      <Entry name="Channel 2 Data routed to Channel 3 Receiver" value="8" visible="true" />
+      <Entry name="Channel 3 Data routed to Channel 2 Receiver" value="4" visible="true" />
+    </ParamChoice>
+
+    <ParamRange id="routeCtl2_3" name="routeCtl2_3" group="Internal" default="`${(interface_type == 1) ? routeCtl_2_3_int1 : (((is_receiver_2_used) &amp;&amp; (is_receiver_3_used)) ? routeCtl_2_3_int2 : 0)}`" min="0" max="8" resolution="1" visible="false" editable="false" desc="" />
+
+    <ParamChoice id="routeCtl_4_5_int1" name="Route Control for Channels 4 and 5" group="PDM Config" default="0" visible="`${(interface_type == 1) &amp;&amp; (is_receiver_4_used) &amp;&amp; (is_receiver_5_used)}`" editable="true" multiSelect="false" desc="Specifies which PDM Data should route to specific PDM receiver.">
+      <Entry name="Route all channels as independent mono channels"  value="0"  visible="true" />
+      <Entry name="Channel 4 Data routed to Channel 5 Receiver" value="16" visible="true" />
+      <Entry name="Channel 5 Data routed to Channel 4 Receiver" value="32" visible="true" />
+      <Entry name="Channel 4 Data to Channel 5 Receiver and Channel 5 Data to Channel 4 Receiver" value="48" visible="true" />
+    </ParamChoice>
+
+    <ParamChoice id="routeCtl_4_5_int2" name="Route Control for Channels 4 and 5" group="PDM Config" default="16" visible="`${(interface_type == 2) &amp;&amp; (is_receiver_4_used) &amp;&amp; (is_receiver_5_used)}`" editable="true" multiSelect="false" desc="Specifies which PDM Data should route to specific PDM receiver.">
+      <Entry name="Channel 4 Data routed to Channel 5 Receiver" value="16" visible="true" />
+      <Entry name="Channel 5 Data routed to Channel 4 Receiver" value="32" visible="true" />
+    </ParamChoice>
+
+    <ParamRange id="routeCtl4_5" name="routeCtl4_5" group="Internal" default="`${(interface_type == 1) ? routeCtl_4_5_int1 : (((is_receiver_4_used) &amp;&amp; (is_receiver_5_used)) ? routeCtl_4_5_int2 : 0)}`" min="0" max="32" resolution="1" visible="false" editable="false" desc="" />
+
+
+    <ParamBool id="userConfigureFIR0" name="USER Configure FIR0" group="PDM Config" default="true" visible="true" editable="true" desc="Word extension type:" />
+
+    <ParamBool id="userConfigureFIR1" name="USER Configure FIR1" group="PDM Config" default="true" visible="true" editable="true" desc="Word extension type:" />
+
+    <ParamRange id="fir0Coeff0data0" name="FIR0 Coeff0 Data0" group="FIR0 Config" default="1" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff0data1" name="FIR0 Coeff0 Data1" group="FIR0 Config" default="26" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir0Coeff1data0" name="FIR0 Coeff1 Data0" group="FIR0 Config" default="57" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff1data1" name="FIR0 Coeff1 Data1" group="FIR0 Config" default="15" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir0Coeff2data0" name="FIR0 Coeff2 Data0" group="FIR0 Config" default="-138" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff2data1" name="FIR0 Coeff2 Data1" group="FIR0 Config" default="-239" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir0Coeff3data0" name="FIR0 Coeff3 Data0" group="FIR0 Config" default="-14" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff3data1" name="FIR0 Coeff3 Data1" group="FIR0 Config" default="491" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir0Coeff4data0" name="FIR0 Coeff4 Data0" group="FIR0 Config" default="665" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff4data1" name="FIR0 Coeff4 Data1" group="FIR0 Config" default="-110" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir0Coeff5data0" name="FIR0 Coeff5 Data0" group="FIR0 Config" default="-1425" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff5data1" name="FIR0 Coeff5 Data1" group="FIR0 Config" default="-1650" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir0Coeff6data0" name="FIR0 Coeff6 Data0" group="FIR0 Config" default="636" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff6data1" name="FIR0 Coeff6 Data1" group="FIR0 Config" default="4820" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir0Coeff7data0" name="FIR0 Coeff7 Data0" group="FIR0 Config" default="8191" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir0Coeff7data1" name="FIR0 Coeff7 Data1" group="FIR0 Config" default="8191" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR0}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <!-- FIR1 Coefficients -->
+    <ParamRange id="fir1Coeff0data0" name="FIR1 Coeff0 Data0" group="FIR1 Config" default="190" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff0data1" name="FIR1 Coeff0 Data1" group="FIR1 Config" default="258" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff1data0" name="FIR1 Coeff1 Data0" group="FIR1 Config" default="-106" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff1data1" name="FIR1 Coeff1 Data1" group="FIR1 Config" default="-87" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff2data0" name="FIR1 Coeff2 Data0" group="FIR1 Config" default="16" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff2data1" name="FIR1 Coeff2 Data1" group="FIR1 Config" default="169" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff3data0" name="FIR1 Coeff2 Data0" group="FIR1 Config" default="-35" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff3data1" name="FIR1 Coeff2 Data1" group="FIR1 Config" default="-182" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff4data0" name="FIR1 Coeff3 Data0" group="FIR1 Config" default="-5" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff4data1" name="FIR1 Coeff3 Data1" group="FIR1 Config" default="226" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff5data0" name="FIR1 Coeff4 Data0" group="FIR1 Config" default="40" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff5data1" name="FIR1 Coeff4 Data1" group="FIR1 Config" default="-261" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff6data0" name="FIR1 Coeff5 Data0" group="FIR1 Config" default="-97" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff6data1" name="FIR1 Coeff5 Data1" group="FIR1 Config" default="300" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff7data0" name="FIR1 Coeff6 Data0" group="FIR1 Config" default="173" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff7data1" name="FIR1 Coeff6 Data1" group="FIR1 Config" default="-336" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff8data0" name="FIR1 Coeff7 Data0" group="FIR1 Config" default="-276" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff8data1" name="FIR1 Coeff7 Data1" group="FIR1 Config" default="369" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff9data0" name="FIR1 Coeff8 Data0" group="FIR1 Config" default="418" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff9data1" name="FIR1 Coeff8 Data1" group="FIR1 Config" default="-398" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff10data0" name="FIR1 Coeff9 Data0" group="FIR1 Config" default="-630" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff10data1" name="FIR1 Coeff9 Data1" group="FIR1 Config" default="422" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff11data0" name="FIR1 Coeff10 Data0" group="FIR1 Config" default="986" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff11data1" name="FIR1 Coeff10 Data1" group="FIR1 Config" default="-439" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff12data0" name="FIR1 Coeff11 Data0" group="FIR1 Config" default="-1764" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff12data1" name="FIR1 Coeff11 Data1" group="FIR1 Config" default="450" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <ParamRange id="fir1Coeff13data0" name="FIR1 Coeff12 Data0" group="FIR1 Config" default="5480" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+    <ParamRange id="fir1Coeff13data1" name="FIR1 Coeff12 Data1" group="FIR1 Config" default="8191" min="-8192" max="8191" resolution="1" visible="`${userConfigureFIR1}`" editable="true" desc="The (symmetric) 30-taps finite impulse response (FIR) filter with 14-bit signed coefficients(in the range [-8192, 8191])." />
+
+    <!-- Connections -->
+	<Repeat count="8">
+    <ParamSignal port="pdm_data[$idx]" name="PDM Data $idx" group="Inputs" visible="`${is_receiver_$idx_used}`" desc="PDM Channel 1 input signal from PDM device for conversion. Can be connected to digital input pin." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_HIGHZ" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_HIGHZ" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="pdm_clk[$idx]" name="PDM Clock $idx" group="Outputs" visible="`${is_receiver_$idx_used}`" desc="Channel 1 Clock output signal for PDM sampling. Can be connected to digital output pin." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+
+	<ParamSignal port="clk_if_srss[0]" name="Interface Clock" group="Inputs" visible="true" desc="Clock input signal for PDM interface." canBeEmpty="false" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamBool id="rxDmaTrigger" name="DMA Trigger Enable" group="Outputs" default="false" visible="true" editable="true" desc="Enables DMA trigger" />
+    <ParamSignal port="tr_rx_req[$idx]" name="DMA Channel $idx" group="Outputs" visible="`${(rxDmaTrigger) &amp;&amp; (is_receiver_$idx_used)}`" desc="DMA transfer request signal for channel 1. Visible when the DMA Trigger Enable is selected." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG_IN_OFF" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+	</Repeat>
+
+    <ParamBool id="inFlash" name="Store Config in Flash" group="Advanced" default="true" visible="true" editable="true" desc="Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false)." />
+
+	<ParamString id="sourceClock" name="sourceClock" group="Internal" default="`${getBlockFromSignal(&quot;clk_if_srss[0]&quot;)}`" visible="false" editable="false" desc="Source Clock Resource" />
+
+    <!-- PDM instance number -->
+    <ParamString id="InstNumber" name="Instance Number" group="Internal" default="`${getInstNumber(&quot;pdm&quot;)}`" visible="false" editable="false" desc="PDM Instance number." />
+    <ParamBool id="hasPDM0" name="hasPDM0" group="Internal" default="`${hasBlock(&quot;pdm[0]&quot;)}`" visible="false" editable="false" desc="Check whether device has more than one pdm" />
+
+    <!-- Peripheral clock divider connection -->
+    <ParamBool id="pclkOk" name="PCLK Valid" group="Internal" default="`${hasConnection(&quot;clk_if_srss&quot;, 0) &amp;&amp; isBlockUsed(sourceClock)}`" visible="false" editable="false" desc="Checks whether there is a PCLK connected and enabled." />
+    <ParamString id="pclkDst" name="PCLK Destination" group="Internal" default="PCLK_PDM`${InstNumber}`_CLK_IF_SRSS" visible="false" editable="false" desc="Generates PCLK connection define." />
+
+  </Parameters>
+
+  <DRCs>
+      <!-- ACLK Divider -->
+      <DRC type="ERROR" text="To achieve 50 percent duty cycle a minimum of divide by 2 of assigned divider is required." condition="`${getExposedMember(sourceClock, &quot;divider&quot;) == 1}`" />
+      <DRC type="ERROR" text="Channel[0] and Channel[1] must be used together for Stereo configuration" condition="`${(interface_type == 2) &amp;&amp; (is_receiver_0_used != is_receiver_1_used) &amp;&amp; is_receiver_0_used}`" paramId="is_receiver_0_used" />
+      <DRC type="ERROR" text="Channel[0] and Channel[1] must be used together for Stereo configuration" condition="`${(interface_type == 2) &amp;&amp; (is_receiver_0_used != is_receiver_1_used) &amp;&amp; is_receiver_1_used}`" paramId="is_receiver_1_used" />
+      <DRC type="ERROR" text="Channel[2] and Channel[3] must be used together for Stereo configuration" condition="`${(interface_type == 2) &amp;&amp; (is_receiver_2_used != is_receiver_3_used) &amp;&amp; is_receiver_2_used}`" paramId="is_receiver_2_used" />
+      <DRC type="ERROR" text="Channel[2] and Channel[3] must be used together for Stereo configuration" condition="`${(interface_type == 2) &amp;&amp; (is_receiver_2_used != is_receiver_3_used) &amp;&amp; is_receiver_3_used}`" paramId="is_receiver_3_used" />
+      <DRC type="ERROR" text="Channel[4] and Channel[5] must be used together for Stereo configuration" condition="`${(interface_type == 2) &amp;&amp; (is_receiver_4_used != is_receiver_5_used) &amp;&amp; is_receiver_4_used}`" paramId="is_receiver_4_used" />
+      <DRC type="ERROR" text="Channel[4] and Channel[5] must be used together for Stereo configuration" condition="`${(interface_type == 2) &amp;&amp; (is_receiver_4_used != is_receiver_5_used) &amp;&amp; is_receiver_5_used}`" paramId="is_receiver_5_used" />
+
+  </DRCs>
+
+
+  <ConfigFirmware>
+    <ConfigInclude value="cy_pdm_pcm_v2.h" include="true" />
+    <ConfigInclude value="cy_sysclk.h" include="`${pclkOk}`" />
+
+    <ConfigDefine name="`${INST_NAME}`_HW" value="PDM`${hasPDM0 ? InstNumber : &quot;&quot;}`" public="true" include="true" />
+
+    <ConfigDefine name="`${INST_NAME}`_CHANNEL_$idx_IRQ" value="pdm_`${hasPDM0 ? InstNumber . &quot;_&quot; : &quot;&quot;}`interrupts_$idx_IRQn" public="true" include="`${is_receiver_$idx_used}`" repeatCount="8" />
+
+    <ConfigStruct name="`${INST_NAME . &quot;_config&quot;}`" type="cy_stc_pdm_pcm_config_v2_t" const="`${inFlash}`" public="true" include="true" >
+      <Member name="clkDiv"                  value="`${clockDiv}`" />
+      <Member name="clksel"                  value="`${clockSelect}`" />
+      <Member name="halverate"               value="`${halveRate}`" />
+      <Member name="route"                   value="`${routeCtl0_1 | routeCtl2_3 | routeCtl4_5}`" />
+      <Member name="fir0_coeff_user_value"   value="`${userConfigureFIR0}`" />
+      <Member name="fir1_coeff_user_value"   value="`${userConfigureFIR1}`" />
+      <Member name="fir0_coeff"   value="{{`${fir0Coeff0data0}`, `${fir0Coeff0data1}`}, {`${fir0Coeff1data0}`, `${fir0Coeff1data1}`}, {`${fir0Coeff2data0}`, `${fir0Coeff2data1}`}, {`${fir0Coeff3data0}`, `${fir0Coeff3data1}`}, {`${fir0Coeff4data0}`, `${fir0Coeff4data1}`}, {`${fir0Coeff5data0}`, `${fir0Coeff5data1}`}, {`${fir0Coeff6data0}`, `${fir0Coeff6data1}`}, {`${fir0Coeff7data0}`, `${fir0Coeff7data1}`} }" include="`${userConfigureFIR0}`" />
+      <Member name="fir1_coeff"   value="{{`${fir1Coeff0data0}`, `${fir1Coeff0data1}`}, {`${fir1Coeff1data0}`, `${fir1Coeff1data1}`}, {`${fir1Coeff2data0}`, `${fir1Coeff2data1}`}, {`${fir1Coeff3data0}`, `${fir1Coeff3data1}`}, {`${fir1Coeff4data0}`, `${fir1Coeff4data1}`}, {`${fir1Coeff5data0}`, `${fir1Coeff5data1}`}, {`${fir1Coeff6data0}`, `${fir1Coeff6data1}`}, {`${fir1Coeff7data0}`, `${fir1Coeff7data1}`}, {`${fir1Coeff8data0}`, `${fir1Coeff8data1}`}, {`${fir1Coeff9data0}`, `${fir1Coeff9data1}`}, {`${fir1Coeff10data0}`, `${fir1Coeff10data1}`}, {`${fir1Coeff11data0}`, `${fir1Coeff11data1}`}, {`${fir1Coeff12data0}`, `${fir1Coeff12data1}`}, {`${fir1Coeff13data0}`, `${fir1Coeff13data1}`} }" include="`${userConfigureFIR1}`" />
+    </ConfigStruct>
+
+    <ConfigStruct name="channel_$idx_config" type="cy_stc_pdm_pcm_channel_config_t" const="`${inFlash}`" public="true" include="`${is_receiver_$idx_used}`" repeatCount="8">
+      <Member name="sampledelay"            value="`${sampleDelay_$idx}`" />
+      <Member name="wordSize"               value="`${wordSize_$idx}`" />
+      <Member name="signExtension"          value="`${signExtension_$idx}`" />
+      <Member name="rxFifoTriggerLevel"     value="`${rxFifoTriggerLevel_$idx}`" />
+      <Member name="fir0_enable"            value="`${fir0Enable_$idx}`" />
+      <Member name="cic_decim_code"         value="`${cicDecimCode_$idx}`" />
+      <Member name="fir0_decim_code"        value="`${fir0DecimCode_$idx}`" />
+      <Member name="fir0_scale"             value="`${fir0Scale_$idx}`" />
+      <Member name="fir1_decim_code"        value="`${fir1DecimCode_$idx}`" />
+      <Member name="fir1_scale"             value="`${fir1Scale_$idx}`" />
+      <Member name="dc_block_disable"       value="`${!dcBlockDisable_$idx}`" />
+      <Member name="dc_block_code"          value="`${dcBlockCode_$idx}`" />
+    </ConfigStruct>
+
+    <ConfigInstruction value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_PDM`${InstNumber}`_PERI_NR, CY_MMIO_PDM`${InstNumber}`_GROUP_NR, CY_MMIO_PDM`${InstNumber}`_SLAVE_NR, CY_MMIO_PDM`${InstNumber}`_CLK_HF_NR);" include="true" guard="defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)" />
+    <ConfigInstruction value="Cy_SysClk_PeriPclkAssignDivider(`${pclkDst}`, `${getExposedMember(sourceClock, &quot;clockSel&quot;)}`);" include="`${pclkOk}`"  />
+  </ConfigFirmware>
+</Personality>

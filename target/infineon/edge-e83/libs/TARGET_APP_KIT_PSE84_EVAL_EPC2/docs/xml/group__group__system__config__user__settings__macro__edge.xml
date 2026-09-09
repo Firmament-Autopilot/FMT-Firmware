@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__user__settings__macro__edge" kind="group">
+    <compoundname>group_system_config_user_settings_macro_edge</compoundname>
+    <title>User Settings Macros</title>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__group__system__config__user__settings__macro__edge_1ga3399608d4a92cfd16a7eca4d9636c616" prot="public" static="no">
+        <name>CY_CORTEX_M33_NS_APPL_ADDR</name>
+        <initializer>(0x08340400)</initializer>
+        <briefdescription>
+<para>The Cortex-M33 non secure application start address, corresponds to the location of the vector table. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This is the default address in the case of main cm33_ns execution out of external flash. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="86" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__user__settings__macro__edge_1gaf7ce010fed54e442c870c003790c232e" prot="public" static="no">
+        <name>CY_CM55_APP_BOOT_ADDR</name>
+        <initializer>(0x60580400)</initializer>
+        <briefdescription>
+<para>The Cortex-M55 application start address, corresponds to the location of the vector table. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This is the default address in the case of main cm33_ns execution out of external flash. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="93" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__user__settings__macro__edge_1ga02de510de4ee1e844aa544b0db2c5b90" prot="public" static="no">
+        <name>CY_CORTEX_M55_APPL_ADDR</name>
+        <initializer>(<ref refid="group__group__system__config__user__settings__macro__edge_1gaf7ce010fed54e442c870c003790c232e" kindref="member">CY_CM55_APP_BOOT_ADDR</ref>)</initializer>
+        <briefdescription>
+<para>Alternate define for CY_CM55_APP_BOOT_ADDR. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="98" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

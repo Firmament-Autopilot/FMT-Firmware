@@ -1,0 +1,29 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "shift command example",
+            "description": "Shifts a hex segment to a secondary address",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "shift",
+                    "inputs": [
+                        {
+                            "description": "CM33 Secure + CM33 Non-Secure application",
+                            "file": "rram_3.hex",
+                            "address" : "0x32030000"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "CM33 Secure + CM33 Non-Secure application shifted to secure region",
+                            "address": "0x3202A000",
+                            "file": "shifted_rram_3.hex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

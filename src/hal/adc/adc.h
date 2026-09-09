@@ -42,7 +42,18 @@ typedef struct adc_device* adc_dev_t;
 
 /* adc driver opeations */
 struct adc_ops {
+    /**
+     * @brief adc enable/disable function (optional)
+     * @param adc_dev adc device
+     * @param enable ADC_CMD_DISABLE/ADC_CMD_ENABLE
+     */
     rt_err_t (*enable)(adc_dev_t adc_dev, uint8_t enable);
+    /**
+     * @brief adc measurement function
+     * @param adc_dev adc device
+     * @param channel channel to measure
+     * @param mVolt measurement result in mV
+     */
     rt_err_t (*measure)(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt);
 };
 
