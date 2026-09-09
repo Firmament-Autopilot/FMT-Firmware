@@ -65,6 +65,7 @@
 #include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_ubx.h"
+#include "driver/imu/bmi055.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/ist8310.h"
@@ -109,6 +110,26 @@ bool get_device_uid(uint32_t uid[3])
     uid[2] = LL_GetUID_Word2();
 
     return true;
+}
+
+static rt_err_t init_secondary_imu(void)
+{
+    board_hw_info_t hw_info;
+    rt_err_t err = board_determine_hw_info(&hw_info);
+
+    if (err != RT_EOK) {
+        console_println("Error: failed to determine board hardware version");
+        return err;
+    }
+
+    const bool use_bmi088 = (hw_info.revision == 2)
+        && (hw_info.version == 0 || hw_info.version == 2);
+
+    if (use_bmi088) {
+        return drv_bmi088_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1);
+    }
+
+    return drv_bmi055_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1);
 }
 
 static void MPU_Config(void)
@@ -355,13 +376,13 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
 #else
-    /* Init onboard sensors */
-    /* ICM42688P as primary (ID=0), BMI055 as backup (ID=1)*/
+    /* Init onboard sensors. ICM42688P is primary (ID=0); the board hardware
+       revision selects BMI055 or BMI088 as secondary (ID=1). */
     /* Warm up ICM42688 SPI device via drv_spi helper to avoid including
        HAL SPI internals in board code. */
     drv_spi_warmup_device("spi1_dev3", 0x75);
     RT_CHECK(drv_icm42688_init("spi1_dev3", "gyro0", "accel0", 0));
-    RT_CHECK(drv_bmi088_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1));
+    RT_CHECK(init_secondary_imu());
     RT_CHECK(drv_ms5611_init("i2c4_dev2", "barometer"));
     RT_CHECK(drv_ist8310_init("i2c4_dev1", "mag0", 0));
     // RT_CHECK(drv_mtf_01_init("serial4"));

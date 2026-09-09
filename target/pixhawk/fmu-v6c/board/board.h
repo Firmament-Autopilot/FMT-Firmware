@@ -74,7 +74,7 @@ extern int __bss_end;
 #define I2C_DEVICE_INT                     "i2c4"
 
 /* SPI Device */
-// SPI1: Sensors (BMI088, ICM42688)
+// SPI1: Sensors (BMI055/BMI088, ICM42688)
 // SPI2: FRAM
 
 /* SPI Definitions */
@@ -121,10 +121,21 @@ extern int __bss_end;
 #define N_USB_VBUS_VALID_GPIO_Port         GPIOE
 #define N_FMU_LED_RED_Pin                  GPIO_PIN_10
 #define N_FMU_LED_RED_GPIO_Port            GPIOD
+#define HW_REV_SENSE_Pin                   GPIO_PIN_0
+#define HW_REV_SENSE_GPIO_Port             GPIOC
+#define HW_VER_SENSE_Pin                   GPIO_PIN_1
+#define HW_VER_SENSE_GPIO_Port             GPIOC
 #define HW_VER_REV_DRIVE_Pin               GPIO_PIN_12
 #define HW_VER_REV_DRIVE_GPIO_Port         GPIOE
 #define N_BRICK2_VALID_Pin                 GPIO_PIN_12
 #define N_BRICK2_VALID_GPIO_Port           GPIOB
+
+typedef struct {
+    uint8_t version;
+    uint8_t revision;
+} board_hw_info_t;
+
+rt_err_t board_determine_hw_info(board_hw_info_t* info);
 
 void SystemClock_Config(void);
 void Error_Handler(void);
