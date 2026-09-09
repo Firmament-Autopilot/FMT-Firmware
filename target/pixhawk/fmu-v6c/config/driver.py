@@ -6,6 +6,7 @@ DRIVERS = [
     'gps/gps_ubx.c',
     'gps/gps_nmea.c',
     'imu/bmi055.c',
+    'imu/bmi088.c',
     'imu/icm42688p.c',
     'mag/ist8310.c',
     'mtd/ramtron.c',
