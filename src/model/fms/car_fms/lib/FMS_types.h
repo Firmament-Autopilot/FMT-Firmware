@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2089
+ * Model version                  : 1.2314
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 18 15:45:01 2025
+ * C/C++ source code generated on : Thu Sep 10 13:17:27 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,8 +110,9 @@ typedef struct {
 
   /* Coordinate Frame:
      0:FRAME_GLOBAL_NED
-     1:FRAME_LOCAL_FRD
-     2:FRAME_BODY_FRD */
+     1:FRAME_LOCAL_NED
+     2:FRAME_LOCAL_FRD
+     3:FRAME_BODY_FRD */
   uint8_T frame;
   uint8_T reserved;
 
@@ -492,10 +493,12 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_60IzzXHZx8EoBHH2oNJTeB_
-#define DEFINED_TYPEDEF_FOR_struct_60IzzXHZx8EoBHH2oNJTeB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_nSG0s2l8vqqolAkK2gB17B_
+#define DEFINED_TYPEDEF_FOR_struct_nSG0s2l8vqqolAkK2gB17B_
 
 typedef struct {
+  real32_T DISARM_OUT[16];
+  real32_T STANDBY_OUT[16];
   real32_T L1;
   real32_T CRUISE_SPEED;
   real32_T ACCEPT_R;
@@ -503,9 +506,15 @@ typedef struct {
   real32_T MAX_VEL;
   real32_T MAX_R;
   real32_T AY_P;
-  real32_T DISARM_OUT[16];
-  real32_T STANDBY_OUT[16];
-} struct_60IzzXHZx8EoBHH2oNJTeB;
+  real32_T TRAJ_PREVIEW_T;
+  real32_T TRAJ_U_I;
+  real32_T TRAJ_U_I_MAX;
+  real32_T TRAJ_U_I_MIN;
+  real32_T TRAJ_PSI_P;
+  real32_T TRAJ_CTE_P;
+  real32_T TRAJ_CTE_I;
+  real32_T TRAJ_CTE_D;
+} struct_nSG0s2l8vqqolAkK2gB17B;
 
 #endif
 

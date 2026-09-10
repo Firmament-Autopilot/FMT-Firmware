@@ -43,6 +43,14 @@ static param_t __param_list[] = {
     PARAM_FLOAT(MAX_VEL, 2.5, false),
     PARAM_FLOAT(MAX_R, PI * 0.5, false),
     PARAM_FLOAT(AY_P, 0.5, false),
+    PARAM_FLOAT(TRAJ_PREVIEW_T, 0.1, false),
+    PARAM_FLOAT(TRAJ_U_I, 0.05, false),
+    PARAM_FLOAT(TRAJ_U_I_MAX, 2.0, false),
+    PARAM_FLOAT(TRAJ_U_I_MIN, -2.0, false),
+    PARAM_FLOAT(TRAJ_PSI_P, 1.0, false),
+    PARAM_FLOAT(TRAJ_CTE_P, 1.5, false),
+    PARAM_FLOAT(TRAJ_CTE_I, 1.5, false),
+    PARAM_FLOAT(TRAJ_CTE_D, 0.0, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -254,6 +262,14 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_VEL), &FMS_PARAM.MAX_VEL));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_R), &FMS_PARAM.MAX_R));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, AY_P), &FMS_PARAM.AY_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_PREVIEW_T), &FMS_PARAM.TRAJ_PREVIEW_T));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_U_I), &FMS_PARAM.TRAJ_U_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_U_I_MAX), &FMS_PARAM.TRAJ_U_I_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_U_I_MIN), &FMS_PARAM.TRAJ_U_I_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_PSI_P), &FMS_PARAM.TRAJ_PSI_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_CTE_P), &FMS_PARAM.TRAJ_CTE_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_CTE_I), &FMS_PARAM.TRAJ_CTE_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TRAJ_CTE_D), &FMS_PARAM.TRAJ_CTE_D));
 }
 
 void fms_interface_step(uint32_t timestamp)
