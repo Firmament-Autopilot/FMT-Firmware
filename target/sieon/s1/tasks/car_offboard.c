@@ -55,8 +55,8 @@ static void task_entry(void* parameter)
 
         auto_cmd.timestamp = systime_now_ms();
         auto_cmd.frame = FRAME_LOCAL_FRD;
-        auto_cmd.x_cmd = -(r * c * s) / sspo + 10;
-        auto_cmd.y_cmd = (r * c) / sspo + 10;
+        auto_cmd.x_cmd = -(r * c * s) / sspo;
+        auto_cmd.y_cmd = (r * c) / sspo;
         auto_cmd.u_cmd = sqrtf(u*u + v*v);
         auto_cmd.cmd_mask = X_CMD_VALID | Y_CMD_VALID | U_CMD_VALID;
 
