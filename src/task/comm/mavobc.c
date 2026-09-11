@@ -940,7 +940,8 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             mcn_publish(MCN_HUB(mav_actuator_control), &mav_actuator_control);
         }
         break;
-
+    case MAVLINK_MSG_ID_ODOMETRY: // TODO: may replace MAVLINK_MSG_ID_VISION_POSITION_ESTIMATE
+        break;
     default:
         // LOG_W("unsupported mavlink msg:%d", msg->msgid);
         break;
