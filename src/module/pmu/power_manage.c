@@ -65,6 +65,7 @@ static rt_device_t adc_dev;
 static Battery battery;
 static battery_params_t battery_params = { 0 };
 static uint32_t timestamps;
+static float bat_v_div, bat_a_per_v;
 static int BATTERY_ID;
 
 static int echo_battery_status(void* parameter)
@@ -108,14 +109,14 @@ fmt_err_t pmu_poll_battery_status(void)
     bat_status.reserved2 = 0;
 
     if (rt_device_read(adc_dev, BAT1_V_CHANNEL, &value, sizeof(value)) == sizeof(value)) {
-        bat_status.battery_voltage = value * PARAM_GET_FLOAT(POWER, BAT_V_DIV); /* mV */
+        bat_status.battery_voltage = value * bat_v_div; /* mV */
         battery_update_voltage(&battery, bat_status.battery_voltage / 1000.0f);
     } else {
         bat_status.battery_voltage = 0;
     }
 
     if (rt_device_read(adc_dev, BAT1_I_CHANNEL, &value, sizeof(value)) == sizeof(value)) {
-        bat_status.battery_current = value * PARAM_GET_FLOAT(POWER, BAT_A_PER_V); /* mA */
+        bat_status.battery_current = value * bat_a_per_v; /* mA */
         battery_update_current(&battery, bat_status.battery_current / 1000.0f);
     } else {
         bat_status.battery_current = -1;
@@ -160,6 +161,9 @@ fmt_err_t pmu_init(void)
             return FMT_EOK;
         }
     }
+
+    FMT_CHECK(param_link_variable(PARAM_GET(POWER, BAT_V_DIV), &bat_v_div));
+    FMT_CHECK(param_link_variable(PARAM_GET(POWER, BAT_A_PER_V), &bat_a_per_v));
 
     return FMT_ERROR;
 }

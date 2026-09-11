@@ -38,6 +38,7 @@ static McnNode_t fms_out_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t pilot_cmd_nod;
 static McnNode_t mission_data_nod;
+static int32_t mlog_mode;
 
 RT_WEAK void vehicle_status_change_cb(uint8_t status);
 RT_WEAK void vehicle_state_change_cb(uint8_t mode);
@@ -102,7 +103,7 @@ static void update_fms_status(void)
                 LOG_I("[Status] Disarm");
 
                 /* stop mlog when disarm */
-                if (PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 1 || PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 2) {
+                if (mlog_mode == 1 || mlog_mode == 2) {
                     mlog_stop();
                 }
                 break;
@@ -122,7 +123,7 @@ static void update_fms_status(void)
                 LOG_I("[Status] Arm");
 
                 /* start mlog from arm (mode 1) or restart when mode 2 after disarm */
-                if ((PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 1 || PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 2) && mlog_get_status() == MLOG_STATUS_IDLE) {
+                if ((mlog_mode == 1 || mlog_mode == 2) && mlog_get_status() == MLOG_STATUS_IDLE) {
                     logger_start_mlog(NULL);
                 }
                 break;
@@ -265,6 +266,8 @@ fmt_err_t task_status_init(void)
 
     mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL);
     RT_ASSERT(mission_data_nod != NULL);
+
+    FMT_CHECK(param_link_variable(PARAM_GET(SYSTEM, MLOG_MODE), &mlog_mode));
 
     return FMT_EOK;
 }

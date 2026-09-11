@@ -46,6 +46,11 @@ typedef struct
 } msg_pack_cb_table;
 
 static Control_Out_Bus mav_actuator_control;
+static uint8_t use_pos;
+static uint8_t use_alt;
+static uint8_t use_att;
+static uint8_t use_psi;
+static uint8_t obc_heartbeat;
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_pack_func },
@@ -491,7 +496,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 #endif
 
     case MAVLINK_MSG_ID_HEARTBEAT:
-        if (PARAM_GET_UINT8(SYSTEM, OBC_HEARTBEAT)) {
+        if (obc_heartbeat) {
             /* send obc heartbeat to gcs */
             gcs_cmd_heartbeat();
         }
@@ -843,11 +848,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         External_Pos_Bus ext_pos_report = { 0 };
         uint8_t use_pos, use_alt, use_att, use_psi;
 
-        use_pos = PARAM_GET_UINT8(INS, EXTPOS_USE_POS);
-        use_alt = PARAM_GET_UINT8(INS, EXTPOS_USE_ALT);
-        use_att = PARAM_GET_UINT8(INS, EXTPOS_USE_ATT);
-        use_psi = PARAM_GET_UINT8(INS, EXTPOS_USE_PSI);
-
         mavlink_msg_vision_position_estimate_decode(msg, &vision_pos_est);
 
         ext_pos_report.timestamp = systime_now_ms();
@@ -963,6 +963,12 @@ fmt_err_t mavobc_init(void)
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_SYS_STATUS, 1, mavlink_msg_sys_status_pack_func, true));
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1, mavlink_msg_extended_sys_state_pack_func, true));
 #endif
+
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_POS), &use_pos));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_ALT), &use_alt));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_ATT), &use_att));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_PSI), &use_psi));
+    FMT_CHECK(param_link_variable(PARAM_GET(SYSTEM, OBC_HEARTBEAT), &obc_heartbeat));
 
     /* register obc mavlink handler */
     FMT_TRY(mavproxy_monitor_register_handler(MAVPROXY_OBC_CHAN, handle_mavlink_message));

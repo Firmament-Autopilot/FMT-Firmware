@@ -77,7 +77,7 @@ static void mavproxy_rx_entry(void* param)
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
                 for (uint8_t chan = 0; mavproxy_is_valid_chan(chan); chan++) {
-                    while (mavproxy_dev_read(chan, &byte, 1, 0)) {
+                    while (mavproxy_dev_read(chan, &byte, 1, RT_WAITING_NO)) {
                         /* decode mavlink package */
                         if (mavlink_parse_char(0, byte, &msg[chan], &mav_status[chan]) == 1) {
                             handle_mavlink_msg(chan, &msg[chan], mavlink_system);
