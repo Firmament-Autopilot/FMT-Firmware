@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1023
+ * Model version                  : 1.1044
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul 31 19:58:00 2026
+ * C/C++ source code generated on : Mon Sep 14 16:51:41 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -244,47 +244,47 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_mpij009ZVm6ibM4r7FnhHH_
-#define DEFINED_TYPEDEF_FOR_struct_mpij009ZVm6ibM4r7FnhHH_
+#ifndef DEFINED_TYPEDEF_FOR_struct_YUVwBtBTzwKJDzRziwWpiH_
+#define DEFINED_TYPEDEF_FOR_struct_YUVwBtBTzwKJDzRziwWpiH_
 
 typedef struct {
-  real32_T VEL_XY_P;
-  real32_T VEL_XY_I;
-  real32_T VEL_XY_D;
-  real32_T VEL_Z_P;
-  real32_T VEL_Z_I;
-  real32_T VEL_Z_D;
-  real32_T VEL_XY_I_MIN;
-  real32_T VEL_XY_I_MAX;
-  real32_T VEL_XY_D_MIN;
-  real32_T VEL_XY_D_MAX;
-  real32_T VEL_Z_I_MIN;
-  real32_T VEL_Z_I_MAX;
-  real32_T VEL_Z_D_MIN;
-  real32_T VEL_Z_D_MAX;
-  real32_T ROLL_P;
-  real32_T PITCH_P;
-  real32_T ROLL_PITCH_CMD_LIM;
-  real32_T ROLL_RATE_P;
-  real32_T PITCH_RATE_P;
-  real32_T YAW_RATE_P;
-  real32_T ROLL_RATE_I;
-  real32_T PITCH_RATE_I;
-  real32_T YAW_RATE_I;
-  real32_T ROLL_RATE_D;
-  real32_T PITCH_RATE_D;
-  real32_T YAW_RATE_D;
-  real32_T ROLL_RATE_FF;
-  real32_T PITCH_RATE_FF;
-  real32_T YAW_RATE_FF;
-  real32_T RATE_I_MIN;
-  real32_T RATE_I_MAX;
-  real32_T RATE_D_MIN;
-  real32_T RATE_D_MAX;
-  real32_T P_Q_CMD_LIM;
-  real32_T R_CMD_LIM;
-  real32_T HOVER_THRO;
-} struct_mpij009ZVm6ibM4r7FnhHH;
+  real32_T MC_VEL_XY_P;
+  real32_T MC_VEL_XY_I;
+  real32_T MC_VEL_XY_D;
+  real32_T MC_VEL_Z_P;
+  real32_T MC_VEL_Z_I;
+  real32_T MC_VEL_Z_D;
+  real32_T MC_VEL_XY_I_MIN;
+  real32_T MC_VEL_XY_I_MAX;
+  real32_T MC_VEL_XY_D_MIN;
+  real32_T MC_VEL_XY_D_MAX;
+  real32_T MC_VEL_Z_I_MIN;
+  real32_T MC_VEL_Z_I_MAX;
+  real32_T MC_VEL_Z_D_MIN;
+  real32_T MC_VEL_Z_D_MAX;
+  real32_T MC_ROLL_P;
+  real32_T MC_PITCH_P;
+  real32_T MC_ROLL_PITCH_LIM;
+  real32_T MC_ROLLRATE_P;
+  real32_T MC_PITCHRATE_P;
+  real32_T MC_YAWRATE_P;
+  real32_T MC_ROLLRATE_I;
+  real32_T MC_PITCHRATE_I;
+  real32_T MC_YAWRATE_I;
+  real32_T MC_ROLLRATE_D;
+  real32_T MC_PITCHRATE_D;
+  real32_T MC_YAWRATE_D;
+  real32_T MC_ROLLRATE_FF;
+  real32_T MC_PITCHRATE_FF;
+  real32_T MC_YAWRATE_FF;
+  real32_T MC_RATE_I_MIN;
+  real32_T MC_RATE_I_MAX;
+  real32_T MC_RATE_D_MIN;
+  real32_T MC_RATE_D_MAX;
+  real32_T MC_RATE_XY_LIM;
+  real32_T MC_RATE_Z_LIM;
+  real32_T MC_HOVER_THRO;
+} struct_YUVwBtBTzwKJDzRziwWpiH;
 
 #endif
 
