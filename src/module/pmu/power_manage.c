@@ -148,22 +148,25 @@ fmt_err_t pmu_poll_battery_status(void)
     return FMT_EOK;
 }
 
-fmt_err_t pmu_init(void)
+fmt_err_t pmu_init(const char* pmu_device_name)
 {
     FMT_CHECK(mcn_advertise(MCN_HUB(bat_status), echo_battery_status));
 
-    adc_dev = rt_device_find("adc0");
-    if (adc_dev != NULL) {
-        if (rt_device_open(adc_dev, RT_DEVICE_FLAG_RDONLY) == RT_EOK) {
-            BATTERY_ID = mlog_get_bus_id("BATTERY");
-            timestamps = systime_now_ms();
-            battery_init(&battery, &battery_params, 0, timestamps);
-            return FMT_EOK;
-        }
+    adc_dev = rt_device_find(pmu_device_name);
+    if (adc_dev == NULL)
+        return FMT_EEMPTY;
+
+    if (rt_device_open(adc_dev, RT_DEVICE_FLAG_RDONLY) != RT_EOK) {
+        return FMT_ERROR;
     }
+
+    BATTERY_ID = mlog_get_bus_id("BATTERY");
+    timestamps = systime_now_ms();
 
     FMT_CHECK(param_link_variable(PARAM_GET(POWER, BAT_V_DIV), &bat_v_div));
     FMT_CHECK(param_link_variable(PARAM_GET(POWER, BAT_A_PER_V), &bat_a_per_v));
 
-    return FMT_ERROR;
+    battery_init(&battery, &battery_params, 0, timestamps);
+
+    return FMT_EOK;
 }

@@ -42,7 +42,7 @@ struct battery_status {
     float cell_voltage_origin;
 };
 
-fmt_err_t pmu_init(void);
+fmt_err_t pmu_init(const char* pmu_device_name);
 fmt_err_t pmu_poll_battery_status(void);
 
 #ifdef __cplusplus

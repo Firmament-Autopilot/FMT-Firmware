@@ -363,7 +363,7 @@ void bsp_post_initialize(void)
     FMT_CHECK(led_control_init());
 
     /* initialize power management unit */
-    FMT_CHECK(pmu_init());
+    FMT_CHECK(pmu_init("adc0"));
 
     /* show system information */
     bsp_show_information();
