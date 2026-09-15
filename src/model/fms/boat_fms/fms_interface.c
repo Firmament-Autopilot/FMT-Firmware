@@ -36,15 +36,15 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(L1, 6.0, false),
-    PARAM_FLOAT(CRUISE_SPEED, 3.0, false),
-    PARAM_FLOAT(ACCEPT_R, 5.0, false),
-    PARAM_FLOAT(MAX_VEL, 4.0, false),
-    PARAM_FLOAT(AY_P, 0.5, false),
-    PARAM_FLOAT(YAW_P, 0.7, false),
-    PARAM_FLOAT(MAX_PSI_RATE, 0.25 * PI, false),
-    PARAM_UINT16(LOST_RETURN_TIME, 10, false),
-    PARAM_UINT8(LOST_RETURN_EN, 1, false),
+    PARAM_FLOAT(L1, 6.0),
+    PARAM_FLOAT(CRUISE_SPEED, 3.0),
+    PARAM_FLOAT(ACCEPT_R, 5.0),
+    PARAM_FLOAT(MAX_VEL, 4.0),
+    PARAM_FLOAT(AY_P, 0.5),
+    PARAM_FLOAT(YAW_P, 0.7),
+    PARAM_FLOAT(MAX_PSI_RATE, 0.25 * PI),
+    PARAM_UINT16(LOST_RETURN_TIME, 10),
+    PARAM_UINT8(LOST_RETURN_EN, 1),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 

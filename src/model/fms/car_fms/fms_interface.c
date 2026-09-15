@@ -36,21 +36,21 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(L1, 6.0, false),
-    PARAM_FLOAT(CRUISE_SPEED, 2.0, false),
-    PARAM_FLOAT(ACCEPT_R, 1.0, false),
-    PARAM_FLOAT(YAW_P, 1.0, false),
-    PARAM_FLOAT(MAX_VEL, 2.5, false),
-    PARAM_FLOAT(MAX_R, PI * 0.5, false),
-    PARAM_FLOAT(AY_P, 0.5, false),
-    PARAM_FLOAT(TRAJ_PREVIEW_T, 0.1, false),
-    PARAM_FLOAT(TRAJ_U_I, 0.05, false),
-    PARAM_FLOAT(TRAJ_U_I_MAX, 2.0, false),
-    PARAM_FLOAT(TRAJ_U_I_MIN, -2.0, false),
-    PARAM_FLOAT(TRAJ_PSI_P, 1.0, false),
-    PARAM_FLOAT(TRAJ_CTE_P, 1.5, false),
-    PARAM_FLOAT(TRAJ_CTE_I, 1.5, false),
-    PARAM_FLOAT(TRAJ_CTE_D, 0.0, false),
+    PARAM_FLOAT(L1, 6.0),
+    PARAM_FLOAT(CRUISE_SPEED, 2.0),
+    PARAM_FLOAT(ACCEPT_R, 1.0),
+    PARAM_FLOAT(YAW_P, 1.0),
+    PARAM_FLOAT(MAX_VEL, 2.5),
+    PARAM_FLOAT(MAX_R, PI * 0.5),
+    PARAM_FLOAT(AY_P, 0.5),
+    PARAM_FLOAT(TRAJ_PREVIEW_T, 0.1),
+    PARAM_FLOAT(TRAJ_U_I, 0.05),
+    PARAM_FLOAT(TRAJ_U_I_MAX, 2.0),
+    PARAM_FLOAT(TRAJ_U_I_MIN, -2.0),
+    PARAM_FLOAT(TRAJ_PSI_P, 1.0),
+    PARAM_FLOAT(TRAJ_CTE_P, 1.5),
+    PARAM_FLOAT(TRAJ_CTE_I, 1.5),
+    PARAM_FLOAT(TRAJ_CTE_D, 0.0),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
