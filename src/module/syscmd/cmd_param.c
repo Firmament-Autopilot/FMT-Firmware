@@ -119,7 +119,7 @@ static void disp_param(param_t* p, int only_change, int show_default)
     }
 
     if (p->read_only) {
-        printf("[x]");
+        printf("[r]");
     } else {
         printf("   ");
     }
