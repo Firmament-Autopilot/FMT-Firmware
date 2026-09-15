@@ -24,20 +24,20 @@ MCN_DEFINE(bat_status, sizeof(struct battery_status));
 /* define parameters */
 static param_t __param_list[] = {
     /* Battery Voltage Divider */
-    PARAM_FLOAT(BAT_V_DIV, 1.0, false),
+    PARAM_FLOAT(BAT_V_DIV, 1.0),
     /* Battery Current Ampere per Volt */
-    PARAM_FLOAT(BAT_A_PER_V, 1.0, false),
+    PARAM_FLOAT(BAT_A_PER_V, 1.0),
     /* Battery Cells Number */
-    PARAM_UINT8(BAT_N_CELLS, 0, false),
+    PARAM_UINT8(BAT_N_CELLS, 0),
     /* Battery Capacity */
-    PARAM_FLOAT(CAPACITY_OF_BAT, 3500.0, false),
-    PARAM_FLOAT(VOLTAGE_EMPTY, 3.0, false),
-    PARAM_FLOAT(VOLTAGE_CHARGED, 4.2, false),
-    PARAM_FLOAT(R_INTERNAL_CONST, -0.005, false),
-    PARAM_FLOAT(R_INTERNAL, 0.020, false),
-    PARAM_FLOAT(LOW_THR, 3.5, false),
-    PARAM_FLOAT(CRIT_THR, 3.4, false),
-    PARAM_FLOAT(EMERGEN_THR, 3.3, false),
+    PARAM_FLOAT(CAPACITY_OF_BAT, 3500.0),
+    PARAM_FLOAT(VOLTAGE_EMPTY, 3.0),
+    PARAM_FLOAT(VOLTAGE_CHARGED, 4.2),
+    PARAM_FLOAT(R_INTERNAL_CONST, -0.005),
+    PARAM_FLOAT(R_INTERNAL, 0.020),
+    PARAM_FLOAT(LOW_THR, 3.5),
+    PARAM_FLOAT(CRIT_THR, 3.4),
+    PARAM_FLOAT(EMERGEN_THR, 3.3),
 };
 PARAM_GROUP_DEFINE(POWER, __param_list);
 

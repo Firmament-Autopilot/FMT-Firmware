@@ -90,92 +90,179 @@ typedef struct {
 } param_group_t;
 
 /********************** Function Macro **********************/
-#define PARAM_INT8(_name, _default, _readonly) \
-    {                                          \
-        .name = #_name,                        \
-        .type = PARAM_TYPE_INT8,               \
-        .val.i8 = _default,                    \
-        .dval.i8 = _default,                   \
-        .read_only = _readonly,                \
-        .linked_var_list = { NULL,             \
-                             NULL }            \
+#define PARAM_INT8(_name, _default) \
+    {                               \
+        .name = #_name,             \
+        .type = PARAM_TYPE_INT8,    \
+        .val.i8 = _default,         \
+        .dval.i8 = _default,        \
+        .read_only = false,         \
+        .linked_var_list = { NULL,  \
+                             NULL } \
     }
 
-#define PARAM_UINT8(_name, _default, _readonly) \
-    {                                           \
-        .name = #_name,                         \
-        .type = PARAM_TYPE_UINT8,               \
-        .val.u8 = _default,                     \
-        .dval.u8 = _default,                    \
-        .read_only = _readonly,                 \
-        .linked_var_list = { NULL,              \
-                             NULL }             \
+#define PARAM_INT8_RO(_name, _default) \
+    {                                  \
+        .name = #_name,                \
+        .type = PARAM_TYPE_INT8,       \
+        .val.i8 = _default,            \
+        .dval.i8 = _default,           \
+        .read_only = true,             \
+        .linked_var_list = { NULL,     \
+                             NULL }    \
     }
 
-#define PARAM_INT16(_name, _default, _readonly) \
-    {                                           \
-        .name = #_name,                         \
-        .type = PARAM_TYPE_INT16,               \
-        .val.i16 = _default,                    \
-        .dval.i16 = _default,                   \
-        .read_only = _readonly,                 \
-        .linked_var_list = { NULL,              \
-                             NULL }             \
+#define PARAM_UINT8(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_UINT8,    \
+        .val.u8 = _default,          \
+        .dval.u8 = _default,         \
+        .read_only = false,          \
+        .linked_var_list = { NULL,   \
+                             NULL }  \
     }
 
-#define PARAM_UINT16(_name, _default, _readonly) \
-    {                                            \
-        .name = #_name,                          \
-        .type = PARAM_TYPE_UINT16,               \
-        .val.u16 = _default,                     \
-        .dval.u16 = _default,                    \
-        .read_only = _readonly,                  \
-        .linked_var_list = { NULL,               \
-                             NULL }              \
+#define PARAM_UINT8_RO(_name, _default) \
+    {                                   \
+        .name = #_name,                 \
+        .type = PARAM_TYPE_UINT8,       \
+        .val.u8 = _default,             \
+        .dval.u8 = _default,            \
+        .read_only = true,              \
+        .linked_var_list = { NULL,      \
+                             NULL }     \
     }
 
-#define PARAM_INT32(_name, _default, _readonly) \
-    {                                           \
-        .name = #_name,                         \
-        .type = PARAM_TYPE_INT32,               \
-        .val.i32 = _default,                    \
-        .dval.i32 = _default,                   \
-        .read_only = _readonly,                 \
-        .linked_var_list = { NULL,              \
-                             NULL }             \
+#define PARAM_INT16(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_INT16,    \
+        .val.i16 = _default,         \
+        .dval.i16 = _default,        \
+        .read_only = false,          \
+        .linked_var_list = { NULL,   \
+                             NULL }  \
+    }
+#define PARAM_INT16_RO(_name, _default) \
+    {                                   \
+        .name = #_name,                 \
+        .type = PARAM_TYPE_INT16,       \
+        .val.i16 = _default,            \
+        .dval.i16 = _default,           \
+        .read_only = true,              \
+        .linked_var_list = { NULL,      \
+                             NULL }     \
     }
 
-#define PARAM_UINT32(_name, _default, _readonly) \
-    {                                            \
-        .name = #_name,                          \
-        .type = PARAM_TYPE_UINT32,               \
-        .val.u32 = _default,                     \
-        .dval.u32 = _default,                    \
-        .read_only = _readonly,                  \
-        .linked_var_list = { NULL,               \
-                             NULL }              \
+#define PARAM_UINT16(_name, _default) \
+    {                                 \
+        .name = #_name,               \
+        .type = PARAM_TYPE_UINT16,    \
+        .val.u16 = _default,          \
+        .dval.u16 = _default,         \
+        .read_only = false,           \
+        .linked_var_list = { NULL,    \
+                             NULL }   \
     }
 
-#define PARAM_FLOAT(_name, _default, _readonly) \
-    {                                           \
-        .name = #_name,                         \
-        .type = PARAM_TYPE_FLOAT,               \
-        .val.f = _default,                      \
-        .dval.f = _default,                     \
-        .read_only = _readonly,                 \
-        .linked_var_list = { NULL,              \
-                             NULL }             \
+#define PARAM_UINT16_RO(_name, _default) \
+    {                                    \
+        .name = #_name,                  \
+        .type = PARAM_TYPE_UINT16,       \
+        .val.u16 = _default,             \
+        .dval.u16 = _default,            \
+        .read_only = true,               \
+        .linked_var_list = { NULL,       \
+                             NULL }      \
     }
 
-#define PARAM_DOUBLE(_name, _default, _readonly) \
-    {                                            \
-        .name = #_name,                          \
-        .type = PARAM_TYPE_DOUBLE,               \
-        .val.lf = _default,                      \
-        .dval.lf = _default,                     \
-        .read_only = _readonly,                  \
-        .linked_var_list = { NULL,               \
-                             NULL }              \
+#define PARAM_INT32(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_INT32,    \
+        .val.i32 = _default,         \
+        .dval.i32 = _default,        \
+        .read_only = false,          \
+        .linked_var_list = { NULL,   \
+                             NULL }  \
+    }
+
+#define PARAM_INT32_RO(_name, _default) \
+    {                                   \
+        .name = #_name,                 \
+        .type = PARAM_TYPE_INT32,       \
+        .val.i32 = _default,            \
+        .dval.i32 = _default,           \
+        .read_only = true,              \
+        .linked_var_list = { NULL,      \
+                             NULL }     \
+    }
+
+#define PARAM_UINT32(_name, _default) \
+    {                                 \
+        .name = #_name,               \
+        .type = PARAM_TYPE_UINT32,    \
+        .val.u32 = _default,          \
+        .dval.u32 = _default,         \
+        .read_only = false,           \
+        .linked_var_list = { NULL,    \
+                             NULL }   \
+    }
+
+#define PARAM_UINT32_RO(_name, _default) \
+    {                                    \
+        .name = #_name,                  \
+        .type = PARAM_TYPE_UINT32,       \
+        .val.u32 = _default,             \
+        .dval.u32 = _default,            \
+        .read_only = true,               \
+        .linked_var_list = { NULL,       \
+                             NULL }      \
+    }
+
+#define PARAM_FLOAT(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_FLOAT,    \
+        .val.f = _default,           \
+        .dval.f = _default,          \
+        .read_only = false,          \
+        .linked_var_list = { NULL,   \
+                             NULL }  \
+    }
+
+#define PARAM_FLOAT_RO(_name, _default) \
+    {                                   \
+        .name = #_name,                 \
+        .type = PARAM_TYPE_FLOAT,       \
+        .val.f = _default,              \
+        .dval.f = _default,             \
+        .read_only = true,              \
+        .linked_var_list = { NULL,      \
+                             NULL }     \
+    }
+
+#define PARAM_DOUBLE(_name, _default) \
+    {                                 \
+        .name = #_name,               \
+        .type = PARAM_TYPE_DOUBLE,    \
+        .val.lf = _default,           \
+        .dval.lf = _default,          \
+        .read_only = false,           \
+        .linked_var_list = { NULL,    \
+                             NULL }   \
+    }
+
+#define PARAM_DOUBLE_RO(_name, _default) \
+    {                                    \
+        .name = #_name,                  \
+        .type = PARAM_TYPE_DOUBLE,       \
+        .val.lf = _default,              \
+        .dval.lf = _default,             \
+        .read_only = true,               \
+        .linked_var_list = { NULL,       \
+                             NULL }      \
     }
 
 #define PARAM_GROUP_EXPORT                     RT_USED static const param_group_t SECTION("ParamTab")

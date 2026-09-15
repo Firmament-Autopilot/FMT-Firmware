@@ -37,29 +37,29 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 /* define parameters */
 static param_t __param_list[] = {
     /* Stick Dead Zone */
-    PARAM_FLOAT(THROTTLE_DZ, 0.15, false),
-    PARAM_FLOAT(YAW_DZ, 0.15, false),
-    PARAM_FLOAT(ROLL_DZ, 0.1, false),
-    PARAM_FLOAT(PITCH_DZ, 0.1, false),
-    PARAM_FLOAT(XY_P, 1.2, false),
-    PARAM_FLOAT(Z_P, 1.5, false),
-    PARAM_FLOAT(VEL_XY_LIM, 5.0, false),
-    PARAM_FLOAT(VEL_Z_LIM, 1.5, false),
-    PARAM_FLOAT(YAW_P, 2.5, false),
-    PARAM_FLOAT(YAW_RATE_LIM, PI / 2, false),
-    PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6, false),
-    PARAM_FLOAT(L1_GAIN, 2.0, false),
-    PARAM_FLOAT(CRUISE_SPEED, 5.0, false),
-    PARAM_FLOAT(CRUISE_ACC, 5.0, false),
-    PARAM_FLOAT(TAKEOFF_H, 1.2, false),
-    PARAM_FLOAT(TAKEOFF_SPEED, 1.0, false),
-    PARAM_FLOAT(ACCEPT_R, 0.5, false),
-    PARAM_FLOAT(ASSIST_LAND_H, 0.7, false),
-    PARAM_FLOAT(LAND_SPEED, 0.6, false),
-    PARAM_UINT16(LOST_RETURN_TIME, 120, false),
-    PARAM_UINT8(LOST_RETURN_EN, 1, false),
-    PARAM_UINT16(LAND_LOCK_THRO, 1300, false),
-    PARAM_FLOAT(STICK_SENS, 0.8, false),
+    PARAM_FLOAT(MC_THROTTLE_DZ, 0.15),
+    PARAM_FLOAT(MC_YAW_DZ, 0.15),
+    PARAM_FLOAT(MC_ROLL_DZ, 0.1),
+    PARAM_FLOAT(MC_PITCH_DZ, 0.1),
+    PARAM_FLOAT(MC_XY_P, 1.2),
+    PARAM_FLOAT(MC_Z_P, 1.5),
+    PARAM_FLOAT(MC_VEL_XY_LIM, 5.0),
+    PARAM_FLOAT(MC_VEL_Z_LIM, 1.5),
+    PARAM_FLOAT(MC_YAW_P, 2.5),
+    PARAM_FLOAT(MC_YAWRATE_LIM, PI / 2),
+    PARAM_FLOAT(MC_ATT_LIM, PI / 6),
+    PARAM_FLOAT(MC_L1_GAIN, 2.0),
+    PARAM_FLOAT(MC_CRUISE_SPEED, 5.0),
+    PARAM_FLOAT(MC_CRUISE_ACC, 5.0),
+    PARAM_FLOAT(MC_TAKEOFF_H, 1.2),
+    PARAM_FLOAT(MC_TAKEOFF_SPEED, 1.0),
+    PARAM_FLOAT(MC_ACCEPT_R, 0.5),
+    PARAM_FLOAT(MC_ASSIST_LAND_H, 0.7),
+    PARAM_FLOAT(MC_LAND_SPEED, 0.6),
+    PARAM_UINT16(MC_LOST_RETURN_TIME, 120),
+    PARAM_UINT8(MC_LOST_RETURN_EN, 1),
+    PARAM_UINT16(MC_LAND_LOCK_THRO, 1300),
+    PARAM_FLOAT(MC_STICK_SENS, 0.8),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -264,29 +264,29 @@ static void mlog_start_cb(void)
 
 static void init_parameter(void)
 {
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, THROTTLE_DZ), &FMS_PARAM.THROTTLE_DZ));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_DZ), &FMS_PARAM.YAW_DZ));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_DZ), &FMS_PARAM.ROLL_DZ));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, PITCH_DZ), &FMS_PARAM.PITCH_DZ));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, XY_P), &FMS_PARAM.XY_P));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, Z_P), &FMS_PARAM.Z_P));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, VEL_XY_LIM), &FMS_PARAM.VEL_XY_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, VEL_Z_LIM), &FMS_PARAM.VEL_Z_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_P), &FMS_PARAM.YAW_P));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_RATE_LIM), &FMS_PARAM.YAW_RATE_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_PITCH_LIM), &FMS_PARAM.ROLL_PITCH_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, L1_GAIN), &FMS_PARAM.L1_GAIN));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_ACC), &FMS_PARAM.CRUISE_ACC));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TAKEOFF_H), &FMS_PARAM.TAKEOFF_H));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TAKEOFF_SPEED), &FMS_PARAM.TAKEOFF_SPEED));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ASSIST_LAND_H), &FMS_PARAM.ASSIST_LAND_H));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, LAND_SPEED), &FMS_PARAM.LAND_SPEED));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_TIME), &FMS_PARAM.LOST_RETURN_TIME));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_EN), &FMS_PARAM.LOST_RETURN_EN));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, LAND_LOCK_THRO), &FMS_PARAM.LAND_LOCK_THRO));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, STICK_SENS), &FMS_PARAM.STICK_SENS));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_THROTTLE_DZ), &FMS_PARAM.MC_THROTTLE_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_YAW_DZ), &FMS_PARAM.MC_YAW_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_ROLL_DZ), &FMS_PARAM.MC_ROLL_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_PITCH_DZ), &FMS_PARAM.MC_PITCH_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_XY_P), &FMS_PARAM.MC_XY_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_Z_P), &FMS_PARAM.MC_Z_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_VEL_XY_LIM), &FMS_PARAM.MC_VEL_XY_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_VEL_Z_LIM), &FMS_PARAM.MC_VEL_Z_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_YAW_P), &FMS_PARAM.MC_YAW_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_YAWRATE_LIM), &FMS_PARAM.MC_YAWRATE_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_ATT_LIM), &FMS_PARAM.MC_ATT_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_L1_GAIN), &FMS_PARAM.MC_L1_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_CRUISE_SPEED), &FMS_PARAM.MC_CRUISE_SPEED));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_CRUISE_ACC), &FMS_PARAM.MC_CRUISE_ACC));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_TAKEOFF_H), &FMS_PARAM.MC_TAKEOFF_H));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_TAKEOFF_SPEED), &FMS_PARAM.MC_TAKEOFF_SPEED));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_ACCEPT_R), &FMS_PARAM.MC_ACCEPT_R));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_ASSIST_LAND_H), &FMS_PARAM.MC_ASSIST_LAND_H));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_LAND_SPEED), &FMS_PARAM.MC_LAND_SPEED));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_LOST_RETURN_TIME), &FMS_PARAM.MC_LOST_RETURN_TIME));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_LOST_RETURN_EN), &FMS_PARAM.MC_LOST_RETURN_EN));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_LAND_LOCK_THRO), &FMS_PARAM.MC_LAND_LOCK_THRO));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_STICK_SENS), &FMS_PARAM.MC_STICK_SENS));
 }
 
 void fms_interface_step(uint32_t timestamp)
