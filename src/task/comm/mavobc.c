@@ -846,7 +846,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         /* TODO: don't know why this msg doesn't have get_target_system() */
         mavlink_vision_position_estimate_t vision_pos_est;
         External_Pos_Bus ext_pos_report = { 0 };
-        uint8_t use_pos, use_alt, use_att, use_psi;
 
         mavlink_msg_vision_position_estimate_decode(msg, &vision_pos_est);
 
