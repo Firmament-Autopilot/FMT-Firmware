@@ -575,6 +575,10 @@ static void gps_probe_entry(void* parameter)
             } else {
                 DRV_DBG("UBX-GPS baudrate set failed\n");
             }
+
+            /* since some ublox gps doesn't support ubx configure, just wait pvt msg.  */
+            ubx_decoder.use_nav_pvt = true;
+            ubx_decoder.configured = true;
         } else {
             DRV_DBG("UBX-GPS detected on %s, with baudrate of %ld.\n", ubx_decoder.ubx_dev->parent.name, baudrate);
         }
@@ -585,7 +589,7 @@ static void gps_probe_entry(void* parameter)
             }
         }
 
-        /* skip configure step and just wait pvt msg. since some ublox gps doesn't support ubx configure */
+        /* skip configure step and just wait pvt msg.*/
         ubx_decoder.use_nav_pvt = true;
         ubx_decoder.configured = true;
 
