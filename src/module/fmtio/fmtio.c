@@ -398,7 +398,7 @@ void fmtio_loop(void)
         } else if (rt_err == -RT_ETIMEOUT) {
             handle_rx_packet();
         } else {
-            console_printf("fmtio event err:%d\n", rt_err);
+            console_printf("fmtio event err:%ld\n", (long)rt_err);
         }
     }
 }

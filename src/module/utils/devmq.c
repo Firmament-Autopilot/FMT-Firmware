@@ -66,7 +66,9 @@ fmt_err_t devmq_create(rt_device_t device, uint32_t msg_size, uint32_t max_msgs)
     RT_ASSERT(max_msgs > 0);
 
     if (msg_size > DEVMQ_MAX_MSG_SIZE) {
-        console_printf("devmq create fail, exceed max msg size: %d %d\n", msg_size, DEVMQ_MAX_MSG_SIZE);
+        console_printf("devmq create fail, exceed max msg size: %lu %lu\n",
+                       (unsigned long)msg_size,
+                       (unsigned long)DEVMQ_MAX_MSG_SIZE);
         return FMT_EINVAL;
     }
 

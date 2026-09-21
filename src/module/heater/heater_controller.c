@@ -67,13 +67,13 @@ static int echo_heater_status(void* param)
         return -1;
     }
 
-    console_printf("timestamp:%u temp:%.2f target:%.2f duty:%.3f power:%.1f%% on:%ums valid:%u heater_on:%u\n",
-                   status.timestamp_ms,
+    console_printf("timestamp:%lu temp:%.2f target:%.2f duty:%.3f power:%.1f%% on:%lums valid:%u heater_on:%u\n",
+                   (unsigned long)status.timestamp_ms,
                    status.temperature_deg_C,
                    status.target_temperature_deg_C,
                    status.duty,
                    status.power_ratio * 100.0f,
-                   status.heater_on_ms,
+                   (unsigned long)status.heater_on_ms,
                    status.temperature_valid,
                    status.heater_on);
 

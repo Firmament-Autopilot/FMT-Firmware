@@ -11,7 +11,7 @@ IO Processor: STM32F103 -- 32 Bit Arm® Cortex®-M3, 72MHz, 64KB SRAM
 
 - **On-board sensors:**
   - Accel/Gyro: ICM-42688-P
-  - Accel/Gyro: BMI088
+  - Accel/Gyro: BMI055 or BMI088 (selected by board revision)
   - Magnetometer: IST8310
   - Barometer: MS5611
 - **Interfaces:**
@@ -138,8 +138,8 @@ Task Initialize:
 
 | SPI  | Device    | Port    |
 | ---- | --------- | ------- |
-| SPI1 | spi1_dev1 | BMI088 Accel |
-| SPI1 | spi1_dev2 | BMI088 Gyro  |
+| SPI1 | spi1_dev1 | BMI055/BMI088 Accel |
+| SPI1 | spi1_dev2 | BMI055/BMI088 Gyro  |
 | SPI1 | spi1_dev3 | ICM-42688-P  |
 | SPI2 | spi2_dev1 | FRAM         |
 
