@@ -135,8 +135,8 @@ static int echo_sensor_baro(void* param)
         return -1;
     }
 
-    console_printf("timestamp:%u pressure:%.2f temperature:%.2f altitude:%.2f\n",
-                   baro_report.timestamp_ms,
+    console_printf("timestamp:%lu pressure:%.2f temperature:%.2f altitude:%.2f\n",
+                   (unsigned long)baro_report.timestamp_ms,
                    baro_report.pressure_pa,
                    baro_report.temperature_deg,
                    baro_report.altitude_m);
@@ -155,8 +155,8 @@ static int echo_sensor_airspeed(void* param)
         return -1;
     }
 
-    console_printf("timestamp:%u diff_pressure:%f temperature:%f\n",
-                   airspeed_report.timestamp_ms,
+    console_printf("timestamp:%lu diff_pressure:%f temperature:%f\n",
+                   (unsigned long)airspeed_report.timestamp_ms,
                    airspeed_report.diff_pressure_pa,
                    airspeed_report.temperature_deg);
 
@@ -174,10 +174,10 @@ static int echo_sensor_gps(void* param)
         return -1;
     }
 
-    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f heading:%.2f hAcc:%.2f\n",
-                   gps_report.lon,
-                   gps_report.lat,
-                   gps_report.height,
+    console_printf("lon:%ld lat:%ld alt:%ld fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f heading:%.2f hAcc:%.2f\n",
+                   (long)gps_report.lon,
+                   (long)gps_report.lat,
+                   (long)gps_report.height,
                    gps_report.fixType,
                    gps_report.numSV,
                    gps_report.hAcc,
@@ -197,7 +197,11 @@ static int echo_sensor_optflow(void* param)
         return -1;
     }
 
-    console_printf("timestsamp:%u vx:%.2f vy:%.2f quality:%d\n", optflow_report.timestamp_ms, optflow_report.vx_mPs, optflow_report.vy_mPs, optflow_report.quality);
+    console_printf("timestamp:%lu vx:%.2f vy:%.2f quality:%d\n",
+                   (unsigned long)optflow_report.timestamp_ms,
+                   optflow_report.vx_mPs,
+                   optflow_report.vy_mPs,
+                   optflow_report.quality);
 
     return 0;
 }
@@ -210,7 +214,9 @@ static int echo_sensor_rangefinder(void* param)
         return -1;
     }
 
-    console_printf("timestamp:%u distance:%.2f\n", rf_report.timestamp_ms, rf_report.distance_m);
+    console_printf("timestamp:%lu distance:%.2f\n",
+                   (unsigned long)rf_report.timestamp_ms,
+                   rf_report.distance_m);
 
     return 0;
 }

@@ -36,7 +36,4 @@
 #include "stm32h7xx_ll_usart.h"
 #include "stm32h7xx_ll_utils.h"
 
-/* Board Configuration */
-#include "board.h"
-
 #endif
