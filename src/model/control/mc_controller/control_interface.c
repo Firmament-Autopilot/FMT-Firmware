@@ -18,6 +18,7 @@
 #include <firmament.h>
 
 #include "module/log/mlog.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
 
 #define TAG "Controller"
@@ -82,6 +83,8 @@ static McnNode_t fms_out_nod;
 static McnNode_t ins_out_nod;
 
 static int Control_Out_ID;
+static mavlink_system_t mavlink_system;
+static mavlink_message_t msg;
 
 fmt_model_info_t control_model_info;
 
@@ -163,6 +166,26 @@ void control_interface_step(uint32_t timestamp)
     if (check_timetag(TIMETAG(control_output))) {
         /* Log Control out data */
         mlog_push_msg((uint8_t*)&Controller_Y.Control_Out, Control_Out_ID, sizeof(Control_Out_Bus));
+
+        /* send attitude command to gcs */
+        Euler e = { .roll = att_cmd_B_rad[0], .pitch = att_cmd_B_rad[1], .yaw = 0 };
+        quaternion q;
+        mavlink_attitude_target_t att_target;
+
+        quaternion_fromEuler(e, &q);
+
+        att_target.time_boot_ms = systime_now_ms();
+        att_target.type_mask = 64; /* ignore throttle */
+        att_target.body_roll_rate = rate_cmd_B_radPs[0];
+        att_target.body_pitch_rate = rate_cmd_B_radPs[1];
+        att_target.body_yaw_rate = rate_cmd_B_radPs[2];
+        att_target.q[0] = q.w;
+        att_target.q[1] = q.x;
+        att_target.q[2] = q.y;
+        att_target.q[3] = q.z;
+
+        mavlink_msg_attitude_target_encode(mavlink_system.sysid, mavlink_system.compid, &msg, &att_target);
+        mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
     }
 }
 
@@ -182,4 +205,6 @@ void control_interface_init(void)
     Controller_init();
 
     init_parameter();
+
+    mavlink_system = mavproxy_get_system();
 }
