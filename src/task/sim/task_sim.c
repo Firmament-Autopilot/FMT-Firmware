@@ -123,7 +123,7 @@ static void send_hil_actuator_cmd(void* parameter)
     mavlink_msg_hil_actuator_controls_encode(mav_sys.sysid, mav_sys.compid, &msg, &hil_actuator_ctrl);
 
     /* async mode to avoid block the task when usb is not connected */
-    mavproxy_send_immediate_msg(MAVPROXY_SIM_CHAN, &msg, false);
+    mavproxy_send_msg(MAVPROXY_SIM_CHAN, &msg, false);
 }
 
 static fmt_err_t task_sim_init(void)
@@ -132,7 +132,7 @@ static fmt_err_t task_sim_init(void)
     FMT_TRY(mavproxy_register_channel(MAVPROXY_SIM_CHAN));
 
     /* register periodical mavlink msg */
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_SIM_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
+    FMT_TRY(mavproxy_register_msg(MAVPROXY_SIM_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
 
     /* register gcs mavlink handler */
     FMT_TRY(mavproxy_monitor_register_handler(MAVPROXY_SIM_CHAN, handle_mavlink_message));

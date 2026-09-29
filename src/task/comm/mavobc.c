@@ -92,7 +92,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         protocol_version.max_version = 200;
 
         mavlink_msg_protocol_version_encode(mav_sys.sysid, mav_sys.compid, msg, &protocol_version);
-        mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+        mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
     } break;
 
     case MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN: {
@@ -157,7 +157,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
 
         mavlink_msg_home_position_encode(mav_sys.sysid, mav_sys.compid, msg, &home_position);
-        mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, false);
+        mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, false);
     } break;
 
     case MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES: {
@@ -180,7 +180,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         autopilot_version.middleware_sw_version = autopilot_version.flight_sw_version;
 
         mavlink_msg_autopilot_version_encode(mav_sys.sysid, mav_sys.compid, msg, &autopilot_version);
-        mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+        mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
     } break;
 
     case MAV_CMD_DO_CHANGE_SPEED: {
@@ -214,7 +214,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
                 float rate_hz = (interval_us > 0) ? (1000000.0f / interval_us) : 0;
 
                 // Register or update the message interval
-                fmt_err_t err = mavproxy_register_period_msg(
+                fmt_err_t err = mavproxy_register_msg(
                     MAVPROXY_OBC_CHAN,
                     message_id,
                     (uint16_t)rate_hz,
@@ -260,7 +260,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             home_position.q[3] = ins_out.quat[3];
 
             mavlink_msg_home_position_encode(mav_sys.sysid, mav_sys.compid, msg, &home_position);
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
             mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_ACCEPTED);
             return;
         }
@@ -281,7 +281,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             // Send the gimbal manager information back
 
             mavlink_msg_gimbal_manager_information_encode(mav_sys.sysid, mav_sys.compid, msg, &gimbal_info);
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
             mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_ACCEPTED);
             return;
         }
@@ -302,7 +302,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             gps_global_origin.altitude = ins_out.alt_0 * 1000;          // Assuming altitude is in meters
 
             mavlink_msg_gps_global_origin_encode(mav_sys.sysid, mav_sys.compid, msg, &gps_global_origin);
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
             mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_ACCEPTED);
             return;
         }
@@ -327,11 +327,11 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             autopilot_version.middleware_sw_version = autopilot_version.flight_sw_version;
 
             mavlink_msg_autopilot_version_encode(mav_sys.sysid, mav_sys.compid, msg, &autopilot_version);
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
             mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_ACCEPTED);
 
             mavlink_msg_sys_status_pack_func(msg);
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
 
             return;
         }
@@ -342,7 +342,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
                 // Pack and send the requested message
                 mavlink_message_t requested_msg;
                 if (mav_msg_cb_table[i].msg_pack_cb(&requested_msg) == FMT_EOK) {
-                    mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, &requested_msg, true);
+                    mavproxy_send_msg(MAVPROXY_OBC_CHAN, &requested_msg, true);
                     mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_ACCEPTED);
                 } else {
                     mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_FAILED);
@@ -532,7 +532,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             mavlink_msg_ping_pack(mav_sys.sysid, mav_sys.compid, &response_msg, ping.time_usec, ping.seq, msg->sysid, msg->compid);
 
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, &response_msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, &response_msg, true);
         }
         break;
     }
@@ -827,7 +827,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             for (i = 0; i < sizeof(mav_msg_cb_table) / sizeof(msg_pack_cb_table); i++) {
                 if (req_data_stream.req_stream_id == mav_msg_cb_table[i].msgid) {
-                    if (mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, mav_msg_cb_table[i].msgid, req_data_stream.req_message_rate, mav_msg_cb_table[i].msg_pack_cb, req_data_stream.start_stop) == FMT_EOK) {
+                    if (mavproxy_register_msg(MAVPROXY_OBC_CHAN, mav_msg_cb_table[i].msgid, req_data_stream.req_message_rate, mav_msg_cb_table[i].msg_pack_cb, req_data_stream.start_stop) == FMT_EOK) {
                         LOG_I("Message %d registered with frequency %d Hz, start:%d", req_data_stream.req_stream_id, req_data_stream.req_message_rate, req_data_stream.start_stop);
                     } else {
                         LOG_E("Message %d registered failed", req_data_stream.req_stream_id);
@@ -872,7 +872,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             param_value.param_type = MAV_PARAM_TYPE_REAL32;
             memcpy(param_value.param_id, param_set.param_id, sizeof(param_value.param_id));
             mavlink_msg_param_value_encode(mav_sys.sysid, mav_sys.compid, msg, &param_value);
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
         }
         if (strcmp(param_set.param_id, "MPC_XY_CRUISE") == 0) {
             PARAM_SET_FLOAT(FMS, CRUISE_SPEED, param_set.param_value);
@@ -880,7 +880,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             param_value.param_type = MAV_PARAM_TYPE_REAL32;
             memcpy(param_value.param_id, param_set.param_id, sizeof(param_value.param_id));
             mavlink_msg_param_value_encode(mav_sys.sysid, mav_sys.compid, msg, &param_value);
-            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, msg, true);
+            mavproxy_send_msg(MAVPROXY_OBC_CHAN, msg, true);
         }
 
     } break;
@@ -956,12 +956,12 @@ fmt_err_t mavobc_init(void)
 
     /* register periodical mavlink msg */
 #if defined(FMT_PLANT_SIM)
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_SENSOR, 100, mavlink_msg_hil_sensor_pack_func, true));
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_GPS, 10, mavlink_msg_hil_gps_pack_func, true));
+    FMT_TRY(mavproxy_register_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_SENSOR, 100, mavlink_msg_hil_sensor_pack_func, true));
+    FMT_TRY(mavproxy_register_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HIL_GPS, 10, mavlink_msg_hil_gps_pack_func, true));
 #else
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_SYS_STATUS, 1, mavlink_msg_sys_status_pack_func, true));
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1, mavlink_msg_extended_sys_state_pack_func, true));
+    FMT_TRY(mavproxy_register_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
+    FMT_TRY(mavproxy_register_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_SYS_STATUS, 1, mavlink_msg_sys_status_pack_func, true));
+    FMT_TRY(mavproxy_register_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1, mavlink_msg_extended_sys_state_pack_func, true));
 #endif
 
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_POS), &use_pos));

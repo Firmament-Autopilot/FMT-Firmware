@@ -123,7 +123,7 @@ static void mavlink_send_pilot_cmd(void)
         mav_pilot_cmd.command_2 = pilot_cmd.cmd_2;
 
         mavlink_msg_fmt_pilot_cmd_encode(mav_sys.sysid, mav_sys.compid, &msg, &mav_pilot_cmd);
-        mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
+        mavproxy_send_msg(MAVPROXY_GCS_CHAN, &msg, false);
     }
 }
 #endif

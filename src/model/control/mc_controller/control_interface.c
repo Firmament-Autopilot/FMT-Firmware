@@ -185,7 +185,7 @@ void control_interface_step(uint32_t timestamp)
         att_target.q[3] = q.z;
 
         mavlink_msg_attitude_target_encode(mavlink_system.sysid, mavlink_system.compid, &msg, &att_target);
-        mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
+        mavproxy_send_msg(MAVPROXY_GCS_CHAN, &msg, false);
     }
 }
 

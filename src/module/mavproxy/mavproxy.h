@@ -52,8 +52,8 @@ bool mavproxy_is_valid_chan(uint8_t chan);
 struct list_head* mavproxy_get_rx_handler_list(uint8_t chan);
 fmt_err_t mavproxy_set_device(uint8_t chan, uint8_t devid);
 fmt_err_t mavproxy_send_event(uint8_t chan, uint32_t event_set);
-fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg, bool sync);
-fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg_rate_hz, msg_pack_cb_t msg_pack_cb, bool start);
+fmt_err_t mavproxy_send_msg(uint8_t chan, const mavlink_message_t* msg, bool sync);
+fmt_err_t mavproxy_register_msg(uint8_t chan, uint8_t msgid, uint16_t msg_rate_hz, msg_pack_cb_t msg_pack_cb, bool start);
 
 #ifdef __cplusplus
 }

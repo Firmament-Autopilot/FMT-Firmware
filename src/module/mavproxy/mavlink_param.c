@@ -376,7 +376,7 @@ fmt_err_t send_mavparam_by_name(char* name, uint8_t chan)
 
         if (strcmp(mav_param->name, name) == 0) {
             make_mavparam_msg(&msg, mav_param);
-            mavproxy_send_immediate_msg(chan, &msg, true);
+            mavproxy_send_msg(chan, &msg, true);
             return FMT_EOK;
         }
     }
@@ -394,7 +394,7 @@ fmt_err_t send_mavparam_by_index(int16_t index, uint8_t chan)
     }
 
     make_mavparam_msg(&msg, mav_param);
-    mavproxy_send_immediate_msg(chan, &msg, true);
+    mavproxy_send_msg(chan, &msg, true);
 
     return FMT_EOK;
 }
@@ -557,7 +557,7 @@ fmt_err_t mavlink_param_send(const param_t* param, uint8_t chan)
     }
 
     make_mavlink_param_msg(&msg, param);
-    mavproxy_send_immediate_msg(chan, &msg, false);
+    mavproxy_send_msg(chan, &msg, false);
 
     return FMT_EOK;
 }
@@ -637,7 +637,7 @@ fmt_err_t mavlink_param_send_next(void)
         mav_param = get_mavparam_by_index(param_send_state.mav_param_index);
         if (mav_param) {
             make_mavparam_msg(&msg, mav_param);
-            mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+            mavproxy_send_msg(MAVPROXY_GCS_CHAN, &msg, true);
         }
         param_send_state.mav_param_index++;
     } else {
@@ -647,7 +647,7 @@ fmt_err_t mavlink_param_send_next(void)
             param = gp[param_send_state.group_index].param_list;
             if (param_send_state.param_index < gp[param_send_state.group_index].param_num) {
                 make_mavlink_param_msg(&msg, &param[param_send_state.param_index]);
-                mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+                mavproxy_send_msg(MAVPROXY_GCS_CHAN, &msg, true);
                 param_send_state.param_index++;
             } else {
                 /* The current group has been sent successfully. Move to the next group. */

@@ -509,7 +509,7 @@ Out:
     system = mavproxy_get_system();
 
     mavlink_msg_file_transfer_protocol_encode(system.sysid, system.compid, &msg, &ftp_protocol_t);
-    send_ret = mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    send_ret = mavproxy_send_msg(MAVPROXY_GCS_CHAN, &msg, true);
     if (send_ret != FMT_EOK) {
         return FMT_ERROR;
     }

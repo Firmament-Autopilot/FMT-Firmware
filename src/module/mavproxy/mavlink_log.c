@@ -179,7 +179,7 @@ static void send_log_entry(uint16_t id, uint16_t num_logs, uint16_t last_log_num
                                time_utc,
                                size);
 
-    mavproxy_send_immediate_msg(chan, &msg, true);
+    mavproxy_send_msg(chan, &msg, true);
 }
 
 static void send_log_data(uint16_t id, uint32_t ofs, uint8_t count, const uint8_t* data, uint8_t chan)
@@ -195,7 +195,7 @@ static void send_log_data(uint16_t id, uint32_t ofs, uint8_t count, const uint8_
                               count,
                               data);
 
-    mavproxy_send_immediate_msg(chan, &msg, true);
+    mavproxy_send_msg(chan, &msg, true);
 }
 
 void handle_log_request_list(mavlink_message_t* msg, mavlink_system_t this_system, uint8_t chan)

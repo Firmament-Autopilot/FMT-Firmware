@@ -39,7 +39,7 @@ static void send_mission_count(uint8_t sysid, uint8_t compid, uint16_t count, MA
     wpc.mission_type = mission_type;
 
     mavlink_msg_mission_count_encode(mavsys.sysid, mavsys.compid, &msg, &wpc);
-    mavproxy_send_immediate_msg(chan, &msg, true);
+    mavproxy_send_msg(chan, &msg, true);
 }
 
 static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq, uint8_t chan)
@@ -77,7 +77,7 @@ static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq, uint8
     mav_mission_item.mission_type = mission_item->mission_type;
 
     mavlink_msg_mission_item_int_encode(mavsys.sysid, mavsys.compid, &msg, &mav_mission_item);
-    mavproxy_send_immediate_msg(chan, &msg, true);
+    mavproxy_send_msg(chan, &msg, true);
 }
 
 static void send_mission_request(uint8_t sysid, uint8_t compid, uint16_t seq, uint8_t chan)
@@ -92,7 +92,7 @@ static void send_mission_request(uint8_t sysid, uint8_t compid, uint16_t seq, ui
     mission_req.mission_type = MAV_MISSION_TYPE_MISSION;
 
     mavlink_msg_mission_request_int_encode(mavsys.sysid, mavsys.compid, &msg, &mission_req);
-    mavproxy_send_immediate_msg(chan, &msg, true);
+    mavproxy_send_msg(chan, &msg, true);
 }
 
 static void send_mission_ack(uint8_t sysid, uint8_t compid, uint8_t type, uint8_t chan)
@@ -107,7 +107,7 @@ static void send_mission_ack(uint8_t sysid, uint8_t compid, uint8_t type, uint8_
     mission_ack.mission_type = MAV_MISSION_TYPE_MISSION;
 
     mavlink_msg_mission_ack_encode(mavsys.sysid, mavsys.compid, &msg, &mission_ack);
-    mavproxy_send_immediate_msg(chan, &msg, true);
+    mavproxy_send_msg(chan, &msg, true);
 }
 
 static void handle_message_mission_clear_all(mavlink_message_t* msg, uint8_t chan)

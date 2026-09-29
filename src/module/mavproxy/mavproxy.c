@@ -85,7 +85,7 @@ static void dump_immediate_msg(uint8_t chan)
         return;
 
     while (mav_handle.chan_handle_list[chan]->imm_mq.head != mav_handle.chan_handle_list[chan]->imm_mq.tail) {
-        if (mavproxy_send_immediate_msg(chan, &mav_handle.chan_handle_list[chan]->imm_mq.queue[mav_handle.chan_handle_list[chan]->imm_mq.tail], true) == FMT_EOK) {
+        if (mavproxy_send_msg(chan, &mav_handle.chan_handle_list[chan]->imm_mq.queue[mav_handle.chan_handle_list[chan]->imm_mq.tail], true) == FMT_EOK) {
             OS_ENTER_CRITICAL;
             mav_handle.chan_handle_list[chan]->imm_mq.tail = (mav_handle.chan_handle_list[chan]->imm_mq.tail + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE;
             OS_EXIT_CRITICAL;
@@ -124,7 +124,7 @@ static void dump_period_msg(uint8_t chan)
             mavlink_message_t msg;
             if (msg_t->msg_pack_cb(&msg) == true) {
                 /* send out msg */
-                mavproxy_send_immediate_msg(chan, &msg, true);
+                mavproxy_send_msg(chan, &msg, true);
             }
         }
     }
@@ -140,7 +140,7 @@ static void dump_period_msg(uint8_t chan)
  *
  * @return FMT Errors
  */
-fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg_rate_hz,
+fmt_err_t mavproxy_register_msg(uint8_t chan, uint8_t msgid, uint16_t msg_rate_hz,
                                        msg_pack_cb_t msg_pack_cb, bool start)
 {
     mav_period_msg msg;
@@ -188,7 +188,7 @@ fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg
  *
  * @return FMT Errors
  */
-fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg, bool sync)
+fmt_err_t mavproxy_send_msg(uint8_t chan, const mavlink_message_t* msg, bool sync)
 {
     if (mav_handle.chan_handle_list[chan] == NULL)
         return FMT_EINVAL;

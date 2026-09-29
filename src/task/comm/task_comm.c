@@ -868,7 +868,7 @@ fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t re
 
     mavlink_msg_command_ack_encode(mav_sys.sysid, mav_sys.compid, &msg, &command_ack);
 
-    return mavproxy_send_immediate_msg(chan, &msg, true);
+    return mavproxy_send_msg(chan, &msg, true);
 }
 
 static fmt_err_t task_mavgcs_init(void)
