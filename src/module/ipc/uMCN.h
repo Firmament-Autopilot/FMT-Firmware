@@ -41,6 +41,9 @@ struct mcn_hub {
     const char* obj_name;
     const uint32_t obj_size;
     void* pdata;
+    uint16_t buffer_size;
+    uint16_t read_ptr;
+    uint16_t write_ptr;
     McnNode_t link_head;
     McnNode_t link_tail;
     uint32_t link_num;
@@ -57,7 +60,7 @@ struct mcn_hub {
 struct mcn_node {
     McnHub_t hub;
     volatile uint8_t renewal;
-    void (*pub_cb)(void* parameter);
+    void (*pub_cb)(const void* parameter);
     McnNode_t next;
 };
 
@@ -79,6 +82,7 @@ struct mcn_list {
         .obj_name = #_name,      \
         .obj_size = _size,       \
         .pdata = NULL,           \
+        .buffer_size = 1,        \
         .link_head = NULL,       \
         .link_tail = NULL,       \
         .link_num = 0,           \
@@ -87,10 +91,26 @@ struct mcn_list {
         .freq = 0.0f             \
     }
 
+#define MCN_DEFINE_BUFFER(_name, _size, _buf_size) \
+    McnHub __mcn_##_name = {                       \
+        .obj_name = #_name,                        \
+        .obj_size = _size,                         \
+        .pdata = NULL,                             \
+        .buffer_size = _buf_size + 1,              \
+        .read_ptr = 0,                             \
+        .write_ptr = 0,                            \
+        .link_head = NULL,                         \
+        .link_tail = NULL,                         \
+        .link_num = 0,                             \
+        .published = 0,                            \
+        .suspend = 0,                              \
+        .freq = 0.0f                               \
+    }
+
 /******************* API *******************/
 fmt_err_t mcn_init(void);
 fmt_err_t mcn_advertise(McnHub_t hub, int (*echo)(void* parameter));
-McnNode_t mcn_subscribe(McnHub_t hub, void (*pub_cb)(void* parameter));
+McnNode_t mcn_subscribe(McnHub_t hub, void (*pub_cb)(const void* parameter));
 fmt_err_t mcn_unsubscribe(McnHub_t hub, McnNode_t node);
 fmt_err_t mcn_publish(McnHub_t hub, const void* data);
 bool mcn_poll(McnNode_t node_t);

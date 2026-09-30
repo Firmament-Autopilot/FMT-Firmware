@@ -128,7 +128,12 @@ bool mcn_poll(McnNode_t node_t)
     MCN_ASSERT(node_t != NULL);
 
     MCN_ENTER_CRITICAL;
-    renewal = node_t->renewal;
+    if (node_t->hub->buffer_size > 1) {
+        renewal = (node_t->hub->write_ptr != node_t->hub->read_ptr) ? true : false;
+        node_t->renewal = renewal;
+    } else {
+        renewal = node_t->renewal;
+    }
     MCN_EXIT_CRITICAL;
 
     return renewal;
@@ -152,6 +157,10 @@ bool mcn_wait(McnNode_t node_t, int32_t timeout)
         return false;
     }
 
+    if (mcn_poll(node_t) == true) {
+        return true;
+    }
+
     if (rt_event_recv(node_t->hub->event, MCN_PUB_EVENT, RT_EVENT_FLAG_OR, timeout, &recv_set) == RT_EOK
         && (recv_set & MCN_PUB_EVENT)) {
         return true;
@@ -171,6 +180,8 @@ bool mcn_wait(McnNode_t node_t, int32_t timeout)
  */
 fmt_err_t mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer)
 {
+    fmt_err_t res = FMT_EOK;
+
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(node_t != NULL);
     MCN_ASSERT(buffer != NULL);
@@ -186,11 +197,27 @@ fmt_err_t mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer)
     }
 
     MCN_ENTER_CRITICAL;
-    memcpy(buffer, hub->pdata, hub->obj_size);
-    node_t->renewal = 0;
+    if (hub->buffer_size > 1) {
+        if (hub->write_ptr == hub->read_ptr) {
+            /* there is no data */
+            node_t->renewal = 0;
+            res = FMT_EEMPTY;
+        } else {
+            uint8_t* pdata = hub->pdata;
+            memcpy(buffer, &pdata[hub->read_ptr * hub->obj_size], hub->obj_size);
+            hub->read_ptr = (hub->read_ptr + 1) % hub->buffer_size;
+            if (hub->write_ptr == hub->read_ptr) {
+                /* buffer is empty now, clear renewal flag */
+                node_t->renewal = 0;
+            }
+        }
+    } else {
+        memcpy(buffer, hub->pdata, hub->obj_size);
+        node_t->renewal = 0;
+    }
     MCN_EXIT_CRITICAL;
 
-    return FMT_EOK;
+    return res;
 }
 
 /**
@@ -204,6 +231,8 @@ fmt_err_t mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer)
  */
 fmt_err_t mcn_copy_from_hub(McnHub_t hub, void* buffer)
 {
+    fmt_err_t res = FMT_EOK;
+
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(buffer != NULL);
 
@@ -218,10 +247,20 @@ fmt_err_t mcn_copy_from_hub(McnHub_t hub, void* buffer)
     }
 
     MCN_ENTER_CRITICAL;
-    memcpy(buffer, hub->pdata, hub->obj_size);
+    if (hub->buffer_size > 1) {
+        if (hub->write_ptr != hub->read_ptr) {
+            uint8_t* pdata = hub->pdata;
+            memcpy(buffer, &pdata[hub->read_ptr * hub->obj_size], hub->obj_size);
+            hub->read_ptr = (hub->read_ptr + 1) % hub->buffer_size;
+        } else {
+            res = FMT_EEMPTY;
+        }
+    } else {
+        memcpy(buffer, hub->pdata, hub->obj_size);
+    }
     MCN_EXIT_CRITICAL;
 
-    return FMT_EOK;
+    return res;
 }
 
 /**
@@ -243,11 +282,11 @@ fmt_err_t mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
         return FMT_ENOTHANDLE;
     }
 
-    pdata = MCN_MALLOC(hub->obj_size);
+    pdata = MCN_MALLOC(hub->obj_size * hub->buffer_size);
     if (pdata == NULL) {
         return FMT_ENOMEM;
     }
-    memset(pdata, 0, hub->obj_size);
+    memset(pdata, 0, hub->obj_size * hub->buffer_size);
 
     next = MCN_MALLOC(sizeof(McnList));
     if (next == NULL) {
@@ -293,7 +332,7 @@ fmt_err_t mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
  * @param pub_cb Topic published callback function
  * @return McnNode_t Subscribe node, return NULL if fail
  */
-McnNode_t mcn_subscribe(McnHub_t hub, void (*pub_cb)(void* parameter))
+McnNode_t mcn_subscribe(McnHub_t hub, void (*pub_cb)(const void* parameter))
 {
     MCN_ASSERT(hub != NULL);
 
@@ -328,12 +367,24 @@ McnNode_t mcn_subscribe(McnHub_t hub, void (*pub_cb)(void* parameter))
     MCN_EXIT_CRITICAL;
 
     if (hub->published) {
-        /* update renewal flag as it's already published */
-        node->renewal = 1;
+        if (hub->buffer_size > 1) {
+            if (hub->write_ptr != hub->read_ptr) {
+                /* update renewal flag as it's already published */
+                node->renewal = 1;
 
-        if (node->pub_cb) {
-            /* if data published before subscribe, then call callback immediately */
-            node->pub_cb(hub->pdata);
+                if (node->pub_cb) {
+                    /* if data published before subscribe, then call callback immediately */
+                    node->pub_cb(&((uint8_t*)hub->pdata)[hub->write_ptr * hub->obj_size]);
+                }
+            }
+        } else {
+            /* update renewal flag as it's already published */
+            node->renewal = 1;
+
+            if (node->pub_cb) {
+                /* if data published before subscribe, then call callback immediately */
+                node->pub_cb(hub->pdata);
+            }
         }
     }
 
@@ -394,7 +445,6 @@ fmt_err_t mcn_unsubscribe(McnHub_t hub, McnNode_t node)
 
     /* free current node */
     MCN_FREE(cur_node);
-    // cur_node = NULL;
 
     return FMT_EOK;
 }
@@ -425,7 +475,17 @@ fmt_err_t mcn_publish(McnHub_t hub, const void* data)
 
     MCN_ENTER_CRITICAL;
     /* copy data to hub */
-    memcpy(hub->pdata, data, hub->obj_size);
+    if (hub->buffer_size > 1) {
+        uint8_t* pdata = hub->pdata;
+        if ((hub->write_ptr + 1) % hub->buffer_size == hub->read_ptr) {
+            /* buffer is full, drop old data */
+            hub->read_ptr = (hub->read_ptr + 1) % hub->buffer_size;
+        }
+        memcpy(&pdata[hub->write_ptr * hub->obj_size], data, hub->obj_size);
+        hub->write_ptr = (hub->write_ptr + 1) % hub->buffer_size;
+    } else {
+        memcpy(hub->pdata, data, hub->obj_size);
+    }
     /* traverse each node */
     McnNode_t node = hub->link_head;
 
@@ -444,7 +504,7 @@ fmt_err_t mcn_publish(McnHub_t hub, const void* data)
 
     while (node != NULL) {
         if (node->pub_cb != NULL) {
-            node->pub_cb(hub->pdata);
+            node->pub_cb(data);
         }
 
         node = node->next;
