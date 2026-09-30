@@ -70,16 +70,36 @@ static int name_maxlen(const char* title)
     return max_len;
 }
 
+rt_inline int hub_name_cmp(const void* a, const void* b)
+{
+    McnHub_t ha = *(McnHub_t*)a;
+    McnHub_t hb = *(McnHub_t*)b;
+    return strcmp(ha->obj_name, hb->obj_name);
+}
+
 static void list_topic(void)
 {
-    uint32_t max_len = name_maxlen("Topic") + 2;
+    int max_len = name_maxlen("Topic") + 2;
 
-    rt_kprintf("%-*.s    #SUB   Freq(Hz)   Echo   Suspend\n", max_len - 2, "Topic");
+    rt_kprintf("%-*.s    #SUB   Freq(Hz)   Echo   Suspend   Buffer\n", max_len - 2, "Topic");
     syscmd_putc('-', max_len);
-    printf(" ------ ---------- ------ ---------\n");
+    printf(" ------ ---------- ------ --------- ---------\n");
 
     McnList_t ite = mcn_get_list();
+    McnHub_t hubs[100];
+    int count = 0;
+
     for (McnHub_t hub = mcn_iterate(&ite); hub != NULL; hub = mcn_iterate(&ite)) {
+        if (count < (int)(sizeof(hubs) / sizeof(hubs[0]))) {
+            hubs[count++] = hub;
+        }
+    }
+
+    qsort(hubs, count, sizeof(hubs[0]), hub_name_cmp);
+
+    for (int i = 0; i < count; i++) {
+        McnHub_t hub = hubs[i];
+
         syscmd_printf(' ', max_len, SYSCMD_ALIGN_LEFT, hub->obj_name);
         printf(" ");
         syscmd_printf(' ', strlen("#SUB") + 2, SYSCMD_ALIGN_MIDDLE, "%d", (int)hub->link_num);
@@ -89,6 +109,18 @@ static void list_topic(void)
         syscmd_printf(' ', strlen("Echo") + 2, SYSCMD_ALIGN_MIDDLE, "%s", hub->echo ? "true" : "false");
         printf(" ");
         syscmd_printf(' ', strlen("Suspend") + 2, SYSCMD_ALIGN_MIDDLE, "%s", hub->suspend ? "true" : "false");
+        printf(" ");
+        if (hub->buffer_size == 1) {
+            syscmd_printf(' ', strlen("Buffer") + 2, SYSCMD_ALIGN_MIDDLE, "NA");
+        } else {
+            uint16_t sample_num = 0;
+            if (hub->write_ptr >= hub->read_ptr) {
+                sample_num = hub->write_ptr - hub->read_ptr;
+            } else {
+                sample_num = (hub->buffer_size - hub->read_ptr) + hub->write_ptr;
+            }
+            syscmd_printf(' ', strlen("Buffer") + 2, SYSCMD_ALIGN_MIDDLE, "%d/%d", sample_num, hub->buffer_size - 1);
+        }
         printf("\n");
     }
 }

@@ -278,7 +278,7 @@ static int ins_output_echo(void* param)
     printf("xyh: %.2f %.2f %.2f, h_AGL: %.2f\n", ins_out.x_R, ins_out.y_R, ins_out.h_R, ins_out.h_AGL);
     printf("LLA: %lf %lf %f LLA0: %lf %lf %f\n", ins_out.lat, ins_out.lon, ins_out.alt, ins_out.lat_0, ins_out.lon_0, ins_out.alt_0);
     printf("dx/dlat: %lf dy/dlon: %lf\n", ins_out.dx_dlat, ins_out.dy_dlon);
-    printf("standstill:%d att:%d heading:%d vel:%d LLA:%d xy:%d h:%d h_AGL:%d\n",
+    printf("flag: standstill:%d att:%d heading:%d vel:%d LLA:%d xy:%d h:%d h_AGL:%d\n",
            BIT(ins_out.flag, 1) > 0,
            BIT(ins_out.flag, 2) > 0,
            BIT(ins_out.flag, 3) > 0,
@@ -287,7 +287,7 @@ static int ins_output_echo(void* param)
            BIT(ins_out.flag, 6) > 0,
            BIT(ins_out.flag, 7) > 0,
            BIT(ins_out.flag, 8) > 0);
-    printf("sensor status, imu1:%d imu2:%d mag:%d baro:%d gps:%d rf:%d optflow:%d\n",
+    printf("sensor status: imu1:%d imu2:%d mag:%d baro:%d gps:%d rf:%d optflow:%d\n",
            BIT(ins_out.status, 0) > 0,
            BIT(ins_out.status, 1) > 0,
            BIT(ins_out.status, 2) > 0,
