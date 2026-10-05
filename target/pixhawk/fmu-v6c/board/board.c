@@ -41,7 +41,6 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 
-
 // Default Configuration
 #include "default_config.h"
 
@@ -196,7 +195,7 @@ static void CPU_Config(void)
     __set_BASEPRI(0);
 
     /* The bootloader may jump here with interrupts still enabled in NVIC
-       (e.g. ArduPilot bootloader leaves its TIM5 tick interrupt enabled).
+       (e.g. Holybro Pixhawk6C-BL bootloader leaves TIM5 interrupt enabled).
        Disable and clear them, otherwise a stale interrupt ends up in
        Default_Handler once the peripheral clock is enabled again. */
     for (uint32_t i = 0; i < sizeof(NVIC->ICER) / sizeof(NVIC->ICER[0]); i++) {
