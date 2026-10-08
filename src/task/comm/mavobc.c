@@ -633,6 +633,82 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
         break;
 
+    case MAVLINK_MSG_ID_SET_POSITION_TARGET_GLOBAL_INT:
+        if (this_system.sysid == mavlink_msg_set_position_target_global_int_get_target_system(msg)) {
+            Auto_Cmd_Bus auto_cmd = { 0 };
+            mavlink_set_position_target_global_int_t pos_target_global_int;
+
+            mavlink_msg_set_position_target_global_int_decode(msg, &pos_target_global_int);
+
+            auto_cmd.timestamp = systime_now_ms();
+
+            if (pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_INT || pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_RELATIVE_ALT_INT) {
+                auto_cmd.frame = FRAME_GLOBAL_NED;
+            } else {
+                LOG_W("unsupported SET_POSITION_TARGET_GLOBAL_INT frame:%d", pos_target_global_int.coordinate_frame);
+                break;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_X_IGNORE)) {
+                auto_cmd.lat_cmd = pos_target_global_int.lat_int;
+                auto_cmd.cmd_mask |= LAT_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_Y_IGNORE)) {
+                auto_cmd.lon_cmd = pos_target_global_int.lon_int;
+                auto_cmd.cmd_mask |= LON_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_Z_IGNORE)) {
+                auto_cmd.alt_cmd = pos_target_global_int.alt;
+                auto_cmd.cmd_mask |= ALT_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_VX_IGNORE)) {
+                auto_cmd.u_cmd = pos_target_global_int.vx;
+                auto_cmd.cmd_mask |= U_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_VY_IGNORE)) {
+                auto_cmd.v_cmd = pos_target_global_int.vy;
+                auto_cmd.cmd_mask |= V_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_VZ_IGNORE)) {
+                auto_cmd.w_cmd = pos_target_global_int.vz;
+                auto_cmd.cmd_mask |= W_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AX_IGNORE)) {
+                auto_cmd.ax_cmd = pos_target_global_int.afx;
+                auto_cmd.cmd_mask |= AX_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AY_IGNORE)) {
+                auto_cmd.ay_cmd = pos_target_global_int.afy;
+                auto_cmd.cmd_mask |= AY_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AZ_IGNORE)) {
+                auto_cmd.az_cmd = pos_target_global_int.afz;
+                auto_cmd.cmd_mask |= AZ_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_YAW_IGNORE)) {
+                auto_cmd.psi_cmd = pos_target_global_int.yaw;
+                auto_cmd.cmd_mask |= PSI_CMD_VALID;
+            }
+
+            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_YAW_RATE_IGNORE)) {
+                auto_cmd.psi_rate_cmd = pos_target_global_int.yaw_rate;
+                auto_cmd.cmd_mask |= PSI_RATE_CMD_VALID;
+            }
+
+            /* publish auto command */
+            mcn_publish(MCN_HUB(auto_cmd), &auto_cmd);
+        }
+        break;
+
     case MAVLINK_MSG_ID_SET_POSITION_TARGET_LOCAL_NED:
         if (this_system.sysid == mavlink_msg_set_position_target_local_ned_get_target_system(msg)) {
             Auto_Cmd_Bus auto_cmd = { 0 };
@@ -742,82 +818,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
     } break;
 
-    case MAVLINK_MSG_ID_SET_POSITION_TARGET_GLOBAL_INT:
-        if (this_system.sysid == mavlink_msg_set_position_target_global_int_get_target_system(msg)) {
-            Auto_Cmd_Bus auto_cmd = { 0 };
-            mavlink_set_position_target_global_int_t pos_target_global_int;
-
-            mavlink_msg_set_position_target_global_int_decode(msg, &pos_target_global_int);
-
-            auto_cmd.timestamp = systime_now_ms();
-
-            if (pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_INT || pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_RELATIVE_ALT_INT) {
-                auto_cmd.frame = FRAME_GLOBAL_NED;
-            } else {
-                LOG_W("unsupported SET_POSITION_TARGET_GLOBAL_INT frame:%d", pos_target_global_int.coordinate_frame);
-                break;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_X_IGNORE)) {
-                auto_cmd.lat_cmd = pos_target_global_int.lat_int;
-                auto_cmd.cmd_mask |= LAT_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_Y_IGNORE)) {
-                auto_cmd.lon_cmd = pos_target_global_int.lon_int;
-                auto_cmd.cmd_mask |= LON_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_Z_IGNORE)) {
-                auto_cmd.alt_cmd = pos_target_global_int.alt;
-                auto_cmd.cmd_mask |= ALT_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_VX_IGNORE)) {
-                auto_cmd.u_cmd = pos_target_global_int.vx;
-                auto_cmd.cmd_mask |= U_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_VY_IGNORE)) {
-                auto_cmd.v_cmd = pos_target_global_int.vy;
-                auto_cmd.cmd_mask |= V_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_VZ_IGNORE)) {
-                auto_cmd.w_cmd = pos_target_global_int.vz;
-                auto_cmd.cmd_mask |= W_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AX_IGNORE)) {
-                auto_cmd.ax_cmd = pos_target_global_int.afx;
-                auto_cmd.cmd_mask |= AX_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AY_IGNORE)) {
-                auto_cmd.ay_cmd = pos_target_global_int.afy;
-                auto_cmd.cmd_mask |= AY_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AZ_IGNORE)) {
-                auto_cmd.az_cmd = pos_target_global_int.afz;
-                auto_cmd.cmd_mask |= AZ_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_YAW_IGNORE)) {
-                auto_cmd.psi_cmd = pos_target_global_int.yaw;
-                auto_cmd.cmd_mask |= PSI_CMD_VALID;
-            }
-
-            if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_YAW_RATE_IGNORE)) {
-                auto_cmd.psi_rate_cmd = pos_target_global_int.yaw_rate;
-                auto_cmd.cmd_mask |= PSI_RATE_CMD_VALID;
-            }
-
-            /* publish auto command */
-            mcn_publish(MCN_HUB(auto_cmd), &auto_cmd);
-        }
-        break;
-
     case MAVLINK_MSG_ID_REQUEST_DATA_STREAM:
         if (this_system.sysid == mavlink_msg_request_data_stream_get_target_system(msg)) {
             mavlink_request_data_stream_t req_data_stream;
@@ -857,6 +857,29 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         ext_pos_report.phi = vision_pos_est.roll;
         ext_pos_report.theta = vision_pos_est.pitch;
         ext_pos_report.psi = vision_pos_est.yaw;
+
+        /* publish external position */
+        mcn_publish(MCN_HUB(external_pos), &ext_pos_report);
+    } break;
+
+    case MAVLINK_MSG_ID_ODOMETRY: {
+        mavlink_odometry_t odometry;
+        External_Pos_Bus ext_pos_report = { 0 };
+        Euler e;
+
+        mavlink_msg_odometry_decode(msg, &odometry);
+
+        quaternion_normalize((quaternion*)odometry.q);
+        quaternion_toEuler((quaternion*)odometry.q, &e);
+
+        ext_pos_report.timestamp = systime_now_ms();
+        ext_pos_report.field_valid = use_pos | (use_alt << 1) | (use_att << 2) | (use_psi << 3);
+        ext_pos_report.x = odometry.x;
+        ext_pos_report.y = odometry.y;
+        ext_pos_report.z = odometry.z;
+        ext_pos_report.phi = e.roll;
+        ext_pos_report.theta = e.pitch;
+        ext_pos_report.psi = e.yaw;
 
         /* publish external position */
         mcn_publish(MCN_HUB(external_pos), &ext_pos_report);
@@ -938,8 +961,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             mcn_publish(MCN_HUB(mav_actuator_control), &mav_actuator_control);
         }
-        break;
-    case MAVLINK_MSG_ID_ODOMETRY: // TODO: may replace MAVLINK_MSG_ID_VISION_POSITION_ESTIMATE
         break;
     default:
         // LOG_W("unsupported mavlink msg:%d", msg->msgid);
