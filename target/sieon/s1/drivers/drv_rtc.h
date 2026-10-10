@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef DRV_RTC_H__
+#define DRV_RTC_H__
 
-#ifndef FMT_BSP_HEADER_H__
-#define FMT_BSP_HEADER_H__
+#include <firmament.h>
 
-/* stm32 peripheral library */
-#include <stm32h7xx.h>
-/* FPU Library */
-#include <arm_math.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "stm32h7xx_hal.h"
-#include "stm32h7xx_hal_fdcan.h"
-#include "stm32h7xx_ll_bus.h"
-#include "stm32h7xx_ll_cortex.h"
-#include "stm32h7xx_ll_dma.h"
-#include "stm32h7xx_ll_exti.h"
-#include "stm32h7xx_ll_gpio.h"
-#include "stm32h7xx_ll_pwr.h"
-#include "stm32h7xx_ll_rcc.h"
-#include "stm32h7xx_ll_system.h"
-#include "stm32h7xx_ll_utils.h"
-#include "stm32h7xx_ll_rtc.h"
+rt_err_t drv_rtc_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

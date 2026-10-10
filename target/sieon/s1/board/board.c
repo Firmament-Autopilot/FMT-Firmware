@@ -31,6 +31,7 @@
 #include "drv_heater.h"
 #include "drv_i2c.h"
 #include "drv_rc.h"
+#include "drv_rtc.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
@@ -61,7 +62,6 @@
 #include "module/task_manager/task_manager.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
-
 
 #ifdef FMT_USING_UNIT_TEST
     #include "utest.h"
@@ -192,6 +192,13 @@ void SystemClock_Config(void)
     /* Wait till HSE is ready */
     while (LL_RCC_HSE_IsReady() != 1) {
     }
+    LL_PWR_EnableBkUpAccess();
+    LL_RCC_LSE_SetDriveCapability(LL_RCC_LSEDRIVE_LOW);
+    LL_RCC_LSE_Enable();
+
+    /* Wait till LSE is ready */
+    while (LL_RCC_LSE_IsReady() != 1) {
+    }
     LL_RCC_PLL_SetSource(LL_RCC_PLLSOURCE_HSE);
     LL_RCC_PLL1P_Enable();
     LL_RCC_PLL1Q_Enable();
@@ -231,6 +238,7 @@ void SystemClock_Config(void)
 
     /* Peripherals Common Clock Configuration */
     LL_RCC_PLL2P_Enable();
+    LL_RCC_PLL2Q_Enable();
     LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
     LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_MEDIUM);
     LL_RCC_PLL2_SetM(1);
@@ -286,6 +294,9 @@ void bsp_early_initialize(void)
 
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
+
+    /* init rtc driver */
+    RT_CHECK(drv_rtc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());

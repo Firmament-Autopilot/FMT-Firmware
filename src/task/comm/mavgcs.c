@@ -93,7 +93,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     case MAV_CMD_PREFLIGHT_CALIBRATION: {
         fmt_err_t res = FMT_EOK;
 
-        if (command->param1 == 1) { // calibration gyr
+        if (command->param1 == 1) {        // calibration gyr
             res = mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
             res = mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
@@ -160,9 +160,14 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         gcs_cmd_heartbeat();
         break;
 
-    case MAVLINK_MSG_ID_SYSTEM_TIME:
-        /* do nothing */
-        break;
+    case MAVLINK_MSG_ID_SYSTEM_TIME: {
+        mavlink_system_time_t system_time;
+        struct rtc_time time;
+        mavlink_msg_system_time_decode(msg, &system_time);
+
+        unix_sec_to_rtc(system_time.time_unix_usec / 1000000ULL, 8, &time);
+        systime_set_rtc(&time);
+    } break;
 
     case MAVLINK_MSG_ID_SET_MODE: {
         if (this_system.sysid == mavlink_msg_set_mode_get_target_system(msg)) {

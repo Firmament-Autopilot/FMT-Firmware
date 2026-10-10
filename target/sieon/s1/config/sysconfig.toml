@@ -110,7 +110,7 @@ target = "SIEON S1"
     name = "eth_dev0"
     local_addr = "0.0.0.0"
     local_port = 0
-    remote_addr = "192.168.1.24"
+    remote_addr = "192.168.1.50"
     remote_port = 14550
 
 # GNSS Configuration

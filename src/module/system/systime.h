@@ -30,6 +30,15 @@ typedef struct {
     uint32_t period;
 } TimeTag;
 
+struct rtc_time {
+    uint8_t month;
+    uint8_t day;
+    uint16_t year;
+    uint8_t hours;
+    uint8_t minutes;
+    uint8_t seconds;
+};
+
 #define DEFINE_TIMETAG(_name, _period)   \
     static TimeTag __timetag_##_name = { \
         .tag = 0,                        \
@@ -101,6 +110,9 @@ uint32_t systime_now_ms(void);
 void systime_udelay(uint32_t delay);
 void systime_mdelay(uint32_t time_ms);
 void systime_msleep(uint32_t time_ms);
+fmt_err_t systime_set_rtc(const struct rtc_time* time);
+fmt_err_t systime_get_rtc(struct rtc_time* time);
+void unix_sec_to_rtc(uint64_t unix_sec, int8_t timezone_oft, struct rtc_time* time);
 uint8_t check_timetag(TimeTag* timetag);
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now);
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period);

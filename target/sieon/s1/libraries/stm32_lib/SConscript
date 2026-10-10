@@ -23,6 +23,7 @@ src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_spi.c')
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_i2c.c')
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_adc.c')
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_tim.c')
+src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_rtc.c')
 
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c')
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd.c')

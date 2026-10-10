@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
-
-#include "hal/systick/systick.h"
 #include "module/system/systime.h"
+#include "hal/systick/systick.h"
 
 typedef struct {
     volatile uint32_t msPeriod; /* current time in ms */
@@ -25,6 +23,7 @@ typedef struct {
 
 static systime_t __systime;
 static rt_device_t systick_dev;
+static rt_device_t rtc_dev;
 static uint32_t mlog_time_ref = 0;
 
 /**
@@ -178,6 +177,92 @@ void systime_msleep(uint32_t time_ms)
 }
 
 /**
+ * @brief Set rtc time
+ * @param time rtc time structure
+ * @return fmt_err_t FMT_EOK indicates success
+ */
+fmt_err_t systime_set_rtc(const struct rtc_time* time)
+{
+    if (rtc_dev == NULL || time == NULL) {
+        return FMT_EEMPTY;
+    }
+
+    if (rt_device_write(rtc_dev, 0, time, 1) == 1) {
+        return FMT_EOK;
+    }
+
+    return FMT_ERROR;
+}
+
+/**
+ * @brief Get rtc time
+ * @param time rtc time structure
+ * @return fmt_err_t FMT_EOK indicates success
+ */
+fmt_err_t systime_get_rtc(struct rtc_time* time)
+{
+    if (rtc_dev == NULL || time == NULL) {
+        return FMT_EEMPTY;
+    }
+
+    if (rt_device_read(rtc_dev, 0, time, 1) == 1) {
+        return FMT_EOK;
+    }
+
+    return FMT_ERROR;
+}
+
+void unix_sec_to_rtc(uint64_t unix_sec, int8_t timezone_oft, struct rtc_time* time)
+{
+    static const uint8_t days_in_month[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    uint32_t days, sec_of_day;
+    uint16_t year;
+    uint8_t month;
+
+    /* add time zone offset */
+    unix_sec += timezone_oft * 3600;
+
+    /* 拆出“天数”和“当天已过的秒数” */
+    days = (uint32_t)(unix_sec / 86400ULL);
+    sec_of_day = (uint32_t)(unix_sec % 86400ULL);
+
+    /* 时分秒 */
+    time->hours = sec_of_day / 3600;
+    time->minutes = (sec_of_day % 3600) / 60;
+    time->seconds = sec_of_day % 60;
+
+    /* 从 1970 年开始逐年减去，定位到年份 */
+    year = 1970;
+    while (1) {
+        uint16_t days_in_year = ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) ? 366 : 365;
+        if (days < days_in_year) {
+            break;
+        }
+        days -= days_in_year;
+        year++;
+    }
+    time->year = year;
+
+    /* 定位到月份 */
+    month = 1;
+    while (1) {
+        uint8_t dim = days_in_month[month - 1];
+        if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))) {
+            dim = 29;
+        }
+        if (days < dim) {
+            break;
+        }
+        days -= dim;
+        month++;
+    }
+    time->month = month;
+
+    /* 剩下的 days 是当月第几天（从 0 起），+1 得到日期 */
+    time->day = (uint8_t)(days + 1);
+}
+
+/**
  * @brief Initialize systime module
  *
  * @return fmt_err_t FMT_EOK indicates success
@@ -188,7 +273,7 @@ fmt_err_t systime_init(void)
 
     systick_dev = rt_device_find("systick");
 
-    if (systick_dev == RT_NULL) {
+    if (systick_dev == NULL) {
         return FMT_ERROR;
     }
 
@@ -205,6 +290,13 @@ fmt_err_t systime_init(void)
     systick_device->systick_isr_cb = systick_isr_cb;
 
     FMT_ASSERT(__systime.msPerPeriod > 0);
+
+    rtc_dev = rt_device_find("rtc");
+    if (rtc_dev != NULL) {
+        if (rt_device_open(rtc_dev, RT_DEVICE_FLAG_RDWR) != RT_EOK) {
+            return FMT_ERROR;
+        }
+    }
 
     return FMT_EOK;
 }
