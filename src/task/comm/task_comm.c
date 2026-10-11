@@ -265,8 +265,13 @@ bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_system_time_t system_time = { 0 };
+    struct rtc_time time;
 
-    system_time.time_unix_usec = systime_now_us();
+    if (systime_get_rtc(&time) == FMT_EOK) {
+        system_time.time_unix_usec = rtc_to_unix_sec(PARAM_GET_INT8(SYSTEM, TIMEZONE_OFT), &time) * 1000000ULL;
+    } else {
+        system_time.time_unix_usec = 0;
+    }
     system_time.time_boot_ms = systime_now_ms();
 
     mavlink_msg_system_time_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &system_time);
@@ -829,7 +834,7 @@ bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t)
 #elif defined(FMT_USING_VR)
     INS_Out_Bus ins_out;
 
-    if(mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 

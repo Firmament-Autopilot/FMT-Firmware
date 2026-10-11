@@ -165,8 +165,10 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         struct rtc_time time;
         mavlink_msg_system_time_decode(msg, &system_time);
 
-        unix_sec_to_rtc(system_time.time_unix_usec / 1000000ULL, 8, &time);
-        systime_set_rtc(&time);
+        unix_sec_to_rtc(system_time.time_unix_usec / 1000000ULL, PARAM_GET_INT8(SYSTEM, TIMEZONE_OFT), &time);
+        if (systime_set_rtc(&time) == FMT_EOK) {
+            LOG_I("RTC configured, Time: %02d:%02d:%02d, Date: %02d-%02d-%02d", time.hours, time.minutes, time.seconds, time.year, time.month, time.day);
+        }
     } break;
 
     case MAVLINK_MSG_ID_SET_MODE: {

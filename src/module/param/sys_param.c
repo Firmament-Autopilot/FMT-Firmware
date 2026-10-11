@@ -35,5 +35,7 @@ static param_t __param_list[] = {
     PARAM_UINT8(LOOP_MISSION, 0),
     /* Send obc heartbeat signal to gcs */
     PARAM_UINT8(OBC_HEARTBEAT, 0),
+    /* UTC time zone offset, default is UTC+8 */
+    PARAM_INT8(TIMEZONE_OFT, 8),
 };
 PARAM_GROUP_DEFINE(SYSTEM, __param_list);

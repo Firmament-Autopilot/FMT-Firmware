@@ -39,6 +39,7 @@ MODULES += [
     'syscmd/cmd_exec.c',
     'syscmd/cmd_delay.c',
     'syscmd/cmd_dshot.c',
+    'syscmd/cmd_time.c',
 ]
 
 MODULES_CPPPATH = [

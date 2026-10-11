@@ -222,16 +222,13 @@ void unix_sec_to_rtc(uint64_t unix_sec, int8_t timezone_oft, struct rtc_time* ti
     /* add time zone offset */
     unix_sec += timezone_oft * 3600;
 
-    /* 拆出“天数”和“当天已过的秒数” */
     days = (uint32_t)(unix_sec / 86400ULL);
     sec_of_day = (uint32_t)(unix_sec % 86400ULL);
 
-    /* 时分秒 */
     time->hours = sec_of_day / 3600;
     time->minutes = (sec_of_day % 3600) / 60;
     time->seconds = sec_of_day % 60;
 
-    /* 从 1970 年开始逐年减去，定位到年份 */
     year = 1970;
     while (1) {
         uint16_t days_in_year = ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) ? 366 : 365;
@@ -243,7 +240,6 @@ void unix_sec_to_rtc(uint64_t unix_sec, int8_t timezone_oft, struct rtc_time* ti
     }
     time->year = year;
 
-    /* 定位到月份 */
     month = 1;
     while (1) {
         uint8_t dim = days_in_month[month - 1];
@@ -258,8 +254,28 @@ void unix_sec_to_rtc(uint64_t unix_sec, int8_t timezone_oft, struct rtc_time* ti
     }
     time->month = month;
 
-    /* 剩下的 days 是当月第几天（从 0 起），+1 得到日期 */
     time->day = (uint8_t)(days + 1);
+}
+
+uint64_t rtc_to_unix_sec(int8_t timezone_oft, const struct rtc_time* time)
+{
+    static const uint8_t days_in_month[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    uint64_t days = 0;
+
+    for (uint16_t y = 1970; y < time->year; y++) {
+        days += (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0) ? 366 : 365;
+    }
+
+    for (uint8_t m = 1; m < time->month; m++) {
+        days += days_in_month[m - 1];
+        if (m == 2 && ((time->year % 4 == 0 && time->year % 100 != 0) || time->year % 400 == 0)) {
+            days += 1;
+        }
+    }
+
+    days += (time->day - 1);
+
+    return days * 86400ULL + time->hours * 3600ULL + time->minutes * 60ULL + time->seconds - timezone_oft * 3600;
 }
 
 /**

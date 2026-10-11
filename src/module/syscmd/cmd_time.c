@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021-2023 The Firmament Authors. All Rights Reserved.
+ * Copyright The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
 #include <firmament.h>
 
-#include "module/task_manager/task_manager.h"
-
-fmt_err_t task_local_init(void)
+int cmd_time(int argc, char** argv)
 {
-    return FMT_EOK;
-}
+    struct rtc_time time;
 
-void task_local_entry(void* parameter)
-{
-    printf("Hello FMT!\n");
-
-    /* main loop */
-    while (1) {
-        printf("This is a local demo task.\n");
-        sys_msleep(1);
+    printf("timestamp:%d ", systime_now_ms());
+    if (systime_get_rtc(&time) == FMT_EOK) {
+        printf("RTC(UTC:%d): %02d:%02d:%02d, %02d-%02d-%02d",
+               PARAM_GET_INT8(SYSTEM, TIMEZONE_OFT),
+               time.hours,
+               time.minutes,
+               time.seconds,
+               time.year,
+               time.month,
+               time.day);
     }
-}
 
-// TASK_EXPORT __fmt_task_desc = {
-//     .name = "local",
-//     .init = task_local_init,
-//     .entry = task_local_entry,
-//     .priority = 25,
-//     .auto_start = false,
-//     .stack_size = 1024,
-//     .param = NULL,
-//     .dependency = NULL
-// };
+    printf("\r\n");
+    return 0;
+}
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_time, __cmd_time, show system time);

@@ -113,6 +113,7 @@ void systime_msleep(uint32_t time_ms);
 fmt_err_t systime_set_rtc(const struct rtc_time* time);
 fmt_err_t systime_get_rtc(struct rtc_time* time);
 void unix_sec_to_rtc(uint64_t unix_sec, int8_t timezone_oft, struct rtc_time* time);
+uint64_t rtc_to_unix_sec(int8_t timezone_oft, const struct rtc_time* time);
 uint8_t check_timetag(TimeTag* timetag);
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now);
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period);
