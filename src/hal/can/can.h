@@ -10,7 +10,7 @@ extern "C" {
 #endif
 
 #define CAN_MSG_LEN            sizeof(can_msg)
-#define CAN_RX_FIFO_SIZE       8
+#define CAN_RX_FIFO_SIZE       64
 
 #define CAN_BAUD_RATE_1000K    1000 /* 1000 kBit/sec */
 #define CAN_BAUD_RATE_500K     500  /* 500 kBit/sec */
