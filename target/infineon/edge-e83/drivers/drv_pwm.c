@@ -21,6 +21,10 @@
 #include "cycfg_peripherals.h"
 #include "hal/actuator/actuator.h"
 
+#ifdef BSP_USING_DSHOT
+    #include "drv_dshot.h"
+#endif
+
 // #define DRV_DBG(...)          console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
@@ -316,6 +320,10 @@ static rt_err_t pwm_set_frequency(struct pwm_group* group, uint16_t freq)
 
 static rt_err_t pwm_config_group(actuator_dev_t dev, const struct actuator_configure* cfg, struct pwm_group* group)
 {
+    if (cfg->protocol != ACT_PROTOCOL_PWM) {
+        return RT_EINVAL;
+    }
+
     if (pwm_set_frequency(group, cfg->pwm_config.pwm_freq) != RT_EOK) {
         return RT_ERROR;
     }
@@ -448,6 +456,15 @@ static rt_size_t pwm_write_group(rt_uint16_t chan_sel, const rt_uint16_t* chan_v
 
 static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
+#ifdef BSP_USING_DSHOT
+    if (cfg->protocol == ACT_PROTOCOL_DSHOT) {
+        rt_err_t ret = drv_dshot_configure(cfg);
+        if (ret == RT_EOK) {
+            dev->config = *cfg;
+        }
+        return ret;
+    }
+#endif
     DRV_DBG("main out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
     return pwm_config_group(dev, cfg, &main_pwm_group);
 }
@@ -460,8 +477,45 @@ static rt_err_t aux_pwm_config(actuator_dev_t dev, const struct actuator_configu
 
 static rt_err_t main_pwm_control(actuator_dev_t dev, int cmd, void* arg)
 {
+#ifdef BSP_USING_DSHOT
+    if (cmd == ACT_CMD_SET_PROTOCOL) {
+        if (arg == NULL) {
+            return RT_EINVAL;
+        }
+
+        int protocol = *(int*)arg;
+        if (protocol != ACT_PROTOCOL_PWM && protocol != ACT_PROTOCOL_DSHOT) {
+            return RT_EINVAL;
+        }
+        if (protocol == dev->config.protocol) {
+            return RT_EOK;
+        }
+        /* TOML selects the protocol before the first device open. Reboot to
+         * change protocols after initialization; clocks and DMA are shared. */
+        if (dev->parent.flag & RT_DEVICE_FLAG_ACTIVATED) {
+            return RT_EBUSY;
+        }
+
+        dev->config.protocol = protocol;
+        dev->config.chan_num = protocol == ACT_PROTOCOL_DSHOT ? E83_DSHOT_CHANNELS : MAIN_PWM_CHAN;
+        dev->chan_mask = PWM_CH_MASK(dev->config.chan_num);
+        return RT_EOK;
+    }
+
+    if (dev->config.protocol == ACT_PROTOCOL_DSHOT) {
+        switch (cmd) {
+        case ACT_CMD_CHANNEL_ENABLE:
+            return drv_dshot_enable();
+        case ACT_CMD_CHANNEL_DISABLE:
+            return drv_dshot_disable();
+        default:
+            /* This backend supports throttle and stop frames only. */
+            return RT_EINVAL;
+        }
+    }
+#else
     (void)dev;
-    (void)arg;
+#endif
 
     return pwm_control_group(cmd, &main_pwm_group, arg);
 }
@@ -476,7 +530,13 @@ static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg)
 
 static rt_size_t main_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
+#ifdef BSP_USING_DSHOT
+    if (dev->config.protocol == ACT_PROTOCOL_DSHOT) {
+        return drv_dshot_read(chan_sel, chan_val, size);
+    }
+#else
     (void)dev;
+#endif
 
     return pwm_read_group(chan_sel, chan_val, size, &main_pwm_group);
 }
@@ -490,7 +550,13 @@ static rt_size_t aux_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint1
 
 static rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
+#ifdef BSP_USING_DSHOT
+    if (dev->config.protocol == ACT_PROTOCOL_DSHOT) {
+        return drv_dshot_write(chan_sel, chan_val, size);
+    }
+#else
     (void)dev;
+#endif
 
     return pwm_write_group(chan_sel, chan_val, size, &main_pwm_group);
 }
@@ -522,7 +588,7 @@ static struct actuator_device main_act_dev = {
     .config = { .protocol = ACT_PROTOCOL_PWM,
                 .chan_num = MAIN_PWM_CHAN,
                 .pwm_config = { .pwm_freq = PWM_DEFAULT_FREQUENCY },
-                .dshot_config = { 0 } },
+                .dshot_config = { .speed = 300, .telem_req = RT_FALSE } },
     .ops = &main_act_ops,
 };
 
