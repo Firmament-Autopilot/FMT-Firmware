@@ -27,6 +27,8 @@ if GetDepend('BSP_USING_SPI'):
 
 if GetDepend('BSP_USING_PWM'):
     src += ['drv_pwm.c']
+    if GetDepend('BSP_USING_DSHOT'):
+        src += ['drv_dshot.c']
 
 if GetDepend('BSP_USING_ADC'):
     src += ['drv_adc.c']
