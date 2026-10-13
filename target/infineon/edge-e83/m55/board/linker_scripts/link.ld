@@ -409,12 +409,13 @@ SECTIONS
         __noinit_end__ = .;
     } > m55_data_INTERNAL
 
-    /* SIH plant model state is too large for DTCM when combined with RTOS/LwIP/log buffers. */
+    /* Zero-initialized SoCMEM data, including DMA buffers and large SIH plant state. */
     .cy_socmem_bss(NOLOAD) :
     {
         . = ALIGN(4);
         __cy_socmem_bss_start__ = .;
 
+        *(.cy_socmem_bss .cy_socmem_bss.*)
         *plant_interface.*(.bss*)
         *Plant.*(.bss*)
 
