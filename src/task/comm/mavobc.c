@@ -492,6 +492,8 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
 
         mcn_publish(MCN_HUB(control_output), &control_out);
+
+        mavproxy_send_msg(MAVPROXY_GCS_CHAN, msg, false);
     } break;
 #endif
 
