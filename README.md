@@ -6,6 +6,10 @@
   <a href="https://github.com/Firmament-Autopilot/FMT-Firmware/releases"><img src="https://img.shields.io/github/v/release/Firmament-Autopilot/FMT-Firmware" alt="release version" /></a>
 </p>
 
+<p align="center">
+  <strong><a href="https://docs.sieon.net/fmt/#">Guides</a> · <a href="https://docs.sieon.net/product/#/">Products</a> · <a href="https://www.sieon.net/">Website</a></strong>
+</p>
+
 Overview
 ============================
 Firmament (FMT) is an advanced autopilot system which is designed with Model-based design (MBD). It can be used to quickly and easily build the control system for autonomous vehicle, such as uav, car, ship, robot, etc.
