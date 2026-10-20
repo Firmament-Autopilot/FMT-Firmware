@@ -84,6 +84,8 @@ static struct dshot_dma_map dshot_dma_map[DSHOT_TIMER_COUNT] = {
     { DMA2, LL_DMA_STREAM_4, LL_DMAMUX1_REQ_TIM5_UP, TIM5, 0, 0 },
 };
 
+rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
+
 static void _dshot_clear_dma_flags(DMA_TypeDef* dma, uint32_t stream)
 {
     uint32_t shift = 0;
@@ -741,7 +743,6 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
     case ACT_CMD_DSHOT_SEND: {
         struct dshot_command* c = (struct dshot_command*)arg;
 
-        rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
         ret = main_act_write(dev, c->chan_mask, c->value, c->size) == c->size ? RT_EOK : RT_ERROR;
         break;
     }
