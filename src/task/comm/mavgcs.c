@@ -350,7 +350,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
     case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
     case MAVLINK_MSG_ID_MISSION_ACK:
-        handle_mission_message(msg, MAVPROXY_GCS_CHAN);
+        handle_mission_message(msg, MAVPROXY_GCS_CHAN, this_system);
         break;
 
     case MAVLINK_MSG_ID_LOG_REQUEST_LIST:

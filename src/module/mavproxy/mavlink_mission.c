@@ -219,23 +219,33 @@ static void handle_message_mission_item(mavlink_message_t* msg, uint8_t chan)
     }
 }
 
-void handle_mission_message(mavlink_message_t* msg, uint8_t chan)
+void handle_mission_message(mavlink_message_t* msg, uint8_t chan, mavlink_system_t this_system)
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-        handle_message_mission_request_list(msg, chan);
+        if (this_system.sysid == mavlink_msg_mission_request_list_get_target_system(msg)) {
+            handle_message_mission_request_list(msg, chan);
+        }
         break;
     case MAVLINK_MSG_ID_MISSION_COUNT:
-        handle_message_mission_count(msg, chan);
+        if (this_system.sysid == mavlink_msg_mission_count_get_target_system(msg)) {
+            handle_message_mission_count(msg, chan);
+        }
         break;
     case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
-        handle_message_mission_request_int(msg, chan);
+        if (this_system.sysid == mavlink_msg_mission_request_int_get_target_system(msg)) {
+            handle_message_mission_request_int(msg, chan);
+        }
         break;
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
-        handle_message_mission_item(msg, chan);
+        if (this_system.sysid == mavlink_msg_mission_item_int_get_target_system(msg)) {
+            handle_message_mission_item(msg, chan);
+        }
         break;
     case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-        handle_message_mission_clear_all(msg, chan);
+        if (this_system.sysid == mavlink_msg_mission_clear_all_get_target_system(msg)) {
+            handle_message_mission_clear_all(msg, chan);
+        }
         break;
     case MAVLINK_MSG_ID_MISSION_ACK:
         /* do nothing here */
