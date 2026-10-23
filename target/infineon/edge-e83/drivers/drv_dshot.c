@@ -26,9 +26,9 @@
 #include "cycfg_peripherals.h"
 #include "module/system/systime.h"
 
-#define DSHOT_BIT_RATE      (300000U)
 #define DSHOT_FRAME_BITS    (16U)
 #define DSHOT_DMA_WORDS     (17U)
+/* Keep the same conservative frame spacing at both supported bit rates. */
 #define DSHOT_MIN_FRAME_US  (110U)
 
 /* PERI0 group 1 has no spare dividers. Reuse the generated /1 clock without
@@ -267,13 +267,16 @@ rt_err_t drv_dshot_configure(const struct actuator_configure* cfg)
 {
     rt_base_t level;
     uint32_t clock_hz;
+    uint32_t bit_rate;
     rt_err_t result = RT_ERROR;
 
     if (cfg == NULL || cfg->protocol != ACT_PROTOCOL_DSHOT
         || cfg->chan_num == 0U || cfg->chan_num > E83_DSHOT_CHANNELS
-        || cfg->dshot_config.speed != 300U || cfg->dshot_config.telem_req) {
+        || (cfg->dshot_config.speed != 300U && cfg->dshot_config.speed != 600U)
+        || cfg->dshot_config.telem_req) {
         return RT_EINVAL;
     }
+    bit_rate = cfg->dshot_config.speed * 1000U;
 
     level = rt_hw_interrupt_disable();
     if (enabled) {
@@ -301,16 +304,16 @@ rt_err_t drv_dshot_configure(const struct actuator_configure* cfg)
     clock_hz = Cy_SysClk_PeriPclkGetFrequency(channels[0].clock,
                                               DSHOT_CLOCK_TYPE,
                                               DSHOT_CLOCK_DIVIDER);
-    period_ticks = (clock_hz + DSHOT_BIT_RATE / 2U) / DSHOT_BIT_RATE;
+    period_ticks = (clock_hz + bit_rate / 2U) / bit_rate;
     if (!Cy_SysClk_PeriPclkGetDividerEnabled(channels[0].clock,
                                              DSHOT_CLOCK_TYPE,
                                              DSHOT_CLOCK_DIVIDER)
         || period_ticks < 16U || period_ticks > 65536U) {
         goto out;
     }
-    /* Reject a changed clock tree that cannot approximate DShot300 to 1%. */
-    if ((uint64_t)clock_hz < (uint64_t)period_ticks * (DSHOT_BIT_RATE - DSHOT_BIT_RATE / 100U)
-        || (uint64_t)clock_hz > (uint64_t)period_ticks * (DSHOT_BIT_RATE + DSHOT_BIT_RATE / 100U)) {
+    /* Reject a changed clock tree that cannot approximate the selected rate to 1%. */
+    if ((uint64_t)clock_hz < (uint64_t)period_ticks * (bit_rate - bit_rate / 100U)
+        || (uint64_t)clock_hz > (uint64_t)period_ticks * (bit_rate + bit_rate / 100U)) {
         goto out;
     }
     zero_ticks = (period_ticks * 3U + 4U) / 8U;
