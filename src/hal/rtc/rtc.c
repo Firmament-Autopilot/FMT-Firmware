@@ -16,6 +16,8 @@
 
 #include "hal/rtc/rtc.h"
 
+static int8_t timezone_oft = -128;
+
 static rt_err_t hal_rtc_init(struct rt_device* dev)
 {
     rt_err_t ret = RT_EOK;
@@ -63,6 +65,37 @@ static rt_size_t hal_rtc_write(rt_device_t dev, rt_off_t pos, const void* buffer
     return size;
 }
 
+static rt_err_t hal_rtc_control(rt_device_t dev, int cmd, void* args)
+{
+    rtc_dev_t rtc = (rtc_dev_t)dev;
+
+    if (dev == NULL)
+        return RT_EEMPTY;
+
+    switch (cmd) {
+    case RT_DEVICE_CTRL_RTC_GET_TIME: {
+        struct rtc_time time;
+        if (rtc->ops->read) {
+            if (rtc->ops->read(rtc, &time) == RT_EOK && args != RT_NULL) {
+                time_t* t = (time_t*)args;
+
+                if (timezone_oft == -128) {
+                    if (param_link_variable(PARAM_GET(SYSTEM, TIMEZONE_OFT), &timezone_oft) != FMT_EOK)
+                        return RT_ERROR;
+                }
+
+                *t = rtc_to_unix_sec(timezone_oft, &time);
+                return RT_EOK;
+            }
+        }
+    } break;
+    default:
+        break;
+    }
+
+    return RT_ERROR;
+}
+
 /**
  * @brief register a rtc device
  *
@@ -90,7 +123,7 @@ rt_err_t hal_rtc_register(rtc_dev_t rtc, const char* name, rt_uint32_t flag, voi
     device->close = RT_NULL;
     device->read = hal_rtc_read;
     device->write = hal_rtc_write;
-    device->control = RT_NULL;
+    device->control = hal_rtc_control;
 
     device->user_data = data;
 

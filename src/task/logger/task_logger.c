@@ -85,6 +85,7 @@ fmt_err_t logger_start_mlog(char* path)
     char log_name[100];
     char file_name[50];
     static uint8_t mlog_id = 0;
+    struct rtc_time time;
 
     if (path) {
         /* if a valid path is provided, use it for mlog */
@@ -95,7 +96,11 @@ fmt_err_t logger_start_mlog(char* path)
         console_printf("no available log session\n");
         return FMT_ERROR;
     }
-    sprintf(file_name, "/mlog%d.bin", ++mlog_id);
+    if (systime_get_rtc(&time) == FMT_EOK) {
+        sprintf(file_name, "/mlog%d_%04d-%02d-%02d_%02d-%02d-%02d.bin", ++mlog_id, time.year, time.month, time.day, time.hours, time.minutes, time.seconds);
+    } else {
+        sprintf(file_name, "/mlog%d.bin", ++mlog_id);
+    }
     strcat(log_name, file_name);
 
     return mlog_start(log_name);

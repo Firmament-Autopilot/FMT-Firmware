@@ -17,6 +17,8 @@
 
 #include "hal/rtc/rtc.h"
 
+static uint8_t rtc_valid;
+
 static rt_err_t rtc_init(rtc_dev_t dev)
 {
     LL_RTC_InitTypeDef RTC_InitStruct = { 0 };
@@ -69,6 +71,8 @@ static rt_err_t rtc_init(rtc_dev_t dev)
 
         /* update backup register */
         LL_RTC_BAK_SetRegister(RTC, LL_RTC_BKP_DR0, RTC_BKP_MAGIC);
+    } else {
+        rtc_valid = 1;
     }
 
     return RT_EOK;
@@ -76,6 +80,10 @@ static rt_err_t rtc_init(rtc_dev_t dev)
 static rt_err_t rtc_read(rtc_dev_t dev, struct rtc_time* time)
 {
     uint32_t time_bcd, date_bcd;
+
+    if (!rtc_valid) {
+        return RT_ERROR;
+    }
 
     time_bcd = LL_RTC_TIME_Get(RTC);
     date_bcd = LL_RTC_DATE_Get(RTC);
@@ -112,6 +120,8 @@ static rt_err_t rtc_write(rtc_dev_t dev, const struct rtc_time* time)
 
         LL_RTC_ExitInitMode(RTC);
         LL_RTC_EnableWriteProtection(RTC);
+
+        rtc_valid = 1;
 
         return RT_EOK;
     }

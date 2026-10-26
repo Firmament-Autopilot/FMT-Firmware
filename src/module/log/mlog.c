@@ -25,7 +25,7 @@
     #include "model/plant/plant_interface.h"
 #endif
 
-#define TAG "MLog"
+#define TAG                           "MLog"
 
 #define WRITE_PAYLOAD(_payload, _len) write(mlog_handle.fid, _payload, _len);
 
@@ -198,7 +198,7 @@ void mlog_show_statistic(void)
  *
  * @param cb_type MLOG_CB_START | MLOG_CB_STOP | MLOG_CB_UPDATE
  * @param cb callback function
- * 
+ *
  * @return FMT Error
  */
 fmt_err_t mlog_register_callback(mlog_cb_type type, void (*cb_func)(void))
@@ -230,10 +230,10 @@ fmt_err_t mlog_register_callback(mlog_cb_type type, void (*cb_func)(void))
 
 /**
  * @brief Deregister mlog callback function
- * 
+ *
  * @param type MLOG_CB_START | MLOG_CB_STOP | MLOG_CB_UPDATE
  * @param cb_func callback function
- * @return fmt_err_t 
+ * @return fmt_err_t
  */
 fmt_err_t mlog_deregister_callback(mlog_cb_type type, void (*cb_func)(void))
 {
@@ -277,7 +277,7 @@ fmt_err_t mlog_deregister_callback(mlog_cb_type type, void (*cb_func)(void))
 
 /**
  * @brief Return bus id based on bus_name
- * 
+ *
  * @param bus_name The bus name
  * @return int Finded bus id, -1 means not found
  */
@@ -321,7 +321,7 @@ fmt_err_t mlog_add_desc(char* desc)
  * @param payload msg payload
  * @param msg_id msg id
  * @param len msg length
- * 
+ *
  * @return FMT Error
  */
 fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
@@ -580,7 +580,7 @@ void mlog_async_output(void)
 
 /**
  * Initialize mat log module.
- * 
+ *
  * @return FMT Errors.
  */
 fmt_err_t mlog_init(void)
