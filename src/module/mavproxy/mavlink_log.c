@@ -85,17 +85,17 @@ static int compare_mlog_file_info(const void* lhs, const void* rhs)
     const mavlog_file_info_t* left = (const mavlog_file_info_t*)lhs;
     const mavlog_file_info_t* right = (const mavlog_file_info_t*)rhs;
 
-    int cmp = strcmp(left->path, right->path);
-    if (cmp != 0) {
-        return cmp;
-    }
-
-    if (left->time_utc < right->time_utc) {
+    if (left->time_utc > right->time_utc) {
         return -1;
     }
 
-    if (left->time_utc > right->time_utc) {
+    if (left->time_utc < right->time_utc) {
         return 1;
+    }
+
+    int cmp = strcmp(left->path, right->path);
+    if (cmp != 0) {
+        return cmp;
     }
 
     if (left->size < right->size) {
