@@ -38,7 +38,6 @@ extern "C" {
 #define EVENT_SEND_ALL_PARAM     (1 << 2)
 #define EVENT_SEND_NEXT_PARAM    (1 << 3)
 
-// #define MAXPROXY_MAX_CHAN            5
 #define MAVPROXY_GCS_CHAN        0
 #define MAVPROXY_OBC_CHAN        1
 

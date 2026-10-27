@@ -26,7 +26,7 @@ struct mavlink_msg_handler_func {
     struct list_head link;
 };
 
-static char thread_mavlink_rx_stack[6144];
+static char thread_mavlink_rx_stack[8192];
 static struct rt_thread thread_mavlink_rx_handle;
 static struct rt_event mav_rx_event;
 
@@ -79,7 +79,7 @@ static void mavproxy_rx_entry(void* param)
                 for (uint8_t chan = 0; mavproxy_is_valid_chan(chan); chan++) {
                     while (mavproxy_dev_read(chan, &byte, 1, RT_WAITING_NO)) {
                         /* decode mavlink package */
-                        if (mavlink_parse_char(0, byte, &msg[chan], &mav_status[chan]) == 1) {
+                        if (mavlink_parse_char(chan, byte, &msg[chan], &mav_status[chan]) == 1) {
                             handle_mavlink_msg(chan, &msg[chan], mavlink_system);
                         }
                     }

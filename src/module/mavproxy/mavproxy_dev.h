@@ -23,7 +23,8 @@
 extern "C" {
 #endif
 
-#define MAXPROXY_MAX_CHAN 5
+/* should not exceed MAVLINK_COMM_NUM_BUFFERS */
+#define MAXPROXY_MAX_CHAN 4
 
 fmt_err_t mavproxy_dev_init(void);
 rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int32_t timeout);
