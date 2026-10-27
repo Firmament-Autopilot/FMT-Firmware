@@ -33,7 +33,7 @@ enum {
     // LOCAL-FRD (Front-Right-Down) Local coordinate frame with origin fixed relative to vehicle arm place.
     // The x-axis is aligned to the front of the vehicle when armed.
     FRAME_LOCAL_FRD,
-    // BODY-FRD (Front-Right-Down) Body coordinate frame with an origin fixed relative to vehicle arm place.
+    // BODY-FRD (Front-Right-Down) Body coordinate frame with an origin that travels with vehicle.
     // The x-axis is aligned to the front of the vehicle
     FRAME_BODY_FRD,
 };

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2314
+ * Model version                  : 1.2319
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 10 13:17:27 2026
+ * C/C++ source code generated on : Tue Oct 27 14:31:07 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -47,7 +47,7 @@ const ConstB_FMS_T FMS_ConstB = {
 
     { 0.0F, 0.0F, 0.0F, 0.0F },
     0U
-  },                                   /* '<S185>/Bus Assignment' */
+  },                                   /* '<S182>/Bus Assignment' */
 
   {
     0U,
@@ -78,36 +78,22 @@ const ConstB_FMS_T FMS_ConstB = {
 
     { 0.0F, 0.0F, 0.0F, 0.0F },
     0U
-  },                                   /* '<S184>/Bus Assignment' */
-  1.9966471893352524,                  /* '<S207>/Sum' */
-  0.0066943799901413165,               /* '<S207>/Multiply3' */
-  0.99330562000985867,                 /* '<S207>/Sum4' */
-  1.9966471893352524,                  /* '<S141>/Sum' */
-  0.0066943799901413165,               /* '<S141>/Multiply3' */
-  0.99330562000985867,                 /* '<S141>/Sum4' */
-  0.0,                                 /* '<S140>/deg2rad2' */
-  0.0,                                 /* '<S143>/SinCos' */
-  1.0,                                 /* '<S143>/SinCos' */
+  },                                   /* '<S181>/Bus Assignment' */
+  1.9966471893352524,                  /* '<S204>/Sum' */
+  0.0066943799901413165,               /* '<S204>/Multiply3' */
+  0.99330562000985867,                 /* '<S204>/Sum4' */
+  1.9966471893352524,                  /* '<S138>/Sum' */
+  0.0066943799901413165,               /* '<S138>/Multiply3' */
+  0.99330562000985867,                 /* '<S138>/Sum4' */
+  0.0,                                 /* '<S137>/deg2rad2' */
+  0.0,                                 /* '<S140>/SinCos' */
+  1.0,                                 /* '<S140>/SinCos' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S127>/Vector Concatenate3' */
-
-  { 0.0F, 0.0F, 1.0F },                /* '<S134>/Vector Concatenate3' */
-  0.0F,                                /* '<S162>/Constant' */
-  0.0F,                                /* '<S158>/Constant' */
-  -0.0F,                               /* '<S130>/Gain' */
-  1.0F,                                /* '<S131>/Trigonometric Function1' */
-  -0.0F,                               /* '<S131>/Trigonometric Function' */
-  -0.0F,                               /* '<S131>/Trigonometric Function2' */
-  0.0F,                                /* '<S131>/Gain' */
-  1.0F,                                /* '<S131>/Trigonometric Function3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S126>/Vector Concatenate3' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S131>/Vector Concatenate3' */
-
-  { 1.0F, -0.0F, 0.0F },               /* '<S131>/Vector Concatenate1' */
-
-  { 0.0F, 1.0F, 0.0F },                /* '<S131>/Vector Concatenate2' */
-
-  { 1.0F, -0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S131>/Vector Concatenate' */
+  0.0F,                                /* '<S159>/Constant' */
+  0.0F,                                /* '<S155>/Constant' */
   3U,                                  /* '<S28>/Data Type Conversion' */
   12U,                                 /* '<S28>/Data Type Conversion1' */
   1U,                                  /* '<S28>/Data Type Conversion2' */
@@ -123,15 +109,15 @@ const ConstB_FMS_T FMS_ConstB = {
   3U,                                  /* '<S83>/Data Type Conversion' */
   3U,                                  /* '<S83>/Data Type Conversion1' */
   6U,                                  /* '<S83>/Data Type Conversion2' */
-  3U,                                  /* '<S185>/Data Type Conversion' */
-  6U,                                  /* '<S185>/Data Type Conversion1' */
-  1U,                                  /* '<S185>/Data Type Conversion2' */
-  3U,                                  /* '<S184>/Data Type Conversion' */
-  10U,                                 /* '<S184>/Data Type Conversion1' */
-  5U,                                  /* '<S184>/Data Type Conversion2' */
   3U,                                  /* '<S182>/Data Type Conversion' */
-  16U,                                 /* '<S182>/Data Type Conversion1' */
-  5U,                                  /* '<S182>/Data Type Conversion2' */
+  6U,                                  /* '<S182>/Data Type Conversion1' */
+  1U,                                  /* '<S182>/Data Type Conversion2' */
+  3U,                                  /* '<S181>/Data Type Conversion' */
+  10U,                                 /* '<S181>/Data Type Conversion1' */
+  5U,                                  /* '<S181>/Data Type Conversion2' */
+  3U,                                  /* '<S179>/Data Type Conversion' */
+  16U,                                 /* '<S179>/Data Type Conversion1' */
+  5U,                                  /* '<S179>/Data Type Conversion2' */
   2U,                                  /* '<S25>/Data Type Conversion2' */
   2U,                                  /* '<S25>/Data Type Conversion1' */
   1U,                                  /* '<S24>/Data Type Conversion' */
@@ -166,8 +152,8 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S29>/Unknown' */
   {
-    1U,                                /* '<S183>/Data Type Conversion' */
-    1U                                 /* '<S183>/Data Type Conversion1' */
+    1U,                                /* '<S180>/Data Type Conversion' */
+    1U                                 /* '<S180>/Data Type Conversion1' */
   }
   /* End of '<S29>/Unknown' */
 };

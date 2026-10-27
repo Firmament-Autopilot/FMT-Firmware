@@ -875,7 +875,8 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         quaternion_toEuler((quaternion*)odometry.q, &e);
 
         ext_pos_report.timestamp = systime_now_ms();
-        ext_pos_report.field_valid = use_pos | (use_alt << 1) | (use_att << 2) | (use_psi << 3);
+        /* TODO: check covariance? */
+        ext_pos_report.field_valid = (use_pos | (use_alt << 1) | (use_att << 2) | (use_psi << 3)) * (odometry.quality > 40);
         ext_pos_report.x = odometry.x;
         ext_pos_report.y = odometry.y;
         ext_pos_report.z = odometry.z;

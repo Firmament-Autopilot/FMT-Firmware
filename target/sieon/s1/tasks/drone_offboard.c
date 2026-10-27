@@ -96,16 +96,16 @@ static void task_entry(void* parameter)
 
         Auto_Cmd_Bus auto_cmd;
 
-        auto_cmd.timestamp = systime_now_ms(),
-        auto_cmd.frame = FRAME_LOCAL_FRD,
-        auto_cmd.x_cmd = -(r * c * s) / sspo + ins_out.x_R,
-        auto_cmd.y_cmd = (r * c) / sspo + ins_out.y_R,
-        auto_cmd.z_cmd = -ins_out.h_R,
-        auto_cmd.u_cmd = dadt * r * (ss * ss + ss + (ssmo * cc)) / sspos,
-        auto_cmd.v_cmd = -dadt * r * s * (ss + 2.0 * cc + 1.0) / sspos,
-        auto_cmd.ax_cmd = -dadt * dadt * 8.0 * r * s * c * ((3.0 * c2a) + 7.0) / c2am3_cubed,
-        auto_cmd.ay_cmd = dadt * dadt * r * c * ((44.0 * c2a) + c4a - 21.0) / c2am3_cubed,
-        auto_cmd.psi_cmd = atan2(auto_cmd.v_cmd, auto_cmd.u_cmd),
+        auto_cmd.timestamp = systime_now_ms();
+        auto_cmd.frame = FRAME_LOCAL_FRD;
+        auto_cmd.x_cmd = -(r * c * s) / sspo + ins_out.x_R;
+        auto_cmd.y_cmd = (r * c) / sspo + ins_out.y_R;
+        auto_cmd.z_cmd = -ins_out.h_R;
+        auto_cmd.u_cmd = dadt * r * (ss * ss + ss + (ssmo * cc)) / sspos;
+        auto_cmd.v_cmd = -dadt * r * s * (ss + 2.0 * cc + 1.0) / sspos;
+        auto_cmd.ax_cmd = -dadt * dadt * 8.0 * r * s * c * ((3.0 * c2a) + 7.0) / c2am3_cubed;
+        auto_cmd.ay_cmd = dadt * dadt * r * c * ((44.0 * c2a) + c4a - 21.0) / c2am3_cubed;
+        auto_cmd.psi_cmd = atan2(auto_cmd.v_cmd, auto_cmd.u_cmd);
         auto_cmd.cmd_mask = X_CMD_VALID
             | Y_CMD_VALID
             | Z_CMD_VALID
