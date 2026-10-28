@@ -52,14 +52,14 @@ FMT Firmware's architecture is shown in the figure below.
 Current supported hardware:
 - [SIEON S1](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/sieon/s1)
 - [EDGI-X](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/infineon)
-- [AMOV ICF5](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/amov/icf5)(Archived)
+- [AMOV ICF5](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/amov/icf5)(**Archived**)
 - [CUAV V5-Nano](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/v5_nano)
 - [CUAV V5+](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/v5_plus)
 - [CUAV 7Nano](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/7_nano)
 - [CUAV X7+/X7+ Pro](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/x7_plus)
 - [Pixhawk V6C](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/pixhawk/fmu-v6c)
 - [Pixhawk4 (FMUv5)](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/pixhawk/fmu-v5)
-- [Pixhawk (FMUv2)](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/pixhawk/fmu-v2)(Archived)
+- [Pixhawk (FMUv2)](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/pixhawk/fmu-v2)(**Archived**)
 - [QEMU vexpress-a9](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/qemu/qemu-vexpress-a9)
 
 ## License
