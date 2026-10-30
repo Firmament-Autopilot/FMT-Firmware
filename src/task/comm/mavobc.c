@@ -37,6 +37,7 @@ MCN_DECLARE(auto_cmd);
 MCN_DECLARE(external_pos);
 MCN_DECLARE(mission_data);
 MCN_DECLARE(control_output);
+MCN_DECLARE(sensor_rangefinder);
 MCN_DECLARE(mav_actuator_control);
 
 typedef struct
@@ -886,6 +887,22 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
         /* publish external position */
         mcn_publish(MCN_HUB(external_pos), &ext_pos_report);
+    } break;
+
+    case MAVLINK_MSG_ID_DISTANCE_SENSOR: {
+        mavlink_distance_sensor_t distance_sensor;
+
+        mavlink_msg_distance_sensor_decode(msg, &distance_sensor);
+
+        if (distance_sensor.signal_quality >= 50) {
+            rf_data_t rf_report;
+
+            rf_report.timestamp_ms = systime_now_ms();
+            rf_report.distance_m = distance_sensor.current_distance * 0.01f;
+
+            /* publish range finder data */
+            mcn_publish(MCN_HUB(sensor_rangefinder), &rf_report);
+        }
     } break;
 
     case MAVLINK_MSG_ID_PARAM_SET: {
