@@ -51,6 +51,7 @@ static uint8_t use_pos;
 static uint8_t use_alt;
 static uint8_t use_att;
 static uint8_t use_psi;
+static uint8_t ext_psi_bias_est_en;
 static uint8_t obc_heartbeat;
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
@@ -869,6 +870,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         mavlink_odometry_t odometry;
         External_Pos_Bus ext_pos_report = { 0 };
         Euler e;
+        INS_Out_Bus ins_out;
 
         mavlink_msg_odometry_decode(msg, &odometry);
 
@@ -878,12 +880,38 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         ext_pos_report.timestamp = systime_now_ms();
         /* TODO: check covariance? */
         ext_pos_report.field_valid = (use_pos | (use_alt << 1) | (use_att << 2) | (use_psi << 3)) * (odometry.quality > 40);
-        ext_pos_report.x = odometry.x;
-        ext_pos_report.y = odometry.y;
-        ext_pos_report.z = odometry.z;
         ext_pos_report.phi = e.roll;
         ext_pos_report.theta = e.pitch;
         ext_pos_report.psi = e.yaw;
+
+        if (odometry.frame_id == MAV_FRAME_LOCAL_FRD && ext_psi_bias_est_en) {
+            static float ext_psi_oft;
+            quaternion q;
+
+            if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+                return FMT_ERROR;
+            }
+
+            if ((ins_out.flag & 1) == 0) {
+                /* ins is not ready */
+                return FMT_EOK;
+            }
+
+            if ((ins_out.status & (1 << 11)) == 0 && (ext_pos_report.field_valid & 8)) {
+                /* external psi change from invalid to valid, we need update psi offset */
+                ext_psi_oft = ins_out.psi - ext_pos_report.psi;
+            }
+
+            e.yaw = ext_psi_oft;
+            quaternion_fromEuler(e, &q);
+            /* rotate odometry pos from LOCAL_FRD to LOCAL_NED */
+            quaternion_rotateVector(&q, &odometry.x, &ext_pos_report.x);
+        } else {
+            /* the odometry pos should be in LOCAL_NED */
+            ext_pos_report.x = odometry.x;
+            ext_pos_report.y = odometry.y;
+            ext_pos_report.z = odometry.z;
+        }
 
         /* publish external position */
         mcn_publish(MCN_HUB(external_pos), &ext_pos_report);
@@ -1009,6 +1037,7 @@ fmt_err_t mavobc_init(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_ALT), &use_alt));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_ATT), &use_att));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_USE_PSI), &use_psi));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXT_PSI_BIAS_EST_EN), &ext_psi_bias_est_en));
     FMT_CHECK(param_link_variable(PARAM_GET(SYSTEM, OBC_HEARTBEAT), &obc_heartbeat));
 
     /* register obc mavlink handler */

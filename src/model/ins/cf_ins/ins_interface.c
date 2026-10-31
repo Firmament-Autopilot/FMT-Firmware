@@ -82,11 +82,12 @@ static param_t __param_list[] = {
     PARAM_FLOAT(RF_VZ_GAIN, 5),
     PARAM_FLOAT(RF_BIAS_AZ_GAIN, 0.2),
     PARAM_UINT32(RF_H_DELAY, 10),
-    PARAM_FLOAT(EXTPOS_POS_GAIN, 2.0),
-    PARAM_FLOAT(EXTPOS_VEL_GAIN, 1.5),
-    PARAM_FLOAT(EXTPOS_BIAS_A_GAIN, 0.1),
-    PARAM_UINT32(EXTPOS_POS_DELAY, 20),
-    PARAM_FLOAT(EXTPOS_PSI_OFS, 0.0),
+    PARAM_FLOAT(EXT_POS_GAIN, 2.0),
+    PARAM_FLOAT(EXT_VEL_GAIN, 1.5),
+    PARAM_FLOAT(EXT_BIAS_A_GAIN, 0.1),
+    PARAM_UINT32(EXT_POS_DELAY, 20),
+    PARAM_FLOAT(EXT_PSI_OFS, 0.0),
+    PARAM_UINT8(EXT_PSI_BIAS_EST_EN, 0),
     PARAM_UINT8(EXTPOS_USE_POS, 0),
     PARAM_UINT8(EXTPOS_USE_ALT, 0),
     PARAM_UINT8(EXTPOS_USE_ATT, 0),
@@ -287,14 +288,20 @@ static int ins_output_echo(void* param)
            BIT(ins_out.flag, 6) > 0,
            BIT(ins_out.flag, 7) > 0,
            BIT(ins_out.flag, 8) > 0);
-    printf("sensor status: imu1:%d imu2:%d mag:%d baro:%d gps:%d rf:%d optflow:%d\n",
+    printf("sensor status: imu1:%d imu2:%d mag:%d baro:%d gps:%d rf:%d optflow:%d airspeed:%d\n",
            BIT(ins_out.status, 0) > 0,
            BIT(ins_out.status, 1) > 0,
            BIT(ins_out.status, 2) > 0,
            BIT(ins_out.status, 3) > 0,
            BIT(ins_out.status, 4) > 0,
            BIT(ins_out.status, 5) > 0,
-           BIT(ins_out.status, 6) > 0);
+           BIT(ins_out.status, 6) > 0,
+           BIT(ins_out.status, 7) > 0);
+    printf("               ext_pos:%d ext_h:%d ext_att:%d ext_psi:%d\n",
+           BIT(ins_out.status, 8) > 0,
+           BIT(ins_out.status, 9) > 0,
+           BIT(ins_out.status, 10) > 0,
+           BIT(ins_out.status, 11) > 0);
     printf("------------------------------------------\n");
 
     return 0;
@@ -372,11 +379,12 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_VZ_GAIN), &INS_PARAM.RF_VZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_BIAS_AZ_GAIN), &INS_PARAM.RF_BIAS_AZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_H_DELAY), &INS_PARAM.RF_H_DELAY));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_POS_GAIN), &INS_PARAM.EXTPOS_POS_GAIN));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_VEL_GAIN), &INS_PARAM.EXTPOS_VEL_GAIN));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_BIAS_A_GAIN), &INS_PARAM.EXTPOS_BIAS_A_GAIN));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_POS_DELAY), &INS_PARAM.EXTPOS_POS_DELAY));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_PSI_OFS), &INS_PARAM.EXTPOS_PSI_OFS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXT_POS_GAIN), &INS_PARAM.EXT_POS_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXT_VEL_GAIN), &INS_PARAM.EXT_VEL_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXT_BIAS_A_GAIN), &INS_PARAM.EXT_BIAS_A_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXT_POS_DELAY), &INS_PARAM.EXT_POS_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXT_PSI_OFS), &INS_PARAM.EXT_PSI_OFS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXT_PSI_BIAS_EST_EN), &INS_PARAM.EXT_PSI_BIAS_EST_EN));
 }
 
 void ins_interface_step(uint32_t timestamp)
