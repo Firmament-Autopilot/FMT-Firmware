@@ -415,6 +415,8 @@ SECTIONS
         . = ALIGN(4);
         __cy_socmem_bss_start__ = .;
 
+        *(.bss*)
+        *(COMMON)
         *(.cy_socmem_bss .cy_socmem_bss.*)
         *plant_interface.*(.bss*)
         *Plant.*(.bss*)
@@ -428,9 +430,6 @@ SECTIONS
     {
         . = ALIGN(4);
         __bss_start__ = .;
-
-        *(.bss*)
-        *(COMMON)
 
         . = ALIGN(4);
         _sstack = .;

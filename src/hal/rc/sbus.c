@@ -16,15 +16,15 @@
 
 #include "hal/rc/sbus.h"
 
-#define SBUS_START_SYMBOL 0x0f
+#define SBUS_START_SYMBOL          0x0f
 
-#define SBUS_INPUT_CHANNELS 16
-#define SBUS_FLAGS_BYTE     23
-#define SBUS_FAILSAFE_BIT   3
-#define SBUS_FRAMELOST_BIT  2
+#define SBUS_INPUT_CHANNELS        16
+#define SBUS_FLAGS_BYTE            23
+#define SBUS_FAILSAFE_BIT          3
+#define SBUS_FRAMELOST_BIT         2
 
 // this is the rate of the old code
-#define SBUS_DEFAULT_RATE_HZ 72
+#define SBUS_DEFAULT_RATE_HZ       72
 
 /*
   Measured values with Futaba FX-30/R6108SB:
@@ -34,21 +34,21 @@
 */
 
 /* define range mapping here, -+100% -> 1000..2000 */
-#define SBUS_RANGE_MIN 200.0f
-#define SBUS_RANGE_MAX 1800.0f
+#define SBUS_RANGE_MIN             200.0f
+#define SBUS_RANGE_MAX             1800.0f
 
-#define SBUS_TARGET_MIN 1000.0f
-#define SBUS_TARGET_MAX 2000.0f
+#define SBUS_TARGET_MIN            1000.0f
+#define SBUS_TARGET_MAX            2000.0f
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
-#define SBUS_SCALE_FACTOR ((SBUS_TARGET_MAX - SBUS_TARGET_MIN) / (SBUS_RANGE_MAX - SBUS_RANGE_MIN))
-#define SBUS_SCALE_OFFSET (int)(SBUS_TARGET_MIN - (SBUS_SCALE_FACTOR * SBUS_RANGE_MIN + 0.5f))
+#define SBUS_SCALE_FACTOR          ((SBUS_TARGET_MAX - SBUS_TARGET_MIN) / (SBUS_RANGE_MAX - SBUS_RANGE_MIN))
+#define SBUS_SCALE_OFFSET          (int)(SBUS_TARGET_MIN - (SBUS_SCALE_FACTOR * SBUS_RANGE_MIN + 0.5f))
 
 #define SBUS_FRAME_SIZE_RX_VOLTAGE 3
 #define SBUS_FRAME_SIZE_GPS_DIGIT  3
 
 // #define SBUS_FRAME_SIZE  25
-#define SBUS_BUFFER_SIZE (SBUS_FRAME_SIZE + SBUS_FRAME_SIZE / 2)
+#define SBUS_BUFFER_SIZE           (SBUS_FRAME_SIZE + SBUS_FRAME_SIZE / 2)
 
 // static enum SBUS_DECODE_STATE {
 //     SBUS_DECODE_STATE_DESYNC = 0xFFF,
@@ -178,6 +178,7 @@ static bool sbus_decode(sbus_decoder_t* decoder, uint32_t frame_time)
         decoder->sbus_val[channel] = (uint16_t)(value * SBUS_SCALE_FACTOR + .5f) + SBUS_SCALE_OFFSET;
     }
 
+#if MAX_SBUS_CHANNEL >= 18
     /* decode switch channels if data fields are wide enough */
     if (decoder->max_channels > 17 && chancount > 15) {
         chancount = 18;
@@ -187,6 +188,7 @@ static bool sbus_decode(sbus_decoder_t* decoder, uint32_t frame_time)
         /* channel 18 (index 17) */
         decoder->sbus_val[17] = (decoder->sbus_frame[SBUS_FLAGS_BYTE] & (1 << 1)) * 1000 + 998;
     }
+#endif
 
     /* note the number of channels decoded */
     decoder->rc_count = chancount;
@@ -199,10 +201,10 @@ static bool sbus_decode(sbus_decoder_t* decoder, uint32_t frame_time)
 
     } else if (decoder->sbus_frame[SBUS_FLAGS_BYTE] & (1 << SBUS_FRAMELOST_BIT)) { /* a frame was lost */
         /* set a special warning flag
-		 *
-		 * Attention! This flag indicates a skipped frame only, not a total link loss! Handling this
-		 * condition as fail-safe greatly reduces the reliability and range of the radio link,
-		 * e.g. by prematurely issuing return-to-launch!!! */
+         *
+         * Attention! This flag indicates a skipped frame only, not a total link loss! Handling this
+         * condition as fail-safe greatly reduces the reliability and range of the radio link,
+         * e.g. by prematurely issuing return-to-launch!!! */
 
         decoder->sbus_failsafe = false;
         decoder->sbus_frame_drop = true;
@@ -221,8 +223,8 @@ static bool sbus_parse(sbus_decoder_t* decoder, uint8_t* frame, unsigned len)
     decoder->last_rx_time = systime_now_ms();
 
     /* this is set by the decoding state machine and will default to false
-	 * once everything that was decodable has been decoded.
-	 */
+     * once everything that was decodable has been decoded.
+     */
     bool decode_ret = false;
 
     /* keep decoding until we have consumed the buffer */
@@ -268,15 +270,15 @@ static bool sbus_parse(sbus_decoder_t* decoder, uint8_t* frame, unsigned len)
             }
 
             /*
-				 * Great, it looks like we might have a frame.  Go ahead and
-				 * decode it.
-				 */
+             * Great, it looks like we might have a frame.  Go ahead and
+             * decode it.
+             */
             decode_ret = sbus_decode(decoder, decoder->last_rx_time);
 
             /*
-				 * Offset recovery: If decoding failed, check if there is a second
-				 * start marker in the packet.
-				 */
+             * Offset recovery: If decoding failed, check if there is a second
+             * start marker in the packet.
+             */
             unsigned start_index = 0;
 
             if (!decode_ret && decoder->sbus_decode_state == SBUS_DECODE_STATE_DESYNC) {
@@ -305,9 +307,9 @@ static bool sbus_parse(sbus_decoder_t* decoder, uint8_t* frame, unsigned len)
             }
 
             /* if there has been no successful attempt at saving a failed
-				 * decoding run, reset the frame count for successful and
-				 * unsuccessful decode runs.
-				 */
+             * decoding run, reset the frame count for successful and
+             * unsuccessful decode runs.
+             */
             if (start_index == 0) {
                 decoder->partial_frame_count = 0;
             }
@@ -335,8 +337,8 @@ static bool sbus_parse(sbus_decoder_t* decoder, uint8_t* frame, unsigned len)
                 // (frame[0] == 0x3 && frame[1] == 0x80 && frame[2] == 0x2f)
                 // (frame[0] == 0x3 && frame[1] == 0xc0 && frame[2] == 0x2f)
 #ifdef SBUS_DEBUG
-                //uint16_t rx_voltage = (sbus_frame[1] << 8) | sbus_frame[2];
-                //printf("rx_voltage %d\n", (int)rx_voltage);
+                // uint16_t rx_voltage = (sbus_frame[1] << 8) | sbus_frame[2];
+                // printf("rx_voltage %d\n", (int)rx_voltage);
 #endif
             }
 
@@ -406,26 +408,26 @@ bool sbus_update(sbus_decoder_t* decoder)
     // uint64_t now;
 
     /*
-	 * The S.BUS protocol doesn't provide reliable framing,
-	 * so we detect frame boundaries by the inter-frame delay.
-	 *
-	 * The minimum frame spacing is 7ms; with 25 bytes at 100000bps
-	 * frame transmission time is ~2ms.
-	 *
-	 * We expect to only be called when bytes arrive for processing,
-	 * and if an interval of more than 3ms passes between calls,
-	 * the first byte we read will be the first byte of a frame.
-	 *
-	 * In the case where byte(s) are dropped from a frame, this also
-	 * provides a degree of protection. Of course, it would be better
-	 * if we didn't drop bytes...
-	 */
+     * The S.BUS protocol doesn't provide reliable framing,
+     * so we detect frame boundaries by the inter-frame delay.
+     *
+     * The minimum frame spacing is 7ms; with 25 bytes at 100000bps
+     * frame transmission time is ~2ms.
+     *
+     * We expect to only be called when bytes arrive for processing,
+     * and if an interval of more than 3ms passes between calls,
+     * the first byte we read will be the first byte of a frame.
+     *
+     * In the case where byte(s) are dropped from a frame, this also
+     * provides a degree of protection. Of course, it would be better
+     * if we didn't drop bytes...
+     */
     // now = systime_now_us();
 
     /*
-	 * Fetch bytes, but no more than we would need to complete
-	 * a complete frame.
-	 */
+     * Fetch bytes, but no more than we would need to complete
+     * a complete frame.
+     */
     uint8_t buf[SBUS_FRAME_SIZE * 2];
 
     // ret = sbus_read(&buf[0], SBUS_FRAME_SIZE);
@@ -438,8 +440,8 @@ bool sbus_update(sbus_decoder_t* decoder)
     }
 
     /*
-	 * Try to decode something with what we got
-	 */
+     * Try to decode something with what we got
+     */
     bool sbus_updated = sbus_parse(decoder, buf, ret);
     decoder->sbus_data_ready = sbus_updated && !decoder->sbus_failsafe && !decoder->sbus_frame_drop;
 

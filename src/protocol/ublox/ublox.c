@@ -20,15 +20,17 @@
 
 #define FNV1_32_INIT  ((uint32_t)0x811c9dc5) // init value for FNV1 hash algorithm
 #define FNV1_32_PRIME ((uint32_t)0x01000193) // magic prime for FNV1 hash algorithm
-#define MIN(x, y)     (x < y ? x : y)
+#ifndef MIN
+    #define MIN(x, y) (x < y ? x : y)
+#endif
 
 static uint32_t _fnv1_32_str(uint8_t* str, uint32_t hval)
 {
     uint8_t* s = str;
 
     /*
-	 * FNV-1 hash each octet in the buffer
-	 */
+     * FNV-1 hash each octet in the buffer
+     */
     while (*s) {
 
         /* multiply by the 32 bit FNV magic prime mod 2^32 */
@@ -120,7 +122,7 @@ static int _payload_rx_add_mon_ver(ubx_decoder_t* ubx_decoder, const uint8_t b)
 
         if (buf_index == sizeof(ubx_payload_rx_mon_ver_part2_t) - 1) {
             // Part 2 complete: decode Part 2 buffer
-            //console_printf("VER ext \" %30s\"\r\n", ubx_decoder->buf.payload_rx_mon_ver_part2.extension);
+            // console_printf("VER ext \" %30s\"\r\n", ubx_decoder->buf.payload_rx_mon_ver_part2.extension);
         }
     }
 
@@ -315,7 +317,7 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c)
     case UBX_DECODE_SYNC2: {
         if (c == UBX_SYNC2) { // Sync2 found --> expecting Class
             ubx_decoder->decode_state = UBX_DECODE_CLASS;
-        } else { // Sync1 not followed by Sync2: reset parser
+        } else {              // Sync1 not followed by Sync2: reset parser
             reset_ubx_decoder(ubx_decoder);
         }
     } break;
@@ -342,7 +344,7 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c)
         _add_byte_to_checksum(ubx_decoder, c);
         ubx_decoder->rx_payload_length |= c << 8; // calculate payload size
 
-        //if(ubx_decoder->rx_msg == UBX_MSG_NAV_SVINFO)
+        // if(ubx_decoder->rx_msg == UBX_MSG_NAV_SVINFO)
 
         if (_payload_rx_init(ubx_decoder) != 0) { // start payload reception
             // payload will not be handled, discard message
@@ -351,7 +353,7 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c)
             ubx_decoder->decode_state = (ubx_decoder->rx_payload_length > 0) ? UBX_DECODE_PAYLOAD : UBX_DECODE_CHKSUM1;
         }
 
-        //console_printf("len:%d\r\n" , ubx_decoder->rx_payload_length);
+        // console_printf("len:%d\r\n" , ubx_decoder->rx_payload_length);
     } break;
 
     case UBX_DECODE_PAYLOAD: {
@@ -371,7 +373,7 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c)
         } break;
         }
 
-        //console_printf("payload ret:%d\r\n" , ret);
+        // console_printf("payload ret:%d\r\n" , ret);
         if (ret < 0) {
             // payload not handled, discard message
             reset_ubx_decoder(ubx_decoder);
@@ -387,7 +389,7 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c)
 
     case UBX_DECODE_CHKSUM1: {
         if (ubx_decoder->rx_ck_a != c) {
-            //DRV_DBG("ubx checksum1 err\r\n");
+            // DRV_DBG("ubx checksum1 err\r\n");
             reset_ubx_decoder(ubx_decoder);
         } else {
             ubx_decoder->decode_state = UBX_DECODE_CHKSUM2;
@@ -396,7 +398,7 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c)
 
     case UBX_DECODE_CHKSUM2: {
         if (ubx_decoder->rx_ck_b != c) {
-            //DRV_DBG("ubx checksum2 err\r\n");
+            // DRV_DBG("ubx checksum2 err\r\n");
         } else {
             ret = ubx_decoder->ubx_rx_handle(); // finish payload processing
         }

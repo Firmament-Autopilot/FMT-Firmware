@@ -49,7 +49,7 @@ if PLATFORM == 'gcc':
     OBJCPY = PREFIX + 'objcopy'
 
     DEVICE = ' -march=armv8.1-m.main+fp+mve -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections -nostartfiles -nostartfiles'
-    CFLAGS = DEVICE + ' -g -Wall -pipe -Wno-address-of-packed-member -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch'
+    CFLAGS = DEVICE + ' -g -Wall -pipe -Wno-address-of-packed-member -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch -Wno-stringop-truncation -Wno-char-subscripts -Wno-stringop-overflow'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -flto -Wl,--gc-sections,-Map=build/fmt_' + BOARD + '.map,-cref,-u,Reset_Handler,-u,_printf_float,-u,_scanf_float -T board/linker_scripts/link.ld'
 

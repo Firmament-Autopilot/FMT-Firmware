@@ -4,6 +4,7 @@ import rtconfig
 import platform
 import subprocess
 import uuid
+import locale
 
 # FMT path
 FMU_ROOT = os.path.normpath(os.getcwd() + '/../../../..')
@@ -106,7 +107,14 @@ def ourspawn(sh, escape, cmd, args, e):
             if isinstance(_s, str):
                 _output(_s)
             elif isinstance(_s, bytes):
-                _output(str(_s, 'UTF-8'))
+                for enc in ('utf-8', locale.getpreferredencoding(False), 'gbk', 'latin-1'):
+                    try:
+                        _output(_s.decode(enc))
+                        return
+                    except UnicodeDecodeError:
+                        continue
+                # all failed, use replace
+                _output(_s.decode('utf-8', errors='replace'))
             else:
                 _output(str(_s))
     res_output(sys.stderr.write, err)

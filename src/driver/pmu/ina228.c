@@ -94,7 +94,7 @@ static float ina228_get_bus_voltage(rt_device_t i2c_dev)
     uint32_t raw = 0;
     float voltage_v = 0.0f;
 
-    if (ina228_read_reg(i2c_dev, INA228_REG_BUS_VOLTAGE, &raw, 3) == RT_EOK) {
+    if (ina228_read_reg(i2c_dev, INA228_REG_BUS_VOLTAGE, (uint8_t*)&raw, 3) == RT_EOK) {
         voltage_v = (float)(raw >> 4) * 195.3125e-6f;
     }
 
@@ -108,7 +108,7 @@ static float ina228_get_shunt_voltage(rt_device_t i2c_dev)
 
     float voltage_v = 0.0f;
 
-    if (ina228_read_reg(i2c_dev, INA228_REG_SHUNT_VOLTAGE, &raw, 3) == RT_EOK) {
+    if (ina228_read_reg(i2c_dev, INA228_REG_SHUNT_VOLTAGE, (uint8_t*)&raw, 3) == RT_EOK) {
         shunt_lsb = (adc_range_41mv == RT_TRUE) ? 78.125e-9f : 312.5e-9f;
         voltage_v = (float)ina228_sign_extend_20(raw) * shunt_lsb;
     }
@@ -121,7 +121,7 @@ static float ina228_get_current(rt_device_t i2c_dev)
     uint32_t raw = 0;
     float current_a = 0.0f;
 
-    if (ina228_read_reg(i2c_dev, INA228_REG_CURRENT, &raw, 3) == RT_EOK) {
+    if (ina228_read_reg(i2c_dev, INA228_REG_CURRENT, (uint8_t*)&raw, 3) == RT_EOK) {
         current_a = (float)ina228_sign_extend_20(raw) * current_lsb;
     }
 
@@ -166,7 +166,7 @@ rt_err_t drv_ina228_init(const char* i2c_device_name, const char* device_name)
 
     RT_TRY(rt_device_open(i2c_dev, RT_DEVICE_OFLAG_RDWR));
 
-    RT_TRY(ina228_read_reg(i2c_dev, INA228_REG_DEVICE_ID, &dev_id, 2));
+    RT_TRY(ina228_read_reg(i2c_dev, INA228_REG_DEVICE_ID, (uint8_t*)&dev_id, 2));
     if (dev_id != 0x2281) {
         /* invalid id */
         return RT_ERROR;
@@ -177,7 +177,7 @@ rt_err_t drv_ina228_init(const char* i2c_device_name, const char* device_name)
 
     current_lsb = INA228_MAX_CURRENT_A * 1.9073486328125e-6f;
     shunt_cal = 13107.2e6f * current_lsb * INA228_SHUNT_OHM;
-    RT_TRY(ina228_read_reg(i2c_dev, INA228_REG_CONFIG, &reg_val, 2));
+    RT_TRY(ina228_read_reg(i2c_dev, INA228_REG_CONFIG, (uint8_t*)&reg_val, 2));
     adc_range_41mv = reg_val & (1 << 4);
     if (adc_range_41mv) {
         shunt_cal *= 4.0f;
