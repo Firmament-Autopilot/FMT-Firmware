@@ -20,6 +20,7 @@
 
 #include <firmament.h>
 
+#include "hal/serial/serial.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/workqueue/workqueue_manager.h"
 
@@ -35,17 +36,17 @@ typedef enum {
 } TFXX_State;
 
 typedef struct {
-    uint32_t timestamp;   // ms
-    int16_t  distance;    // distance of TFmini_S (0~2000)cm,
-    int16_t  strength;    // strength of the singal, 0~65535
-    int16_t  temperature; // t = temp/8-256
+    uint32_t timestamp;  // ms
+    int16_t distance;    // distance of TFmini_S (0~2000)cm,
+    int16_t strength;    // strength of the singal, 0~65535
+    int16_t temperature; // t = temp/8-256
 } tfxx_data;
 
-static rt_device_t     dev;
-static rt_thread_t     thread;
+static rt_device_t dev;
+static rt_thread_t thread;
 static struct rt_event event;
-static tfxx_data       data;
-static rf_data_t       rf_report;
+static tfxx_data data;
+static rf_data_t rf_report;
 
 static void start_thread(void* parameter)
 {
@@ -59,11 +60,11 @@ static rt_err_t rx_ind_cb(rt_device_t dev, rt_size_t size)
 
 static bool parse_package(uint8_t c)
 {
-    static TFXX_State state    = TFxx_HEADER1;
-    static uint8_t    recv_len;
-    static uint8_t    cs;
-    static uint8_t    buf[6];
-    bool              cmplt = false;
+    static TFXX_State state = TFxx_HEADER1;
+    static uint8_t recv_len;
+    static uint8_t cs;
+    static uint8_t buf[6];
+    bool cmplt = false;
 
     switch (state) {
     case TFxx_HEADER1:
@@ -92,10 +93,10 @@ static bool parse_package(uint8_t c)
 
     case TFxx_CHECKSUM:
         if (cs == c) {
-            cmplt            = true;
-            data.timestamp   = systime_now_ms();
-            data.distance    = (buf[1] << 8 | buf[0]);
-            data.strength    = (buf[3] << 8 | buf[2]);
+            cmplt = true;
+            data.timestamp = systime_now_ms();
+            data.distance = (buf[1] << 8 | buf[0]);
+            data.strength = (buf[3] << 8 | buf[2]);
             data.temperature = (buf[5] << 8 | buf[4]);
         } else {
             printf("wrong cheksum:%x %x\n", cs, c);
@@ -112,14 +113,23 @@ static bool parse_package(uint8_t c)
 
 static void thread_entry(void* args)
 {
-    rt_err_t    res;
+    rt_err_t res;
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_TFXX_UPDATE;
-    uint8_t     c;
+    uint8_t c;
 
     /* open device */
     if (rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
         printf("tfxx fail to open device!\n");
+        return;
+    }
+
+    /* config baudrate */
+    serial_dev_t serial_dev = (serial_dev_t)dev;
+    struct serial_configure pconfig = serial_dev->config;
+    pconfig.baud_rate = 115200; /* device default baudrate is 115200 */
+    if (rt_device_control(&serial_dev->parent, RT_DEVICE_CTRL_CONFIG, &pconfig) != RT_EOK) {
+        printf("tofsense config baudrate failed!\n");
         return;
     }
 
@@ -151,10 +161,10 @@ static void thread_entry(void* args)
 }
 
 static struct WorkItem work_item = {
-    .name          = "tfxx",
-    .period        = 0,
+    .name = "tfxx",
+    .period = 0,
     .schedule_time = 1000,
-    .run           = start_thread
+    .run = start_thread
 };
 
 rt_err_t tfxx_drv_init(const char* uart_dev_name)
