@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.864
+ * Model version                  : 1.868
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 14 14:57:33 2026
+ * C/C++ source code generated on : Fri Nov 13 13:51:08 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -40,11 +40,11 @@ struct_AGLUWHQ2VVXz72aZazl5HE CONTROL_PARAM = {
   0.2F,
   -0.1F,
   0.1F,
+  7.0F,
   5.0F,
-  5.0F,
-  0.523599F,
-  0.24F,
-  0.24F,
+  0.52359879F,
+  0.18F,
+  0.18F,
   0.6F,
   0.15F,
   0.15F,
@@ -58,36 +58,36 @@ struct_AGLUWHQ2VVXz72aZazl5HE CONTROL_PARAM = {
   0.2F,
   -0.2F,
   0.2F,
-  1.57079601F,
-  1.04719806F,
-  0.55F,
-  1950U,
-  1050U,
-  7.0F,
-  7.0F,
-  0.785398F,
+  1.57079637F,
+  1.04719758F,
+  0.5F,
+  2000U,
+  1000U,
+  5.0F,
+  5.0F,
+  0.785398185F,
+  0.1F,
+  0.15F,
+  0.15F,
+  0.1F,
   0.1F,
   0.2F,
-  0.2F,
-  0.1F,
-  0.1F,
-  0.2F,
-  -0.3F,
-  0.3F,
-  1.04719806F,
-  0.523599F,
+  -0.4F,
+  0.4F,
+  1.04719758F,
+  0.52359879F,
   17.0F,
   0.2F,
   1.0F,
   1.0F,
   1.0F,
   0.0F,
-  0.1F,
-  0.1F,
-  0.15F,
-  0.5F,
-  0.1F,
+  0.2F,
   0.25F,
+  0.2F,
+  0.75F,
+  0.15F,
+  0.3F,
   0.2F,
   0.0F,
   0.0F,
@@ -95,22 +95,22 @@ struct_AGLUWHQ2VVXz72aZazl5HE CONTROL_PARAM = {
   1.0F,
   1.0F,
   1.0F,
-  2.0F,
+  1.5F,
   0.2F,
   0.0F,
   0.0F,
   2000U,
   1000U,
-  -1.0F,
-  -1.0F,
   1.0F,
   1.0F,
   1.0F,
   1.0F,
-  40.0F,
-  10.0F,
+  1.0F,
+  1.0F,
   0.0F,
-  30.0F
+  0.0F,
+  0.0F,
+  0.0F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S14>/Saturation'
@@ -3918,13 +3918,13 @@ void Controller_step(void)
         (1.0F / rtb_VdotPg_sp) * rtb_Saturation_g + CONTROL_PARAM.MC_HOVER_THRO;
 
       /* Saturate: '<S134>/Saturation' */
-      if (Controller_B.Saturation > 0.85F) {
+      if (Controller_B.Saturation > 0.7F) {
         /* Sum: '<S134>/Sum' */
-        Controller_B.Saturation = 0.85F;
+        Controller_B.Saturation = 0.7F;
       } else {
-        if (Controller_B.Saturation < 0.25F) {
+        if (Controller_B.Saturation < 0.3F) {
           /* Sum: '<S134>/Sum' */
-          Controller_B.Saturation = 0.25F;
+          Controller_B.Saturation = 0.3F;
         }
       }
 

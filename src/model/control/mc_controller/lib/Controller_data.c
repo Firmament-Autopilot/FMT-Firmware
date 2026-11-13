@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1044
+ * Model version                  : 1.1047
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 14 16:51:41 2026
+ * C/C++ source code generated on : Fri Nov 13 13:47:38 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -21,15 +21,15 @@ const ConstB_Controller_T Controller_ConstB = {
   19.1986F,                            /* '<S82>/Gain' */
 
   { 0.0F, 0.0F, 0.0F },                /* '<S70>/Constant' */
-  0.00250000018F,                      /* '<S118>/Square' */
-  0.196120009F,                        /* '<S118>/Multiply' */
-  -78.448F,                            /* '<S118>/Gain4' */
+  0.00250000018F,                      /* '<S117>/Square' */
+  0.196120009F,                        /* '<S117>/Multiply' */
+  -78.448F,                            /* '<S117>/Gain4' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S97>/Vector Concatenate3' */
-  0.00250000018F,                      /* '<S98>/Square' */
-  0.14709F,                            /* '<S98>/Multiply' */
-  -58.836F,                            /* '<S98>/Gain4' */
-  0.0F,                                /* '<S100>/Constant' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S96>/Vector Concatenate3' */
+  0.00250000018F,                      /* '<S97>/Square' */
+  0.14709F,                            /* '<S97>/Multiply' */
+  -58.836F,                            /* '<S97>/Gain4' */
+  0.0F,                                /* '<S99>/Constant' */
 
 #if AIRFRAME == 1
 
