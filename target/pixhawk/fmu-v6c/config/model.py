@@ -49,5 +49,42 @@ elif vehicle_type == 'VTOL':
             'fms/vtol_fms',
             'control/vtol_controller',
         ]
+elif vehicle_type == 'Boat':
+    if sim_mode == 'HIL':
+        MODELS = [
+            'plant/template_plant',
+            'ins/external_ins',
+            'fms/boat_fms',
+            'control/boat_controller',
+        ]
+    else:
+        MODELS = [
+            'plant/boat',
+            'ins/cf_ins',
+            'fms/boat_fms',
+            'control/boat_controller',
+        ]
+elif vehicle_type == 'Car':
+    if sim_mode == 'HIL':
+        MODELS = [
+            'plant/template_plant',
+            'ins/external_ins',
+            'fms/car_fms',
+            'control/car_controller',
+        ]
+    else:
+        MODELS = [
+            'plant/template_plant',
+            'ins/cf_ins',
+            'fms/car_fms',
+            'control/car_controller',
+        ]
+elif vehicle_type == 'Template':
+    MODELS = [
+        'plant/template_plant',
+        'ins/template_ins',
+        'fms/template_fms',
+        'control/template_controller',
+    ]
 else:
-    MODELS = []
+    raise Exception("Wrong VEHICLE_TYPE %s defined" % vehicle_type)
