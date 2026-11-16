@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2597
+ * Model version                  : 1.2602
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Dec 22 15:58:58 2025
+ * C/C++ source code generated on : Mon Nov 16 10:22:39 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,8 +110,9 @@ typedef struct {
 
   /* Coordinate Frame:
      0:FRAME_GLOBAL_NED
-     1:FRAME_LOCAL_FRD
-     2:FRAME_BODY_FRD */
+     1:FRAME_LOCAL_NED
+     2:FRAME_LOCAL_FRD
+     3:FRAME_BODY_FRD */
   uint8_T frame;
   uint8_T reserved;
 
